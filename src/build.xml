@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project basedir="." default="all" name="biogenesis">
+    <path id="class.path">
+    </path>
+
+    <target name="init">
+       <echo message="Building ${ant.project.name}" />
+       <echo message="${ant.version}" />
+       <echo message="Java version: ${ant.java.version}" />
+    </target>
+
+    <target depends="init" description="Just Build" name="build">
+        <mkdir dir="classes" />
+        <javac destdir="classes" srcdir="." includeantruntime="false">
+            <classpath refid="class.path" />
+        <classpath>
+            <pathelement path="${java.class.path}/"/>
+        </classpath>
+        </javac>
+    </target>
+
+    <target depends="init,build" name="jar">
+        <copy todir="classes/biogenesis/images">
+         <fileset dir="biogenesis/images" includes="*.png" />
+         <fileset dir="biogenesis/images" includes="*.jpg" />
+        </copy>
+        <copy todir="classes/biogenesis/messages">
+         <fileset dir="biogenesis/messages" includes="*.properties" />
+        </copy>
+
+        <jar basedir="classes" compress="true"
+             jarfile="biogenesis.jar" manifest="biogenesis.mf" 
+             excludes="**/Cleaner.class"/>
+        <jar basedir="classes" compress="true"
+             jarfile="uninstall.jar" manifest="uninstall.mf"
+             includes="**/Cleaner.class **/Utils.class" />
+    </target>
+
+    <target depends="init,jar" description="Build everything." name="all">
+        <echo message="${ant.project.name} built"/>
+    </target>
+
+    <target depends="init" description="Clean all." name="clean">
+        <delete file="biogenesis.jar"/>
+        <delete file="uninstall.jar"/>
+        <delete dir="classes" />
+    </target>
+
+</project>
+

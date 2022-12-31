@@ -1,0 +1,56 @@
+[Desktop Entry]
+Name=Biogenesis
+GenericName=Evolution of organisms
+Comment=Artificial life program that simulates evolution of organisms
+Exec=biogenesis %f
+Icon=biogenesis
+Terminal=false
+Type=Application
+StartupNotify=true
+Categories=Education;Science;Biology;
+
+
+# Translations
+Comment[es_419]=Programa de vida artificial que simula la evolución de organismos
+GenericName[es_419]=Evolución de organismos 
+Comment[ar]=برنامج الحياة الإصطناعية الذي يحاكي تطور الكائنات الحية
+GenericName[ar]=تطور الكائنات الحية
+Comment[pl]=Program sztucznego życia, który symuluje ewolucję organizmów
+GenericName[pl]=Ewolucja organizmów
+Comment[pt]=Programa de vida artificial que simula a evolução de organismos
+GenericName[pt]=Evolução de organismos
+Comment[pt_BR]=Programa de vida artificial que simula a evolução de organismos
+GenericName[pt_BR]=Evolução de organismos
+Comment[ru]=Программа искусственной жизни, которая имитирует эволюцию организмов
+GenericName[ru]=Эволюция организмов
+Comment[bn]=কৃত্রিম জীবন প্রোগ্রাম যা জীবের বিবর্তনকে অনুকরণ করে
+GenericName[bn]=জীবের বিবর্তন
+Comment[ca]=Aquest programa imita els processos evolutius que es donen en les poblacions d'organismes unicel·lulars
+GenericName[ca]=Evolució dels organismes
+Comment[sq]=Programi i jetës artificiale që simulon evolucionin e organizmave
+GenericName[sq]=Evolucioni i organizmave
+Comment[da]=Kunstigt livprogram som simulerer organismers evolution
+Comment[de]=Lebenssimulation, die sich mit der Evolution von Organismen befasst
+GenericName[de]=Evolution von Organismen
+Comment[te]=జీవుల పరిణామాన్ని అనుకరించే కృత్రిమ జీవిత కార్యక్రమం
+GenericName[te]=జీవుల పరిణామం
+Comment[es]=Este programa imita los procesos evolutivos que se dan en las poblaciones de organismos unicelulares
+GenericName[es]=Evolución de los organismos
+Comment[uk]=Програмне штучне життя, імітує еволюцію організмів
+GenericName[uk]=Еволюція організмів
+Comment[zh_CN]=人造生命程序，可模拟有机体进化
+GenericName[zh_CN]=有机体进化
+Comment[fr]=Programme de vie artificielle pour simuler l’évolution d’organismes
+GenericName[fr]=Évolution d’organismes
+Comment[gl]=Programa de vida artificial que simula a evolución dos organismos
+GenericName[gl]=Evolución dos organismos
+Comment[hi]=कृत्रिम जीवन कार्यक्रम जो जीवों के विकास का अनुकरण करता है
+GenericName[hi]=जीवों का विकास
+GenericName[id]=Evolusi organisme
+Comment[it]=Programma per vita artificiale che simula l'evoluzione di organismi
+GenericName[it]=Evoluzione di organismi
+Comment[ja]=生物の進化をシミュレートする人工生命プログラム
+Comment[lv]=Mākslīgā dzīves programma, kas stimulē organismu evolūciju
+GenericName[lv]=Organismu evolūcija
+Comment[ms]=Program hayat tiruan yang simulasikan evolusi organisma
+GenericName[ms]=Evolusi organisma

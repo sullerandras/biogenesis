@@ -1,0 +1,5 @@
+#!/bin/sh
+
+CLASSPATH=`build-classpath biogenesis jts 2>/dev/null`
+
+java -cp "$CLASSPATH" biogenesis.MainWindow $@
