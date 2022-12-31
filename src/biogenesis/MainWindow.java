@@ -1045,13 +1045,17 @@ public class MainWindow extends JFrame {
 					 */
 					long actualTime = System.currentTimeMillis();
 					if (actualTime - lastPaintTime > currentDelay*1.5 || currentDelay < Utils.DELAY) {
-							// We can't run so fast
-							failedTime=Math.max(failedTime+1, 0);
-							if (failedTime >= 2) {
-								failedTime = 0;
+						// We can't run so fast
+						failedTime=Math.max(failedTime+1, 0);
+						if (failedTime >= 2) {
+							failedTime = 0;
+							if (currentDelay <= 10) {
+								currentDelay++;
+							} else {
 								currentDelay*=1.5;
-								startLifeProcess(currentDelay);
 							}
+							startLifeProcess(currentDelay);
+						}
 						} else {
 							if (actualTime - lastPaintTime < currentDelay*1.2 && currentDelay > Utils.DELAY) {
 								// We can run faster
