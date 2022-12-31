@@ -71,6 +71,11 @@ public class GeneticCode implements Cloneable, Serializable {
 	 */
 	protected int _mutationrate;
 	/**
+	 * The clonerate of this organism. Possible values are
+	 * min clonerate - max clonerate. 
+	 */
+	protected int _clonerate;
+	/**
 	 * The seasons of the summer segments. Possible values are
 	 * 0 - 2. 
 	 */
@@ -126,10 +131,6 @@ public class GeneticCode implements Cloneable, Serializable {
 	 */
 	protected boolean _clockwise;
 	/**
-	 * Indicates if organisms will change the color of all dark segments or only of the segment, that is touched.
-	 */
-	protected boolean _mimicall;
-	/**
 	 * Modifies the function of pink
 	 */
 	protected boolean _modifiespink;
@@ -146,6 +147,14 @@ public class GeneticCode implements Cloneable, Serializable {
 	 */
 	protected int _adaptspore;
 	/**
+	 * Modifies the function of dark/black
+	 */
+	protected int _modifiesblack;
+	/**
+	 * Modifies the function of dark/black further
+	 */
+	protected int _adaptblack;
+	/**
 	 * Modifies the function of lilac
 	 */
 	protected boolean _modifieslilac;
@@ -157,6 +166,10 @@ public class GeneticCode implements Cloneable, Serializable {
 	 * Modifies the function of sky
 	 */
 	protected boolean _modifiessky;
+	/**
+	 * Modifies the function of leaf
+	 */
+	protected boolean _modifiesleaf;
 	/**
 	 * Indicates if organisms will always retain half of their energy if they reproduce.
 	 */
@@ -193,6 +206,14 @@ public class GeneticCode implements Cloneable, Serializable {
 	 */
 	public int getMutationrate() {
 		return _mutationrate;
+	}
+	/**
+	 * Returns the clonerate applied to organisms with this genetic code
+	 * 
+	 * @return  a value of min clonerate - max clonerate.
+	 */
+	public int getClonerate() {
+		return _clonerate;
 	}
 	/**
 	 * Returns the season activity applied to organisms with this genetic code
@@ -291,14 +312,6 @@ public class GeneticCode implements Cloneable, Serializable {
 		return _clockwise;
 	}
 	/**
-	 * Returns if organisms with this genetic code will change the color of all dark segments or not.
-	 * 
-	 * @return  true if the organism changes all colors, false otherwise.
-	 */
-	public boolean getMimicAll() {
-		return _mimicall;
-	}
-	/**
 	 * Returns if the function of pink is modified or not.
 	 * 
 	 * @return  true if the function of pink is modified, false otherwise.
@@ -331,6 +344,22 @@ public class GeneticCode implements Cloneable, Serializable {
 		return _adaptspore;
 	}
 	/**
+	 * Returns the version of black
+	 * 
+	 * @return  a value of 1 - 4.
+	 */
+	public int getModifiesblack() {
+		return _modifiesblack;
+	}
+	/**
+	 * Returns the further specialization of black
+	 * 
+	 * @return  a value of 1 - 24.
+	 */
+	public int getAdaptblack() {
+		return _adaptblack;
+	}
+	/**
 	 * Returns if the function of lilac is modified or not.
 	 * 
 	 * @return  true if the function of lilac is modified, false otherwise.
@@ -353,6 +382,14 @@ public class GeneticCode implements Cloneable, Serializable {
 	 */
 	public boolean getModifiessky() {
 		return _modifiessky;
+	}
+	/**
+	 * Returns if the function of leaf is modified or not.
+	 * 
+	 * @return  true if the function of leaf is modified, false otherwise.
+	 */
+	public boolean getModifiesleaf() {
+		return _modifiesleaf;
 	}
 	/**
 	 * Returns if organisms with this genetic code will always retain half of their energy if they reproduce or not.
@@ -427,6 +464,28 @@ public class GeneticCode implements Cloneable, Serializable {
 	private void decreaseMutationrate() {
 		if (_mutationrate > Utils.MIN_MUTATION_RATE) {
 			_mutationrate = Utils.random.nextInt(_mutationrate - Utils.MIN_MUTATION_RATE + 1) + Utils.MIN_MUTATION_RATE;
+		}
+	}
+	/**
+	 * Gives clonerate a random value (min clonerate - max clonerate)
+	 */
+	private void randomClonerate() {
+		_clonerate = Utils.random.nextInt(Utils.MAX_CLONE_RATE - Utils.MIN_CLONE_RATE + 1) + Utils.MIN_CLONE_RATE;
+	}
+	/**
+	 * Gives clonerate a random value (old clonerate - max clonerate)
+	 */
+	private void increaseClonerate() {
+		if (_clonerate < Utils.MAX_CLONE_RATE) {
+			_clonerate = Utils.random.nextInt(Utils.MAX_CLONE_RATE - _clonerate + 1) + _clonerate;
+		}
+	}
+	/**
+	 * Gives clonerate a random value (min clonerate - old clonerate)
+	 */
+	private void decreaseClonerate() {
+		if (_clonerate > Utils.MIN_CLONE_RATE) {
+			_clonerate = Utils.random.nextInt(_clonerate - Utils.MIN_CLONE_RATE + 1) + Utils.MIN_CLONE_RATE;
 		}
 	}
 	/**
@@ -526,13 +585,6 @@ public class GeneticCode implements Cloneable, Serializable {
 		_clockwise =  Utils.random.nextBoolean();
 	}
 	/**
-	 * Decide randomly if organisms with this genetic code will mimic
-	 * all dark segments or not.
-	 */
-	private void randomMimicAll() {
-		_mimicall =  Utils.random.nextBoolean();
-	}
-	/**
 	 * Decide randomly if the function of pink is modified or not.
 	 */
 	private void randomModifiespink() {
@@ -557,6 +609,18 @@ public class GeneticCode implements Cloneable, Serializable {
 		_adaptspore = Utils.random.nextInt(70)+1;
 	}
 	/**
+	 * Gives modifiesblack a random value (1 - 4)
+	 */
+	private void randomModifiesblack() {
+		_modifiesblack = Utils.random.nextInt(4)+1;
+	}
+	/**
+	 * Gives adaptblack a random value (1 - 24)
+	 */
+	private void randomAdaptblack() {
+		_adaptblack = Utils.random.nextInt(24)+1;
+	}
+	/**
 	 * Decide randomly if the function of lilac is modified or not.
 	 */
 	private void randomModifieslilac() {
@@ -575,6 +639,12 @@ public class GeneticCode implements Cloneable, Serializable {
 		_modifiessky =  Utils.random.nextBoolean();
 	}
 	/**
+	 * Decide randomly if the function of leaf is modified or not.
+	 */
+	private void randomModifiesleaf() {
+		_modifiesleaf =  Utils.random.nextBoolean();
+	}
+	/**
 	 * Decide randomly if organisms with this genetic code will always retain half of their energy if they reproduce or not.
 	 */
 	private void randomSelfish() {
@@ -588,11 +658,14 @@ public class GeneticCode implements Cloneable, Serializable {
 		randomSymmetry();
 		randomGenes();
 		randomMutationrate();
+		randomClonerate();
 		randomActivity();
 		randomModifiescream();
 		randomModifiesfallow();
 		randomModifiesspore();
 		randomAdaptspore();
+		randomModifiesblack();
+		randomAdaptblack();
 		randomPlague();
 		randomDisperseChildren();
 		randomGenerationBattle();
@@ -603,10 +676,10 @@ public class GeneticCode implements Cloneable, Serializable {
 		randomPeaceful();
 		randomPassive();
 		randomClockwise();
-		randomMimicAll();
 		randomModifiespink();
 		randomModifieslilac();
 		randomModifiessky();
+		randomModifiesleaf();
 		randomSelfish();
 	}	
 	/**
@@ -617,11 +690,14 @@ public class GeneticCode implements Cloneable, Serializable {
 	 * @param symmetry  The symmetry that an organism with this genetic code will have.
 	 * @param mirror  0 if the organism won't be mirrored, 1 if it will.
 	 * @param mutationrate  The mutationrate that an organism with this genetic code will have.
+	 * @param clonerate  The clonerate that an organism with this genetic code will have.
 	 * @param activity  The summer activity that an organism with this genetic code will have.
 	 * @param modifiescream The specialization of an enhanced parasite.
 	 * @param modifiesfallow The specialization of fallow. 
 	 * @param modifiesspore The specialization of spores.
 	 * @param adaptspore The further specialization of spores.
+	 * @param modifiesblack The version of black.
+	 * @param adaptblack The further specialization of black.
 	 * @param plague  The plague version that an organism with this genetic code will have.
 	 * @param disperseChildren  true if the organism will disperse its children.
 	 * @param generationBattle  true if the organism attacks its parent and children.
@@ -632,26 +708,30 @@ public class GeneticCode implements Cloneable, Serializable {
 	 * @param peaceful  true if the organism is peaceful.
 	 * @param passive  true if the organism is passive.
 	 * @param clockwise  true if the organism turns clockwise.
-	 * @param mimicall  true if the organism mimics all dark segments.
 	 * @param modifiespink  true if the function of pink is modified.
 	 * @param modifieslilac  true if the function of lilac is modified.
 	 * @param modifiessky  true if the function of sky is modified.
+	 * @param modifiesleaf  true if the function of leaf is modified.
 	 * @param selfish  true if the organism retains half of its energy if it reproduces.
 	 */
-	public GeneticCode(List<Gene> genes, int symmetry, int mirror, int mutationrate, int activity, int modifiescream, int modifiesfallow, int modifiesspore, int adaptspore,
-		boolean plague, boolean disperseChildren, boolean generationBattle, boolean siblingBattle, boolean altruist, boolean familial, boolean social, boolean peaceful,
-		boolean passive, boolean clockwise, boolean mimicall, boolean modifiespink, boolean modifieslilac, boolean modifiessky, boolean selfish) {
+	public GeneticCode(List<Gene> genes, int symmetry, int mirror, int mutationrate, int clonerate, int activity, int modifiescream, int modifiesfallow, int modifiesspore,
+		int adaptspore, int modifiesblack, int adaptblack, boolean plague, boolean disperseChildren, boolean generationBattle, boolean siblingBattle, boolean altruist,
+		boolean familial, boolean social, boolean peaceful, boolean passive, boolean clockwise, boolean modifiespink, boolean modifieslilac, boolean modifiessky,
+		boolean modifiesleaf, boolean selfish) {
 		int nGenes = genes.size();
 		_genes = new Gene[nGenes];
 		genes.toArray(_genes);
 		_mirror = mirror;
 		_symmetry = symmetry;
 		_mutationrate = mutationrate;
+		_clonerate = clonerate;
 		_activity = activity;
 		_modifiescream = modifiescream;
 		_modifiesfallow = modifiesfallow;
 		_modifiesspore = modifiesspore;
 		_adaptspore = adaptspore;
+		_modifiesblack = modifiesblack;
+		_adaptblack = adaptblack;
 		_plague = plague;
 		_disperseChildren = disperseChildren;
 		_generationBattle = generationBattle;
@@ -662,10 +742,10 @@ public class GeneticCode implements Cloneable, Serializable {
 		_peaceful = peaceful;
 		_passive = passive;
 		_clockwise = clockwise;
-		_mimicall = mimicall;
 		_modifiespink = modifiespink;
 		_modifieslilac = modifieslilac;
 		_modifiessky = modifiessky;
+		_modifiesleaf = modifiesleaf;
 		_selfish = selfish;
 	}
 	/**
@@ -753,6 +833,37 @@ public class GeneticCode implements Cloneable, Serializable {
 				_mutationrate = Utils.MIN_MUTATION_RATE;
 			}
 		}
+		_clonerate = parentCode.getClonerate();
+		if (Utils.randomMutation()) {
+			// mutate clone rate
+			if (Utils.random.nextInt(10) < 1) {
+				// large change
+				if (Utils.random.nextBoolean()) {
+                	// increase
+					increaseClonerate();
+				} else {
+					// decrease
+					decreaseClonerate();
+				}
+			} else {
+				// small change
+                if (Utils.random.nextBoolean()) {
+                	// increase
+                	_clonerate = _clonerate + 1;
+				} else {
+					// decrease
+					_clonerate = _clonerate - 1;
+				}
+			}
+		}
+		// check if organism is inside allowed clone rates
+		if (_clonerate > Utils.MAX_CLONE_RATE) {
+			_clonerate = Utils.MAX_CLONE_RATE;
+		} else {
+			if (_clonerate < Utils.MIN_CLONE_RATE) {
+				_clonerate = Utils.MIN_CLONE_RATE;
+			}
+		}
 		if (Utils.random.nextInt(10000) < _mutationrate)
 			randomMirror();
 		else
@@ -800,7 +911,7 @@ public class GeneticCode implements Cloneable, Serializable {
 				continue;
 			}
 			if (addedGene == i) {
-				if (Utils.random.nextInt(8) < 1) {
+				if (Utils.random.nextInt(100) < _clonerate) {
 					// Clone the gene after or before itself, and always randomize rotation
 					if (i == 0) {
 						clonedGene = -1;
@@ -931,7 +1042,7 @@ public class GeneticCode implements Cloneable, Serializable {
 						_genes[i].setLength(parentCode.getGene(j).getLength());
 					}
 					_genes[i].randomizeTheta();
-					if ((Utils.random.nextInt(5) < 1) || (randomBranch)) {
+					if ((Utils.random.nextInt(4) < 1) || (randomBranch)) {
 						if (Utils.random.nextBoolean()) {
 							_genes[i].setBranch(-1);
 						} else {
@@ -1161,6 +1272,14 @@ public class GeneticCode implements Cloneable, Serializable {
 		else
 			_adaptspore = parentCode.getAdaptspore();
 		if (Utils.random.nextInt(10000) < _mutationrate)
+			randomModifiesblack();
+		else
+			_modifiesblack = parentCode.getModifiesblack();
+		if (Utils.random.nextInt(10000) < _mutationrate)
+			randomAdaptblack();
+		else
+			_adaptblack = parentCode.getAdaptblack();
+		if (Utils.random.nextInt(10000) < _mutationrate)
 			randomPlague();
 		else
 			_plague = parentCode.getPlague();
@@ -1201,10 +1320,6 @@ public class GeneticCode implements Cloneable, Serializable {
 		else
 			_clockwise = parentCode.getClockwise();
 		if (Utils.random.nextInt(10000) < _mutationrate)
-			randomMimicAll();
-		else
-			_mimicall = parentCode.getMimicAll();
-		if (Utils.random.nextInt(10000) < _mutationrate)
 			randomModifiespink();
 		else
 			_modifiespink = parentCode.getModifiespink();
@@ -1216,6 +1331,10 @@ public class GeneticCode implements Cloneable, Serializable {
 			randomModifiessky();
 		else
 			_modifiessky = parentCode.getModifiessky();
+		if (Utils.random.nextInt(10000) < _mutationrate)
+			randomModifiesleaf();
+		else
+			_modifiesleaf = parentCode.getModifiesleaf();
 		if (Utils.random.nextInt(10000) < _mutationrate)
 			randomSelfish();
 		else

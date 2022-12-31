@@ -196,7 +196,7 @@ public class VisibleWorld extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			Organism b = getSelectedOrganism();
 			if (b != null && b.isAlive()) {
-				double q = Math.min(10, _mainWindow.getWorld().getCO2());
+				double q = Math.min(10, _mainWindow.getWorld()._CO2);
 				_mainWindow.getWorld().addCO2(q);
 				b._energy += q;
 				_mainWindow.getWorld().addO2(q);
@@ -307,8 +307,10 @@ public class VisibleWorld extends JPanel {
 				b.active = true;
 				b.alive = true;
 				b.hasMoved = true;
-				b._age = 1;
+				b._age = 0;
+				b._timeToReproduce = 0;
 				b._max_age = Utils.MAX_AGE + (b._segments/Utils.AGE_DIVISOR);
+				b._reproduceEnergy = (40 + 3 * b._segments);
 				b._isaplant = false;
 				b._isaconsumer = false;
 				b._isafungus = false;
@@ -325,11 +327,14 @@ public class VisibleWorld extends JPanel {
 				b._transfersenergy = false;
 				b._lengthfriend=-1;
 				b._thetafriend=-1;
+				b._lavender=0;
 				b._jadefactor=0;
 				b._skyversion=0;
 				b._fallowversion=0;
 				b._plagueversion=0;
 				b._reproducelate=0;
+				b._sporetime=0;
+				b._sporeversion=0;
 				b._candodge = false;
 				b._dodge = false;
 				b._hasdodged = true;
@@ -513,6 +518,15 @@ public class VisibleWorld extends JPanel {
 			clippedGeneticCode = gc;
 	}
 	/**
+	 * Remove a genetic code as the clipped genetic code, that will be used when
+	 * pasting a new organism or in the genetic lab as the staring genetic code.
+	 * 
+	 * @param gc  The clipped genetic code
+	 */
+	public void removeClippedGeneticCode() {
+			clippedGeneticCode = null;
+	}
+	/**
 	 * Creates a new VisibleWorld associated with a {@link MainWindow}.
 	 * Creates the menus and the MouseAdapter.
 	 * 
@@ -567,9 +581,19 @@ public class VisibleWorld extends JPanel {
 		_mainWindow.getWorld().draw(g);
 		if (getSelectedOrganism() != null) {
 			if (getSelectedOrganism()._infectedGeneticCode != null) {
-				g.setColor(Color.WHITE);
+				if (((getSelectedOrganism()._timeToReproduce > getSelectedOrganism()._timeToReproduceMax) && ((getSelectedOrganism().active) || (getSelectedOrganism()._sporeversion >= 5)))
+						|| (getSelectedOrganism()._fallowinhibition > 1) || (getSelectedOrganism()._sporetime < 0)) {
+					g.setColor(Utils.ColorFLOWER);
+				} else {
+					g.setColor(Color.WHITE);
+				}
 			} else {
-				g.setColor(Color.ORANGE);
+				if (((getSelectedOrganism()._timeToReproduce > getSelectedOrganism()._timeToReproduceMax) && ((getSelectedOrganism().active) || (getSelectedOrganism()._sporeversion >= 5)))
+						|| (getSelectedOrganism()._fallowinhibition > 1) || (getSelectedOrganism()._sporetime < 0)) {
+					g.setColor(Utils.ColorFALLOW);
+				} else {
+					g.setColor(Color.ORANGE);
+				}
 			}
 			g.drawRect(_selectedOrganism.x, _selectedOrganism.y,
 					_selectedOrganism.width-1, _selectedOrganism.height-1);

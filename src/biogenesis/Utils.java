@@ -124,6 +124,14 @@ public final class Utils {
 	 */
 	final static int DEF_MIN_MUTATION_RATE = 0;
 	/**
+	 * This is the default maximal clone rate of an organism.
+	 */
+	final static int DEF_MAX_CLONE_RATE = 33;
+	/**
+	 * This is the default minimal clone rate of an organism.
+	 */
+	final static int DEF_MIN_CLONE_RATE = 0;
+	/**
 	 * This default value is used to calculate the energy cost that an organism must
 	 * pay to maintain a segment. It spends the length of the segment divided by this
 	 * number units of energy.  
@@ -263,6 +271,10 @@ public final class Utils {
 	 */
 	final static double DEF_LEAF_ENERGY_CONSUMPTION = 1.15d;
 	/**
+	 * This is the default energy that is consumed when a modified leaf segment is used.
+	 */
+	final static double DEF_MODLEAF_ENERGY_CONSUMPTION = 0.975d;
+	/**
 	 * This is the default energy that is consumed when a lime segment is used.
 	 */
 	final static double DEF_LIME_ENERGY_CONSUMPTION = 1.25d;
@@ -313,7 +325,7 @@ public final class Utils {
 	/**
 	 * This is the default energy that is consumed when a maroon segment is used.
 	 */
-	final static double DEF_MAROON_ENERGY_CONSUMPTION = 0d;
+	final static double DEF_MAROON_ENERGY_CONSUMPTION = 2d;
 	/**
 	 * This is the default energy that is consumed when a olive segment is used.
 	 */
@@ -321,7 +333,7 @@ public final class Utils {
 	/**
 	 * This is the default energy that is consumed when a mint segment is used.
 	 */
-	final static double DEF_MINT_ENERGY_CONSUMPTION = 0.075d;
+	final static double DEF_MINT_ENERGY_CONSUMPTION = 0.07d;
 	/**
 	 * This is the default energy that is consumed when a cream segment is used.
 	 */
@@ -329,11 +341,11 @@ public final class Utils {
 	/**
 	 * This is the default energy that is consumed when a rose segment is used.
 	 */
-	final static double DEF_ROSE_ENERGY_CONSUMPTION = 0.01d;
+	final static double DEF_ROSE_ENERGY_CONSUMPTION = 0.005d;
 	/**
 	 * This is the default energy that is consumed when a dark segment is used.
 	 */
-	final static double DEF_DARK_ENERGY_CONSUMPTION = 0.01d;
+	final static double DEF_DARK_ENERGY_CONSUMPTION = 0.001d;
 	/**
 	 * This is the default energy that is consumed when an ochre segment is used.
 	 */
@@ -731,6 +743,14 @@ public final class Utils {
 	 */
 	static int MIN_MUTATION_RATE = DEF_MIN_MUTATION_RATE;
 	/**
+	 * This is the maximal clone rate of an organism.
+	 */
+	static int MAX_CLONE_RATE = DEF_MAX_CLONE_RATE;
+	/**
+	 * This is the minimal clone rate of an organism.
+	 */
+	static int MIN_CLONE_RATE = DEF_MIN_CLONE_RATE;
+	/**
 	 * This value is used to calculate the energy cost that an organism must
 	 * pay to maintain a segment. It spends the length of the segment divided by this
 	 * number units of energy.  
@@ -869,6 +889,10 @@ public final class Utils {
 	 * This is the energy that is consumed when a leaf segment is used.
 	 */
 	static double LEAF_ENERGY_CONSUMPTION = DEF_LEAF_ENERGY_CONSUMPTION;
+	/**
+	 * This is the energy that is consumed when a modified leaf segment is used.
+	 */
+	static double MODLEAF_ENERGY_CONSUMPTION = DEF_MODLEAF_ENERGY_CONSUMPTION;
 	/**
 	 * This is the energy that is consumed when a lime segment is used.
 	 */
@@ -1408,7 +1432,7 @@ public final class Utils {
 	/**
 	 * Precalculated vision color (used for non terminal eyes)
 	 */
-	static final Color ColorVISION = new Color(232,145,70);
+	static final Color ColorVISION = new Color(232,208,80);
 	/**
 	 * Precalculated mint color
 	 */
@@ -1540,7 +1564,7 @@ public final class Utils {
 	/**
 	 * Precalculated dark color
 	 */
-	static final Color ColorDARK = new Color(56,28,14);
+	static final Color ColorDARK = new Color(64,32,16);
 	/**
 	 * Used through all program to calculate random numbers
 	 */
@@ -1708,6 +1732,8 @@ public final class Utils {
 			prefs.putInt("META_MUTATION_RATE",META_MUTATION_RATE); //$NON-NLS-1$
 			prefs.putInt("MAX_MUTATION_RATE",MAX_MUTATION_RATE); //$NON-NLS-1$
 			prefs.putInt("MIN_MUTATION_RATE",MIN_MUTATION_RATE); //$NON-NLS-1$
+			prefs.putInt("MAX_CLONE_RATE",MAX_CLONE_RATE); //$NON-NLS-1$
+			prefs.putInt("MIN_CLONE_RATE",MIN_CLONE_RATE); //$NON-NLS-1$
 			prefs.putInt("SEGMENT_COST_DIVISOR",SEGMENT_COST_DIVISOR); //$NON-NLS-1$
 			prefs.putDouble("ORGANIC_OBTAINED_ENERGY",ORGANIC_OBTAINED_ENERGY); //$NON-NLS-1$
 			prefs.putInt("GREEN_OBTAINED_ENERGY_DIVISOR",GREEN_OBTAINED_ENERGY_DIVISOR); //$NON-NLS-1$
@@ -1739,6 +1765,7 @@ public final class Utils {
 			prefs.putDouble("SYMBIONT_ENERGY_CONSUMPTION",SYMBIONT_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			prefs.putDouble("SPRING_ENERGY_CONSUMPTION",SPRING_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			prefs.putDouble("LEAF_ENERGY_CONSUMPTION",LEAF_ENERGY_CONSUMPTION); //$NON-NLS-1$
+			prefs.putDouble("MODLEAF_ENERGY_CONSUMPTION",MODLEAF_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			prefs.putDouble("LIME_ENERGY_CONSUMPTION",LIME_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			prefs.putDouble("CROWDEDLIME_ENERGY_CONSUMPTION",CROWDEDLIME_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			prefs.putDouble("SUMMER_ENERGY_CONSUMPTION",SUMMER_ENERGY_CONSUMPTION); //$NON-NLS-1$
@@ -1876,6 +1903,8 @@ public final class Utils {
 			META_MUTATION_RATE = prefs.getInt("META_MUTATION_RATE",DEF_META_MUTATION_RATE); //$NON-NLS-1$
 			MAX_MUTATION_RATE = prefs.getInt("MAX_MUTATION_RATE",DEF_MAX_MUTATION_RATE); //$NON-NLS-1$
 			MIN_MUTATION_RATE = prefs.getInt("MIN_MUTATION_RATE",DEF_MIN_MUTATION_RATE); //$NON-NLS-1$
+			MAX_CLONE_RATE = prefs.getInt("MAX_CLONE_RATE",DEF_MAX_CLONE_RATE); //$NON-NLS-1$
+			MIN_CLONE_RATE = prefs.getInt("MIN_CLONE_RATE",DEF_MIN_CLONE_RATE); //$NON-NLS-1$
 			SEGMENT_COST_DIVISOR = prefs.getInt("SEGMENT_COST_DIVISOR",DEF_SEGMENT_COST_DIVISOR); //$NON-NLS-1$
 			ORGANIC_OBTAINED_ENERGY = prefs.getDouble("ORGANIC_OBTAINED_ENERGY",DEF_ORGANIC_OBTAINED_ENERGY); //$NON-NLS-1$
 			GREEN_OBTAINED_ENERGY_DIVISOR = prefs.getInt("GREEN_OBTAINED_ENERGY_DIVISOR",DEF_GREEN_OBTAINED_ENERGY_DIVISOR); //$NON-NLS-1$
@@ -1907,6 +1936,7 @@ public final class Utils {
 			SYMBIONT_ENERGY_CONSUMPTION = prefs.getDouble("SYMBIONT_ENERGY_CONSUMPTION",DEF_SYMBIONT_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			SPRING_ENERGY_CONSUMPTION = prefs.getDouble("SPRING_ENERGY_CONSUMPTION",DEF_SPRING_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			LEAF_ENERGY_CONSUMPTION = prefs.getDouble("LEAF_ENERGY_CONSUMPTION",DEF_LEAF_ENERGY_CONSUMPTION); //$NON-NLS-1$
+			MODLEAF_ENERGY_CONSUMPTION = prefs.getDouble("MODLEAF_ENERGY_CONSUMPTION",DEF_MODLEAF_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			LIME_ENERGY_CONSUMPTION = prefs.getDouble("LIME_ENERGY_CONSUMPTION",DEF_LIME_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			CROWDEDLIME_ENERGY_CONSUMPTION = prefs.getDouble("CROWDEDLIME_ENERGY_CONSUMPTION",DEF_CROWDEDLIME_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			SUMMER_ENERGY_CONSUMPTION = prefs.getDouble("SUMMER_ENERGY_CONSUMPTION",DEF_SUMMER_ENERGY_CONSUMPTION); //$NON-NLS-1$

@@ -73,6 +73,8 @@ public class ParamDialog extends JDialog {
 	private JTextField metamutationrateText = null;
 	private JTextField maxmutationrateText = null;
 	private JTextField minmutationrateText = null;
+	private JTextField maxclonerateText = null;
+	private JTextField minclonerateText = null;
 	private JTextField redcostText = null;
 	private JTextField greencostText = null;
 	private JTextField bluecostText = null;
@@ -131,6 +133,7 @@ public class ParamDialog extends JDialog {
 	private JTextField indigodivisorText = null;
 	private JTextField crowdedlimecostText = null;
 	private JTextField crowdedforestcostText = null;
+	private JTextField modleafcostText = null;
 	private JTextField symbiontcostText = null;
 	private JTextField mosquitocostText = null;
 	private JTextField experiencecostText = null;
@@ -243,6 +246,8 @@ public class ParamDialog extends JDialog {
 		metamutationrateText.setText(String.valueOf(Utils.DEF_META_MUTATION_RATE));
 		maxmutationrateText.setText(String.valueOf(Utils.DEF_MAX_MUTATION_RATE));
 		minmutationrateText.setText(String.valueOf(Utils.DEF_MIN_MUTATION_RATE));
+		maxclonerateText.setText(String.valueOf(Utils.DEF_MAX_CLONE_RATE));
+		minclonerateText.setText(String.valueOf(Utils.DEF_MIN_CLONE_RATE));
 		segmentcostText.setText(String.valueOf(Utils.DEF_SEGMENT_COST_DIVISOR));
 		drainText.setText(String.valueOf(Utils.DEF_DRAIN_SUBS_DIVISOR));
 		greenenergyText.setText(String.valueOf(Utils.DEF_GREEN_OBTAINED_ENERGY_DIVISOR));
@@ -256,6 +261,7 @@ public class ParamDialog extends JDialog {
 		mosquitocostText.setText(String.valueOf(Utils.DEF_MOSQUITO_ENERGY_CONSUMPTION));
 		crowdedlimecostText.setText(String.valueOf(Utils.DEF_CROWDEDLIME_ENERGY_CONSUMPTION));
 		crowdedforestcostText.setText(String.valueOf(Utils.DEF_CROWDEDFOREST_ENERGY_CONSUMPTION));
+		modleafcostText.setText(String.valueOf(Utils.DEF_MODLEAF_ENERGY_CONSUMPTION));
 		symbiontcostText.setText(String.valueOf(Utils.DEF_SYMBIONT_ENERGY_CONSUMPTION));
 		experiencecostText.setText(String.valueOf(Utils.DEF_EXPERIENCE_ENERGY_CONSUMPTION));
 		dodgecostText.setText(String.valueOf(Utils.DEF_DODGE_ENERGY_CONSUMPTION));
@@ -600,6 +606,17 @@ public class ParamDialog extends JDialog {
 		maxmutationrateText = new JTextField(Integer.toString(Utils.MAX_MUTATION_RATE),6);
 		panel.add(maxmutationrateText);
 		organismsPanel.add(panel);
+		// Min Clone rate - Max Clone rate
+		panel = new JPanel();
+		label = new JLabel(Messages.getString("T_MIN_CLONE_PERCENTAGE")); //$NON-NLS-1$
+		panel.add(label);
+		minclonerateText = new JTextField(Integer.toString(Utils.MIN_CLONE_RATE),6);
+		panel.add(minclonerateText);
+		label = new JLabel(Messages.getString("T_MAX_CLONE_PERCENTAGE")); //$NON-NLS-1$
+		panel.add(label);
+		maxclonerateText = new JTextField(Integer.toString(Utils.MAX_CLONE_RATE),6);
+		panel.add(maxclonerateText);
+		organismsPanel.add(panel);
 		// Max age - Age divisor
 		panel = new JPanel();
 		label = new JLabel(Messages.getString("T_LIFE_EXPECTANCY")); //$NON-NLS-1$
@@ -745,12 +762,16 @@ public class ParamDialog extends JDialog {
 		crowdedforestcostText = new JTextField(Double.toString(Utils.CROWDEDFOREST_ENERGY_CONSUMPTION),6);
 		panel.add(crowdedforestcostText);
 		metabolismPanel.add(panel);
-		// Symbiont costs
+		// Symbiont costs - Modified leaf costs
 		panel = new JPanel();
 		label = new JLabel(Messages.getString("T_SYMBIONT_ENERGY_CONSUMPTION")); //$NON-NLS-1$
 		panel.add(label);
 		symbiontcostText = new JTextField(Double.toString(Utils.SYMBIONT_ENERGY_CONSUMPTION),6);
 		panel.add(symbiontcostText);
+		label = new JLabel(Messages.getString("T_MODLEAF_ENERGY_CONSUMPTION")); //$NON-NLS-1$
+		panel.add(label);
+		modleafcostText = new JTextField(Double.toString(Utils.MODLEAF_ENERGY_CONSUMPTION),6);
+		panel.add(modleafcostText);
 		metabolismPanel.add(panel);
 		
 		return metabolismPanel;
@@ -1251,6 +1272,18 @@ public class ParamDialog extends JDialog {
 			// Keep old value if there is a problem
 		}
 		try {
+			i = Integer.parseInt(maxclonerateText.getText());
+			if (i >= 0 && i <= 100) Utils.MAX_CLONE_RATE = i;
+		} catch (NumberFormatException ex) {
+			// Keep old value if there is a problem
+		}
+		try {
+			i = Integer.parseInt(minclonerateText.getText());
+			if (i >= 0 && i <= Utils.MAX_CLONE_RATE) Utils.MIN_CLONE_RATE = i;
+		} catch (NumberFormatException ex) {
+			// Keep old value if there is a problem
+		}
+		try {
 			d = Double.parseDouble(redcostText.getText());
 			if (d >= 0) Utils.RED_ENERGY_CONSUMPTION = d;
 		} catch (NumberFormatException ex) {
@@ -1396,7 +1429,7 @@ public class ParamDialog extends JDialog {
 		}
 		try {
 			d = Double.parseDouble(marooncostText.getText());
-			if (d >= 0) Utils.MAROON_ENERGY_CONSUMPTION = d;
+			if (d > 0) Utils.MAROON_ENERGY_CONSUMPTION = d;
 		} catch (NumberFormatException ex) {
 			// Keep old value if there is a problem
 		}
@@ -1878,6 +1911,12 @@ public class ParamDialog extends JDialog {
 		try {
 			d = Double.parseDouble(crowdedforestcostText.getText());
 			if (d > 0) Utils.CROWDEDFOREST_ENERGY_CONSUMPTION = d;
+		} catch (NumberFormatException ex) {
+			// Keep old value if there is a problem
+		}
+		try {
+			d = Double.parseDouble(modleafcostText.getText());
+			if (d > 0) Utils.MODLEAF_ENERGY_CONSUMPTION = d;
 		} catch (NumberFormatException ex) {
 			// Keep old value if there is a problem
 		}

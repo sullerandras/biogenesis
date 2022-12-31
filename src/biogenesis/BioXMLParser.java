@@ -57,11 +57,14 @@ public class BioXMLParser implements ErrorHandler {
 		ps.println("<!ELEMENT genetic_code (gene+)>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST genetic_code symmetry (1|2|3|4|5|6|7|8) #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST genetic_code mutationrate CDATA #REQUIRED>"); //$NON-NLS-1$
+		ps.println("<!ATTLIST genetic_code clonerate CDATA #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST genetic_code activity (0|1|2) #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST genetic_code modifiescream (1|2|3) #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST genetic_code modifiesfallow (1|2|3|4) #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST genetic_code modifiesspore (1|2|3|4|5|6|7|8|9|10|11|12) #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST genetic_code adaptspore (1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29|30|31|32|33|34|35|36|37|38|39|40|41|42|43|44|45|46|47|48|49|50|51|52|53|54|55|56|57|58|59|60|61|62|63|64|65|66|67|68|69|70) #REQUIRED>"); //$NON-NLS-1$
+		ps.println("<!ATTLIST genetic_code modifiesblack (1|2|3|4) #REQUIRED>"); //$NON-NLS-1$
+		ps.println("<!ATTLIST genetic_code adaptblack (1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|21|22|23|24) #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST genetic_code plague (yes|no) #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST genetic_code mirror (yes|no) #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST genetic_code disperse (yes|no) #REQUIRED>"); //$NON-NLS-1$
@@ -73,10 +76,10 @@ public class BioXMLParser implements ErrorHandler {
 		ps.println("<!ATTLIST genetic_code peaceful (yes|no) #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST genetic_code passive (yes|no) #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST genetic_code clockwise (yes|no) #REQUIRED>"); //$NON-NLS-1$
-		ps.println("<!ATTLIST genetic_code mimicall (yes|no) #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST genetic_code modifiespink (yes|no) #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST genetic_code modifieslilac (yes|no) #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST genetic_code modifiessky (yes|no) #REQUIRED>"); //$NON-NLS-1$
+		ps.println("<!ATTLIST genetic_code modifiesleaf (yes|no) #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST genetic_code selfish (yes|no) #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ELEMENT gene EMPTY>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST gene length CDATA #REQUIRED>"); //$NON-NLS-1$
@@ -122,11 +125,14 @@ public class BioXMLParser implements ErrorHandler {
 		ps.println("]>"); //$NON-NLS-1$
 		ps.println("<genetic_code symmetry=\""+Integer.toString(geneticCode.getSymmetry())+ //$NON-NLS-1$
 				"\" mutationrate=\""+Integer.toString(geneticCode.getMutationrate())+ //$NON-NLS-1$
+				"\" clonerate=\""+Integer.toString(geneticCode.getClonerate())+ //$NON-NLS-1$
 				"\" activity=\""+Integer.toString(geneticCode.getActivity())+ //$NON-NLS-1$
 				"\" modifiescream=\""+Integer.toString(geneticCode.getModifiescream())+ //$NON-NLS-1$
 				"\" modifiesfallow=\""+Integer.toString(geneticCode.getModifiesfallow())+ //$NON-NLS-1$
 				"\" modifiesspore=\""+Integer.toString(geneticCode.getModifiesspore())+ //$NON-NLS-1$
 				"\" adaptspore=\""+Integer.toString(geneticCode.getAdaptspore())+ //$NON-NLS-1$
+				"\" modifiesblack=\""+Integer.toString(geneticCode.getModifiesblack())+ //$NON-NLS-1$
+				"\" adaptblack=\""+Integer.toString(geneticCode.getAdaptblack())+ //$NON-NLS-1$
 				"\" mirror=\""+(geneticCode.getMirror()==0?"no":"yes")+ //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				"\" plague=\""+(geneticCode.getPlague()?"yes":"no")+  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
 				"\" disperse=\""+(geneticCode.getDisperseChildren()?"yes":"no")+  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
@@ -138,10 +144,10 @@ public class BioXMLParser implements ErrorHandler {
 				"\" peaceful=\""+(geneticCode.getPeaceful()?"yes":"no")+  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
 				"\" passive=\""+(geneticCode.getPassive()?"yes":"no")+  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
 				"\" clockwise=\""+(geneticCode.getClockwise()?"yes":"no")+  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
-				"\" mimicall=\""+(geneticCode.getMimicAll()?"yes":"no")+  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
 				"\" modifiespink=\""+(geneticCode.getModifiespink()?"yes":"no")+  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
 				"\" modifieslilac=\""+(geneticCode.getModifieslilac()?"yes":"no")+  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
 				"\" modifiessky=\""+(geneticCode.getModifiessky()?"yes":"no")+  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+				"\" modifiesleaf=\""+(geneticCode.getModifiesleaf()?"yes":"no")+  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
 				"\" selfish=\""+(geneticCode.getSelfish()?"yes":"no")+  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
 				"\">"); //$NON-NLS-1$
 		for (int i=0; i<geneticCode.getNGenes(); i++)
@@ -193,7 +199,7 @@ public class BioXMLParser implements ErrorHandler {
 	}
 	
 	public GeneticCode parseGeneticCode(File f) throws SAXException, IOException {
-		int symmetry, mirror, mutationrate, activity, modifiescream, modifiesfallow, modifiesspore, adaptspore;
+		int symmetry, mirror, mutationrate, clonerate, activity, modifiescream, modifiesfallow, modifiesspore, adaptspore, modifiesblack, adaptblack;
 		boolean plague;
 		boolean disperse;
 		boolean generation;
@@ -204,10 +210,10 @@ public class BioXMLParser implements ErrorHandler {
 		boolean peaceful;
 		boolean passive;
 		boolean clockwise;
-		boolean mimicall;
 		boolean modifiespink;
 		boolean modifieslilac;
 		boolean modifiessky;
+		boolean modifiesleaf;
 		boolean selfish;
 		List<Gene> genes = new ArrayList<Gene>();
 		String s;
@@ -238,6 +244,14 @@ public class BioXMLParser implements ErrorHandler {
 			}
 			if (mutationrate<0 || mutationrate>10000)
 				throw new SAXException("Mutationrate has not an allowed value."); //$NON-NLS-1$
+			s = geneticCode.getAttribute("clonerate"); //$NON-NLS-1$
+			try {
+				clonerate = Integer.parseInt(s); //$NON-NLS-1$
+			} catch (NumberFormatException e) {
+				throw new SAXException("Clonerate has not an allowed value."); //$NON-NLS-1$
+			}
+			if (clonerate<0 || clonerate>100)
+				throw new SAXException("Clonerate has not an allowed value."); //$NON-NLS-1$
 			s = geneticCode.getAttribute("activity"); //$NON-NLS-1$
 			try {
 				activity = Integer.parseInt(s); //$NON-NLS-1$
@@ -278,6 +292,22 @@ public class BioXMLParser implements ErrorHandler {
 			}
 			if (adaptspore<1 || adaptspore>70)
 				throw new SAXException("Adaptspore has not an allowed value."); //$NON-NLS-1$
+			s = geneticCode.getAttribute("modifiesblack"); //$NON-NLS-1$
+			try {
+				modifiesblack = Integer.parseInt(s); //$NON-NLS-1$
+			} catch (NumberFormatException e) {
+				throw new SAXException("Modifiesblack has not an allowed value."); //$NON-NLS-1$
+			}
+			if (modifiesblack<1 || modifiesblack>4)
+				throw new SAXException("Modifiesblack has not an allowed value."); //$NON-NLS-1$
+			s = geneticCode.getAttribute("adaptblack"); //$NON-NLS-1$
+			try {
+				adaptblack = Integer.parseInt(s); //$NON-NLS-1$
+			} catch (NumberFormatException e) {
+				throw new SAXException("Adaptblack has not an allowed value."); //$NON-NLS-1$
+			}
+			if (adaptblack<1 || adaptblack>24)
+				throw new SAXException("Adaptblack has not an allowed value."); //$NON-NLS-1$
 			s = geneticCode.getAttribute("plague"); //$NON-NLS-1$
 			if (s.equals("yes")) //$NON-NLS-1$
 				plague = true;
@@ -358,14 +388,6 @@ public class BioXMLParser implements ErrorHandler {
 					clockwise = false;
 				else
 					throw new SAXException("Clockwise has not an allowed value."); //$NON-NLS-1$
-			s = geneticCode.getAttribute("mimicall"); //$NON-NLS-1$
-			if (s.equals("yes")) //$NON-NLS-1$
-				mimicall = true;
-			else
-				if (s.equals("no")) //$NON-NLS-1$
-					mimicall = false;
-				else
-					throw new SAXException("Mimicall has not an allowed value."); //$NON-NLS-1$
 			s = geneticCode.getAttribute("modifiespink"); //$NON-NLS-1$
 			if (s.equals("yes")) //$NON-NLS-1$
 				modifiespink = true;
@@ -390,6 +412,14 @@ public class BioXMLParser implements ErrorHandler {
 					modifiessky = false;
 				else
 					throw new SAXException("Modifiessky has not an allowed value."); //$NON-NLS-1$
+			s = geneticCode.getAttribute("modifiesleaf"); //$NON-NLS-1$
+			if (s.equals("yes")) //$NON-NLS-1$
+				modifiesleaf = true;
+			else
+				if (s.equals("no")) //$NON-NLS-1$
+					modifiesleaf = false;
+				else
+					throw new SAXException("Modifiesleaf has not an allowed value."); //$NON-NLS-1$
 			s = geneticCode.getAttribute("selfish"); //$NON-NLS-1$
 			if (s.equals("yes")) //$NON-NLS-1$
 				selfish = true;
@@ -405,7 +435,7 @@ public class BioXMLParser implements ErrorHandler {
 				genes.add(parseGene((Element)gene));
 				gene = getNextElement(gene.getNextSibling());
 			}
-			return new GeneticCode(genes, symmetry, mirror, mutationrate, activity, modifiescream, modifiesfallow, modifiesspore, adaptspore, plague, disperse, generation, sibling, altruist, familial, social, peaceful, passive, clockwise, mimicall, modifiespink, modifieslilac, modifiessky, selfish);
+			return new GeneticCode(genes, symmetry, mirror, mutationrate, clonerate, activity, modifiescream, modifiesfallow, modifiesspore, adaptspore, modifiesblack, adaptblack, plague, disperse, generation, sibling, altruist, familial, social, peaceful, passive, clockwise, modifiespink, modifieslilac, modifiessky, modifiesleaf, selfish);
 		}
 		throw new SAXException("This file does not contain a genetic_code."); //$NON-NLS-1$
 	}
