@@ -305,7 +305,7 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 
 	private ColorPanel createColorPanel() {
 		ColorPanel colorPanel = new ColorPanel();
-		colorPanel.setPreferredSize(new Dimension(640,25));
+		colorPanel.setPreferredSize(new Dimension(300,25));
 		GeneticCode gc;
 		InfoAndColor[] colorCounter = new InfoAndColor[46];
 		colorCounter[0] = new InfoAndColor(0, Color.GREEN);
