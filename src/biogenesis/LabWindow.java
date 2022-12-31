@@ -66,6 +66,7 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 	protected JLabel lifeLabel;
 	protected JLabel segmentsLabel;
 	protected JTextField mutationLabel;
+	protected JTextField cloneLabel;
 	protected JComboBox symmetryCombo;
 	protected JComboBox mirrorCombo;
 	protected JComboBox activityCombo;
@@ -73,6 +74,8 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 	protected JComboBox modifiesfallowCombo;
 	protected JComboBox modifiessporeCombo;
 	protected JComboBox adaptsporeCombo;
+	protected JComboBox modifiesblackCombo;
+	protected JComboBox adaptblackCombo;
 	protected JComboBox plagueCombo;
 	protected JComboBox disperseCombo;
 	protected JComboBox generationCombo;
@@ -83,10 +86,10 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 	protected JComboBox peacefulCombo;
 	protected JComboBox passiveCombo;
 	protected JComboBox clockwiseCombo;
-	protected JComboBox mimicallCombo;
 	protected JComboBox modifiespinkCombo;
 	protected JComboBox modifieslilacCombo;
 	protected JComboBox modifiesskyCombo;
+	protected JComboBox modifiesleafCombo;
 	protected JComboBox selfishCombo;
 	
 	protected int symmetry=2;
@@ -94,11 +97,14 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 	protected int life=Utils.MAX_AGE;
 	protected int mirror=0;
 	protected int mutationrate= (Utils.MIN_MUTATION_RATE + Utils.MAX_MUTATION_RATE) / 2;
+	protected int clonerate= (Utils.MIN_CLONE_RATE + Utils.MAX_CLONE_RATE) / 2;
 	protected int activity=2;
 	protected int modifiescream=2;
 	protected int modifiesfallow=2;
 	protected int modifiesspore=4;
 	protected int adaptspore=4;
+	protected int modifiesblack=1;
+	protected int adaptblack=1;
 	protected boolean plague = false;
 	protected boolean disperseChildren = false;
 	protected boolean generationBattle = false;
@@ -109,10 +115,10 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 	protected boolean peaceful = false;
 	protected boolean passive = false;
 	protected boolean clockwise = false;
-	protected boolean mimicall = false;
 	protected boolean modifiespink = false;
 	protected boolean modifieslilac = false;
 	protected boolean modifiessky = false;
+	protected boolean modifiesleaf = false;
 	protected boolean selfish = false;
 	
 	public LabWindow(MainWindow v, GeneticCode gc) {
@@ -142,9 +148,11 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 		okButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
             	if (genesList.size() > 0)
-            		mainWindow.getVisibleWorld().setClippedGeneticCode(new GeneticCode(genesList, symmetry, mirror, mutationrate, activity, modifiescream, modifiesfallow,
-            		modifiesspore, adaptspore, plague, disperseChildren, generationBattle, siblingBattle, altruist, familial, social, peaceful, passive, clockwise, mimicall,
-            		modifiespink, modifieslilac, modifiessky, selfish));
+            		mainWindow.getVisibleWorld().setClippedGeneticCode(new GeneticCode(genesList, symmetry, mirror, mutationrate, clonerate, activity, modifiescream,
+            		modifiesfallow, modifiesspore, adaptspore, modifiesblack, adaptblack, plague, disperseChildren, generationBattle, siblingBattle, altruist, familial,
+            		social, peaceful, passive, clockwise, modifiespink, modifieslilac, modifiessky, modifiesleaf, selfish));
+            	else
+            		mainWindow.getVisibleWorld().removeClippedGeneticCode();
             	dispose();
             }
             });
@@ -154,11 +162,14 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 	/* Initialize the variables of this dialog using a previously existing genetic code */
 	private void importGeneticCode(GeneticCode g) {
 		mutationrate = g.getMutationrate();
+		clonerate = g.getClonerate();
 		activity = g.getActivity();
 		modifiescream = g.getModifiescream();
 		modifiesfallow = g.getModifiesfallow();
 		modifiesspore = g.getModifiesspore();
 		adaptspore = g.getAdaptspore();
+		modifiesblack = g.getModifiesblack();
+		adaptblack = g.getAdaptblack();
 		plague = g.getPlague();
 		disperseChildren = g.getDisperseChildren();
 		generationBattle = g.getGenerationBattle();
@@ -169,10 +180,10 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 		peaceful = g.getPeaceful();
 		passive = g.getPassive();
 		clockwise = g.getClockwise();
-		mimicall = g.getMimicAll();
 		modifiespink = g.getModifiespink();
 		modifieslilac = g.getModifieslilac();
 		modifiessky = g.getModifiessky();
+		modifiesleaf = g.getModifiesleaf();
 		selfish = g.getSelfish();
 		mirror = g.getMirror();
 		symmetry = g.getSymmetry();
@@ -230,6 +241,25 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
             }
         });
 		generalPanel.add(mutationLabel, gridBagConstraints);
+		gridBagConstraints.gridx = 8;
+		gridBagConstraints.gridy = 0;
+		generalPanel.add(new JLabel(Messages.getString("T_CLONE_PERCENTAGE"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
+		gridBagConstraints.gridx = 9;
+		gridBagConstraints.gridy = 0;
+		cloneLabel = new JTextField(Integer.toString(clonerate),4);
+		cloneLabel.setText(Integer.toString(clonerate));
+		cloneLabel.addKeyListener(new KeyAdapter() {
+            public void keyReleased(KeyEvent e) {
+            	int i;
+				try {
+					i = Integer.parseInt(cloneLabel.getText());
+					if (i >= Utils.MIN_CLONE_RATE && i <= Utils.MAX_CLONE_RATE) clonerate = i;
+				} catch (NumberFormatException ex) {
+					// Keep old value if there is a problem
+				}
+            }
+        });
+		generalPanel.add(cloneLabel, gridBagConstraints);
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 1;
 		generalPanel.add(new JLabel(Messages.getString("T_SYMMETRY"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
@@ -285,22 +315,8 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 		generalPanel.add(disperseCombo, gridBagConstraints);
 		gridBagConstraints.gridx = 6;
 		gridBagConstraints.gridy = 1;
-		generalPanel.add(new JLabel(Messages.getString("T_SELFISH"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
-		gridBagConstraints.gridx = 7;
-		gridBagConstraints.gridy = 1;
-		selfishCombo = new JComboBox(noyesValues);
-		selfishCombo.setSelectedIndex(selfish==false?0:1);
-		selfishCombo.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent evt) {
-				if (evt.getStateChange() == ItemEvent.SELECTED)
-					selfish = selfishCombo.getSelectedIndex()==0? false: true; 
-			}
-		});
-		generalPanel.add(selfishCombo, gridBagConstraints);
-		gridBagConstraints.gridx = 8;
-		gridBagConstraints.gridy = 1;
 		generalPanel.add(new JLabel(Messages.getString("T_FAMILIAL"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
-		gridBagConstraints.gridx = 9;
+		gridBagConstraints.gridx = 7;
 		gridBagConstraints.gridy = 1;
 		familialCombo = new JComboBox(noyesValues);
 		familialCombo.setSelectedIndex(familial==false?0:1);
@@ -311,10 +327,10 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 			}
 		});
 		generalPanel.add(familialCombo, gridBagConstraints);
-		gridBagConstraints.gridx = 10;
+		gridBagConstraints.gridx = 8;
 		gridBagConstraints.gridy = 1;
 		generalPanel.add(new JLabel(Messages.getString("T_ALTRUIST"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
-		gridBagConstraints.gridx = 11;
+		gridBagConstraints.gridx = 9;
 		gridBagConstraints.gridy = 1;
 		altruistCombo = new JComboBox(noyesValues);
 		altruistCombo.setSelectedIndex(altruist==false?0:1);
@@ -325,6 +341,22 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 			}
 		});
 		generalPanel.add(altruistCombo, gridBagConstraints);
+		gridBagConstraints.gridx = 10;
+		gridBagConstraints.gridy = 1;
+		generalPanel.add(new JLabel(Messages.getString("T_MIMICALL"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
+		gridBagConstraints.gridx = 11;
+		gridBagConstraints.gridy = 1;
+		String[] modifiesblackValues = {"1","2","3","4"};  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+		modifiesblackCombo = new JComboBox(modifiesblackValues);
+		modifiesblackCombo.setSelectedItem(Integer.toString(modifiesblack));
+		modifiesblackCombo.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent evt) {
+				if (evt.getStateChange() == ItemEvent.SELECTED) {
+					modifiesblack = Integer.parseInt((String)modifiesblackCombo.getSelectedItem());
+				}
+			}
+		});
+		generalPanel.add(modifiesblackCombo, gridBagConstraints);
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 2;
 		generalPanel.add(new JLabel(Messages.getString("T_ACTIVITY"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
@@ -397,6 +429,22 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 			}
 		});
 		generalPanel.add(peacefulCombo, gridBagConstraints);
+		gridBagConstraints.gridx = 10;
+		gridBagConstraints.gridy = 2;
+		generalPanel.add(new JLabel(Messages.getString("T_ADAPTBLACK"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
+		gridBagConstraints.gridx = 11;
+		gridBagConstraints.gridy = 2;
+		String[] adaptblackValues = {"1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24"};  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+		adaptblackCombo = new JComboBox(adaptblackValues);
+		adaptblackCombo.setSelectedItem(Integer.toString(adaptblack));
+		adaptblackCombo.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent evt) {
+				if (evt.getStateChange() == ItemEvent.SELECTED) {
+					adaptblack = Integer.parseInt((String)adaptblackCombo.getSelectedItem());
+				}
+			}
+		});
+		generalPanel.add(adaptblackCombo, gridBagConstraints);
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 3;
 		generalPanel.add(new JLabel(Messages.getString("T_MODIFIESCREAM"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
@@ -431,60 +479,60 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 		generalPanel.add(modifiessporeCombo, gridBagConstraints);
 		gridBagConstraints.gridx = 4;
 		gridBagConstraints.gridy = 3;
-		generalPanel.add(new JLabel(Messages.getString("T_MODIFIESPINK"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
+		generalPanel.add(new JLabel(Messages.getString("T_SELFISH"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
 		gridBagConstraints.gridx = 5;
 		gridBagConstraints.gridy = 3;
-		modifiespinkCombo = new JComboBox(noyesValues);
-		modifiespinkCombo.setSelectedIndex(modifiespink==false?0:1);
-		modifiespinkCombo.addItemListener(new ItemListener() {
+		selfishCombo = new JComboBox(noyesValues);
+		selfishCombo.setSelectedIndex(selfish==false?0:1);
+		selfishCombo.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent evt) {
 				if (evt.getStateChange() == ItemEvent.SELECTED)
-					modifiespink = modifiespinkCombo.getSelectedIndex()==0? false: true; 
+					selfish = selfishCombo.getSelectedIndex()==0? false: true; 
 			}
 		});
-		generalPanel.add(modifiespinkCombo, gridBagConstraints);
+		generalPanel.add(selfishCombo, gridBagConstraints);
 		gridBagConstraints.gridx = 6;
 		gridBagConstraints.gridy = 3;
-		generalPanel.add(new JLabel(Messages.getString("T_MODIFIESLILAC"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
+		generalPanel.add(new JLabel(Messages.getString("T_PASSIVE"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
 		gridBagConstraints.gridx = 7;
 		gridBagConstraints.gridy = 3;
-		modifieslilacCombo = new JComboBox(noyesValues);
-		modifieslilacCombo.setSelectedIndex(modifieslilac==false?0:1);
-		modifieslilacCombo.addItemListener(new ItemListener() {
+		passiveCombo = new JComboBox(noyesValues);
+		passiveCombo.setSelectedIndex(passive==false?0:1);
+		passiveCombo.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent evt) {
 				if (evt.getStateChange() == ItemEvent.SELECTED)
-					modifieslilac = modifieslilacCombo.getSelectedIndex()==0? false: true; 
+					passive = passiveCombo.getSelectedIndex()==0? false: true; 
 			}
 		});
-		generalPanel.add(modifieslilacCombo, gridBagConstraints);
+		generalPanel.add(passiveCombo, gridBagConstraints);
 		gridBagConstraints.gridx = 8;
 		gridBagConstraints.gridy = 3;
-		generalPanel.add(new JLabel(Messages.getString("T_MODIFIESPLAGUE"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
+		generalPanel.add(new JLabel(Messages.getString("T_CLOCKWISE"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
 		gridBagConstraints.gridx = 9;
 		gridBagConstraints.gridy = 3;
-		plagueCombo = new JComboBox(noyesValues);
-		plagueCombo.setSelectedIndex(plague==false?0:1);
-		plagueCombo.addItemListener(new ItemListener() {
+		clockwiseCombo = new JComboBox(noyesValues);
+		clockwiseCombo.setSelectedIndex(clockwise==false?0:1);
+		clockwiseCombo.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent evt) {
 				if (evt.getStateChange() == ItemEvent.SELECTED)
-					plague = plagueCombo.getSelectedIndex()==0? false: true; 
+					clockwise = clockwiseCombo.getSelectedIndex()==0? false: true; 
 			}
 		});
-		generalPanel.add(plagueCombo, gridBagConstraints);
+		generalPanel.add(clockwiseCombo, gridBagConstraints);
 		gridBagConstraints.gridx = 10;
 		gridBagConstraints.gridy = 3;
-		generalPanel.add(new JLabel(Messages.getString("T_MODIFIESSKY"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
+		generalPanel.add(new JLabel(Messages.getString("T_MODIFIESLEAF"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
 		gridBagConstraints.gridx = 11;
 		gridBagConstraints.gridy = 3;
-		modifiesskyCombo = new JComboBox(noyesValues);
-		modifiesskyCombo.setSelectedIndex(modifiessky==false?0:1);
-		modifiesskyCombo.addItemListener(new ItemListener() {
+		modifiesleafCombo = new JComboBox(noyesValues);
+		modifiesleafCombo.setSelectedIndex(modifiesleaf==false?0:1);
+		modifiesleafCombo.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent evt) {
 				if (evt.getStateChange() == ItemEvent.SELECTED)
-					modifiessky = modifiesskyCombo.getSelectedIndex()==0? false: true; 
+					modifiesleaf = modifiesleafCombo.getSelectedIndex()==0? false: true; 
 			}
 		});
-		generalPanel.add(modifiesskyCombo, gridBagConstraints);
+		generalPanel.add(modifiesleafCombo, gridBagConstraints);
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 4;
 		generalPanel.add(new JLabel(Messages.getString("T_MODIFIESFALLOW"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
@@ -519,51 +567,65 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 		generalPanel.add(adaptsporeCombo, gridBagConstraints);
 		gridBagConstraints.gridx = 4;
 		gridBagConstraints.gridy = 4;
-		generalPanel.add(new JLabel(Messages.getString("T_MIMICALL"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
+		generalPanel.add(new JLabel(Messages.getString("T_MODIFIESPINK"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
 		gridBagConstraints.gridx = 5;
 		gridBagConstraints.gridy = 4;
-		mimicallCombo = new JComboBox(noyesValues);
-		mimicallCombo.setSelectedIndex(mimicall==false?0:1);
-		mimicallCombo.addItemListener(new ItemListener() {
+		modifiespinkCombo = new JComboBox(noyesValues);
+		modifiespinkCombo.setSelectedIndex(modifiespink==false?0:1);
+		modifiespinkCombo.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent evt) {
 				if (evt.getStateChange() == ItemEvent.SELECTED)
-					mimicall = mimicallCombo.getSelectedIndex()==0? false: true; 
+					modifiespink = modifiespinkCombo.getSelectedIndex()==0? false: true; 
 			}
 		});
-		generalPanel.add(mimicallCombo, gridBagConstraints);
+		generalPanel.add(modifiespinkCombo, gridBagConstraints);
 		gridBagConstraints.gridx = 6;
 		gridBagConstraints.gridy = 4;
-		generalPanel.add(new JLabel(Messages.getString("T_PASSIVE"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
+		generalPanel.add(new JLabel(Messages.getString("T_MODIFIESLILAC"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
 		gridBagConstraints.gridx = 7;
 		gridBagConstraints.gridy = 4;
-		passiveCombo = new JComboBox(noyesValues);
-		passiveCombo.setSelectedIndex(passive==false?0:1);
-		passiveCombo.addItemListener(new ItemListener() {
+		modifieslilacCombo = new JComboBox(noyesValues);
+		modifieslilacCombo.setSelectedIndex(modifieslilac==false?0:1);
+		modifieslilacCombo.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent evt) {
 				if (evt.getStateChange() == ItemEvent.SELECTED)
-					passive = passiveCombo.getSelectedIndex()==0? false: true; 
+					modifieslilac = modifieslilacCombo.getSelectedIndex()==0? false: true; 
 			}
 		});
-		generalPanel.add(passiveCombo, gridBagConstraints);
+		generalPanel.add(modifieslilacCombo, gridBagConstraints);
 		gridBagConstraints.gridx = 8;
 		gridBagConstraints.gridy = 4;
-		generalPanel.add(new JLabel(Messages.getString("T_CLOCKWISE"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
+		generalPanel.add(new JLabel(Messages.getString("T_MODIFIESPLAGUE"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
 		gridBagConstraints.gridx = 9;
 		gridBagConstraints.gridy = 4;
-		clockwiseCombo = new JComboBox(noyesValues);
-		clockwiseCombo.setSelectedIndex(clockwise==false?0:1);
-		clockwiseCombo.addItemListener(new ItemListener() {
+		plagueCombo = new JComboBox(noyesValues);
+		plagueCombo.setSelectedIndex(plague==false?0:1);
+		plagueCombo.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent evt) {
 				if (evt.getStateChange() == ItemEvent.SELECTED)
-					clockwise = clockwiseCombo.getSelectedIndex()==0? false: true; 
+					plague = plagueCombo.getSelectedIndex()==0? false: true; 
 			}
 		});
-		generalPanel.add(clockwiseCombo, gridBagConstraints);
+		generalPanel.add(plagueCombo, gridBagConstraints);
+		gridBagConstraints.gridx = 10;
+		gridBagConstraints.gridy = 4;
+		generalPanel.add(new JLabel(Messages.getString("T_MODIFIESSKY"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
+		gridBagConstraints.gridx = 11;
+		gridBagConstraints.gridy = 4;
+		modifiesskyCombo = new JComboBox(noyesValues);
+		modifiesskyCombo.setSelectedIndex(modifiessky==false?0:1);
+		modifiesskyCombo.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent evt) {
+				if (evt.getStateChange() == ItemEvent.SELECTED)
+					modifiessky = modifiesskyCombo.getSelectedIndex()==0? false: true; 
+			}
+		});
+		generalPanel.add(modifiesskyCombo, gridBagConstraints);
 		
 		getContentPane().add(generalPanel,BorderLayout.NORTH);
 		genesPanel = new JPanel();
 		genesScroll = new JScrollPane(genesPanel);
-		genesScroll.setPreferredSize(new Dimension(440,300));
+		genesScroll.setPreferredSize(new Dimension(500,300));
 		refreshGenesPanel();
 		getContentPane().add(genesScroll,BorderLayout.WEST);
 		
@@ -590,6 +652,60 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
             public void actionPerformed(ActionEvent evt) {
             	genesList.clear();
             	refreshGenesPanel();
+                symmetry=2;
+            	energy=40;
+            	life=Utils.MAX_AGE;
+            	mirror=0;
+            	mutationrate= (Utils.MIN_MUTATION_RATE + Utils.MAX_MUTATION_RATE) / 2;
+            	clonerate= (Utils.MIN_CLONE_RATE + Utils.MAX_CLONE_RATE) / 2;
+            	activity=2;
+            	modifiescream=2;
+            	modifiesfallow=2;
+            	modifiesspore=4;
+            	adaptspore=4;
+            	modifiesblack=1;
+            	adaptblack=1;
+            	plague = false;
+            	disperseChildren = false;
+            	generationBattle = false;
+            	siblingBattle = false;
+            	altruist = false;
+            	familial = false;
+            	social = false;
+            	peaceful = false;
+            	passive = false;
+            	clockwise = false;
+            	modifiespink = false;
+            	modifieslilac = false;
+            	modifiessky = false;
+            	modifiesleaf = false;
+            	selfish = false;
+            	mutationLabel.setText(Integer.toString(mutationrate));
+            	cloneLabel.setText(Integer.toString(clonerate));
+				symmetryCombo.setSelectedItem(Integer.toString(symmetry));
+				mirrorCombo.setSelectedIndex(mirror);
+				disperseCombo.setSelectedIndex(disperseChildren==false?0:1);
+				selfishCombo.setSelectedIndex(selfish==false?0:1);
+				familialCombo.setSelectedIndex(familial==false?0:1);
+				altruistCombo.setSelectedIndex(altruist==false?0:1);
+				activityCombo.setSelectedItem(Integer.toString(activity));
+				generationCombo.setSelectedIndex(generationBattle==false?0:1);
+				siblingCombo.setSelectedIndex(siblingBattle==false?0:1);
+				socialCombo.setSelectedIndex(social==false?0:1);
+				peacefulCombo.setSelectedIndex(peaceful==false?0:1);
+				modifiescreamCombo.setSelectedItem(Integer.toString(modifiescream));
+				modifiessporeCombo.setSelectedItem(Integer.toString(modifiesspore));
+				modifiesblackCombo.setSelectedItem(Integer.toString(modifiesblack));
+				modifiespinkCombo.setSelectedIndex(modifiespink==false?0:1);
+				modifieslilacCombo.setSelectedIndex(modifieslilac==false?0:1);
+				plagueCombo.setSelectedIndex(plague==false?0:1);
+				modifiesskyCombo.setSelectedIndex(modifiessky==false?0:1);
+				modifiesleafCombo.setSelectedIndex(modifiesleaf==false?0:1);
+				modifiesfallowCombo.setSelectedItem(Integer.toString(modifiesfallow));
+				adaptsporeCombo.setSelectedItem(Integer.toString(adaptspore));
+				adaptblackCombo.setSelectedItem(Integer.toString(adaptblack));
+				passiveCombo.setSelectedIndex(passive==false?0:1);
+				clockwiseCombo.setSelectedIndex(clockwise==false?0:1);
             }
             });
 		buttonsPanel.add(clearButton);
@@ -610,6 +726,32 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 							genesList.clear();
 							importGeneticCode(g);
 							refreshGenesPanel();
+							mutationLabel.setText(Integer.toString(mutationrate));
+							cloneLabel.setText(Integer.toString(clonerate));
+							symmetryCombo.setSelectedItem(Integer.toString(symmetry));
+							mirrorCombo.setSelectedIndex(mirror);
+							disperseCombo.setSelectedIndex(disperseChildren==false?0:1);
+							selfishCombo.setSelectedIndex(selfish==false?0:1);
+							familialCombo.setSelectedIndex(familial==false?0:1);
+							altruistCombo.setSelectedIndex(altruist==false?0:1);
+							activityCombo.setSelectedItem(Integer.toString(activity));
+							generationCombo.setSelectedIndex(generationBattle==false?0:1);
+							siblingCombo.setSelectedIndex(siblingBattle==false?0:1);
+							socialCombo.setSelectedIndex(social==false?0:1);
+							peacefulCombo.setSelectedIndex(peaceful==false?0:1);
+							modifiescreamCombo.setSelectedItem(Integer.toString(modifiescream));
+							modifiessporeCombo.setSelectedItem(Integer.toString(modifiesspore));
+							modifiesblackCombo.setSelectedItem(Integer.toString(modifiesblack));
+							modifiespinkCombo.setSelectedIndex(modifiespink==false?0:1);
+							modifieslilacCombo.setSelectedIndex(modifieslilac==false?0:1);
+							plagueCombo.setSelectedIndex(plague==false?0:1);
+							modifiesskyCombo.setSelectedIndex(modifiessky==false?0:1);
+							modifiesleafCombo.setSelectedIndex(modifiesleaf==false?0:1);
+							modifiesfallowCombo.setSelectedItem(Integer.toString(modifiesfallow));
+							adaptsporeCombo.setSelectedItem(Integer.toString(adaptspore));
+							adaptblackCombo.setSelectedItem(Integer.toString(adaptblack));
+							passiveCombo.setSelectedIndex(passive==false?0:1);
+							clockwiseCombo.setSelectedIndex(clockwise==false?0:1);
 	    				} catch (SAXException ex) {
 	    					System.err.println(ex.getMessage());
 	    					JOptionPane.showMessageDialog(null,Messages.getString("T_WRONG_FILE_VERSION"),Messages.getString("T_READ_ERROR"),JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$ //$NON-NLS-2$
@@ -625,6 +767,18 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 			}
 		});
 		buttonsPanel.add(importButton);
+		JButton exportButton = new JButton(Messages.getString("T_EXPORT")); //$NON_NLS-1$
+		exportButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (genesList.size() > 0) {
+					GeneticCode exportcode = new GeneticCode(genesList, symmetry, mirror, mutationrate, clonerate, activity, modifiescream, modifiesfallow,
+		            		modifiesspore, adaptspore, modifiesblack, adaptblack, plague, disperseChildren, generationBattle, siblingBattle, altruist, familial, social,
+		            		peaceful, passive, clockwise, modifiespink, modifieslilac, modifiessky, modifiesleaf, selfish);
+					mainWindow.saveObjectAs(exportcode);
+				}
+			}
+		});
+		buttonsPanel.add(exportButton);
 		getContentPane().add(buttonsPanel,BorderLayout.SOUTH);
 		
 		getRootPane().setDefaultButton(okButton);
@@ -656,6 +810,14 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 			genesList.add(insertPosition, gene);
 			refreshGenesPanel();
 		}
+		// Clone a gene and add it before the selected position
+		if (evt.getActionCommand().startsWith("r")) { //$NON-NLS-1$
+			Gene gene = new Gene(2.0,0.0,Color.GREEN,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+			int clonedGene = Integer.parseInt(evt.getActionCommand().substring(1));
+			gene = genesList.get(clonedGene);
+			genesList.add(clonedGene, (Gene)gene.clone());
+			refreshGenesPanel();
+		}
 	}
 	
 	protected void refreshGenesPanel() {
@@ -677,77 +839,77 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 		genesPanel.add(new JLabel(Messages.getString("T_COLOR2")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 5;
 		genesPanel.add(new JLabel(Messages.getString("T_BRANCH")+" "), constraints); //$NON-NLS-1$
-		constraints.gridx = 8;
-		genesPanel.add(new JLabel(Messages.getString("T_GREEN")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 9;
-		genesPanel.add(new JLabel(Messages.getString("T_BARK")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_GREEN")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 10;
-		genesPanel.add(new JLabel(Messages.getString("T_RED")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_BARK")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 11;
-		genesPanel.add(new JLabel(Messages.getString("T_FIRE")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_RED")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 12;
-		genesPanel.add(new JLabel(Messages.getString("T_ORANGE")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_FIRE")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 13;
-		genesPanel.add(new JLabel(Messages.getString("T_MAROON")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_ORANGE")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 14;
-		genesPanel.add(new JLabel(Messages.getString("T_PINK")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_MAROON")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 15;
-		genesPanel.add(new JLabel(Messages.getString("T_CREAM")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_PINK")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 16;
-		genesPanel.add(new JLabel(Messages.getString("T_SILVER")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_CREAM")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 17;
-		genesPanel.add(new JLabel(Messages.getString("T_SPIKE")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_SILVER")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 18;
-		genesPanel.add(new JLabel(Messages.getString("T_LILAC")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_SPIKE")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 19;
-		genesPanel.add(new JLabel(Messages.getString("T_GRAY")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_LILAC")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 20;
-		genesPanel.add(new JLabel(Messages.getString("T_VIOLET")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_GRAY")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 21;
-		genesPanel.add(new JLabel(Messages.getString("T_OLIVE")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_VIOLET")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 22;
-		genesPanel.add(new JLabel(Messages.getString("T_SKY")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_OLIVE")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 23;
-		genesPanel.add(new JLabel(Messages.getString("T_BLUE")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_SKY")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 24;
-		genesPanel.add(new JLabel(Messages.getString("T_OCHRE")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_BLUE")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 25;
-		genesPanel.add(new JLabel(Messages.getString("T_FALLOW")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_OCHRE")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 26;
-		genesPanel.add(new JLabel(Messages.getString("T_WHITE")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_FALLOW")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 27;
-		genesPanel.add(new JLabel(Messages.getString("T_VIRUS")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_WHITE")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 28;
-		genesPanel.add(new JLabel(Messages.getString("T_PLAGUE")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_VIRUS")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 29;
-		genesPanel.add(new JLabel(Messages.getString("T_SCOURGE")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_PLAGUE")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 30;
-		genesPanel.add(new JLabel(Messages.getString("T_CORAL")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_SCOURGE")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 31;
-		genesPanel.add(new JLabel(Messages.getString("T_MINT")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_CORAL")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 32;
-		genesPanel.add(new JLabel(Messages.getString("T_MAGENTA")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_MINT")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 33;
-		genesPanel.add(new JLabel(Messages.getString("T_DEFAULT")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_MAGENTA")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 34;
-		genesPanel.add(new JLabel(Messages.getString("T_CONSUMER")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_DEFAULT")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 35;
-		genesPanel.add(new JLabel(Messages.getString("T_PLANT")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_CONSUMER")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 36;
-		genesPanel.add(new JLabel(Messages.getString("T_ICE")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_PLANT")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 37;
+		genesPanel.add(new JLabel(Messages.getString("T_ICE")+" "), constraints); //$NON-NLS-1$
+		constraints.gridx = 38;
 		genesPanel.add(new JLabel(Messages.getString("T_LBL")+" "), constraints); //$NON-NLS-1$
-		constraints.gridx = 38;		
+		constraints.gridx = 39;		
 		genesPanel.add(new JLabel(Messages.getString("T_LBR")+" "), constraints); //$NON-NLS-1$
-		constraints.gridx = 39;
-		genesPanel.add(new JLabel(Messages.getString("T_GBR")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 40;
-		genesPanel.add(new JLabel(Messages.getString("T_BROKEN")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_GBR")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 41;
-		genesPanel.add(new JLabel(Messages.getString("T_BRO")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_BROKEN")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 42;
-		genesPanel.add(new JLabel(Messages.getString("T_SICK")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_BRO")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 43;
+		genesPanel.add(new JLabel(Messages.getString("T_SICK")+" "), constraints); //$NON-NLS-1$
+		constraints.gridx = 44;
 		genesPanel.add(new JLabel(Messages.getString("T_FRIEND")+" "), constraints); //$NON-NLS-1$
 		for (it = genesList.iterator(), i=0; it.hasNext(); i++) {
 			gene = it.next();
@@ -786,188 +948,195 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 			insertButton.addActionListener(this);
 			
 			constraints.gridx = 7;
+			JButton cloneButton = new JButton(Messages.getString("T_CLONE")); //$NON-NLS-1$
+			cloneButton.setActionCommand("r"+i); //$NON-NLS-1$
+			gridbag.setConstraints(cloneButton,constraints);
+			genesPanel.add(cloneButton);
+			cloneButton.addActionListener(this);
+			
+			constraints.gridx = 8;
 			JButton deleteButton = new JButton(Messages.getString("T_DELETE")); //$NON-NLS-1$
 			deleteButton.setActionCommand("d"+i); //$NON-NLS-1$
 			gridbag.setConstraints(deleteButton,constraints);
 			genesPanel.add(deleteButton);
 			deleteButton.addActionListener(this);
 			
-			constraints.gridx = 8;
+			constraints.gridx = 9;
 			ReactionSpinner1 reactionSpinner1 = new ReactionSpinner1(gene);
 			reactionSpinner1.addChangeListener(this);
 			genesPanel.add(reactionSpinner1, constraints);
 			
-			constraints.gridx = 9;
+			constraints.gridx = 10;
 			ReactionSpinner2 reactionSpinner2 = new ReactionSpinner2(gene);
 			reactionSpinner2.addChangeListener(this);
 			genesPanel.add(reactionSpinner2, constraints);
 			
-			constraints.gridx = 10;
+			constraints.gridx = 11;
 			ReactionSpinner3 reactionSpinner3 = new ReactionSpinner3(gene);
 			reactionSpinner3.addChangeListener(this);
 			genesPanel.add(reactionSpinner3, constraints);
 			
-			constraints.gridx = 11;
+			constraints.gridx = 12;
 			ReactionSpinner4 reactionSpinner4 = new ReactionSpinner4(gene);
 			reactionSpinner4.addChangeListener(this);
 			genesPanel.add(reactionSpinner4, constraints);
 			
-			constraints.gridx = 12;
+			constraints.gridx = 13;
 			ReactionSpinner5 reactionSpinner5 = new ReactionSpinner5(gene);
 			reactionSpinner5.addChangeListener(this);
 			genesPanel.add(reactionSpinner5, constraints);
 			
-			constraints.gridx = 13;
+			constraints.gridx = 14;
 			ReactionSpinner6 reactionSpinner6 = new ReactionSpinner6(gene);
 			reactionSpinner6.addChangeListener(this);
 			genesPanel.add(reactionSpinner6, constraints);
 			
-			constraints.gridx = 14;
+			constraints.gridx = 15;
 			ReactionSpinner7 reactionSpinner7 = new ReactionSpinner7(gene);
 			reactionSpinner7.addChangeListener(this);
 			genesPanel.add(reactionSpinner7, constraints);
 			
-			constraints.gridx = 15;
+			constraints.gridx = 16;
 			ReactionSpinner8 reactionSpinner8 = new ReactionSpinner8(gene);
 			reactionSpinner8.addChangeListener(this);
 			genesPanel.add(reactionSpinner8, constraints);
 			
-			constraints.gridx = 16;
+			constraints.gridx = 17;
 			ReactionSpinner9 reactionSpinner9 = new ReactionSpinner9(gene);
 			reactionSpinner9.addChangeListener(this);
 			genesPanel.add(reactionSpinner9, constraints);
 			
-			constraints.gridx = 17;
+			constraints.gridx = 18;
 			ReactionSpinner10 reactionSpinner10 = new ReactionSpinner10(gene);
 			reactionSpinner10.addChangeListener(this);
 			genesPanel.add(reactionSpinner10, constraints);
 			
-			constraints.gridx = 18;
+			constraints.gridx = 19;
 			ReactionSpinner11 reactionSpinner11 = new ReactionSpinner11(gene);
 			reactionSpinner11.addChangeListener(this);
 			genesPanel.add(reactionSpinner11, constraints);
 			
-			constraints.gridx = 19;
+			constraints.gridx = 20;
 			ReactionSpinner12 reactionSpinner12 = new ReactionSpinner12(gene);
 			reactionSpinner12.addChangeListener(this);
 			genesPanel.add(reactionSpinner12, constraints);
 			
-			constraints.gridx = 20;
+			constraints.gridx = 21;
 			ReactionSpinner13 reactionSpinner13 = new ReactionSpinner13(gene);
 			reactionSpinner13.addChangeListener(this);
 			genesPanel.add(reactionSpinner13, constraints);
 			
-			constraints.gridx = 21;
+			constraints.gridx = 22;
 			ReactionSpinner14 reactionSpinner14 = new ReactionSpinner14(gene);
 			reactionSpinner14.addChangeListener(this);
 			genesPanel.add(reactionSpinner14, constraints);
 			
-			constraints.gridx = 22;
+			constraints.gridx = 23;
 			ReactionSpinner15 reactionSpinner15 = new ReactionSpinner15(gene);
 			reactionSpinner15.addChangeListener(this);
 			genesPanel.add(reactionSpinner15, constraints);
 			
-			constraints.gridx = 23;
+			constraints.gridx = 24;
 			ReactionSpinner16 reactionSpinner16 = new ReactionSpinner16(gene);
 			reactionSpinner16.addChangeListener(this);
 			genesPanel.add(reactionSpinner16, constraints);
 			
-			constraints.gridx = 24;
+			constraints.gridx = 25;
 			ReactionSpinner17 reactionSpinner17 = new ReactionSpinner17(gene);
 			reactionSpinner17.addChangeListener(this);
 			genesPanel.add(reactionSpinner17, constraints);
 			
-			constraints.gridx = 25;
+			constraints.gridx = 26;
 			ReactionSpinner18 reactionSpinner18 = new ReactionSpinner18(gene);
 			reactionSpinner18.addChangeListener(this);
 			genesPanel.add(reactionSpinner18, constraints);
 			
-			constraints.gridx = 26;
+			constraints.gridx = 27;
 			ReactionSpinner19 reactionSpinner19 = new ReactionSpinner19(gene);
 			reactionSpinner19.addChangeListener(this);
 			genesPanel.add(reactionSpinner19, constraints);
 			
-			constraints.gridx = 27;
+			constraints.gridx = 28;
 			ReactionSpinner20 reactionSpinner20 = new ReactionSpinner20(gene);
 			reactionSpinner20.addChangeListener(this);
 			genesPanel.add(reactionSpinner20, constraints);
 			
-			constraints.gridx = 28;
+			constraints.gridx = 29;
 			ReactionSpinner21 reactionSpinner21 = new ReactionSpinner21(gene);
 			reactionSpinner21.addChangeListener(this);
 			genesPanel.add(reactionSpinner21, constraints);
 			
-			constraints.gridx = 29;
+			constraints.gridx = 30;
 			ReactionSpinner22 reactionSpinner22 = new ReactionSpinner22(gene);
 			reactionSpinner22.addChangeListener(this);
 			genesPanel.add(reactionSpinner22, constraints);
 			
-			constraints.gridx = 30;
+			constraints.gridx = 31;
 			ReactionSpinner23 reactionSpinner23 = new ReactionSpinner23(gene);
 			reactionSpinner23.addChangeListener(this);
 			genesPanel.add(reactionSpinner23, constraints);
 			
-			constraints.gridx = 31;
+			constraints.gridx = 32;
 			ReactionSpinner24 reactionSpinner24 = new ReactionSpinner24(gene);
 			reactionSpinner24.addChangeListener(this);
 			genesPanel.add(reactionSpinner24, constraints);
 			
-			constraints.gridx = 32;
+			constraints.gridx = 33;
 			ReactionSpinner25 reactionSpinner25 = new ReactionSpinner25(gene);
 			reactionSpinner25.addChangeListener(this);
 			genesPanel.add(reactionSpinner25, constraints);
 			
-			constraints.gridx = 33;
+			constraints.gridx = 34;
 			ReactionSpinner26 reactionSpinner26 = new ReactionSpinner26(gene);
 			reactionSpinner26.addChangeListener(this);
 			genesPanel.add(reactionSpinner26, constraints);
 			
-			constraints.gridx = 34;
+			constraints.gridx = 35;
 			ReactionSpinner27 reactionSpinner27 = new ReactionSpinner27(gene);
 			reactionSpinner27.addChangeListener(this);
 			genesPanel.add(reactionSpinner27, constraints);
 			
-			constraints.gridx = 35;
+			constraints.gridx = 36;
 			ReactionSpinner28 reactionSpinner28 = new ReactionSpinner28(gene);
 			reactionSpinner28.addChangeListener(this);
 			genesPanel.add(reactionSpinner28, constraints);
 			
-			constraints.gridx = 36;
+			constraints.gridx = 37;
 			ReactionSpinner29 reactionSpinner29 = new ReactionSpinner29(gene);
 			reactionSpinner29.addChangeListener(this);
 			genesPanel.add(reactionSpinner29, constraints);
 			
-			constraints.gridx = 37;
+			constraints.gridx = 38;
 			ReactionSpinner30 reactionSpinner30 = new ReactionSpinner30(gene);
 			reactionSpinner30.addChangeListener(this);
 			genesPanel.add(reactionSpinner30, constraints);
 			
-			constraints.gridx = 38;
+			constraints.gridx = 39;
 			ReactionSpinner31 reactionSpinner31 = new ReactionSpinner31(gene);
 			reactionSpinner31.addChangeListener(this);
 			genesPanel.add(reactionSpinner31, constraints);
 			
-			constraints.gridx = 39;
+			constraints.gridx = 40;
 			ReactionSpinner32 reactionSpinner32 = new ReactionSpinner32(gene);
 			reactionSpinner32.addChangeListener(this);
 			genesPanel.add(reactionSpinner32, constraints);
 			
-			constraints.gridx = 40;
+			constraints.gridx = 41;
 			ReactionSpinner33 reactionSpinner33 = new ReactionSpinner33(gene);
 			reactionSpinner33.addChangeListener(this);
 			genesPanel.add(reactionSpinner33, constraints);
 			
-			constraints.gridx = 41;
+			constraints.gridx = 42;
 			ReactionSpinner34 reactionSpinner34 = new ReactionSpinner34(gene);
 			reactionSpinner34.addChangeListener(this);
 			genesPanel.add(reactionSpinner34, constraints);
 			
-			constraints.gridx = 42;
+			constraints.gridx = 43;
 			ReactionSpinner35 reactionSpinner35 = new ReactionSpinner35(gene);
 			reactionSpinner35.addChangeListener(this);
 			genesPanel.add(reactionSpinner35, constraints);
 			
-			constraints.gridx = 43;
+			constraints.gridx = 44;
 			ReactionSpinner36 reactionSpinner36 = new ReactionSpinner36(gene);
 			reactionSpinner36.addChangeListener(this);
 			genesPanel.add(reactionSpinner36, constraints);
@@ -992,7 +1161,7 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 	}
 	
 	protected void draw(Graphics g) {
-		GeneticCode code = new GeneticCode(genesList, symmetry, mirror, mutationrate, activity, modifiescream, modifiesfallow, modifiesspore, adaptspore, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false);
+		GeneticCode code = new GeneticCode(genesList, symmetry, mirror, mutationrate, clonerate, activity, modifiescream, modifiesfallow, modifiesspore, adaptspore, modifiesblack, adaptblack, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false);
 		code.draw(g, drawPanel.getSize().width, drawPanel.getSize().height);
 	}
 

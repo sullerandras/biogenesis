@@ -25,6 +25,7 @@ import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -37,6 +38,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.text.NumberFormat;
 import java.util.TimerTask;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -91,6 +93,7 @@ public class MainWindow extends JFrame {
 	protected StdAction manualAction;
 	protected StdAction checkLastVersionAction;
 	protected StdAction netConfigAction;
+	protected StdAction saveWorldImageAction;
 
 	protected JMenuItem _menuStartStopGame;
 	protected JMenu _menuGame;
@@ -195,6 +198,8 @@ public class MainWindow extends JFrame {
 				"T_MANAGE_CONNECTIONS"); //$NON-NLS-1$
 		abortTrackingAction = new AbortTrackingAction("T_ABORT_TRACKING", "images/menu_stop_tracking.png",  //$NON-NLS-1$//$NON-NLS-2$
 				"T_ABORT_TRACKING"); //$NON-NLS-1$
+		saveWorldImageAction = new SaveWorldImageAction("T_SAVE_IMAGE", "images/menu_save_image.png",  //$NON-NLS-1$//$NON-NLS-2$
+				"T_SAVE_IMAGE"); //$NON-NLS-1$
 		openGameAction = new OpenGameAction("T_OPEN", null, "T_OPEN_WORLD");  //$NON-NLS-1$//$NON-NLS-2$
 		saveGameAsAction = new SaveGameAsAction("T_SAVE_AS", null, "T_SAVE_WORLD_AS");  //$NON-NLS-1$//$NON-NLS-2$
 		quitAction = new QuitAction("T_QUIT", null, "T_QUIT_PROGRAM"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -220,6 +225,7 @@ public class MainWindow extends JFrame {
 		toolBar.add(increaseCO2Action);
 		toolBar.add(decreaseCO2Action);
 		toolBar.add(manageConnectionsAction);
+		toolBar.add(saveWorldImageAction);
 		toolBar.add(abortTrackingAction);
 		abortTrackingAction.setEnabled(_trackedOrganism != null);
 		toolBar.invalidate();
@@ -554,6 +560,53 @@ public class MainWindow extends JFrame {
 
 		public void actionPerformed(ActionEvent e) {
 			setTrackedOrganism(null);
+		}
+	}
+
+	class SaveWorldImageAction extends StdAction {
+		private static final long serialVersionUID = 1L;
+		public SaveWorldImageAction(String text_key, String icon_path, String desc) {
+			super(text_key, icon_path, desc);
+		}
+
+		public void actionPerformed(ActionEvent e) {
+				// Stop time while asking for a file name
+                _isProcessActive = false;
+                startStopAction.setActive(false);
+				_menuStartStopGame.setIcon(null);
+				// Get the image to save
+                Dimension dimension = new Dimension(_world._width,_world._height);
+                BufferedImage worldimage = new BufferedImage(dimension.width, dimension.height, BufferedImage.TYPE_INT_ARGB);
+                _visibleWorld.paint(worldimage.getGraphics());
+                try {
+					// Ask for file name
+					JFileChooser chooser = new JFileChooser();
+					chooser.setFileFilter(new BioFileFilter("png")); //$NON-NLS-1$
+					int returnVal = chooser.showSaveDialog(null);
+					if(returnVal == JFileChooser.APPROVE_OPTION) {
+						int canWrite = JOptionPane.YES_OPTION;
+						File f = chooser.getSelectedFile();
+						// Check if file already exists and ask for confirmation
+						if (f.exists()) {
+							canWrite = JOptionPane.showConfirmDialog(null,Messages.getString("T_CONFIRM_FILE_OVERRIDE"), //$NON-NLS-1$
+									Messages.getString("T_FILE_EXISTS"),JOptionPane.YES_NO_OPTION,JOptionPane.WARNING_MESSAGE); //$NON-NLS-1$
+						}
+						if (canWrite == JOptionPane.YES_OPTION) {
+							// Write image to file
+							try {
+								ImageIO.write(worldimage,"PNG",f); //$NON-NLS-1$
+							} catch (FileNotFoundException ex) {
+								System.err.println(ex.getMessage());
+							} catch (IOException ex) {
+								System.err.println(ex.getMessage());
+							}
+						}
+					}
+				} catch (SecurityException ex) {
+					System.err.println(ex.getMessage());
+					JOptionPane.showMessageDialog(null,Messages.getString("T_PERMISSION_DENIED"),Messages.getString("T_PERMISSION_DENIED"),JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$ //$NON-NLS-2$
+				}
+				_isProcessActive = false;
 		}
 	}
 
@@ -947,7 +1000,7 @@ public class MainWindow extends JFrame {
 		statusLabelText.append(_nf.format(_world.getO2()));
 		statusLabelText.append("     "); //$NON-NLS-1$
 		statusLabelText.append(Messages.getString("T_CO2")); //$NON-NLS-1$
-		statusLabelText.append(_nf.format(_world.getCO2()));
+		statusLabelText.append(_nf.format(_world._CO2));
 		statusLabelText.append("     "); //$NON-NLS-1$
 		statusLabelText.append(Messages.getString("T_CH4")); //$NON-NLS-1$
 		statusLabelText.append(_nf.format(_world.getCH4()));

@@ -133,11 +133,11 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 
 		// Atmosphere graphic
 		GraphPanel atmosphereGraphPanel = new GraphPanel(100,80);
-		atmosphereGraphPanel.addGraph(worldStatistics.getOxygenList(), world.getO2()+world.getCO2()+world.getCH4(),
+		atmosphereGraphPanel.addGraph(worldStatistics.getOxygenList(), world.getO2()+world._CO2+world.getCH4(),
 				0, Color.BLUE, Messages.getString("T_OXYGEN")); //$NON-NLS-1$
-		atmosphereGraphPanel.addGraph(worldStatistics.getCarbonDioxideList(), world.getO2()+world.getCO2()+world.getCH4(),
+		atmosphereGraphPanel.addGraph(worldStatistics.getCarbonDioxideList(), world.getO2()+world._CO2+world.getCH4(),
 				0, Color.WHITE, Messages.getString("T_CARBON_DIOXIDE")); //$NON-NLS-1$
-		atmosphereGraphPanel.addGraph(worldStatistics.getMethaneList(), world.getO2()+world.getCO2()+world.getCH4(),
+		atmosphereGraphPanel.addGraph(worldStatistics.getMethaneList(), world.getO2()+world._CO2+world.getCH4(),
 				0, Color.MAGENTA, Messages.getString("T_METHANE")); //$NON-NLS-1$
 		atmosphereGraphPanel.updateLegend();
 
@@ -189,7 +189,7 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 		gbc.gridy = 2;
 		currentStatePanel.add(new JLabel(Messages.getString("T_POPULATION2")+world.getPopulation()), gbc); //$NON-NLS-1$
 		gbc.gridx = 2;
-		currentStatePanel.add(new JLabel(Messages.getString("T_CARBON_DIOXIDE2")+nf.format(world.getCO2())), gbc); //$NON-NLS-1$
+		currentStatePanel.add(new JLabel(Messages.getString("T_CARBON_DIOXIDE2")+nf.format(world._CO2)), gbc); //$NON-NLS-1$
 		gbc.gridx = 2;
 		gbc.gridy = 3;
 		currentStatePanel.add(new JLabel(Messages.getString("T_METHANE2")+nf.format(world.getCH4())), gbc); //$NON-NLS-1$
