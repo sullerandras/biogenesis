@@ -901,8 +901,8 @@ public class MainWindow extends JFrame {
 
 				_visibleWorld=new VisibleWorld(this);
 				scrollPane = new JScrollPane(_visibleWorld);
-				scrollPane.getHorizontalScrollBar().setUnitIncrement(10);
-				scrollPane.getVerticalScrollBar().setUnitIncrement(10);
+				scrollPane.getHorizontalScrollBar().setUnitIncrement(30);
+				scrollPane.getVerticalScrollBar().setUnitIncrement(30);
 				setLocation(Utils.WINDOW_X, Utils.WINDOW_Y);
 				setExtendedState(Utils.WINDOW_STATE);
 				getContentPane().setLayout(new BorderLayout());
