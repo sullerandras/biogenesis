@@ -1262,6 +1262,10 @@ public final class Utils {
 	 */
 	static int STATUS_BAR_REFRESH_FPS = 4;
 	/**
+	 * How many times per second we want to update the statistics window, if it's open.
+	 */
+	static int STATISTICS_REFRESH_FPS = 2;
+	/**
 	 * This is the value for having or not having automatic backups.
 	 */
 	static boolean AUTO_BACKUP = DEF_AUTO_BACKUP;

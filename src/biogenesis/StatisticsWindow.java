@@ -27,13 +27,13 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowAdapter;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -42,16 +42,14 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import javax.swing.Timer;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
-
 public class StatisticsWindow extends JDialog implements ActionListener {
 	private static final long serialVersionUID = Utils.FILE_VERSION;
-
-	private static long AUTO_UPDATE_PERIOD = 1000;
 
 	private JButton updateButton;
 	private JButton closeButton;
@@ -74,12 +72,19 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 		setResizable(false);
 		setVisible(true);
 
-		new Timer().schedule(new TimerTask() {
+		Timer timer = new Timer(1000 / Utils.STATISTICS_REFRESH_FPS, new ActionListener() {
 			@Override
-			public void run() {
-				actionPerformed(new ActionEvent(updateButton, 0, ""));
+			public void actionPerformed(ActionEvent e) {
+				StatisticsWindow.this.actionPerformed(new ActionEvent(updateButton, 0, ""));
 			}
-		}, AUTO_UPDATE_PERIOD, AUTO_UPDATE_PERIOD);
+		});
+		timer.start();
+		addWindowListener(new WindowAdapter(){
+			@Override
+			public void windowClosed(WindowEvent arg0) {
+				timer.stop();
+			}
+		});
 	}
 
 	private void setComponents() {
