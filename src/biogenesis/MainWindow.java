@@ -23,8 +23,10 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.event.WindowFocusListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
@@ -40,6 +42,7 @@ import java.util.TimerTask;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
+import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -94,6 +97,7 @@ public class MainWindow extends JFrame {
 	protected StdAction checkLastVersionAction;
 	protected StdAction netConfigAction;
 	protected StdAction saveWorldImageAction;
+	protected JCheckBox toggleRepaintWorld;
 
 	protected JMenuItem _menuStartStopGame;
 	protected JMenu _menuGame;
@@ -161,6 +165,18 @@ public class MainWindow extends JFrame {
 		_world.genesis();
 		scrollPane.setViewportView(_visibleWorld);
 		worldChooser=setUpdateUI(worldChooser);
+
+		this.addWindowFocusListener(new WindowFocusListener() {
+			@Override
+			public void windowGainedFocus(WindowEvent e) {
+				Utils.setMainWindowInFocus(true);
+			}
+
+			@Override
+			public void windowLostFocus(WindowEvent e) {
+				Utils.setMainWindowInFocus(false);
+			}
+		});
 	}
 
 	/**
@@ -214,6 +230,10 @@ public class MainWindow extends JFrame {
 		manualAction = new ManualAction("T_USER_MANUAL", null, "T_USER_MANUAL");  //$NON-NLS-1$//$NON-NLS-2$
 		checkLastVersionAction = new CheckLastVersionAction("T_CHECK_LAST_VERSION", null, "T_CHECK_LAST_VERSION"); //$NON-NLS-1$ //$NON-NLS-2$
 		netConfigAction = new NetConfigAction("T_CONFIGURE_NETWORK", null, "T_CONFIGURE_NETWORK"); //$NON-NLS-1$ //$NON-NLS-2$
+
+		toggleRepaintWorld = new JCheckBox("repaint world");
+		toggleRepaintWorld.setSelected(Utils.isRepaintWorld());
+		toggleRepaintWorld.addActionListener(arg0 -> Utils.setRepaintWorld(!Utils.isRepaintWorld()));
 	}
 
 	public void createToolBar() {
@@ -228,6 +248,7 @@ public class MainWindow extends JFrame {
 		toolBar.add(saveWorldImageAction);
 		toolBar.add(abortTrackingAction);
 		abortTrackingAction.setEnabled(_trackedOrganism != null);
+		toolBar.add(toggleRepaintWorld);
 		toolBar.invalidate();
 		toolBar.repaint();
 	}
@@ -571,14 +592,14 @@ public class MainWindow extends JFrame {
 
 		public void actionPerformed(ActionEvent e) {
 				// Stop time while asking for a file name
-                _isProcessActive = false;
-                startStopAction.setActive(false);
+				_isProcessActive = false;
+				startStopAction.setActive(false);
 				_menuStartStopGame.setIcon(null);
 				// Get the image to save
-                Dimension dimension = new Dimension(_world._width,_world._height);
-                BufferedImage worldimage = new BufferedImage(dimension.width, dimension.height, BufferedImage.TYPE_INT_ARGB);
-                _visibleWorld.paint(worldimage.getGraphics());
-                try {
+				Dimension dimension = new Dimension(_world._width,_world._height);
+				BufferedImage worldimage = new BufferedImage(dimension.width, dimension.height, BufferedImage.TYPE_INT_ARGB);
+				_visibleWorld.paint(worldimage.getGraphics());
+				try {
 					// Ask for file name
 					JFileChooser chooser = new JFileChooser();
 					chooser.setFileFilter(new BioFileFilter("png")); //$NON-NLS-1$
@@ -988,7 +1009,7 @@ public class MainWindow extends JFrame {
 	public void updateStatusLabel() {
 		statusLabelText.setLength(0);
 		statusLabelText.append(Messages.getString("T_FPS")); //$NON-NLS-1$
-		statusLabelText.append(getFPS());
+		statusLabelText.append(frameCounter * Utils.STATUS_BAR_REFRESH_FPS);
 		statusLabelText.append("     "); //$NON-NLS-1$
 		statusLabelText.append(Messages.getString("T_TIME")); //$NON-NLS-1$
 		statusLabelText.append(_world.getTime());
@@ -1007,14 +1028,6 @@ public class MainWindow extends JFrame {
 		statusLabelText.append("     "); //$NON-NLS-1$
 		statusLabelText.append(getStatusMessage());
 		_statusLabel.setText(statusLabelText.toString());
-	}
-	/**
-	 * Returns the actual Frame Per Second rate of the program.
-	 *
-	 * @return  The actual FPS.
-	 */
-	public int getFPS() {
-		return 1000/currentDelay;
 	}
 
 	final transient Runnable lifeProcess = new Runnable() {
@@ -1067,80 +1080,39 @@ public class MainWindow extends JFrame {
 		if (isAcceptingConnections())
 			startServer();
 	}
+
 	/**
-	 * Number of milliseconds between two invocations to the lifeProcess invocation.
-	 * It starts as the user's preference DELAY but is adapted to the current situation
-	 * in the world and the machine speed.
+	 * Number of frames executed since the last status bar update. It will be reset
+	 * to 0 every time we update the status bar.
 	 */
-	protected int currentDelay = Utils.DELAY;
-	/**
-	 * If positive, the consecutive number of frames that haven't accomplished the expected time contract.
-	 * If negative, the consecutive number of frame that have accomplished the expected time contract.
-	 * Used to adapt the program's speed.
-	 */
-	protected int failedTime=0;
-	/**
-	 * The moment when the last painting of this visual world started. Used to control
-	 * the program's speed.
-	 */
-	protected long lastPaintTime;
+	protected int frameCounter;
 	public void startLifeProcess(int delay) {
-		if (updateTask != null)
+		if (updateTask != null) {
 			updateTask.cancel();
+		}
 		updateTask = new TimerTask() {
-				@Override
+			@Override
 			public void run() {
-					try {
-					EventQueue.invokeAndWait(lifeProcess);
-					/**
-					 * Checks the actual drawing speed and increases or decreases the speed
-					 * of the program in order to keep it running smoothly.
-					 */
-					long actualTime = System.currentTimeMillis();
-					if (actualTime - lastPaintTime > currentDelay*1.5 || currentDelay < Utils.DELAY) {
-						// We can't run so fast
-						failedTime=Math.max(failedTime+1, 0);
-						if (failedTime >= 2) {
-							failedTime = 0;
-							if (currentDelay <= 10) {
-								currentDelay++;
-							} else {
-								currentDelay*=1.5;
-							}
-							startLifeProcess(currentDelay);
-						}
-						} else {
-							if (actualTime - lastPaintTime < currentDelay*1.2 && currentDelay > Utils.DELAY) {
-								// We can run faster
-								failedTime=Math.min(failedTime-1, 0);
-								if (failedTime <= -10) {
-									currentDelay = Math.max(Utils.DELAY, currentDelay-1);
-									startLifeProcess(currentDelay);
-								}
-							} else
-								// Normal situation: we run at the expected speed
-								failedTime = 0;
-						}
-						if (currentDelay > 1000) {
-							pauseGame();
-						}
-					//do automatic backups, outside of run speed calculations
-					if (Utils.AUTO_BACKUP && _world.getTime() % Utils.BACKUP_DELAY == 0
-							&& _world.getTime() > 0) {
+				try {
+					while (true) {
+						EventQueue.invokeAndWait(lifeProcess);
+						frameCounter++;
+						//do automatic backups
+						if (Utils.AUTO_BACKUP && _world.getTime() % Utils.BACKUP_DELAY == 0 && _world.getTime() > 0) {
 							if (!_isBackedUp) {
 								backupGameAction.actionPerformed(null);
 								_isBackedUp = true;
 							}
-					} else {
-						_isBackedUp = false;
+						} else {
+							_isBackedUp = false;
 						}
-						lastPaintTime = actualTime;
+					}
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				} catch (InvocationTargetException e) {
 					e.printStackTrace();
 				}
-				}
+			}
 		};
 		_timer.schedule(updateTask, delay, delay);
 	}

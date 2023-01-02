@@ -20,6 +20,8 @@
 package biogenesis;
 
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
@@ -37,7 +39,7 @@ public final class Utils {
 	 * This value indicates the version of the program.
 	 * There are two digits for version, two for subversion and two for revision, so
 	 * a value of 400 or 000400 means version 0, subversion 4 and revision 0.
-	 * 
+	 *
 	 * All serializable classes use this value as their serialVersionUID.
 	 */
 	static final int FILE_VERSION = 700;
@@ -54,7 +56,7 @@ public final class Utils {
 	 */
 	final static int DEF_INITIAL_ORGANISMS = 12500;
 	/**
-	 * This is the default complexity of random organisms. 
+	 * This is the default complexity of random organisms.
 	 */
 	final static int DEF_INITIAL_COMPLEXITY = 2;
 	/**
@@ -86,22 +88,22 @@ public final class Utils {
 	 */
 	final static int DEF_WORLD_HEIGHT = 7000;
 	/**
-	 * This is the default maximum age that an organism can achieve, 
+	 * This is the default maximum age that an organism can achieve,
 	 * without counting the number of segments.
 	 */
 	final static int DEF_MAX_AGE = 6;
 	/**
-	 * This is the default age divisor, 
+	 * This is the default age divisor,
 	 * which adds the number of segments to the maximum age, divided by this value.
 	 */
 	final static int DEF_AGE_DIVISOR = 4;
 	/**
-	 * This is the default CO2 to CH4 divisor, 
+	 * This is the default CO2 to CH4 divisor,
 	 * which turns CO2 into CH4, divided by this value.
 	 */
 	final static int DEF_CO2_TO_CH4_DIVISOR = 999;
 	/**
-	 * This is the default CH4 to CO2 divisor, 
+	 * This is the default CH4 to CO2 divisor,
 	 * which turns CH4 into CO2, divided by this value.
 	 */
 	final static int DEF_CH4_TO_CO2_DIVISOR = 1000;
@@ -111,7 +113,7 @@ public final class Utils {
 	 */
 	final static double DEF_RUBBING = 0.98d;
 	/**
-	 * This is the default meta mutation probability, 
+	 * This is the default meta mutation probability,
 	 * that the individual mutation rate of an organism changes.
 	 */
 	final static int DEF_META_MUTATION_RATE = 1000;
@@ -134,7 +136,7 @@ public final class Utils {
 	/**
 	 * This default value is used to calculate the energy cost that an organism must
 	 * pay to maintain a segment. It spends the length of the segment divided by this
-	 * number units of energy.  
+	 * number units of energy.
 	 */
 	final static int DEF_SEGMENT_COST_DIVISOR = 5000;
 	/**
@@ -660,7 +662,7 @@ public final class Utils {
 	 * This is the default hardware acceleration applied when drawing
 	 */
 	final static int DEF_HARDWARE_ACCELERATION = 0; //0 none, 1 try opengl, 2 opengl
-	
+
 	final static double DEF_DECAY_ENERGY = 0.1d;
 	// Effective parameters values
 	static int WINDOW_X = DEF_WINDOW_X;
@@ -705,22 +707,22 @@ public final class Utils {
 	 */
 	static int WORLD_HEIGHT = DEF_WORLD_HEIGHT;
 	/**
-	 * This is the maximum age that an organism can achieve, 
+	 * This is the maximum age that an organism can achieve,
 	 * without counting the number of segments.
 	 */
 	static int MAX_AGE = DEF_MAX_AGE;
 	/**
-	 * This is the age divisor, 
+	 * This is the age divisor,
 	 * which adds the number of segments to the maximum age, divided by this value.
 	 */
 	static int AGE_DIVISOR = DEF_AGE_DIVISOR;
 	/**
-	 * This is the CO2 to CH4 divisor, 
+	 * This is the CO2 to CH4 divisor,
 	 * which turns CO2 into CH4, divided by this value.
 	 */
 	static int CO2_TO_CH4_DIVISOR = DEF_CO2_TO_CH4_DIVISOR;
 	/**
-	 * This is the CH4 to CO2 divisor, 
+	 * This is the CH4 to CO2 divisor,
 	 * which turns CH4 into CO2, divided by this value.
 	 */
 	static int CH4_TO_CO2_DIVISOR = DEF_CH4_TO_CO2_DIVISOR;
@@ -730,7 +732,7 @@ public final class Utils {
 	 */
 	static double RUBBING = DEF_RUBBING;
 	/**
-	 * This is the meta mutation probability, 
+	 * This is the meta mutation probability,
 	 * that the individual mutation rate of an organism changes.
 	 */
 	static int META_MUTATION_RATE = DEF_META_MUTATION_RATE;
@@ -753,7 +755,7 @@ public final class Utils {
 	/**
 	 * This value is used to calculate the energy cost that an organism must
 	 * pay to maintain a segment. It spends the length of the segment divided by this
-	 * number units of energy.  
+	 * number units of energy.
 	 */
 	static int SEGMENT_COST_DIVISOR = DEF_SEGMENT_COST_DIVISOR;
 	/**
@@ -1239,6 +1241,22 @@ public final class Utils {
 	 */
 	static int DELAY = DEF_DELAY;
 	/**
+	 * This stores the value of the `repaint world` checkbox.
+	 */
+	private static boolean repaintWorld = true;
+	/**
+	 * If false then the main window is not in focus, so we don't need to
+	 * repaint the world.
+	 */
+	private static boolean mainWindowInFocus = true;
+	/**
+	 * List of listeners that needs to be notified when the return value
+	 * of the `repaintWorld` method changes.
+	 * Can be used for example to force repaint the world when we need to
+	 * resume repainting the world.
+	 */
+	static List<RepaintWorldChangeListener> repaintWorldChangeListeners = new ArrayList<>();
+	/**
 	 * This is the value for having or not having automatic backups.
 	 */
 	static boolean AUTO_BACKUP = DEF_AUTO_BACKUP;
@@ -1282,7 +1300,7 @@ public final class Utils {
 	 * This is the port where the meta-server will listen. At the moment it is not used.
 	 */
 	static int SERVER_PORT = DEF_SERVER_PORT;
-	
+
 	static double DECAY_ENERGY = DEF_DECAY_ENERGY;
 	/**
 	 * Tolerance. Smaller numbers are considered equal to 0.
@@ -1290,7 +1308,7 @@ public final class Utils {
 	static final double tol = 0.0000001;
 	/**
 	 * Indicates the eight possible directions. The row is the direction we want, from 0 to 7, first
-	 * column is the x coordinate and second column the y coordinate.  
+	 * column is the x coordinate and second column the y coordinate.
 	 */
 	static final int side[][] = {{1,0},{1,1},{0,1},{-1,1},{-1,0},{-1,-1},{0,-1},{1,-1}};
 	/**
@@ -1305,7 +1323,7 @@ public final class Utils {
 	 * These are the scale factor applied to segments depending on the growth rate of the
 	 * organism. Segment length is multiplicated by scale[i], where i is the growth rate.
 	 * scale[0] indicates that the organism is fully developed and scale[15] that it has just
-	 * been born. 
+	 * been born.
 	 */
 	static final double scale[] = {1.00, 0.90, 0.80, 0.71, 0.63, 0.56, 0.50, 0.45,
 		0.40, 0.36, 0.32, 0.28, 0.25, 0.22, 0.20, 0.18};
@@ -1313,7 +1331,7 @@ public final class Utils {
 	 * These are the scale factor applied to spring segments depending on the growth rate of the
 	 * organism. Spring segment length *100 is multiplicated by scale[i], where i is the growth rate.
 	 * scale[0] indicates that the organism is fully developed and scale[15] that it has just
-	 * been born. 
+	 * been born.
 	 */
 	static final double springscale[] = {0.01, 0.009, 0.008, 0.0071, 0.0063, 0.0056, 0.005, 0.0045,
 			0.004, 0.0036, 0.0032, 0.0028, 0.0025, 0.0022, 0.002, 0.0018};
@@ -1570,8 +1588,8 @@ public final class Utils {
 	 */
 	public static Random random = new Random();
 	/**
-	 * Used to get a random -1 or 1 to create numbers with random sign. 
-	 * 
+	 * Used to get a random -1 or 1 to create numbers with random sign.
+	 *
 	 * @return  a random -1 or 1
 	 */
 	public static final int randomSign() {
@@ -1579,7 +1597,7 @@ public final class Utils {
 	}
 	/**
 	 * Calculates the minimum of three integers
-	 * 
+	 *
 	 * @param a
 	 * @param b
 	 * @param c
@@ -1590,7 +1608,7 @@ public final class Utils {
 	}
 	/**
 	 * Calculates the minimum of three doubles
-	 * 
+	 *
 	 * @param a
 	 * @param b
 	 * @param c
@@ -1601,7 +1619,7 @@ public final class Utils {
 	}
 	/**
 	 * Calculates the maximum of three integers
-	 * 
+	 *
 	 * @param a
 	 * @param b
 	 * @param c
@@ -1611,8 +1629,8 @@ public final class Utils {
 		return Math.max(Math.max(a,b),c);
 	}
 	/**
-	 * Calculates the maximum of three doubles 
-	 * 
+	 * Calculates the maximum of three doubles
+	 *
 	 * @param a
 	 * @param b
 	 * @param c
@@ -1623,7 +1641,7 @@ public final class Utils {
 	}
 	/**
 	 * Return min if value<min, max if value>max and value otherwise.
-	 * 
+	 *
 	 * @param value
 	 * @param min
 	 * @param max
@@ -1634,7 +1652,7 @@ public final class Utils {
 	}
 	/**
 	 * Return min if value<min, max if value>max and value otherwise.
-	 * 
+	 *
 	 * @param value
 	 * @param min
 	 * @param max
@@ -1645,7 +1663,7 @@ public final class Utils {
 	}
 	/**
 	 * Check if the meta mutation rate changed or not, using a random number.
-	 * 
+	 *
 	 * @return  true if the meta mutation rate changed and false otherwise
 	 */
 	public static final boolean randomMutation() {
@@ -1655,7 +1673,7 @@ public final class Utils {
 	}
 	/**
 	 * Return the localized name of a color.
-	 * 
+	 *
 	 * @param c  A color
 	 * @return  A String representing the name of the color
 	 */
@@ -2038,7 +2056,7 @@ public final class Utils {
 				HARDWARE_ACCELERATION += 1;
 			}
 			Messages.setLocale(prefs.get("LOCALE",Messages.getLanguage())); //$NON-NLS-1$
-			
+
 		} catch (SecurityException ex) {
 			Messages.setLocale(Messages.getLanguage());
 		}
@@ -2052,7 +2070,7 @@ public final class Utils {
 				if (answer == JOptionPane.YES_OPTION)
 					prefs.putInt("HARDWARE_ACCELERATION", HARDWARE_ACCELERATION+1); //$NON-NLS-1$
 			}
-		
+
 			prefs.putInt("WINDOW_X", window.getX());
 			prefs.putInt("WINDOW_Y", window.getY());
 			prefs.putInt("WINDOW_WIDTH", window.getWidth());
@@ -2063,7 +2081,7 @@ public final class Utils {
 		}
 		savePreferences();
 	}
-	
+
 	public static void setHardwareAcceleration(int newValue) {
 		try {
 			switch (newValue) {
@@ -2081,12 +2099,66 @@ public final class Utils {
 			case 6:
 				System.setProperty("sun.java2d.opengl", "True"); //$NON-NLS-1$ //$NON-NLS-2$
 				System.setProperty("sun.java2d.noddraw", "true");  //$NON-NLS-1$//$NON-NLS-2$
-				// Used to workaround problems with some drivers 
+				// Used to workaround problems with some drivers
 				System.setProperty("sun.java2d.opengl.fbobject","false"); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 			HARDWARE_ACCELERATION = newValue;
 		} catch (Exception e) {
 			System.err.println(e.getLocalizedMessage());
+		}
+	}
+
+	/**
+	 * Getter for the `repaintWorld` flag.
+	 */
+	public static boolean isRepaintWorld() {
+		return repaintWorld;
+	}
+
+	/**
+	 * Setter for the `repaintWorld` flag. It notifies the `repaintWorldChangeListeners` if
+	 * the `b` is different than the old value of `repaintWorld`.
+	 */
+	public static void setRepaintWorld(boolean b) {
+		if (repaintWorld != b) {
+			repaintWorld = b;
+			notifyRepaintWorldChangeListeners();
+		}
+	}
+
+	/**
+	 * Setter for the `mainWindowInFocus` flag. It notifies the `repaintWorldChangeListeners` if
+	 * the `b` is different than the old value of `mainWindowInFocus`.
+	 */
+	public static void setMainWindowInFocus(boolean b) {
+		if (mainWindowInFocus != b) {
+			mainWindowInFocus = b;
+			notifyRepaintWorldChangeListeners();
+		}
+	}
+
+	/**
+	 * Returns true if the world should be repainted for every change.
+	 * It should not repaint the world if the window is not in focus
+	 * (to reduce wasted work and to make the simulation faster).
+	 */
+	public static boolean repaintWorld() {
+		return repaintWorld && mainWindowInFocus;
+	}
+
+	/**
+	 * Adds `l` to the list of listeners to notify when the return value of
+	 * the `repaintWorld` method changed.
+	 * @param l The listener to notify about changes
+	 */
+	public static void addRepaintWorldChangeListener(RepaintWorldChangeListener l) {
+		repaintWorldChangeListeners.add(l);
+	}
+
+	private static void notifyRepaintWorldChangeListeners() {
+		boolean b = repaintWorld();
+		for (RepaintWorldChangeListener drawWorldChangeListener : repaintWorldChangeListeners) {
+			drawWorldChangeListener.drawWorldChanged(b);
 		}
 	}
 }
