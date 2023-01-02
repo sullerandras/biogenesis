@@ -1036,11 +1036,6 @@ public class MainWindow extends JFrame {
 					// executa un torn
 					_world.time();
 					nFrames++;
-					if (nFrames % 20 == 0) {
-						//if (_statisticsWindow != null)
-						//	_statisticsWindow.recalculate();
-						updateStatusLabel();
-					}
 					// dibuixa de nou si cal
 					_world.setPaintingRegion();
 					// tracking
@@ -1077,6 +1072,14 @@ public class MainWindow extends JFrame {
 
 		_timer = new java.util.Timer();
 		startLifeProcess(Utils.DELAY);
+		new javax.swing.Timer(1000 / Utils.STATUS_BAR_REFRESH_FPS, new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				updateStatusLabel();
+				frameCounter = 0;
+			}
+		}).start();
+
 		if (isAcceptingConnections())
 			startServer();
 	}

@@ -1257,6 +1257,11 @@ public final class Utils {
 	 */
 	static List<RepaintWorldChangeListener> repaintWorldChangeListeners = new ArrayList<>();
 	/**
+	 * How many times per second we want to update the status bar, e.g. to
+	 * update the O2 level and the population number.
+	 */
+	static int STATUS_BAR_REFRESH_FPS = 4;
+	/**
 	 * This is the value for having or not having automatic backups.
 	 */
 	static boolean AUTO_BACKUP = DEF_AUTO_BACKUP;
