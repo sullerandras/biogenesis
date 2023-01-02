@@ -387,6 +387,7 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 			setComponents();
 			pack();
 			invalidate();
+			setMinimumSize(getSize());
 		}
 		if (e.getSource() == closeButton) {
 			dispose();
