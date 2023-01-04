@@ -621,6 +621,10 @@ public final class Utils {
 	 * This is the default number of milliseconds that pass between frames.
 	 */
 	final static int DEF_DELAY = 2;
+	final static boolean DEF_repaintWorld = true;
+	final static String DEF_repaintWorldStrategy = RepaintWorldStrategy.WHEN_ANY_APP_WINDOW_IS_IN_FOCUS.toString();
+	final static int DEF_STATUS_BAR_REFRESH_FPS = 4;
+	final static int DEF_STATISTICS_REFRESH_FPS = 2;
 	/**
 	 * This is the default value for having or not having automatic backups.
 	 */
@@ -1243,12 +1247,23 @@ public final class Utils {
 	/**
 	 * This stores the value of the `repaint world` checkbox.
 	 */
-	private static boolean repaintWorld = true;
+	private static boolean repaintWorld = DEF_repaintWorld;
 	/**
 	 * If false then the main window is not in focus, so we don't need to
 	 * repaint the world.
 	 */
 	private static boolean mainWindowInFocus = true;
+	/**
+	 * If true then the main window or any of the dialog windows are in focus.
+	 * If false then none of the app windows are in focus, i.e. the app is in
+	 * the background, so we can omit updating the status bar and the statistics
+	 * window to make simulation faster.
+	 */
+	private static boolean appInFocus = true;
+	/**
+	 * The currently active strategy for repainting the world.
+	 */
+	private static RepaintWorldStrategy repaintWorldStrategy = RepaintWorldStrategy.WHEN_ANY_APP_WINDOW_IS_IN_FOCUS;
 	/**
 	 * List of listeners that needs to be notified when the return value
 	 * of the `repaintWorld` method changes.
@@ -1260,11 +1275,11 @@ public final class Utils {
 	 * How many times per second we want to update the status bar, e.g. to
 	 * update the O2 level and the population number.
 	 */
-	static int STATUS_BAR_REFRESH_FPS = 4;
+	static int STATUS_BAR_REFRESH_FPS = DEF_STATUS_BAR_REFRESH_FPS;
 	/**
 	 * How many times per second we want to update the statistics window, if it's open.
 	 */
-	static int STATISTICS_REFRESH_FPS = 2;
+	static int STATISTICS_REFRESH_FPS = DEF_STATISTICS_REFRESH_FPS;
 	/**
 	 * This is the value for having or not having automatic backups.
 	 */
@@ -1878,6 +1893,10 @@ public final class Utils {
 			prefs.putDouble("MAX_ROT",MAX_ROT); //$NON-NLS-1$
 			prefs.putDouble("ELASTICITY",ELASTICITY); //$NON-NLS-1$
 			prefs.putInt("DELAY",DELAY); //$NON-NLS-1$
+			prefs.putBoolean("repaintWorld",repaintWorld); //$NON-NLS-1$
+			prefs.put("repaintWorldStrategy",repaintWorldStrategy.toString()); //$NON-NLS-1$
+			prefs.putInt("STATUS_BAR_REFRESH_FPS",STATUS_BAR_REFRESH_FPS); //$NON-NLS-1$
+			prefs.putInt("STATISTICS_REFRESH_FPS",STATISTICS_REFRESH_FPS); //$NON-NLS-1$
 			prefs.putBoolean("AUTO_BACKUP",AUTO_BACKUP);
 			prefs.putInt("BACKUP_DELAY",BACKUP_DELAY);
 			prefs.putInt("LOCAL_PORT",LOCAL_PORT); //$NON-NLS-1$
@@ -2049,6 +2068,10 @@ public final class Utils {
 			MAX_ROT = prefs.getDouble("MAX_ROT",DEF_MAX_ROT); //$NON-NLS-1$
 			ELASTICITY = prefs.getDouble("ELASTICITY",DEF_ELASTICITY); //$NON-NLS-1$
 			DELAY = prefs.getInt("DELAY",DEF_DELAY); //$NON-NLS-1$
+			repaintWorld = prefs.getBoolean("repaintWorld",DEF_repaintWorld); //$NON-NLS-1$
+			repaintWorldStrategy = RepaintWorldStrategy.valueOf(prefs.get("repaintWorldStrategy", DEF_repaintWorldStrategy)); //$NON-NLS-1$
+			STATUS_BAR_REFRESH_FPS = prefs.getInt("STATUS_BAR_REFRESH_FPS",DEF_STATUS_BAR_REFRESH_FPS); //$NON-NLS-1$
+			STATISTICS_REFRESH_FPS = prefs.getInt("STATISTICS_REFRESH_FPS",DEF_STATISTICS_REFRESH_FPS); //$NON-NLS-1$
 			AUTO_BACKUP = prefs.getBoolean("AUTO_BACKUP",DEF_AUTO_BACKUP);
 			BACKUP_DELAY = prefs.getInt("BACKUP_DELAY",DEF_BACKUP_DELAY);
 			LOCAL_PORT = prefs.getInt("LOCAL_PORT",DEF_LOCAL_PORT); //$NON-NLS-1$
@@ -2152,7 +2175,19 @@ public final class Utils {
 	 * (to reduce wasted work and to make the simulation faster).
 	 */
 	public static boolean repaintWorld() {
-		return repaintWorld && mainWindowInFocus;
+		if (!repaintWorld) {
+			return false;
+		}
+		switch (repaintWorldStrategy) {
+			case ALWAYS:
+				return true;
+			case ONLY_WHEN_MAIN_WINDOW_IS_IN_FOCUS:
+				return mainWindowInFocus;
+			case WHEN_ANY_APP_WINDOW_IS_IN_FOCUS:
+				return appInFocus;
+			default:
+				return true;
+		}
 	}
 
 	/**
@@ -2169,5 +2204,21 @@ public final class Utils {
 		for (RepaintWorldChangeListener drawWorldChangeListener : repaintWorldChangeListeners) {
 			drawWorldChangeListener.drawWorldChanged(b);
 		}
+	}
+
+	public static RepaintWorldStrategy getRepaintWorldStrategy() {
+		return repaintWorldStrategy;
+	}
+
+	public static void setRepaintWorldStrategy(RepaintWorldStrategy repaintWorldStrategy) {
+		Utils.repaintWorldStrategy = repaintWorldStrategy;
+	}
+
+	public static boolean isAppInFocus() {
+		return appInFocus;
+	}
+
+	public static void setAppInFocus(boolean appInFocus) {
+		Utils.appInFocus = appInFocus;
 	}
 }

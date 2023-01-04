@@ -166,6 +166,7 @@ public class MainWindow extends JFrame {
 		scrollPane.setViewportView(_visibleWorld);
 		worldChooser=setUpdateUI(worldChooser);
 
+		this.addWindowListener(new AppFocusWindowAdapter());
 		this.addWindowFocusListener(new WindowFocusListener() {
 			@Override
 			public void windowGainedFocus(WindowEvent e) {

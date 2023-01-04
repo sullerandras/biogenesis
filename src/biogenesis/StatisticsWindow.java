@@ -70,12 +70,13 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 		setComponents();
 		pack();
 		setResizable(false);
-		setVisible(true);
 
 		Timer timer = new Timer(1000 / Utils.STATISTICS_REFRESH_FPS, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				StatisticsWindow.this.actionPerformed(new ActionEvent(updateButton, 0, ""));
+				if (Utils.isAppInFocus()) {
+					StatisticsWindow.this.actionPerformed(new ActionEvent(updateButton, 0, ""));
+				}
 			}
 		});
 		timer.start();
@@ -85,6 +86,9 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 				timer.stop();
 			}
 		});
+		addWindowListener(new AppFocusWindowAdapter());
+
+		setVisible(true);
 	}
 
 	private void setComponents() {

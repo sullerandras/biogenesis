@@ -47,14 +47,14 @@ public class NetConfigWindow extends JDialog {
 	protected JTextField maxConnectionsText;
 	protected JButton cancelButton;
 	protected JButton okButton;
-	
+
 	protected MainWindow mainWindow;
-	
+
 	public NetConfigWindow(MainWindow parent) {
 		super(parent,Messages.getString("T_NETWORK_CONFIGURATION"),true); //$NON-NLS-1$
 		mainWindow = parent;
 		acceptConnections = mainWindow.isAcceptingConnections();
-		setDefaultCloseOperation(DISPOSE_ON_CLOSE);	
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setComponents();
 		pack();
 		setResizable(false);
@@ -76,6 +76,7 @@ public class NetConfigWindow extends JDialog {
             	dispose();
             }
             });
+		addWindowListener(new AppFocusWindowAdapter());
 		setVisible(true);
 	}
 
@@ -96,7 +97,7 @@ public class NetConfigWindow extends JDialog {
 				acceptConnections);
 		acceptConnectionsCheck.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent arg0) {
-				acceptConnections = (arg0.getStateChange() == ItemEvent.SELECTED);	
+				acceptConnections = (arg0.getStateChange() == ItemEvent.SELECTED);
 			}
 		});
 		panel.add(acceptConnectionsCheck);
@@ -141,11 +142,11 @@ public class NetConfigWindow extends JDialog {
 		generalPanel.add(panel);
 		getContentPane().add(generalPanel, BorderLayout.CENTER);
 	}
-	
+
 	void checkParams() {
 		int i;
 		mainWindow.setAcceptConnections(acceptConnections);
-		
+
 		/*Utils.CONNECT_TO_SERVER = connectToServer;
 		Utils.SERVER_ADDRESS = serverAddressText.getText();
 		try {
@@ -168,8 +169,8 @@ public class NetConfigWindow extends JDialog {
 		}
 		try {
 			if(usernameText.getText().length() <= 15) {
-			   Utils.USER_NAME = usernameText.getText();	
-			}				
+			   Utils.USER_NAME = usernameText.getText();
+			}
 		} catch (NumberFormatException e) {
 			// Keep old value if there is a problem
 		}
