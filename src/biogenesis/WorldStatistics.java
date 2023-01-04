@@ -20,6 +20,7 @@ package biogenesis;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -29,6 +30,8 @@ public class WorldStatistics implements Serializable {
 	private long time;
 
 	private int maxPopulation;
+
+	private int maxDistinctSpecies;
 
 	private int maxBirths = 0;
 
@@ -76,19 +79,19 @@ public class WorldStatistics implements Serializable {
 	private long minOxygenTime;
 
 	private double maxCarbonDioxide = Utils.INITIAL_CO2;
-	
+
 	private double maxMethane = Utils.INITIAL_CH4;
 
 	private long maxCarbonDioxideTime;
-	
+
 	private long maxMethaneTime;
 
 	private double minCarbonDioxide = Utils.INITIAL_CO2;
-	
+
 	private double minMethane = Utils.INITIAL_CH4;
 
 	private long minCarbonDioxideTime;
-	
+
 	private long minMethaneTime;
 
 	private GeneticCode aliveBeingMostChildren;
@@ -129,6 +132,8 @@ public class WorldStatistics implements Serializable {
 
 	private List<Double> populationList = new ArrayList<Double>(100);
 
+	private List<Double> distinctSpeciesList = new ArrayList<Double>(100);
+
 	private List<Double> deathList = new ArrayList<Double>(100);
 
 	private List<Double> birthList = new ArrayList<Double>(100);
@@ -136,23 +141,39 @@ public class WorldStatistics implements Serializable {
 	private List<Double> oxygenList = new ArrayList<Double>(100);
 
 	private List<Double> carbonDioxideList = new ArrayList<Double>(100);
-	
+
 	private List<Double> methaneList = new ArrayList<Double>(100);
 
 	public long getTime() {
 		return time;
 	}
-	
+
 	public int getMaxPopulation() {
 		return maxPopulation;
+	}
+
+	public int getMaxPopulationFromList() {
+		return populationList.stream().max(Comparator.comparingDouble(Double::doubleValue)).orElse(Double.valueOf(0)).intValue();
+	}
+
+	public int getMaxDistinctSpecies() {
+		return distinctSpeciesList.stream().max(Comparator.comparingDouble(Double::doubleValue)).orElse(Double.valueOf(0)).intValue();
 	}
 
 	public int getMaxBirth() {
 		return maxBirths;
 	}
 
+	public int getMaxBirthFromList() {
+		return birthList.stream().max(Comparator.comparingDouble(Double::doubleValue)).orElse(Double.valueOf(0)).intValue();
+	}
+
 	public int getMaxDeaths() {
 		return maxDeaths;
+	}
+
+	public int getMaxDeathsFromList() {
+		return deathList.stream().max(Comparator.comparingDouble(Double::doubleValue)).orElse(Double.valueOf(0)).intValue();
 	}
 
 	public long getMaxPopulationTime() {
@@ -230,7 +251,7 @@ public class WorldStatistics implements Serializable {
 	public long getMinCarbonDioxideTime() {
 		return minCarbonDioxideTime;
 	}
-	
+
 	public double getMaxMethane() {
 		return maxMethane;
 	}
@@ -323,6 +344,10 @@ public class WorldStatistics implements Serializable {
 		return populationList;
 	}
 
+	public List<Double> getDistinctSpeciesList() {
+		return distinctSpeciesList;
+	}
+
 	public List<Double> getDeathList() {
 		return deathList;
 	}
@@ -330,15 +355,15 @@ public class WorldStatistics implements Serializable {
 	public List<Double> getBirthList() {
 		return birthList;
 	}
-	
+
 	public List<Double> getOxygenList() {
 		return oxygenList;
 	}
-	
+
 	public List<Double> getCarbonDioxideList() {
 		return carbonDioxideList;
 	}
-	
+
 	public List<Double> getMethaneList() {
 		return methaneList;
 	}
@@ -397,7 +422,7 @@ public class WorldStatistics implements Serializable {
 		infectionsSum++;
 	}
 
-	public void eventTime(int population, double O2, double CO2, double CH4) {
+	public void eventTime(int population, int distinctSpecies, double O2, double CO2, double CH4) {
 		time++;
 		if (deathLastTime > 1.5 * getAverageDeaths()) {
 			if (deathLastTime > 3 * getAverageDeaths()) {
@@ -466,6 +491,9 @@ public class WorldStatistics implements Serializable {
 		if (populationList.size() == 100)
 			populationList.remove(0);
 		populationList.add(Double.valueOf(population));
+		if (distinctSpeciesList.size() == 100)
+			distinctSpeciesList.remove(0);
+		distinctSpeciesList.add(Double.valueOf(distinctSpecies));
 		if (deathList.size() == 100)
 			deathList.remove(0);
 		deathList.add(Double.valueOf(deathLastTime));

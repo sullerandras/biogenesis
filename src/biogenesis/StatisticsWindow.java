@@ -94,12 +94,15 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 
 		// Population graphic
 		GraphPanel populationGraphPanel = new GraphPanel(100, 80);
-		populationGraphPanel.addGraph(worldStatistics.getDeathList(), Math.max(worldStatistics.getAveragePopulation(), worldStatistics.getMaxDeaths()),
+		int max = Utils.max(worldStatistics.getMaxDeathsFromList(), worldStatistics.getMaxBirthFromList(), worldStatistics.getMaxPopulationFromList());
+		populationGraphPanel.addGraph(worldStatistics.getDeathList(), max,
 				0, Color.RED, Messages.getString("T_DEATHS")); //$NON-NLS-1$
-		populationGraphPanel.addGraph(worldStatistics.getBirthList(), Math.max(worldStatistics.getAveragePopulation(), worldStatistics.getMaxBirth()),
+		populationGraphPanel.addGraph(worldStatistics.getBirthList(), max,
 				0, Color.GREEN, Messages.getString("T_BIRTHS")); //$NON-NLS-1$
-		populationGraphPanel.addGraph(worldStatistics.getPopulationList(), worldStatistics.getMaxPopulation(),
+		populationGraphPanel.addGraph(worldStatistics.getPopulationList(), max,
 				0, Color.WHITE, Messages.getString("T_POPULATION")); //$NON-NLS-1$
+		populationGraphPanel.addGraph(worldStatistics.getDistinctSpeciesList(), worldStatistics.getMaxDistinctSpecies(),
+				0, Color.ORANGE, "distinct species"); //$NON-NLS-1$
 		populationGraphPanel.updateLegend();
 
 

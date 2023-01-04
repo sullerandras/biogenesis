@@ -217,6 +217,16 @@ public class World implements Serializable{
 		return _population;
 	}
 	/**
+	 * Returns the number of distinct cladeIDs in the current population.
+	 */
+	public int getDistinctCladeIDCount() {
+		return (int) _organisms
+			.stream()
+			.map(o -> o.getGeneticCode().getcladeID())
+			.distinct()
+			.count();
+	}
+	/**
 	 * Increase the population counter by one.
 	 *
 	 * This method should be called every time a new organism is
@@ -598,7 +608,7 @@ public class World implements Serializable{
 			_visibleWorld._mainWindow.getInfoPanel().recalculate();
 		if (nFrames % 256 == 0) {
 			nFrames = 0;
-			worldStatistics.eventTime(_population, _O2, _CO2, _CH4);
+			worldStatistics.eventTime(_population, getDistinctCladeIDCount(), _O2, _CO2, _CH4);
 		}
 	}
 	/**

@@ -1017,6 +1017,9 @@ public class MainWindow extends JFrame {
 		statusLabelText.append(Messages.getString("T_CURRENT_POPULATION")); //$NON-NLS-1$
 		statusLabelText.append(_world.getPopulation());
 		statusLabelText.append("     "); //$NON-NLS-1$
+		statusLabelText.append("Species: "); //$NON-NLS-1$
+		statusLabelText.append(_world.getDistinctCladeIDCount());
+		statusLabelText.append("     "); //$NON-NLS-1$
 		statusLabelText.append(Messages.getString("T_O2")); //$NON-NLS-1$
 		statusLabelText.append(_nf.format(_world.getO2()));
 		statusLabelText.append("     "); //$NON-NLS-1$
@@ -1075,8 +1078,10 @@ public class MainWindow extends JFrame {
 		new javax.swing.Timer(1000 / Utils.STATUS_BAR_REFRESH_FPS, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				updateStatusLabel();
-				frameCounter = 0;
+				synchronized(_world._organisms) {
+					updateStatusLabel();
+					frameCounter = 0;
+				}
 			}
 		}).start();
 
