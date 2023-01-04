@@ -1,5 +1,15 @@
-run: compile
-	java --class-path lib/jts-core-1.15.0.jar:classes biogenesis.MainWindow
+run: build
+	java -jar biogenesis.jar
+
+build: compile
+	rm -rf build
+	rm -rf biogenesis.jar
+	mkdir build
+	unzip lib/*.jar -d build
+	cp -r classes/* build
+	cp -r src build
+	cp changes.md build
+	jar -cfe biogenesis.jar biogenesis.MainWindow -C build .
 
 compile:
 	javac --class-path lib/jts-core-1.15.0.jar --source-path src src/biogenesis/*.java --source 8 --target 8 -d classes

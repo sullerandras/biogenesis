@@ -1,0 +1,9 @@
+Changes that I've added on top of MarcoDBAA's source:
+- Update statistics regularly (controlled by `Utils.STATISTICS_REFRESH_FPS`)
+- Update status bar regularly (controlled by `Utils.STATUS_BAR_REFRESH_FPS`)
+- Set min digits to 1 in status bar
+- Make color panel narrower so it can fit on the screen with the main frame
+- Stop repainting the world if the window is not in focus
+- Set statistics window’s minimum size to the current window size. This seem to make it less jumpy when the `Remains of beings` number has different number of digits
+- Change scroll unit increment to make it easier to scroll on a macbook
+- Show number of species in status bar and statistics
