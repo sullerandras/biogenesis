@@ -22,6 +22,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -29,6 +30,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowAdapter;
+import java.awt.geom.AffineTransform;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -336,7 +338,7 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 		gbc.gridy = 0;
 		gbc.weightx = 0;
 		gbc.weighty = 0;
-		gbc.fill = GridBagConstraints.NONE;
+		gbc.fill = GridBagConstraints.VERTICAL;
 		gbc.anchor = GridBagConstraints.NORTH;
 		getContentPane().add(rightPanel, gbc);
 	}
@@ -527,11 +529,15 @@ class GraphPanel extends JPanel {
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
+		Graphics2D g2 = (Graphics2D) g;
+		AffineTransform saveAT = g2.getTransform();
+		g2.scale(centralPanel.getWidth() / (double) width, centralPanel.getHeight() / (double) height);
 		GraphInfo graph;
 		for (Iterator<GraphInfo> it = graphList.iterator(); it.hasNext();) {
 			graph = it.next();
 			graph.draw(g);
 		}
+		g2.setTransform(saveAT);
 	}
 }
 
