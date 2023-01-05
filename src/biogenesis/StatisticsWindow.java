@@ -69,7 +69,8 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 		setTitle(Messages.getString("T_STATISTICS")); //$NON-NLS-1$
 		setComponents();
 		pack();
-		setResizable(false);
+		setResizable(true);
+		setMinimumSize(getSize());
 
 		Timer timer = new Timer(1000 / Utils.STATISTICS_REFRESH_FPS, new ActionListener() {
 			@Override
@@ -214,7 +215,11 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 		currentStatePanel.add(new JLabel(Messages.getString("T_COLOR_PROPORTION")), gbc); //$NON-NLS-1$
 		ColorPanel colorPanel = createColorPanel();
 		gbc.gridx = 2;
+		gbc.weightx = 1;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
 		currentStatePanel.add(colorPanel, gbc);
+		gbc.weightx = 0;
+		gbc.fill = GridBagConstraints.NONE;
 		title = BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED),
 				Messages.getString("T_CURRENT_STATE"), TitledBorder.LEFT, TitledBorder.TOP); //$NON-NLS-1$
 		currentStatePanel.setBorder(title);
@@ -302,17 +307,38 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 
 		// Add all components to the content pane
 		JPanel leftPanel = new JPanel();
-		leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
-		leftPanel.add(currentStatePanel);
-		leftPanel.add(notableBeingsPanel);
+		leftPanel.setLayout(new GridBagLayout());
+		gbc = new GridBagConstraints();
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.weightx = 1;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		leftPanel.add(currentStatePanel, gbc);
+		gbc.gridy = 1;
+		gbc.weighty = 1;
+		gbc.fill = GridBagConstraints.NONE;
+		gbc.anchor = GridBagConstraints.NORTHWEST;
+		leftPanel.add(notableBeingsPanel, gbc);
 		JPanel rightPanel = new JPanel();
 		rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
 		rightPanel.add(worldHistoryPanel);
 		rightPanel.add(buttonsPanel);
 
-		getContentPane().setLayout(new BorderLayout());
-		getContentPane().add(leftPanel, BorderLayout.WEST);
-		getContentPane().add(rightPanel, BorderLayout.EAST);
+		getContentPane().setLayout(new GridBagLayout());
+		gbc = new GridBagConstraints();
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.weightx = 1;
+		gbc.weighty = 1;
+		gbc.fill = GridBagConstraints.BOTH;
+		getContentPane().add(leftPanel, gbc);
+		gbc.gridx = 1;
+		gbc.gridy = 0;
+		gbc.weightx = 0;
+		gbc.weighty = 0;
+		gbc.fill = GridBagConstraints.NONE;
+		gbc.anchor = GridBagConstraints.NORTH;
+		getContentPane().add(rightPanel, gbc);
 	}
 
 	private ColorPanel createColorPanel() {
@@ -392,9 +418,9 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 		if (e.getSource() == updateButton) {
 			getContentPane().removeAll();
 			setComponents();
-			pack();
-			invalidate();
-			setMinimumSize(getSize());
+			// pack();
+			revalidate();
+			// invalidate();
 		}
 		if (e.getSource() == closeButton) {
 			dispose();
