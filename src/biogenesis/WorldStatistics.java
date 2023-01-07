@@ -31,8 +31,6 @@ public class WorldStatistics implements Serializable {
 
 	private int maxPopulation;
 
-	private int maxDistinctSpecies;
-
 	private int maxBirths = 0;
 
 	private int maxDeaths = 0;
@@ -132,7 +130,7 @@ public class WorldStatistics implements Serializable {
 
 	private List<Double> populationList = new ArrayList<Double>(100);
 
-	private List<Double> distinctSpeciesList = new ArrayList<Double>(100);
+	private List<Double> distinctCladesList = new ArrayList<Double>(100);
 
 	private List<Double> deathList = new ArrayList<Double>(100);
 
@@ -156,8 +154,8 @@ public class WorldStatistics implements Serializable {
 		return populationList.stream().max(Comparator.comparingDouble(Double::doubleValue)).orElse(Double.valueOf(0)).intValue();
 	}
 
-	public int getMaxDistinctSpecies() {
-		return distinctSpeciesList.stream().max(Comparator.comparingDouble(Double::doubleValue)).orElse(Double.valueOf(0)).intValue();
+	public int getMaxDistinctClades() {
+		return distinctCladesList.stream().max(Comparator.comparingDouble(Double::doubleValue)).orElse(Double.valueOf(0)).intValue();
 	}
 
 	public int getMaxBirth() {
@@ -344,8 +342,8 @@ public class WorldStatistics implements Serializable {
 		return populationList;
 	}
 
-	public List<Double> getDistinctSpeciesList() {
-		return distinctSpeciesList;
+	public List<Double> getDistinctCladesList() {
+		return distinctCladesList;
 	}
 
 	public List<Double> getDeathList() {
@@ -422,7 +420,7 @@ public class WorldStatistics implements Serializable {
 		infectionsSum++;
 	}
 
-	public void eventTime(int population, int distinctSpecies, double O2, double CO2, double CH4) {
+	public void eventTime(int population, int distinctClades, double O2, double CO2, double CH4) {
 		time++;
 		if (deathLastTime > 1.5 * getAverageDeaths()) {
 			if (deathLastTime > 3 * getAverageDeaths()) {
@@ -491,9 +489,9 @@ public class WorldStatistics implements Serializable {
 		if (populationList.size() == 100)
 			populationList.remove(0);
 		populationList.add(Double.valueOf(population));
-		if (distinctSpeciesList.size() == 100)
-			distinctSpeciesList.remove(0);
-		distinctSpeciesList.add(Double.valueOf(distinctSpecies));
+		if (distinctCladesList.size() == 100)
+			distinctCladesList.remove(0);
+		distinctCladesList.add(Double.valueOf(distinctClades));
 		if (deathList.size() == 100)
 			deathList.remove(0);
 		deathList.add(Double.valueOf(deathLastTime));

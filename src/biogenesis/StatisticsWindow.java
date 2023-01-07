@@ -108,8 +108,8 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 				0, Color.GREEN, Messages.getString("T_BIRTHS")); //$NON-NLS-1$
 		populationGraphPanel.addGraph(worldStatistics.getPopulationList(), max,
 				0, Color.WHITE, Messages.getString("T_POPULATION")); //$NON-NLS-1$
-		populationGraphPanel.addGraph(worldStatistics.getDistinctSpeciesList(), worldStatistics.getMaxDistinctSpecies(),
-				0, Color.ORANGE, "distinct species"); //$NON-NLS-1$
+		populationGraphPanel.addGraph(worldStatistics.getDistinctCladesList(), worldStatistics.getMaxDistinctClades(),
+				0, Color.ORANGE, "distinct clades"); //$NON-NLS-1$
 		populationGraphPanel.updateLegend();
 
 

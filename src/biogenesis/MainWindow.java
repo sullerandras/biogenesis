@@ -1018,7 +1018,7 @@ public class MainWindow extends JFrame {
 		statusLabelText.append(Messages.getString("T_CURRENT_POPULATION")); //$NON-NLS-1$
 		statusLabelText.append(_world.getPopulation());
 		statusLabelText.append("     "); //$NON-NLS-1$
-		statusLabelText.append("Species: "); //$NON-NLS-1$
+		statusLabelText.append("Clades: "); //$NON-NLS-1$
 		statusLabelText.append(_world.getDistinctCladeIDCount());
 		statusLabelText.append("     "); //$NON-NLS-1$
 		statusLabelText.append(Messages.getString("T_O2")); //$NON-NLS-1$

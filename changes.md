@@ -6,5 +6,5 @@ Changes that I've added on top of MarcoDBAA's source:
 - Stop repainting the world if the window is not in focus
 - Set statistics window’s minimum size to the current window size. This seem to make it less jumpy when the `Remains of beings` number has different number of digits
 - Change scroll unit increment to make it easier to scroll on a macbook
-- Show number of species in status bar and statistics
+- Show number of clades in status bar and statistics
 - Add parameter for the "repaint strategy". Defaults to “repaint if any of the app window is in focus”.
