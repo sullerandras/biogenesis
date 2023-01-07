@@ -1146,8 +1146,9 @@ public class MainWindow extends JFrame {
 								accumulatedNanosForFpsAdjust = 0L;
 							}
 						}
-						//do automatic backups
-						if (Utils.AUTO_BACKUP && _world.getTime() % Utils.BACKUP_DELAY == 0 && _world.getTime() > 0) {
+						// Do automatic backups if we already saved the game. Ignore automatic backup
+						// if the world has not been saved yet (i.e. after started a new world).
+						if (Utils.AUTO_BACKUP && _world.getTime() % Utils.BACKUP_DELAY == 0 && _world.getTime() > 0 && _gameFile != null) {
 							if (!_isBackedUp) {
 								backupGameAction.actionPerformed(null);
 								_isBackedUp = true;
