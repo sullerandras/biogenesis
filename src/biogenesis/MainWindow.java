@@ -38,6 +38,8 @@ import java.io.ObjectOutputStream;
 import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.TimerTask;
 
 import javax.imageio.ImageIO;
@@ -67,7 +69,7 @@ public class MainWindow extends JFrame {
 	protected World _world;
 	protected boolean _isProcessActive=false;
 	protected transient java.util.Timer _timer;
-	protected transient TimerTask updateTask = null;
+	protected transient Thread workerThread = null;
 	protected JFileChooser worldChooser = new JFileChooser();
 	protected JFileChooser geneticCodeChooser = new JFileChooser();
 	protected File _gameFile = null;
@@ -1010,7 +1012,7 @@ public class MainWindow extends JFrame {
 	public void updateStatusLabel() {
 		statusLabelText.setLength(0);
 		statusLabelText.append(Messages.getString("T_FPS")); //$NON-NLS-1$
-		statusLabelText.append(frameCounter * Utils.STATUS_BAR_REFRESH_FPS);
+		statusLabelText.append(nFrames - historicalFrames.get(0));
 		statusLabelText.append("     "); //$NON-NLS-1$
 		statusLabelText.append(Messages.getString("T_TIME")); //$NON-NLS-1$
 		statusLabelText.append(_world.getTime());
@@ -1061,6 +1063,18 @@ public class MainWindow extends JFrame {
 			}
 	};
 
+	/**
+	 * Used for FPS calculation in the status bar.
+	 *
+	 * There are `Utils.STATUS_BAR_REFRESH_FPS` number of elements in this list.
+	 * We appent the `nFrames` to this list and remove the first element every
+	 * time we update the status bar. The `FPS:` in the status bar is calculated
+	 * as `nFrames - historicalFrames.get(0)`.
+	 * This allows us to have a less jumpy FPS counter in status bar since it
+	 * shows the number of frames done in the last 1000 msec instead of just
+	 * last 250 msec like before.
+	 */
+	protected List<Long> historicalFrames = new ArrayList<>();
 	public void startApp() {
 		/*GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 		if (gd.isFullScreenSupported()) {
@@ -1075,13 +1089,17 @@ public class MainWindow extends JFrame {
 		//}
 
 		_timer = new java.util.Timer();
-		startLifeProcess(Utils.DELAY);
+		startWorkerThread();
+		for (int i = 0; i < Utils.STATUS_BAR_REFRESH_FPS; i++) {
+			historicalFrames.add(0L);
+		}
 		new javax.swing.Timer(1000 / Utils.STATUS_BAR_REFRESH_FPS, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				synchronized(_world._organisms) {
 					updateStatusLabel();
-					frameCounter = 0;
+					historicalFrames.remove(0);
+					historicalFrames.add(nFrames);
 				}
 			}
 		}).start();
@@ -1090,22 +1108,33 @@ public class MainWindow extends JFrame {
 			startServer();
 	}
 
-	/**
-	 * Number of frames executed since the last status bar update. It will be reset
-	 * to 0 every time we update the status bar.
-	 */
-	protected int frameCounter;
-	public void startLifeProcess(int delay) {
-		if (updateTask != null) {
-			updateTask.cancel();
-		}
-		updateTask = new TimerTask() {
+	public void startWorkerThread() {
+		workerThread = new Thread() {
 			@Override
 			public void run() {
+				long prevNanos = System.nanoTime();
+				long accumulatedNanosForFpsAdjust = 0L;
 				try {
 					while (true) {
 						EventQueue.invokeAndWait(lifeProcess);
-						frameCounter++;
+						// Add a little delay if we were faster than the target fps.
+						// But only if we need to repaint the world, so avoid unnecessary slowdowns when not looking at the world.
+						if (Utils.repaintWorld()) {
+							final long currentNanos = System.nanoTime();
+							final long frameNanos = currentNanos - prevNanos;
+							prevNanos = currentNanos;
+							accumulatedNanosForFpsAdjust += Utils.DELAY * 1_000_000L - frameNanos;
+							if (accumulatedNanosForFpsAdjust > 100_000_000L) {
+								// Clear the delay if it's abnormally big, to avoid sleeping for hours or days due to a bug.
+								accumulatedNanosForFpsAdjust = 0L;
+							} else if (accumulatedNanosForFpsAdjust > 10_000_000L) {
+								// If the accumulated delay is more than 10msec then we sleep.
+								Thread.sleep(Math.round(accumulatedNanosForFpsAdjust * 0.000001));
+							} else if (accumulatedNanosForFpsAdjust < -10_000_000L) {
+								// Clean up negative delay in case we are slower than the target.
+								accumulatedNanosForFpsAdjust = 0L;
+							}
+						}
 						//do automatic backups
 						if (Utils.AUTO_BACKUP && _world.getTime() % Utils.BACKUP_DELAY == 0 && _world.getTime() > 0) {
 							if (!_isBackedUp) {
@@ -1123,7 +1152,7 @@ public class MainWindow extends JFrame {
 				}
 			}
 		};
-		_timer.schedule(updateTask, delay, delay);
+		workerThread.start();
 	}
 
 	public void changeLocale() {
