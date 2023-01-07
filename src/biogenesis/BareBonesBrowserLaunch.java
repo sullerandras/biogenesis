@@ -11,8 +11,9 @@ package biogenesis;
 //Public Domain Software -- Free to Use as You Like  //
 /////////////////////////////////////////////////////////
 
+import java.awt.Desktop;
 import java.lang.reflect.Method;
-
+import java.net.URI;
 import javax.swing.JOptionPane;
 
 public class BareBonesBrowserLaunch {
@@ -22,6 +23,10 @@ public class BareBonesBrowserLaunch {
 	public static void openURL(String url) {
 		String osName = System.getProperty("os.name"); //$NON-NLS-1$
 		try {
+			if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+				Desktop.getDesktop().browse(new URI(url));
+				return;
+			}
 			if (osName.startsWith("Mac OS")) { //$NON-NLS-1$
 				Class<?> fileMgr = Class.forName("com.apple.eio.FileManager"); //$NON-NLS-1$
 				Method openURL = fileMgr.getDeclaredMethod("openURL", //$NON-NLS-1$
@@ -44,6 +49,7 @@ public class BareBonesBrowserLaunch {
 				Runtime.getRuntime().exec(new String[] { browser, url });
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			JOptionPane.showMessageDialog(null, errMsg
 					+ ":\n" + e.getLocalizedMessage()); //$NON-NLS-1$
 		}
