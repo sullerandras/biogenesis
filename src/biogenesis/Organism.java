@@ -3973,10 +3973,10 @@ public class Organism extends Rectangle {
 			 * don't calculate points again.
 			 */
 			if (_lastTheta != _theta || force) {
-				theta=_theta+Math.atan2(_startPointY[i] ,_startPointX[i]);
+				theta=_theta+Utils.atan2(_startPointY[i] ,_startPointX[i]);
 				x1[i]=(int)(_m1[i]*Math.cos(theta));
 				y1[i]=(int)(_m1[i]*Math.sin(theta));
-				theta=_theta+Math.atan2(_endPointY[i], _endPointX[i]);
+				theta=_theta+Utils.atan2(_endPointY[i], _endPointX[i]);
 				x2[i]=(int)(_m2[i]*Math.cos(theta));
 				y2[i]=(int)(_m2[i]*Math.sin(theta));
 			}
