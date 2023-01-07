@@ -8,3 +8,5 @@ Changes that I've added on top of MarcoDBAA's source:
 - Change scroll unit increment to make it easier to scroll on a macbook
 - Show number of clades in status bar and statistics
 - Add parameter for the "repaint strategy". Defaults to “repaint if any of the app window is in focus”.
+- Limit FPS to the target FPS when game is repainted. The FPS is unlimited when the world is not repainted (e.g. in the background).
+- Save world as png when doing auto backup
