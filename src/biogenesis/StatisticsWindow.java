@@ -211,15 +211,27 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 		gbc.gridx = 1;
 		gbc.gridy = 3;
 		currentStatePanel.add(new JLabel(Messages.getString("T_REMAINS_OF_BEINGS")+world.getNCorpses()), gbc); //$NON-NLS-1$
+
+		JPanel colorPanelWrapper = new JPanel(new GridBagLayout());
+		GridBagConstraints gbc2 = new GridBagConstraints();
+		gbc2.gridx = 1;
+		gbc2.gridy = 1;
+		colorPanelWrapper.add(new JLabel(Messages.getString("T_COLOR_PROPORTION")), gbc2); //$NON-NLS-1$
+		gbc2.gridx = 2;
+		gbc2.gridy = 1;
+		gbc2.weightx = 1;
+		gbc2.fill = GridBagConstraints.HORIZONTAL;
+		ColorPanel colorPanel = createColorPanel();
+		colorPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		colorPanelWrapper.add(colorPanel, gbc2);
 		gbc.gridx = 1;
 		gbc.gridy = 4;
-		gbc.anchor = GridBagConstraints.WEST;
-		currentStatePanel.add(new JLabel(Messages.getString("T_COLOR_PROPORTION")), gbc); //$NON-NLS-1$
-		ColorPanel colorPanel = createColorPanel();
-		gbc.gridx = 2;
 		gbc.weightx = 1;
+		gbc.gridwidth = 2;
+		gbc.anchor = GridBagConstraints.WEST;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
-		currentStatePanel.add(colorPanel, gbc);
+		currentStatePanel.add(colorPanelWrapper, gbc);
+		gbc.gridwidth = 1;
 		gbc.weightx = 0;
 		gbc.fill = GridBagConstraints.NONE;
 		title = BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED),
