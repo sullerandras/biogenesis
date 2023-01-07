@@ -142,6 +142,19 @@ public class WorldStatistics implements Serializable {
 
 	private List<Double> methaneList = new ArrayList<Double>(100);
 
+	public void saveGameLoaded() {
+		// Since we renamed `distinctSpiciesList` to `distinctCladesList`, the existing saves
+		// may not have this attribute, in which case the value is going to be reset to `null`
+		// for some reason.
+		if (distinctCladesList == null) {
+			distinctCladesList = new ArrayList<Double>(100);
+			// fill distinctCladesList with elements if there are elements in other lists.
+			for (int i = 0; i < populationList.size(); i++) {
+				distinctCladesList.add(Double.valueOf(0));
+			}
+		}
+	}
+
 	public long getTime() {
 		return time;
 	}

@@ -660,6 +660,7 @@ public class MainWindow extends JFrame {
 						inputStream.close();
 						_gameFile = f;
 						_trackedOrganism = null;
+						_world.worldStatistics.saveGameLoaded();
 						setStatusMessage(Messages.getString("T_WORLD_LOADED_SUCCESSFULLY")); //$NON-NLS-1$
 					} catch (IOException ex) {
 						System.err.println(ex.getMessage());
