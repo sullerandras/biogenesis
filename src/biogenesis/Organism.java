@@ -354,7 +354,7 @@ public class Organism extends Rectangle {
 	/**
 	 * Reference to the visual part of the world where the organism lives.
 	 */
-	transient protected VisibleWorld _visibleWorld;
+	transient protected VisibleWorldInterface _visibleWorld;
 	/**
 	 * Identification number of this organism's parent.
 	 */
@@ -3424,7 +3424,11 @@ public class Organism extends Rectangle {
 				// Generem identificador
 				_ID = _world.getNewId();
 				if (_geneticCode.getcladeID() == null) {
-					_geneticCode._cladeID = Integer.toString(_ID);
+					if (Utils.ACCEPT_CONNECTIONS) {
+						_geneticCode._cladeID = Utils.USER_NAME + ":" + Integer.toString(_ID);
+					} else {
+						_geneticCode._cladeID = Integer.toString(_ID);
+					}
 				}
 				_energy = Math.min(Utils.INITIAL_ENERGY,_world._CO2);
 				_world.decreaseCO2(_energy);
@@ -3696,7 +3700,11 @@ public class Organism extends Rectangle {
 			if (_world.genesisCheckHit(this) == null) {
 				// Generate an identification
 				_ID = _world.getNewId();
-				_geneticCode._cladeID = Integer.toString(_ID);
+				if (Utils.ACCEPT_CONNECTIONS) {
+					_geneticCode._cladeID = Utils.USER_NAME + ":" + Integer.toString(_ID);
+				} else {
+					_geneticCode._cladeID = Integer.toString(_ID);
+				}
 				// Maximum age that an organism can reach
 				_max_age = Utils.MAX_AGE + (_segments/Utils.AGE_DIVISOR);
 				// Calculates the energy required to reproduce this genetic code.
@@ -3983,10 +3991,10 @@ public class Organism extends Rectangle {
 			 * don't calculate points again.
 			 */
 			if (_lastTheta != _theta || force) {
-				theta=_theta+Math.atan2(_startPointY[i] ,_startPointX[i]);
+				theta=_theta+Utils.atan2(_startPointY[i] ,_startPointX[i]);
 				x1[i]=(int)(_m1[i]*Math.cos(theta));
 				y1[i]=(int)(_m1[i]*Math.sin(theta));
-				theta=_theta+Math.atan2(_endPointY[i], _endPointX[i]);
+				theta=_theta+Utils.atan2(_endPointY[i], _endPointX[i]);
 				x2[i]=(int)(_m2[i]*Math.cos(theta));
 				y2[i]=(int)(_m2[i]*Math.sin(theta));
 			}

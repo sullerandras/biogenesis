@@ -22,6 +22,7 @@ package biogenesis;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -62,7 +63,7 @@ import javax.swing.WindowConstants;
 import javax.swing.border.EtchedBorder;
 
 
-public class MainWindow extends JFrame {
+public class MainWindow extends JFrame implements MainWindowInterface {
 	private static final long serialVersionUID = Utils.FILE_VERSION;
 
 	protected VisibleWorld _visibleWorld;
@@ -152,7 +153,7 @@ public class MainWindow extends JFrame {
 		return _isProcessActive;
 	}
 
-	public InfoToolbar getInfoPanel() {
+	public InfoToolbarInterface getInfoPanel() {
 		return infoToolbar;
 	}
 
@@ -180,6 +181,11 @@ public class MainWindow extends JFrame {
 				Utils.setMainWindowInFocus(false);
 			}
 		});
+	}
+
+	@Override
+	public Frame getFrame() {
+		return this;
 	}
 
 	/**
@@ -506,12 +512,21 @@ public class MainWindow extends JFrame {
 				String worldExt = BioFileFilter.WORLD_EXTENSION;
 				//Replace any string of format "filename@#####.ext" with "filename@TIME#.ext".
 				//Files without '@#####' ending also become "filename@TIME#.ext".
-				filename = filename.replaceFirst("(@[0-9]*)?." + worldExt + "$",
-						"@" + String.format("%1$05d", _world.getTime()) + "." + worldExt);
-				saveObject(_world, new File(filename));
+				String baseFilename = filename.replaceFirst("(@[0-9]*)?." + worldExt + "$",
+						"@" + formatTime(_world.getTime()));
+				saveObject(_world, new File(baseFilename + "." + worldExt));
+				// saveWorldImage(new File(baseFilename + ".png"));
 			}
 			else
 				saveGameAs();
+		}
+
+		private String formatTime(long time) {
+			if (time < 1000000) {
+				return String.format("%1$05d", _world.getTime());
+			}
+
+			return Long.toString(time, 10);
 		}
 
 		@Override
@@ -598,10 +613,6 @@ public class MainWindow extends JFrame {
 				_isProcessActive = false;
 				startStopAction.setActive(false);
 				_menuStartStopGame.setIcon(null);
-				// Get the image to save
-				Dimension dimension = new Dimension(_world._width,_world._height);
-				BufferedImage worldimage = new BufferedImage(dimension.width, dimension.height, BufferedImage.TYPE_INT_ARGB);
-				_visibleWorld.paint(worldimage.getGraphics());
 				try {
 					// Ask for file name
 					JFileChooser chooser = new JFileChooser();
@@ -616,14 +627,7 @@ public class MainWindow extends JFrame {
 									Messages.getString("T_FILE_EXISTS"),JOptionPane.YES_NO_OPTION,JOptionPane.WARNING_MESSAGE); //$NON-NLS-1$
 						}
 						if (canWrite == JOptionPane.YES_OPTION) {
-							// Write image to file
-							try {
-								ImageIO.write(worldimage,"PNG",f); //$NON-NLS-1$
-							} catch (FileNotFoundException ex) {
-								System.err.println(ex.getMessage());
-							} catch (IOException ex) {
-								System.err.println(ex.getMessage());
-							}
+							saveWorldImage(f);
 						}
 					}
 				} catch (SecurityException ex) {
@@ -996,6 +1000,18 @@ public class MainWindow extends JFrame {
 		return false;
 	}
 
+	public void saveWorldImage(File f) {
+		final BufferedImage worldimage = new BufferedImage(_world._width, _world._height, BufferedImage.TYPE_INT_ARGB);
+		_visibleWorld.paint(worldimage.getGraphics());
+		try {
+			ImageIO.write(worldimage, "PNG",f); //$NON-NLS-1$
+		} catch (FileNotFoundException ex) {
+			System.err.println(ex.getMessage());
+		} catch (IOException ex) {
+			System.err.println(ex.getMessage());
+		}
+	}
+
 	public void configureApp() {
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		addWindowListener(new WindowAdapter() {
@@ -1028,7 +1044,7 @@ public class MainWindow extends JFrame {
 		statusLabelText.append(_nf.format(_world.getO2()));
 		statusLabelText.append("     "); //$NON-NLS-1$
 		statusLabelText.append(Messages.getString("T_CO2")); //$NON-NLS-1$
-		statusLabelText.append(_nf.format(_world._CO2));
+		statusLabelText.append(_nf.format(_world.getCO2()));
 		statusLabelText.append("     "); //$NON-NLS-1$
 		statusLabelText.append(Messages.getString("T_CH4")); //$NON-NLS-1$
 		statusLabelText.append(_nf.format(_world.getCH4()));
@@ -1136,8 +1152,9 @@ public class MainWindow extends JFrame {
 								accumulatedNanosForFpsAdjust = 0L;
 							}
 						}
-						//do automatic backups
-						if (Utils.AUTO_BACKUP && _world.getTime() % Utils.BACKUP_DELAY == 0 && _world.getTime() > 0) {
+						// Do automatic backups if we already saved the game. Ignore automatic backup
+						// if the world has not been saved yet (i.e. after started a new world).
+						if (Utils.AUTO_BACKUP && _world.getTime() % Utils.BACKUP_DELAY == 0 && _world.getTime() > 0 && _gameFile != null) {
 							if (!_isBackedUp) {
 								backupGameAction.actionPerformed(null);
 								_isBackedUp = true;

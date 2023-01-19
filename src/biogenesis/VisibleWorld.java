@@ -44,7 +44,7 @@ import org.xml.sax.SAXException;
  * part: it's the place where organisms are drawn and is in charge of
  * the context menus management.
  */
-public class VisibleWorld extends JPanel {
+public class VisibleWorld extends JPanel implements VisibleWorldInterface {
 	/**
 	 * The version of this class
 	 */
@@ -152,6 +152,10 @@ public class VisibleWorld extends JPanel {
 	 * A reference to the {@link InfoWindow}, that is created from this class.
 	 */
 	//transient protected InfoWindow _infoWindow = null;
+	
+	public MainWindowInterface getMainWindow() {
+		return _mainWindow;
+	}
 	
 	class TrackAction extends StdAction {
 		private static final long serialVersionUID = 1L;

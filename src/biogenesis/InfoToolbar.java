@@ -33,7 +33,7 @@ import javax.swing.JTextArea;
 import javax.swing.JToolBar;
 
 
-public class InfoToolbar extends JToolBar {
+public class InfoToolbar extends JToolBar implements InfoToolbarInterface {
 	private static final long serialVersionUID = Utils.FILE_VERSION;
 
 	protected Organism _selOrganism;

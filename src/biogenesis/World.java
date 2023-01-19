@@ -25,6 +25,7 @@ import org.locationtech.jts.index.strtree.STRtree;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.swing.SwingUtilities;
 
@@ -91,7 +92,7 @@ public class World implements Serializable{
 	 * to indicate which parts of the world should be repainted due to
 	 * events in the world.
 	 */
-	transient protected VisibleWorld _visibleWorld;
+	transient protected VisibleWorldInterface _visibleWorld;
 	/**
 	 * Frame counter. 256 frames are a time unit. This value is used to count
 	 * time and to trigger some window updating at regular intervals.
@@ -136,7 +137,7 @@ public class World implements Serializable{
 	 * @return  A newly created StatisticsWindow.
 	 */
 	public StatisticsWindow createStatisticsWindow() {
-		return new StatisticsWindow(_visibleWorld._mainWindow, worldStatistics, _organisms);
+		return new StatisticsWindow(_visibleWorld.getMainWindow(), worldStatistics, _organisms);
 	}
 	/**
 	 * Finds an organism that has the given coordinates inside its bounding box and
@@ -415,7 +416,7 @@ public class World implements Serializable{
 	 *
 	 * @param visibleWorld  A reference to the visual representation of this world.
 	 */
-	public World(VisibleWorld visibleWorld) {
+	public World(VisibleWorldInterface visibleWorld) {
 		_visibleWorld = visibleWorld;
 		_width = Utils.WORLD_WIDTH;
 		_height = Utils.WORLD_HEIGHT;
@@ -620,7 +621,7 @@ public class World implements Serializable{
 		_CH4 -= y;
 		_CO2 += y;
 		if (nFrames++ % 20 == 0)
-			_visibleWorld._mainWindow.getInfoPanel().recalculate();
+			_visibleWorld.getMainWindow().getInfoPanel().recalculate();
 		if (nFrames % 256 == 0) {
 			nFrames = 0;
 			worldStatistics.eventTime(_population, getDistinctCladeIDCount(), _O2, _CO2, _CH4);
@@ -788,7 +789,7 @@ public class World implements Serializable{
 	public void addOrganism(Organism child, Organism parent) {
 		_organisms.add(child);
 		if (parent == _visibleWorld.getSelectedOrganism())
-			_visibleWorld._mainWindow.getInfoPanel().changeNChildren();
+			_visibleWorld.getMainWindow().getInfoPanel().changeNChildren();
 		if (parent != null) {
 			worldStatistics.eventOrganismBorn(child, parent);
 		}
@@ -804,7 +805,7 @@ public class World implements Serializable{
 	public void organismHasDied(Organism dyingOrganism, Organism killingOrganism) {
 		worldStatistics.eventOrganismDie(dyingOrganism, killingOrganism);
 		if (killingOrganism == _visibleWorld.getSelectedOrganism())
-			_visibleWorld._mainWindow.getInfoPanel().changeNKills();
+			_visibleWorld.getMainWindow().getInfoPanel().changeNKills();
 		if (dyingOrganism == _visibleWorld.getSelectedOrganism())
 			_visibleWorld.showDeadToolbar();
 	}
@@ -817,6 +818,6 @@ public class World implements Serializable{
 	public void organismHasBeenInfected(Organism infectedOrganism, Organism infectingOrganism) {
 		worldStatistics.eventOrganismInfects(infectedOrganism, infectingOrganism);
 		if (infectingOrganism == _visibleWorld.getSelectedOrganism())
-			_visibleWorld._mainWindow.getInfoPanel().changeNInfected();
+			_visibleWorld.getMainWindow().getInfoPanel().changeNInfected();
 	}
 }

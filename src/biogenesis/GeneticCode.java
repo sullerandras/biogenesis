@@ -872,7 +872,9 @@ public class GeneticCode implements Cloneable, Serializable {
 			// change symmetry
 			randomSymmetry();
 			nGenes = parentCode.getNGenes();
-			_updateClade =true;
+			if (_symmetry != parentCode.getSymmetry()) {
+				_updateClade =true;
+			}
 		} else {
 			// keep symmetry
 			_symmetry = parentCode.getSymmetry();

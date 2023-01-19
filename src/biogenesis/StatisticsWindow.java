@@ -61,8 +61,8 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 	private WorldStatistics worldStatistics;
 	private List<Organism> organisms;
 
-	public StatisticsWindow(MainWindow w, WorldStatistics ws, List<Organism> os) {
-		super(w);
+	public StatisticsWindow(MainWindowInterface w, WorldStatistics ws, List<Organism> os) {
+		super(w.getFrame());
 		world = w.getWorld();
 		visibleWorld = w.getVisibleWorld();
 		worldStatistics = ws;
@@ -100,7 +100,7 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 		nf.setMaximumFractionDigits(1);
 
 		// Population graphic
-		GraphPanel populationGraphPanel = new GraphPanel(100, 80);
+		GraphPanel populationGraphPanel = new GraphPanel(100, 108);
 		int max = Utils.max(worldStatistics.getMaxDeathsFromList(), worldStatistics.getMaxBirthFromList(), worldStatistics.getMaxPopulationFromList());
 		populationGraphPanel.addGraph(worldStatistics.getDeathList(), max,
 				0, Color.RED, Messages.getString("T_DEATHS")); //$NON-NLS-1$
@@ -108,7 +108,7 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 				0, Color.GREEN, Messages.getString("T_BIRTHS")); //$NON-NLS-1$
 		populationGraphPanel.addGraph(worldStatistics.getPopulationList(), max,
 				0, Color.WHITE, Messages.getString("T_POPULATION")); //$NON-NLS-1$
-		populationGraphPanel.addGraph(worldStatistics.getDistinctCladesList(), worldStatistics.getMaxDistinctClades(),
+		populationGraphPanel.addGraph(worldStatistics.getDistinctCladesList(), Math.log10(max),
 				0, Color.ORANGE, Messages.getString("T_CLADES")); //$NON-NLS-1$
 		populationGraphPanel.updateLegend();
 
@@ -127,12 +127,10 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 		popStatsPanel.add(new JLabel(Messages.getString("T_GENERATED_ORGANISMS")+ //$NON-NLS-1$
 				nf.format(worldStatistics.getCreatedOrganisms())));
 		popStatsPanel.add(new JLabel(Messages.getString("T_MAXIMUM_POPULATION")+ //$NON-NLS-1$
-				nf.format(worldStatistics.getMaxPopulation())));
-		popStatsPanel.add(new JLabel(Messages.getString("T_AT_TIME")+ //$NON-NLS-1$
+				nf.format(worldStatistics.getMaxPopulation())+" "+Messages.getString("T_AT_TIME")+
 				nf.format(worldStatistics.getMaxPopulationTime())));
 		popStatsPanel.add(new JLabel(Messages.getString("T_MINIMUM_POPULATION")+ //$NON-NLS-1$
-				nf.format(worldStatistics.getMinPopulation())));
-		popStatsPanel.add(new JLabel(Messages.getString("T_AT_TIME")+ //$NON-NLS-1$
+				nf.format(worldStatistics.getMinPopulation())+" "+Messages.getString("T_AT_TIME")+
 				nf.format(worldStatistics.getMinPopulationTime())));
 		popStatsPanel.add(new JLabel(Messages.getString("T_MASS_EXTINTIONS")+ //$NON-NLS-1$
 				nf.format(worldStatistics.getMassExtintions())));
@@ -147,32 +145,32 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 		populationPanel.setBorder(title);
 
 		// Atmosphere graphic
-		GraphPanel atmosphereGraphPanel = new GraphPanel(100,80);
-		atmosphereGraphPanel.addGraph(worldStatistics.getOxygenList(), world.getO2()+world._CO2+world.getCH4(),
+		GraphPanel atmosphereGraphPanel = new GraphPanel(100,108);
+		atmosphereGraphPanel.addGraph(worldStatistics.getOxygenList(), Math.sqrt(world.getO2()+world.getCO2()+world.getCH4()),
 				0, Color.BLUE, Messages.getString("T_OXYGEN")); //$NON-NLS-1$
-		atmosphereGraphPanel.addGraph(worldStatistics.getCarbonDioxideList(), world.getO2()+world._CO2+world.getCH4(),
+		atmosphereGraphPanel.addGraph(worldStatistics.getCarbonDioxideList(), Math.sqrt(world.getO2()+world.getCO2()+world.getCH4()),
 				0, Color.WHITE, Messages.getString("T_CARBON_DIOXIDE")); //$NON-NLS-1$
-		atmosphereGraphPanel.addGraph(worldStatistics.getMethaneList(), world.getO2()+world._CO2+world.getCH4(),
+		atmosphereGraphPanel.addGraph(worldStatistics.getMethaneList(), Math.sqrt(world.getO2()+world.getCO2()+world.getCH4()),
 				0, Color.MAGENTA, Messages.getString("T_METHANE")); //$NON-NLS-1$
 		atmosphereGraphPanel.updateLegend();
 
 		//Atmosphere statistics
 		JPanel atmosphereStatsPanel = new JPanel();
 		atmosphereStatsPanel.setLayout(new BoxLayout(atmosphereStatsPanel,BoxLayout.Y_AXIS));
-		atmosphereStatsPanel.add(new JLabel(Messages.getString("T_MAXIMUM_CARBON_DIOXIDE")+nf.format(worldStatistics.getMaxCarbonDioxide()))); //$NON-NLS-1$
-		atmosphereStatsPanel.add(new JLabel(Messages.getString("T_AT_TIME")+nf.format(worldStatistics.getMaxCarbonDioxideTime()))); //$NON-NLS-1$
-		atmosphereStatsPanel.add(new JLabel(Messages.getString("T_MINIMUM_CARBON_DIOXIDE")+nf.format(worldStatistics.getMinCarbonDioxide()))); //$NON-NLS-1$
-		atmosphereStatsPanel.add(new JLabel(Messages.getString("T_AT_TIME")+nf.format(worldStatistics.getMinCarbonDioxideTime()))); //$NON-NLS-1$
-		atmosphereStatsPanel.add(new JLabel(Messages.getString("T_MAXIMUM_METHANE")+nf.format(worldStatistics.getMaxMethane()))); //$NON-NLS-1$
-		atmosphereStatsPanel.add(new JLabel(Messages.getString("T_AT_TIME")+nf.format(worldStatistics.getMaxMethaneTime()))); //$NON-NLS-1$
-		atmosphereStatsPanel.add(new JLabel(Messages.getString("T_MINIMUM_METHANE")+nf.format(worldStatistics.getMinMethane()))); //$NON-NLS-1$
-		atmosphereStatsPanel.add(new JLabel(Messages.getString("T_AT_TIME")+nf.format(worldStatistics.getMinMethaneTime()))); //$NON-NLS-1$
-		atmosphereStatsPanel.add(new JLabel(Messages.getString("T_MAXIMUM_OXYGEN")+nf.format(worldStatistics.getMaxOxygen()))); //$NON-NLS-1$
-		atmosphereStatsPanel.add(new JLabel(Messages.getString("T_AT_TIME")+nf.format(worldStatistics.getMaxOxygenTime()))); //$NON-NLS-1$
-		atmosphereStatsPanel.add(new JLabel(Messages.getString("T_MINIMUM_OXYGEN")+nf.format(worldStatistics.getMinOxygenTime()))); //$NON-NLS-1$
-		atmosphereStatsPanel.add(new JLabel(Messages.getString("T_AT_TIME")+nf.format(worldStatistics.getMinOxygenTime()))); //$NON-NLS-1$
+		atmosphereStatsPanel.add(new JLabel(Messages.getString("T_MAXIMUM_CARBON_DIOXIDE")+nf.format(worldStatistics.getMaxCarbonDioxide())
+		                               +" "+Messages.getString("T_AT_TIME")+nf.format(worldStatistics.getMaxCarbonDioxideTime()))); //$NON-NLS-1$
+		atmosphereStatsPanel.add(new JLabel(Messages.getString("T_MINIMUM_CARBON_DIOXIDE")+nf.format(worldStatistics.getMinCarbonDioxide())
+		                               +" "+Messages.getString("T_AT_TIME")+nf.format(worldStatistics.getMinCarbonDioxideTime()))); //$NON-NLS-1$
+		atmosphereStatsPanel.add(new JLabel(Messages.getString("T_MAXIMUM_METHANE")+nf.format(worldStatistics.getMaxMethane())
+		                               +" "+Messages.getString("T_AT_TIME")+nf.format(worldStatistics.getMaxMethaneTime()))); //$NON-NLS-1$
+		atmosphereStatsPanel.add(new JLabel(Messages.getString("T_MINIMUM_METHANE")+nf.format(worldStatistics.getMinMethane())
+		                               +" "+Messages.getString("T_AT_TIME")+nf.format(worldStatistics.getMinMethaneTime()))); //$NON-NLS-1$
+		atmosphereStatsPanel.add(new JLabel(Messages.getString("T_MAXIMUM_OXYGEN")+nf.format(worldStatistics.getMaxOxygen())
+		                               +" "+Messages.getString("T_AT_TIME")+nf.format(worldStatistics.getMaxOxygenTime()))); //$NON-NLS-1$
+		atmosphereStatsPanel.add(new JLabel(Messages.getString("T_MINIMUM_OXYGEN")+nf.format(worldStatistics.getMinOxygen())
+		                               +" "+Messages.getString("T_AT_TIME")+nf.format(worldStatistics.getMinOxygenTime()))); //$NON-NLS-1$
 
-//		 Population = population graph + population stats
+        // Population = population graph + population stats
 		JPanel atmospherePanel = new JPanel();
 		atmospherePanel.setLayout(new BorderLayout());
 		atmospherePanel.add(atmosphereGraphPanel, BorderLayout.CENTER);
@@ -202,7 +200,7 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 		currentStatePanel.add(new JLabel(Messages.getString("T_OXYGEN2")+nf.format(world.getO2())), gbc); //$NON-NLS-1$
 		gbc.gridx = 1;
 		gbc.gridy = 2;
-		currentStatePanel.add(new JLabel(Messages.getString("T_POPULATION2")+world.getPopulation()), gbc); //$NON-NLS-1$
+		currentStatePanel.add(new JLabel(Messages.getString("T_CLADES2")+world.getDistinctCladeIDCount()), gbc); //$NON-NLS-1$
 		gbc.gridx = 2;
 		currentStatePanel.add(new JLabel(Messages.getString("T_CARBON_DIOXIDE2")+nf.format(world._CO2)), gbc); //$NON-NLS-1$
 		gbc.gridx = 2;
@@ -210,16 +208,31 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 		currentStatePanel.add(new JLabel(Messages.getString("T_METHANE2")+nf.format(world.getCH4())), gbc); //$NON-NLS-1$
 		gbc.gridx = 1;
 		gbc.gridy = 3;
-		currentStatePanel.add(new JLabel(Messages.getString("T_REMAINS_OF_BEINGS")+world.getNCorpses()), gbc); //$NON-NLS-1$
+		currentStatePanel.add(new JLabel(Messages.getString("T_POPULATION2")+world.getPopulation()), gbc); //$NON-NLS-1$
 		gbc.gridx = 1;
 		gbc.gridy = 4;
-		gbc.anchor = GridBagConstraints.WEST;
-		currentStatePanel.add(new JLabel(Messages.getString("T_COLOR_PROPORTION")), gbc); //$NON-NLS-1$
+		currentStatePanel.add(new JLabel(Messages.getString("T_REMAINS_OF_BEINGS")+world.getNCorpses()), gbc); //$NON-NLS-1$
+
+		JPanel colorPanelWrapper = new JPanel(new GridBagLayout());
+		GridBagConstraints gbc2 = new GridBagConstraints();
+		gbc2.gridx = 1;
+		gbc2.gridy = 1;
+		colorPanelWrapper.add(new JLabel(Messages.getString("T_COLOR_PROPORTION")), gbc2); //$NON-NLS-1$
+		gbc2.gridx = 2;
+		gbc2.gridy = 1;
+		gbc2.weightx = 1;
+		gbc2.fill = GridBagConstraints.HORIZONTAL;
 		ColorPanel colorPanel = createColorPanel();
-		gbc.gridx = 2;
+		colorPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		colorPanelWrapper.add(colorPanel, gbc2);
+		gbc.gridx = 1;
+		gbc.gridy = 5;
 		gbc.weightx = 1;
+		gbc.gridwidth = 2;
+		gbc.anchor = GridBagConstraints.WEST;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
-		currentStatePanel.add(colorPanel, gbc);
+		currentStatePanel.add(colorPanelWrapper, gbc);
+		gbc.gridwidth = 1;
 		gbc.weightx = 0;
 		gbc.fill = GridBagConstraints.NONE;
 		title = BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED),
