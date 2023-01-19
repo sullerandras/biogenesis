@@ -1,4 +1,7 @@
 classes
 *.bgw
+*.jar
+*.zip
+*.png
 build
 biogenesis.jar
