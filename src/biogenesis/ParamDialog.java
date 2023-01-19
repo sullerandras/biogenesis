@@ -51,6 +51,9 @@ public class ParamDialog extends JDialog {
 	private JTextField widthText = null;
 	private JTextField heightText = null;
 	private JTextField delayText = null;
+	private JRadioButton repaintWorldStrategyRadio1 = null;
+	private JRadioButton repaintWorldStrategyRadio2 = null;
+	private JRadioButton repaintWorldStrategyRadio3 = null;
 	private JCheckBox autoBackupsCheck = null;
 	private JTextField backupDelayText = null;
 	protected JRadioButton hardwareNoneRadio = null;
@@ -191,9 +194,9 @@ public class ParamDialog extends JDialog {
 	private JButton OKButton = null;
 	private JButton cancelButton = null;
 	private JButton defaultButton = null;
-	
+
 	protected MainWindow mainWindow;
-	
+
 	public ParamDialog(MainWindow parent) {
 		// Configurem les caracter�stiques generals
 		super(parent,Messages.getString("T_PARAMETERS_CONFIGURATION"),true); //$NON-NLS-1$
@@ -221,13 +224,17 @@ public class ParamDialog extends JDialog {
 			}
 		});
 		// Ja est� tot apunt
+		addWindowListener(new AppFocusWindowAdapter());
 		setVisible(true);
 	}
-	
+
 	protected void defaultPreferences() {
 		widthText.setText(String.valueOf(Utils.DEF_WORLD_WIDTH));
 		heightText.setText(String.valueOf(Utils.DEF_WORLD_HEIGHT));
 		delayText.setText(String.valueOf(Utils.DEF_DELAY));
+		repaintWorldStrategyRadio1.setSelected(Utils.DEF_repaintWorldStrategy.equals(RepaintWorldStrategy.ALWAYS.toString()));
+		repaintWorldStrategyRadio2.setSelected(Utils.DEF_repaintWorldStrategy.equals(RepaintWorldStrategy.ONLY_WHEN_MAIN_WINDOW_IS_IN_FOCUS.toString()));
+		repaintWorldStrategyRadio3.setSelected(Utils.DEF_repaintWorldStrategy.equals(RepaintWorldStrategy.WHEN_ANY_APP_WINDOW_IS_IN_FOCUS.toString()));
 		autoBackupsCheck.setSelected(Utils.DEF_AUTO_BACKUP);
 		backupDelayText.setText(String.valueOf(Utils.DEF_BACKUP_DELAY));
 		rubbingText.setText(String.valueOf(Utils.DEF_RUBBING));
@@ -380,7 +387,7 @@ public class ParamDialog extends JDialog {
 			break;
 		}
 	}
-	
+
 	protected void setComponents() {
 		getContentPane().setLayout(new BorderLayout());
 		// Set up buttons
@@ -409,7 +416,7 @@ public class ParamDialog extends JDialog {
 		tabbedPane.addTab(Messages.getString("T_GENES3"), setGenes3Tab()); //$NON-NLS-1$
 		getContentPane().add(tabbedPane, BorderLayout.CENTER);
 	}
-	
+
 	protected JPanel setGeneralTab() {
 		JPanel generalPanel = new JPanel();
 		generalPanel.setLayout(new BoxLayout(generalPanel,BoxLayout.Y_AXIS));
@@ -430,6 +437,26 @@ public class ParamDialog extends JDialog {
 		label = new JLabel(Messages.getString("T_MILLISECONDS")); //$NON-NLS-1$
 		panel.add(label);
 		generalPanel.add(panel);
+		//World repaint
+		panel = new JPanel();
+		panel.setBorder(BorderFactory.createTitledBorder("World repaint"));
+		repaintWorldStrategyRadio1 = new JRadioButton("Always");
+		repaintWorldStrategyRadio2 = new JRadioButton("Only when the main window is in focus");
+		repaintWorldStrategyRadio3 = new JRadioButton("When any of the app windows is in focus");
+		panel.add(repaintWorldStrategyRadio1);
+		panel.add(repaintWorldStrategyRadio2);
+		panel.add(repaintWorldStrategyRadio3);
+		repaintWorldStrategyRadio1.addActionListener(e -> Utils.setRepaintWorldStrategy(RepaintWorldStrategy.ALWAYS));
+		repaintWorldStrategyRadio2.addActionListener(e -> Utils.setRepaintWorldStrategy(RepaintWorldStrategy.ONLY_WHEN_MAIN_WINDOW_IS_IN_FOCUS));
+		repaintWorldStrategyRadio3.addActionListener(e -> Utils.setRepaintWorldStrategy(RepaintWorldStrategy.WHEN_ANY_APP_WINDOW_IS_IN_FOCUS));
+		repaintWorldStrategyRadio1.setSelected(Utils.getRepaintWorldStrategy().equals(RepaintWorldStrategy.ALWAYS));
+		repaintWorldStrategyRadio2.setSelected(Utils.getRepaintWorldStrategy().equals(RepaintWorldStrategy.ONLY_WHEN_MAIN_WINDOW_IS_IN_FOCUS));
+		repaintWorldStrategyRadio3.setSelected(Utils.getRepaintWorldStrategy().equals(RepaintWorldStrategy.WHEN_ANY_APP_WINDOW_IS_IN_FOCUS));
+		ButtonGroup buttonGroup = new ButtonGroup();
+		buttonGroup.add(repaintWorldStrategyRadio1);
+		buttonGroup.add(repaintWorldStrategyRadio2);
+		buttonGroup.add(repaintWorldStrategyRadio3);
+		generalPanel.add(panel);
 		//Backups
 		panel = new JPanel();
 		panel.setLayout(new GridLayout(2,1));
@@ -448,7 +475,7 @@ public class ParamDialog extends JDialog {
 				if (autoBackupsCheck.isSelected())
 					backupDelayText.setEnabled(true);
 				else
-					backupDelayText.setEnabled(false);				
+					backupDelayText.setEnabled(false);
 			}
 		});
 		panel.add(autoBackupsCheck);
@@ -490,7 +517,7 @@ public class ParamDialog extends JDialog {
 				if (hardwareNoneRadio.isSelected())
 					hardwareFBObjectCheck.setEnabled(false);
 				else
-					hardwareFBObjectCheck.setEnabled(true);				
+					hardwareFBObjectCheck.setEnabled(true);
 			}
 		});
 		panel.add(hardwareNoneRadio);
@@ -501,7 +528,7 @@ public class ParamDialog extends JDialog {
 		generalPanel.add(panel);
 		return generalPanel;
 	}
-	
+
 	protected JPanel setWorldTab() {
 		JPanel worldPanel = new JPanel();
 		worldPanel.setPreferredSize(new Dimension(510, 100));
@@ -559,10 +586,10 @@ public class ParamDialog extends JDialog {
 		elasticityText = new JTextField(Double.toString(Utils.ELASTICITY),6);
 		panel.add(elasticityText);
 		worldPanel.add(panel);
-		
+
 		return worldPanel;
 	}
-	
+
 	protected JPanel setOrganismsTab() {
 		JPanel organismsPanel = new JPanel();
 		organismsPanel.setLayout(new BoxLayout(organismsPanel,BoxLayout.Y_AXIS));
@@ -651,7 +678,7 @@ public class ParamDialog extends JDialog {
 		organismsPanel.add(panel);
 		return organismsPanel;
 	}
-	
+
 	protected JPanel setMetabolismTab() {
 		JPanel metabolismPanel = new JPanel();
 		metabolismPanel.setLayout(new BoxLayout(metabolismPanel,BoxLayout.Y_AXIS));
@@ -773,10 +800,10 @@ public class ParamDialog extends JDialog {
 		modleafcostText = new JTextField(Double.toString(Utils.MODLEAF_ENERGY_CONSUMPTION),6);
 		panel.add(modleafcostText);
 		metabolismPanel.add(panel);
-		
+
 		return metabolismPanel;
 	}
-	
+
 	protected JPanel setGenesTab() {
 		JPanel genesPanel = new JPanel();
 		genesPanel.setLayout(new GridLayout(13,3));
@@ -785,94 +812,94 @@ public class ParamDialog extends JDialog {
 		genesPanel.add(new JLabel(Messages.getString("T_COLOR2"),SwingConstants.CENTER)); //$NON-NLS-1$
 		genesPanel.add(new JLabel(Messages.getString("T_PROBABILITY"),SwingConstants.CENTER)); //$NON-NLS-1$
 		genesPanel.add(new JLabel(Messages.getString("T_EFFECTIVITY"),SwingConstants.CENTER)); //$NON-NLS-1$
-		
+
 		label = new JLabel(Messages.getString("T_GREEN"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
 		greenprobText = new JTextField(Integer.toString(Utils.GREEN_PROB));
 		genesPanel.add(greenprobText);
 		greencostText = new JTextField(Double.toString(Utils.GREEN_ENERGY_CONSUMPTION));
 		genesPanel.add(greencostText);
-		
+
 		label = new JLabel(Messages.getString("T_FOREST"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
 		forestprobText = new JTextField(Integer.toString(Utils.FOREST_PROB));
 		genesPanel.add(forestprobText);
 		forestcostText = new JTextField(Double.toString(Utils.FOREST_ENERGY_CONSUMPTION));
 		genesPanel.add(forestcostText);
-		
+
 		label = new JLabel(Messages.getString("T_SPRING"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
 		springprobText = new JTextField(Integer.toString(Utils.SPRING_PROB));
 		genesPanel.add(springprobText);
 		springcostText = new JTextField(Double.toString(Utils.SPRING_ENERGY_CONSUMPTION));
 		genesPanel.add(springcostText);
-		
+
 		label = new JLabel(Messages.getString("T_SUMMER"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
 		summerprobText = new JTextField(Integer.toString(Utils.SUMMER_PROB));
 		genesPanel.add(summerprobText);
 		summercostText = new JTextField(Double.toString(Utils.SUMMER_ENERGY_CONSUMPTION));
 		genesPanel.add(summercostText);
-		
+
 		label = new JLabel(Messages.getString("T_LIME"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
 		limeprobText = new JTextField(Integer.toString(Utils.LIME_PROB));
 		genesPanel.add(limeprobText);
 		limecostText = new JTextField(Double.toString(Utils.LIME_ENERGY_CONSUMPTION));
 		genesPanel.add(limecostText);
-		
+
 		label = new JLabel(Messages.getString("T_LEAF"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
 		leafprobText = new JTextField(Integer.toString(Utils.LEAF_PROB));
 		genesPanel.add(leafprobText);
 		leafcostText = new JTextField(Double.toString(Utils.LEAF_ENERGY_CONSUMPTION));
 		genesPanel.add(leafcostText);
-		
+
 		label = new JLabel(Messages.getString("T_C4"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
 		c4probText = new JTextField(Integer.toString(Utils.C4_PROB));
 		genesPanel.add(c4probText);
 		c4costText = new JTextField(Double.toString(Utils.C4_ENERGY_CONSUMPTION));
 		genesPanel.add(c4costText);
-		
+
 		label = new JLabel(Messages.getString("T_JADE"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
 		jadeprobText = new JTextField(Integer.toString(Utils.JADE_PROB));
 		genesPanel.add(jadeprobText);
 		jadecostText = new JTextField(Double.toString(Utils.JADE_ENERGY_CONSUMPTION));
 		genesPanel.add(jadecostText);
-		
+
 		label = new JLabel(Messages.getString("T_GRASS"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
 		grassprobText = new JTextField(Integer.toString(Utils.GRASS_PROB));
 		genesPanel.add(grassprobText);
 		grasscostText = new JTextField(Double.toString(Utils.GRASS_ENERGY_CONSUMPTION));
 		genesPanel.add(grasscostText);
-		
+
 		label = new JLabel(Messages.getString("T_BARK"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
 		barkprobText = new JTextField(Integer.toString(Utils.BARK_PROB));
 		genesPanel.add(barkprobText);
 		barkcostText = new JTextField(Double.toString(Utils.BARK_ENERGY_CONSUMPTION));
 		genesPanel.add(barkcostText);
-		
+
 		label = new JLabel(Messages.getString("T_PURPLE"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
 		purpleprobText = new JTextField(Integer.toString(Utils.PURPLE_PROB));
 		genesPanel.add(purpleprobText);
 		purplecostText = new JTextField(Double.toString(Utils.PURPLE_ENERGY_CONSUMPTION));
 		genesPanel.add(purplecostText);
-		
+
 		label = new JLabel(Messages.getString("T_DARKGRAY"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
 		darkgrayprobText = new JTextField(Integer.toString(Utils.DARKGRAY_PROB));
 		genesPanel.add(darkgrayprobText);
 		darkgraycostText = new JTextField(Double.toString(Utils.DARKGRAY_ENERGY_CONSUMPTION));
 		genesPanel.add(darkgraycostText);
-		
+
 		return genesPanel;
 	}
-			
+
 	protected JPanel setGenes2Tab() {
 		JPanel genesPanel = new JPanel();
 		genesPanel.setLayout(new GridLayout(18,3));
@@ -881,129 +908,129 @@ public class ParamDialog extends JDialog {
 		genesPanel.add(new JLabel(Messages.getString("T_COLOR2"),SwingConstants.CENTER)); //$NON-NLS-1$
 		genesPanel.add(new JLabel(Messages.getString("T_PROBABILITY"),SwingConstants.CENTER)); //$NON-NLS-1$
 		genesPanel.add(new JLabel(Messages.getString("T_COST"),SwingConstants.CENTER)); //$NON-NLS-1$
-		
+
 		label = new JLabel(Messages.getString("T_RED"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
 		redprobText = new JTextField(Integer.toString(Utils.RED_PROB));
 		genesPanel.add(redprobText);
 		redcostText = new JTextField(Double.toString(Utils.RED_ENERGY_CONSUMPTION));
 		genesPanel.add(redcostText);
-		
+
 		label = new JLabel(Messages.getString("T_FIRE"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
 		fireprobText = new JTextField(Integer.toString(Utils.FIRE_PROB));
 		genesPanel.add(fireprobText);
 		firecostText = new JTextField(Double.toString(Utils.FIRE_ENERGY_CONSUMPTION));
 		genesPanel.add(firecostText);
-		
+
 		label = new JLabel(Messages.getString("T_ORANGE"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
 		orangeprobText = new JTextField(Integer.toString(Utils.ORANGE_PROB));
 		genesPanel.add(orangeprobText);
 		orangecostText = new JTextField(Double.toString(Utils.ORANGE_ENERGY_CONSUMPTION));
 		genesPanel.add(orangecostText);
-		
+
 		label = new JLabel(Messages.getString("T_MAROON"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
 		maroonprobText = new JTextField(Integer.toString(Utils.MAROON_PROB));
 		genesPanel.add(maroonprobText);
 		marooncostText = new JTextField(Double.toString(Utils.MAROON_ENERGY_CONSUMPTION));
 		genesPanel.add(marooncostText);
-		
+
 		label = new JLabel(Messages.getString("T_PINK"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
 		pinkprobText = new JTextField(Integer.toString(Utils.PINK_PROB));
 		genesPanel.add(pinkprobText);
 		pinkcostText = new JTextField(Double.toString(Utils.PINK_ENERGY_CONSUMPTION));
 		genesPanel.add(pinkcostText);
-		
+
 		label = new JLabel(Messages.getString("T_CREAM"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
 		creamprobText = new JTextField(Integer.toString(Utils.CREAM_PROB));
 		genesPanel.add(creamprobText);
 		creamcostText = new JTextField(Double.toString(Utils.CREAM_ENERGY_CONSUMPTION));
 		genesPanel.add(creamcostText);
-		
+
 		label = new JLabel(Messages.getString("T_SILVER"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
 		silverprobText = new JTextField(Integer.toString(Utils.SILVER_PROB));
 		genesPanel.add(silverprobText);
 		silvercostText = new JTextField(Double.toString(Utils.SILVER_ENERGY_CONSUMPTION));
 		genesPanel.add(silvercostText);
-		
+
 		label = new JLabel(Messages.getString("T_SPIKE"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
 		spikeprobText = new JTextField(Integer.toString(Utils.SPIKE_PROB));
 		genesPanel.add(spikeprobText);
 		spikecostText = new JTextField(Double.toString(Utils.SPIKE_ENERGY_CONSUMPTION));
 		genesPanel.add(spikecostText);
-		
+
 		label = new JLabel(Messages.getString("T_LILAC"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
 		lilacprobText = new JTextField(Integer.toString(Utils.LILAC_PROB));
 		genesPanel.add(lilacprobText);
 		lilaccostText = new JTextField(Double.toString(Utils.LILAC_ENERGY_CONSUMPTION));
 		genesPanel.add(lilaccostText);
-		
+
 		label = new JLabel(Messages.getString("T_GRAY"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
 		grayprobText = new JTextField(Integer.toString(Utils.GRAY_PROB));
 		genesPanel.add(grayprobText);
 		graycostText = new JTextField(Double.toString(Utils.GRAY_ENERGY_CONSUMPTION));
 		genesPanel.add(graycostText);
-		
+
 		label = new JLabel(Messages.getString("T_VIOLET"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
 		violetprobText = new JTextField(Integer.toString(Utils.VIOLET_PROB));
 		genesPanel.add(violetprobText);
 		violetcostText = new JTextField(Double.toString(Utils.VIOLET_ENERGY_CONSUMPTION));
 		genesPanel.add(violetcostText);
-		
+
 		label = new JLabel(Messages.getString("T_OLIVE"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
 		oliveprobText = new JTextField(Integer.toString(Utils.OLIVE_PROB));
 		genesPanel.add(oliveprobText);
 		olivecostText = new JTextField(Double.toString(Utils.OLIVE_ENERGY_CONSUMPTION));
 		genesPanel.add(olivecostText);
-		
+
 		label = new JLabel(Messages.getString("T_SKY"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
 		skyprobText = new JTextField(Integer.toString(Utils.SKY_PROB));
 		genesPanel.add(skyprobText);
 		skycostText = new JTextField(Double.toString(Utils.SKY_ENERGY_CONSUMPTION));
 		genesPanel.add(skycostText);
-		
+
 		label = new JLabel(Messages.getString("T_BLUE"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
 		blueprobText = new JTextField(Integer.toString(Utils.BLUE_PROB));
 		genesPanel.add(blueprobText);
 		bluecostText = new JTextField(Double.toString(Utils.BLUE_ENERGY_CONSUMPTION));
 		genesPanel.add(bluecostText);
-		
+
 		label = new JLabel(Messages.getString("T_OCHRE"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
 		ochreprobText = new JTextField(Integer.toString(Utils.OCHRE_PROB));
 		genesPanel.add(ochreprobText);
 		ochrecostText = new JTextField(Double.toString(Utils.OCHRE_ENERGY_CONSUMPTION));
 		genesPanel.add(ochrecostText);
-		
+
 		label = new JLabel(Messages.getString("T_FALLOW"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
 		fallowprobText = new JTextField(Integer.toString(Utils.FALLOW_PROB));
 		genesPanel.add(fallowprobText);
 		fallowcostText = new JTextField(Double.toString(Utils.FALLOW_ENERGY_CONSUMPTION));
 		genesPanel.add(fallowcostText);
-		
+
 		label = new JLabel(Messages.getString("T_SPORE"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
 		sporeprobText = new JTextField(Integer.toString(Utils.SPORE_PROB));
 		genesPanel.add(sporeprobText);
 		sporecostText = new JTextField(Double.toString(Utils.SPORE_ENERGY_CONSUMPTION));
 		genesPanel.add(sporecostText);
-		
+
 		return genesPanel;
 	}
-		
+
 	protected JPanel setGenes3Tab() {
 		JPanel genesPanel = new JPanel();
 		genesPanel.setLayout(new GridLayout(18,3));
@@ -1012,129 +1039,129 @@ public class ParamDialog extends JDialog {
 		genesPanel.add(new JLabel(Messages.getString("T_COLOR2"),SwingConstants.CENTER)); //$NON-NLS-1$
 		genesPanel.add(new JLabel(Messages.getString("T_PROBABILITY"),SwingConstants.CENTER)); //$NON-NLS-1$
 		genesPanel.add(new JLabel(Messages.getString("T_COST"),SwingConstants.CENTER)); //$NON-NLS-1$
-		
+
 		label = new JLabel(Messages.getString("T_WHITE"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
 		whiteprobText = new JTextField(Integer.toString(Utils.WHITE_PROB));
 		genesPanel.add(whiteprobText);
 		whitecostText = new JTextField(Double.toString(Utils.WHITE_ENERGY_CONSUMPTION));
 		genesPanel.add(whitecostText);
-		
+
 		label = new JLabel(Messages.getString("T_PLAGUE"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
 		plagueprobText = new JTextField(Integer.toString(Utils.PLAGUE_PROB));
 		genesPanel.add(plagueprobText);
 		plaguecostText = new JTextField(Double.toString(Utils.PLAGUE_ENERGY_CONSUMPTION));
 		genesPanel.add(plaguecostText);
-		
+
 		label = new JLabel(Messages.getString("T_CORAL"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
 		coralprobText = new JTextField(Integer.toString(Utils.CORAL_PROB));
 		genesPanel.add(coralprobText);
 		coralcostText = new JTextField(Double.toString(Utils.CORAL_ENERGY_CONSUMPTION));
 		genesPanel.add(coralcostText);
-		
+
 		label = new JLabel(Messages.getString("T_MINT"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
 		mintprobText = new JTextField(Integer.toString(Utils.MINT_PROB));
 		genesPanel.add(mintprobText);
 		mintcostText = new JTextField(Double.toString(Utils.MINT_ENERGY_CONSUMPTION));
 		genesPanel.add(mintcostText);
-		
+
 		label = new JLabel(Messages.getString("T_LAVENDER"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
 		lavenderprobText = new JTextField(Integer.toString(Utils.LAVENDER_PROB));
 		genesPanel.add(lavenderprobText);
 		lavendercostText = new JTextField(Double.toString(Utils.LAVENDER_ENERGY_CONSUMPTION));
 		genesPanel.add(lavendercostText);
-		
+
 		label = new JLabel(Messages.getString("T_MAGENTA"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
 		magentaprobText = new JTextField(Integer.toString(Utils.MAGENTA_PROB));
 		genesPanel.add(magentaprobText);
 		magentacostText = new JTextField(Double.toString(Utils.MAGENTA_ENERGY_CONSUMPTION));
 		genesPanel.add(magentacostText);
-		
+
 		label = new JLabel(Messages.getString("T_ROSE"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
 		roseprobText = new JTextField(Integer.toString(Utils.ROSE_PROB));
 		genesPanel.add(roseprobText);
 		rosecostText = new JTextField(Double.toString(Utils.ROSE_ENERGY_CONSUMPTION));
 		genesPanel.add(rosecostText);
-		
+
 		label = new JLabel(Messages.getString("T_CYAN"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
 		cyanprobText = new JTextField(Integer.toString(Utils.CYAN_PROB));
 		genesPanel.add(cyanprobText);
 		cyancostText = new JTextField(Double.toString(Utils.CYAN_ENERGY_CONSUMPTION));
 		genesPanel.add(cyancostText);
-		
+
 		label = new JLabel(Messages.getString("T_TEAL"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
 		tealprobText = new JTextField(Integer.toString(Utils.TEAL_PROB));
 		genesPanel.add(tealprobText);
 		tealcostText = new JTextField(Double.toString(Utils.TEAL_ENERGY_CONSUMPTION));
 		genesPanel.add(tealcostText);
-	
+
 		label = new JLabel(Messages.getString("T_YELLOW"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
 		yellowprobText = new JTextField(Integer.toString(Utils.YELLOW_PROB));
 		genesPanel.add(yellowprobText);
 		yellowcostText = new JTextField(Double.toString(Utils.YELLOW_ENERGY_CONSUMPTION));
 		genesPanel.add(yellowcostText);
-		
+
 		label = new JLabel(Messages.getString("T_AUBURN"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
 		auburnprobText = new JTextField(Integer.toString(Utils.AUBURN_PROB));
 		genesPanel.add(auburnprobText);
 		auburncostText = new JTextField(Double.toString(Utils.AUBURN_ENERGY_CONSUMPTION));
 		genesPanel.add(auburncostText);
-		
+
 		label = new JLabel(Messages.getString("T_INDIGO"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
 		indigoprobText = new JTextField(Integer.toString(Utils.INDIGO_PROB));
 		genesPanel.add(indigoprobText);
 		indigocostText = new JTextField(Double.toString(Utils.INDIGO_ENERGY_CONSUMPTION));
 		genesPanel.add(indigocostText);
-		
+
 		label = new JLabel(Messages.getString("T_BLOND"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
 		blondprobText = new JTextField(Integer.toString(Utils.BLOND_PROB));
 		genesPanel.add(blondprobText);
 		blondcostText = new JTextField(Double.toString(Utils.BLOND_ENERGY_CONSUMPTION));
 		genesPanel.add(blondcostText);
-		
+
 		label = new JLabel(Messages.getString("T_FLOWER"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
 		flowerprobText = new JTextField(Integer.toString(Utils.FLOWER_PROB));
 		genesPanel.add(flowerprobText);
 		flowercostText = new JTextField(Double.toString(Utils.FLOWER_ENERGY_CONSUMPTION));
 		genesPanel.add(flowercostText);
-		
+
 		label = new JLabel(Messages.getString("T_GOLD"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
 		goldprobText = new JTextField(Integer.toString(Utils.GOLD_PROB));
 		genesPanel.add(goldprobText);
 		goldcostText = new JTextField(Double.toString(Utils.GOLD_DIVISOR));
 		genesPanel.add(goldcostText);
-		
+
 		label = new JLabel(Messages.getString("T_DARK"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
 		darkprobText = new JTextField(Integer.toString(Utils.DARK_PROB));
 		genesPanel.add(darkprobText);
 		darkcostText = new JTextField(Double.toString(Utils.DARK_ENERGY_CONSUMPTION));
 		genesPanel.add(darkcostText);
-		
+
 		label = new JLabel(Messages.getString("T_EYE"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
 		eyeprobText = new JTextField(Integer.toString(Utils.EYE_PROB));
 		genesPanel.add(eyeprobText);
 		eyecostText = new JTextField(Double.toString(Utils.EYE_ENERGY_CONSUMPTION));
 		genesPanel.add(eyecostText);
-		
+
 		return genesPanel;
 	}
-	
+
 	void checkParams() {
 		int i;
 		double d;
@@ -1225,7 +1252,7 @@ public class ParamDialog extends JDialog {
 		}
 		try {
 			i = Integer.parseInt(cladecomplexityText.getText());
-			if (i >= 0) Utils.CLADE_COMPLEXITY = i;
+			if (i >= -1) Utils.CLADE_COMPLEXITY = i;
 		} catch (NumberFormatException ex) {
 			// Keep old value if there is a problem
 		}
@@ -1847,7 +1874,7 @@ public class ParamDialog extends JDialog {
 		} catch (NumberFormatException ex) {
 			// Keep old value if there is a problem
 		}
-		
+
 		try {
 			i = Integer.parseInt(greenenergyText.getText());
 			if (i > 0) Utils.GREEN_OBTAINED_ENERGY_DIVISOR = i;

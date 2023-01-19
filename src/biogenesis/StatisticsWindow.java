@@ -22,11 +22,15 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.geom.AffineTransform;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,53 +44,75 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import javax.swing.Timer;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
-
 public class StatisticsWindow extends JDialog implements ActionListener {
 	private static final long serialVersionUID = Utils.FILE_VERSION;
-	
+
 	private JButton updateButton;
 	private JButton closeButton;
-	
+
 	private World world;
 	private VisibleWorld visibleWorld;
 	private WorldStatistics worldStatistics;
 	private List<Organism> organisms;
-	
+
 	public StatisticsWindow(MainWindow w, WorldStatistics ws, List<Organism> os) {
 		super(w);
 		world = w.getWorld();
 		visibleWorld = w.getVisibleWorld();
 		worldStatistics = ws;
 		organisms = os;
-		setDefaultCloseOperation(DISPOSE_ON_CLOSE);	
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setTitle(Messages.getString("T_STATISTICS")); //$NON-NLS-1$
 		setComponents();
 		pack();
-		setResizable(false);
+		setResizable(true);
+		setMinimumSize(getSize());
+
+		Timer timer = new Timer(1000 / Utils.STATISTICS_REFRESH_FPS, new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (Utils.isAppInFocus()) {
+					StatisticsWindow.this.actionPerformed(new ActionEvent(updateButton, 0, ""));
+				}
+			}
+		});
+		timer.start();
+		addWindowListener(new WindowAdapter(){
+			@Override
+			public void windowClosed(WindowEvent arg0) {
+				timer.stop();
+			}
+		});
+		addWindowListener(new AppFocusWindowAdapter());
+
 		setVisible(true);
 	}
-	
+
 	private void setComponents() {
 		// Prepare number format
 		NumberFormat nf = NumberFormat.getInstance();
 		nf.setMaximumFractionDigits(1);
-		
+
 		// Population graphic
 		GraphPanel populationGraphPanel = new GraphPanel(100, 80);
-		populationGraphPanel.addGraph(worldStatistics.getDeathList(), Math.max(worldStatistics.getAveragePopulation(), worldStatistics.getMaxDeaths()),
+		int max = Utils.max(worldStatistics.getMaxDeathsFromList(), worldStatistics.getMaxBirthFromList(), worldStatistics.getMaxPopulationFromList());
+		populationGraphPanel.addGraph(worldStatistics.getDeathList(), max,
 				0, Color.RED, Messages.getString("T_DEATHS")); //$NON-NLS-1$
-		populationGraphPanel.addGraph(worldStatistics.getBirthList(), Math.max(worldStatistics.getAveragePopulation(), worldStatistics.getMaxBirth()),
+		populationGraphPanel.addGraph(worldStatistics.getBirthList(), max,
 				0, Color.GREEN, Messages.getString("T_BIRTHS")); //$NON-NLS-1$
-		populationGraphPanel.addGraph(worldStatistics.getPopulationList(), worldStatistics.getMaxPopulation(),
+		populationGraphPanel.addGraph(worldStatistics.getPopulationList(), max,
 				0, Color.WHITE, Messages.getString("T_POPULATION")); //$NON-NLS-1$
+		populationGraphPanel.addGraph(worldStatistics.getDistinctCladesList(), worldStatistics.getMaxDistinctClades(),
+				0, Color.ORANGE, Messages.getString("T_CLADES")); //$NON-NLS-1$
 		populationGraphPanel.updateLegend();
-		
-		
+
+
 		// Population statistics
 		JPanel popStatsPanel = new JPanel();
 		popStatsPanel.setLayout(new BoxLayout(popStatsPanel,BoxLayout.Y_AXIS));
@@ -119,7 +145,7 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 		Border title = BorderFactory.createTitledBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED),
 				Messages.getString("T_POPULATION"), TitledBorder.LEFT, TitledBorder.TOP); //$NON-NLS-1$
 		populationPanel.setBorder(title);
-		
+
 		// Atmosphere graphic
 		GraphPanel atmosphereGraphPanel = new GraphPanel(100,80);
 		atmosphereGraphPanel.addGraph(worldStatistics.getOxygenList(), world.getO2()+world._CO2+world.getCH4(),
@@ -129,7 +155,7 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 		atmosphereGraphPanel.addGraph(worldStatistics.getMethaneList(), world.getO2()+world._CO2+world.getCH4(),
 				0, Color.MAGENTA, Messages.getString("T_METHANE")); //$NON-NLS-1$
 		atmosphereGraphPanel.updateLegend();
-		
+
 		//Atmosphere statistics
 		JPanel atmosphereStatsPanel = new JPanel();
 		atmosphereStatsPanel.setLayout(new BoxLayout(atmosphereStatsPanel,BoxLayout.Y_AXIS));
@@ -145,7 +171,7 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 		atmosphereStatsPanel.add(new JLabel(Messages.getString("T_AT_TIME")+nf.format(worldStatistics.getMaxOxygenTime()))); //$NON-NLS-1$
 		atmosphereStatsPanel.add(new JLabel(Messages.getString("T_MINIMUM_OXYGEN")+nf.format(worldStatistics.getMinOxygenTime()))); //$NON-NLS-1$
 		atmosphereStatsPanel.add(new JLabel(Messages.getString("T_AT_TIME")+nf.format(worldStatistics.getMinOxygenTime()))); //$NON-NLS-1$
-		
+
 //		 Population = population graph + population stats
 		JPanel atmospherePanel = new JPanel();
 		atmospherePanel.setLayout(new BorderLayout());
@@ -154,7 +180,7 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 		title = BorderFactory.createTitledBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED),
 				Messages.getString("T_ATMOSPHERE"), TitledBorder.LEFT, TitledBorder.TOP); //$NON-NLS-1$
 		atmospherePanel.setBorder(title);
-		
+
 		// World history: population + atmosphere
 		JPanel worldHistoryPanel = new JPanel();
 		worldHistoryPanel.setLayout(new BoxLayout(worldHistoryPanel,BoxLayout.Y_AXIS));
@@ -163,7 +189,7 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 		title = BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED),
 				Messages.getString("T_WORLD_HISTORY"), TitledBorder.LEFT, TitledBorder.TOP); //$NON-NLS-1$
 		worldHistoryPanel.setBorder(title);
-		
+
 		// Current state
 		GridBagConstraints gbc = new GridBagConstraints();
 		JPanel currentStatePanel = new JPanel();
@@ -191,7 +217,11 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 		currentStatePanel.add(new JLabel(Messages.getString("T_COLOR_PROPORTION")), gbc); //$NON-NLS-1$
 		ColorPanel colorPanel = createColorPanel();
 		gbc.gridx = 2;
+		gbc.weightx = 1;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
 		currentStatePanel.add(colorPanel, gbc);
+		gbc.weightx = 0;
+		gbc.fill = GridBagConstraints.NONE;
 		title = BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED),
 				Messages.getString("T_CURRENT_STATE"), TitledBorder.LEFT, TitledBorder.TOP); //$NON-NLS-1$
 		currentStatePanel.setBorder(title);
@@ -212,7 +242,7 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 		notableBeingsPanel.add(aliveMostChildrenPanel, gbc);
 		gbc.gridx = 2;
 		GeneticCodePanel mostChildrenPanel = new GeneticCodePanel(worldStatistics.getBeingMostChildren(),
-				visibleWorld); 
+				visibleWorld);
 		notableBeingsPanel.add(mostChildrenPanel, gbc);
 		gbc.gridx = 1;
 		gbc.gridy = 3;
@@ -233,7 +263,7 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 		notableBeingsPanel.add(aliveMostKillsPanel, gbc);
 		gbc.gridx = 2;
 		GeneticCodePanel mostKillsPanel = new GeneticCodePanel(worldStatistics.getBeingMostKills(),
-				visibleWorld); 
+				visibleWorld);
 		notableBeingsPanel.add(mostKillsPanel, gbc);
 		gbc.gridx = 1;
 		gbc.gridy = 7;
@@ -254,7 +284,7 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 		notableBeingsPanel.add(aliveMostInfectionsPanel, gbc);
 		gbc.gridx = 2;
 		GeneticCodePanel mostInfectionsPanel = new GeneticCodePanel(worldStatistics.getBeingMostInfections(),
-				visibleWorld); 
+				visibleWorld);
 		notableBeingsPanel.add(mostInfectionsPanel, gbc);
 		gbc.gridx = 1;
 		gbc.gridy = 11;
@@ -266,8 +296,8 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 		title = BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED),
 				Messages.getString("T_REMARKABLE_ORGANISMS"), TitledBorder.LEFT, TitledBorder.TOP); //$NON-NLS-1$
 		notableBeingsPanel.setBorder(title);
-		
-		
+
+
 		// Buttons
 		JPanel buttonsPanel = new JPanel();
 		updateButton = new JButton(Messages.getString("T_UPDATE")); //$NON-NLS-1$
@@ -276,25 +306,46 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 		buttonsPanel.add(closeButton);
 		updateButton.addActionListener(this);
 		closeButton.addActionListener(this);
-		
+
 		// Add all components to the content pane
 		JPanel leftPanel = new JPanel();
-		leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
-		leftPanel.add(currentStatePanel);
-		leftPanel.add(notableBeingsPanel);
+		leftPanel.setLayout(new GridBagLayout());
+		gbc = new GridBagConstraints();
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.weightx = 1;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		leftPanel.add(currentStatePanel, gbc);
+		gbc.gridy = 1;
+		gbc.weighty = 1;
+		gbc.fill = GridBagConstraints.NONE;
+		gbc.anchor = GridBagConstraints.NORTHWEST;
+		leftPanel.add(notableBeingsPanel, gbc);
 		JPanel rightPanel = new JPanel();
 		rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
 		rightPanel.add(worldHistoryPanel);
 		rightPanel.add(buttonsPanel);
-		
-		getContentPane().setLayout(new BorderLayout());
-		getContentPane().add(leftPanel, BorderLayout.WEST);
-		getContentPane().add(rightPanel, BorderLayout.EAST);
+
+		getContentPane().setLayout(new GridBagLayout());
+		gbc = new GridBagConstraints();
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.weightx = 1;
+		gbc.weighty = 1;
+		gbc.fill = GridBagConstraints.BOTH;
+		getContentPane().add(leftPanel, gbc);
+		gbc.gridx = 1;
+		gbc.gridy = 0;
+		gbc.weightx = 0;
+		gbc.weighty = 0;
+		gbc.fill = GridBagConstraints.VERTICAL;
+		gbc.anchor = GridBagConstraints.NORTH;
+		getContentPane().add(rightPanel, gbc);
 	}
-	
+
 	private ColorPanel createColorPanel() {
 		ColorPanel colorPanel = new ColorPanel();
-		colorPanel.setPreferredSize(new Dimension(640,25));
+		colorPanel.setPreferredSize(new Dimension(300,25));
 		GeneticCode gc;
 		InfoAndColor[] colorCounter = new InfoAndColor[46];
 		colorCounter[0] = new InfoAndColor(0, Color.GREEN);
@@ -343,7 +394,7 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 		colorCounter[43] = new InfoAndColor(0, Utils.ColorGOLD);
 		colorCounter[44] = new InfoAndColor(0, Utils.ColorDARK);
 		colorCounter[45] = new InfoAndColor(0, Utils.ColorEYE);
-		
+
 		int i,j;
 		Color c;
 		synchronized(organisms) {
@@ -361,7 +412,7 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 		Arrays.sort(colorCounter);
 		for (j=45; j>=0; j--)
 			colorPanel.addColor(colorCounter[j].info, colorCounter[j].color);
-		
+
 		return colorPanel;
 	}
 
@@ -369,8 +420,9 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 		if (e.getSource() == updateButton) {
 			getContentPane().removeAll();
 			setComponents();
-			pack();
-			invalidate();
+			// pack();
+			revalidate();
+			// invalidate();
 		}
 		if (e.getSource() == closeButton) {
 			dispose();
@@ -380,15 +432,15 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 
 class ColorPanel extends JPanel {
 	private static final long serialVersionUID = Utils.FILE_VERSION;
-	
+
 	private List<InfoAndColor> infoList = new ArrayList<InfoAndColor>();
 	private int total=0;
-	
+
 	public void addColor(int info, Color color) {
 		infoList.add(new InfoAndColor(info, color));
 		total += info;
 	}
-	
+
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
@@ -411,7 +463,7 @@ class ColorPanel extends JPanel {
 class InfoAndColor implements Comparable<InfoAndColor> {
 	public int info;
 	public Color color;
-	
+
 	public InfoAndColor(int i, Color c) {
 		info = i;
 		color = c;
@@ -426,20 +478,20 @@ class InfoAndColor implements Comparable<InfoAndColor> {
 
 class GraphPanel extends JPanel {
 	private static final long serialVersionUID = Utils.FILE_VERSION;
-	
+
 	private List<GraphInfo> graphList = new ArrayList<GraphInfo>();
 	private int width;
 	private int height;
 	private JPanel centralPanel;
-	
+
 	public void addGraph(List<Double> info, double max, double min, Color color, String name) {
 		graphList.add(new GraphInfo(info, max, min, width, height, color, name));
 	}
-	
+
 	public void clear() {
 		graphList.clear();
 	}
-	
+
 	public void updateLegend() {
 		JPanel legendPanel = new JPanel();
 		legendPanel.setBackground(Color.BLACK);
@@ -454,7 +506,7 @@ class GraphPanel extends JPanel {
 		}
 		add(legendPanel, BorderLayout.EAST);
 	}
-	
+
 	public GraphPanel(int w, int h) {
 		setBackground(Color.BLACK);
 		width = w;
@@ -465,7 +517,7 @@ class GraphPanel extends JPanel {
 		centralPanel.setBackground(Color.BLACK);
 		centralPanel.setOpaque(false);
 		add(centralPanel, BorderLayout.CENTER);
-		
+
 		JPanel southPanel = new JPanel();
 		southPanel.setLayout(new GridLayout(1,2));
 		southPanel.setPreferredSize(new Dimension(width, 20));
@@ -473,15 +525,19 @@ class GraphPanel extends JPanel {
 		southPanel.add(new JLabel("100",SwingConstants.RIGHT)); //$NON-NLS-1$
 		add(southPanel, BorderLayout.SOUTH);
 	}
-	
+
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
+		Graphics2D g2 = (Graphics2D) g;
+		AffineTransform saveAT = g2.getTransform();
+		g2.scale(centralPanel.getWidth() / (double) width, centralPanel.getHeight() / (double) height);
 		GraphInfo graph;
 		for (Iterator<GraphInfo> it = graphList.iterator(); it.hasNext();) {
 			graph = it.next();
 			graph.draw(g);
 		}
+		g2.setTransform(saveAT);
 	}
 }
 
@@ -491,16 +547,16 @@ class GraphInfo {
 	public List<Double> info;
 	public double max;
 	public double min;
-	
+
 	private int[] xPoints;
 	private int[] yPoints;
 	private int nPoints;
-	
+
 	public void draw(Graphics g) {
 		g.setColor(color);
 		g.drawPolyline(xPoints, yPoints, nPoints);
 	}
-	
+
 	public GraphInfo(List<Double> datum, double maxValue, double minValue, int width, int height, Color graphColor, String graphName) {
 		info = datum;
 		max = maxValue;
@@ -515,8 +571,8 @@ class GraphInfo {
 		for (Iterator<Double> it = info.iterator(); it.hasNext() && x < width; x++) {
 			y = height-(it.next().doubleValue() - min)*height/(max-min);
 			xPoints[x] = x;
-			yPoints[x] = (int)y; 	
+			yPoints[x] = (int)y;
 		}
-		
+
 	}
 }

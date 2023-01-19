@@ -18,15 +18,18 @@
  */
 package biogenesis;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.NumberFormat;
+import java.awt.Font;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JTextArea;
 import javax.swing.JToolBar;
 
 
@@ -34,7 +37,8 @@ public class InfoToolbar extends JToolBar {
 	private static final long serialVersionUID = Utils.FILE_VERSION;
 
 	protected Organism _selOrganism;
-	protected JLabel _lEnergy, _lID, _lGeneration, _lAge, _lChildren, _lKills, _lInfected, _lMass, _lReproduceEnergy, _lMaxAge, _lMutationRate, _lCladeID;
+	protected JLabel _lEnergy, _lID, _lGeneration, _lAge, _lChildren, _lKills, _lInfected, _lMass, _lReproduceEnergy, _lMaxAge, _lMutationRate;
+	protected JTextArea _lCladeID;
 	protected JButton _buttonGenes;
 	protected GeneticCodePanel _geneticCodePanel;
 	static private NumberFormat _nf = NumberFormat.getInstance();
@@ -253,7 +257,14 @@ public class InfoToolbar extends JToolBar {
 	    gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 3;
 		gridBagConstraints.gridwidth = GridBagConstraints.REMAINDER;
-		_lCladeID = new JLabel(_selOrganism!=null?_selOrganism.getGeneticCode().getcladeID():"-1",JLabel.LEFT); //$NON-NLS-1$
+		_lCladeID = new JTextArea(_selOrganism!=null?_selOrganism.getGeneticCode().getcladeID():"-1"); //$NON-NLS-1$
+		_lCladeID.setEditable(false);
+		Font fontCladeID = new Font(null, Font.BOLD, 12);
+		_lCladeID.setFont(fontCladeID);
+		_lCladeID.setForeground(Color.BLACK);
+		_lCladeID.setBackground(Utils.ColorDARKWHITE);
+		_lCladeID.setFocusable(false);
+		_lCladeID.setLineWrap(true);
 		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL; 
 		add(_lCladeID, gridBagConstraints);
 		

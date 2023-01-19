@@ -40,31 +40,32 @@ import javax.swing.JTextField;
 
 public class NetConnectionsWindow extends JDialog {
 	private static final long serialVersionUID = Utils.FILE_VERSION;
-	
+
 	protected MainWindow mainWindow;
-	
+
 	private JTextField ipText, portText;
 	private JPanel connectionsPanel;
 	private JScrollPane connectionsScroll;
-	
+
 	public String getPortText() {
 		return portText.getText();
 	}
 	public String getIPText() {
 		return ipText.getText();
 	}
-	
+
 	public NetConnectionsWindow(MainWindow parent) {
 		super(parent);
 		mainWindow = parent;
 		setTitle(Messages.getString("T_NETWORK_CONNECTIONS")); //$NON-NLS-1$
-		setDefaultCloseOperation(DISPOSE_ON_CLOSE);	
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setComponents();
 		pack();
 		setResizable(false);
+		addWindowListener(new AppFocusWindowAdapter());
 		setVisible(true);
 	}
-	
+
 	private void setComponents() {
 		JPanel newConnectionPanel = new JPanel();
 		newConnectionPanel.add(new JLabel(Messages.getString("T_IP"))); //$NON-NLS-1$
@@ -98,7 +99,7 @@ public class NetConnectionsWindow extends JDialog {
 			}
 		});
 		newConnectionPanel.add(newConnectionButton);
-		
+
 		connectionsPanel = new JPanel();
 		connectionsScroll = new JScrollPane(connectionsPanel);
 		connectionsScroll.setPreferredSize(new Dimension(440,300));
@@ -107,11 +108,11 @@ public class NetConnectionsWindow extends JDialog {
 		getContentPane().add(newConnectionPanel, BorderLayout.NORTH);
 		getContentPane().add(connectionsScroll,BorderLayout.CENTER);
 	}
-	
+
 	protected void refreshConnectionsPanel() {
 		connectionsPanel.removeAll();
 		NetServerThread netServer = mainWindow.getNetServer();
-		if (netServer != null) {	
+		if (netServer != null) {
 			int i;
 			Iterator<Connection> it;
 			GridBagConstraints constraints = new GridBagConstraints();
@@ -137,10 +138,10 @@ public class NetConnectionsWindow extends JDialog {
 		validate();
 		repaint();
 	}
-	
+
 	private class disconnectAction implements ActionListener {
 		private Connection connection;
-		
+
 		public disconnectAction(Connection c) {
 			connection = c;
 		}
