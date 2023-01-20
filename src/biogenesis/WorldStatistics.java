@@ -504,7 +504,7 @@ public class WorldStatistics implements Serializable {
 		populationList.add(Double.valueOf(population));
 		if (distinctCladesList.size() == 100)
 			distinctCladesList.remove(0);
-		distinctCladesList.add(Double.valueOf(Math.log10(distinctClades)));
+		distinctCladesList.add(Double.valueOf(Math.sqrt(distinctClades)));
 		if (deathList.size() == 100)
 			deathList.remove(0);
 		deathList.add(Double.valueOf(deathLastTime));
@@ -513,13 +513,13 @@ public class WorldStatistics implements Serializable {
 		birthList.add(Double.valueOf(birthLastTime));
 		if (oxygenList.size() == 100)
 			oxygenList.remove(0);
-		oxygenList.add(Double.valueOf(Math.sqrt(O2)));
+		oxygenList.add(Double.valueOf(Math.sqrt(Math.sqrt(O2))));
 		if (carbonDioxideList.size() == 100)
 			carbonDioxideList.remove(0);
-		carbonDioxideList.add(Double.valueOf(Math.sqrt(CO2)));
+		carbonDioxideList.add(Double.valueOf(Math.sqrt(Math.sqrt(CO2))));
 		if (methaneList.size() == 100)
 			methaneList.remove(0);
-		methaneList.add(Double.valueOf(Math.sqrt(CH4)));
+		methaneList.add(Double.valueOf(Math.sqrt(Math.sqrt(CH4))));
 		deathLastTime = 0;
 		birthLastTime = 0;
 	}

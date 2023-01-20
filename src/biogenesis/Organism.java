@@ -12053,21 +12053,8 @@ public class Organism extends Rectangle {
 			switch (getTypeColor(org._segColor[oseg])) {
 			case SPIKEPOINT:
 			case OLDBARK:
+			case CREAM:
 				break;
-		    case CREAM:
-		    	if ((!_isenhanced) && (org._isaplant)) {
-		    		if ((_isaplant) || (org._isaconsumer) || (org._isafungus) || ((!org._isaplant) && (_isaconsumer))) {
-						if (useEnergy(Utils.SPIKE_ENERGY_CONSUMPTION)) {
-							// Get energy depending on segment length
-							takenEnergySpike = Utils.between((0.05 * Math.sqrt(_m[seg])) * Utils.ORGANIC_OBTAINED_ENERGY, 0, org._energy);
-							// The other organism will be shown in dark lilac
-						    org.setColor(Utils.ColorDARKLILAC);
-						    // This organism will be shown in spike
-							setColor(Utils.ColorSPIKE);
-						}
-					}
-				}
-		    	break;
 			case SPIKE:
 		    	if ((org._isaplant) || (org._isenhanced)) {
 		    		if (_isenhanced) {
@@ -17827,7 +17814,7 @@ public class Organism extends Rectangle {
 				}
 				break;
 			case SPIKE:
-				if ((org._isaplant) || (org._isenhanced)) {
+				if (((!_isaconsumer) && (!_isafungus) && (org._isaplant)) || (org._isenhanced)) {
 					if (useEnergy(Utils.VIOLET_ENERGY_CONSUMPTION)) {
 						if (org._isaplant) {
 						    org._segColor[oseg] = Utils.ColorGREENBROWN;

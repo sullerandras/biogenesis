@@ -630,6 +630,19 @@ public final class Utils {
 	 */
 	final static boolean DEF_AUTO_BACKUP = false;
 	/**
+	 * This is the default value for saving or not saving the world as a PNG image when saving
+	 * automatic backups.
+	 */
+	final static boolean DEF_AUTO_BACKUP_WORLD_PNG = false;
+	/**
+	 * This is the default value for saving or not saving the statistics dialog as a PNG image
+	 * when saving automatic backups.
+	 * Note that the statistics dialog has to be open to be able to automatically save it as PNG.
+	 * If the statistics dialog is not open when the automatic backup is performed, then no image
+	 * will be saved.
+	 */
+	final static boolean DEF_AUTO_BACKUP_STATISTICS_PNG = false;
+	/**
 	 * This is the default number of game time units that pass between backups.
 	 */
 	final static int DEF_BACKUP_DELAY = 100;
@@ -1285,6 +1298,19 @@ public final class Utils {
 	 */
 	static boolean AUTO_BACKUP = DEF_AUTO_BACKUP;
 	/**
+	 * This is the value for saving or not saving the world as a PNG image when saving
+	 * automatic backups.
+	 */
+	static boolean AUTO_BACKUP_WORLD_PNG = DEF_AUTO_BACKUP_WORLD_PNG;
+	/**
+	 * This is the value for saving or not saving the statistics dialog as a PNG image
+	 * when saving automatic backups.
+	 * Note that the statistics dialog has to be open to be able to automatically save it as PNG.
+	 * If the statistics dialog is not open when the automatic backup is performed, then no image
+	 * will be saved.
+	 */
+	static boolean AUTO_BACKUP_STATISTICS_PNG = DEF_AUTO_BACKUP_STATISTICS_PNG;
+	/**
 	 * This is the number of game time units that pass between backups.
 	 */
 	static int BACKUP_DELAY = DEF_BACKUP_DELAY;
@@ -1478,7 +1504,7 @@ public final class Utils {
 	/**
 	 * Precalculated vision color (used for non terminal eyes)
 	 */
-	static final Color ColorVISION = new Color(232,208,80);
+	static final Color ColorVISION = new Color(216,216,108);
 	/**
 	 * Precalculated mint color
 	 */
@@ -1614,7 +1640,7 @@ public final class Utils {
 	/**
 	 * Used through all program to calculate random numbers
 	 */
-	public static Random random = new Random(0);
+	public static Random random = new Random();
 	/**
 	 * Used to get a random -1 or 1 to create numbers with random sign.
 	 *
@@ -1902,6 +1928,8 @@ public final class Utils {
 			prefs.putInt("STATUS_BAR_REFRESH_FPS",STATUS_BAR_REFRESH_FPS); //$NON-NLS-1$
 			prefs.putInt("STATISTICS_REFRESH_FPS",STATISTICS_REFRESH_FPS); //$NON-NLS-1$
 			prefs.putBoolean("AUTO_BACKUP",AUTO_BACKUP);
+			prefs.putBoolean("AUTO_BACKUP_WORLD_PNG",AUTO_BACKUP_WORLD_PNG);
+			prefs.putBoolean("AUTO_BACKUP_STATISTICS_PNG",AUTO_BACKUP_STATISTICS_PNG);
 			prefs.putInt("BACKUP_DELAY",BACKUP_DELAY);
 			prefs.putInt("LOCAL_PORT",LOCAL_PORT); //$NON-NLS-1$
 			prefs.put("USER_NAME", USER_NAME); //$NON-NLS-1$
@@ -2077,6 +2105,8 @@ public final class Utils {
 			STATUS_BAR_REFRESH_FPS = prefs.getInt("STATUS_BAR_REFRESH_FPS",DEF_STATUS_BAR_REFRESH_FPS); //$NON-NLS-1$
 			STATISTICS_REFRESH_FPS = prefs.getInt("STATISTICS_REFRESH_FPS",DEF_STATISTICS_REFRESH_FPS); //$NON-NLS-1$
 			AUTO_BACKUP = prefs.getBoolean("AUTO_BACKUP",DEF_AUTO_BACKUP);
+			AUTO_BACKUP_WORLD_PNG = prefs.getBoolean("AUTO_BACKUP_WORLD_PNG",DEF_AUTO_BACKUP_WORLD_PNG);
+			AUTO_BACKUP_STATISTICS_PNG = prefs.getBoolean("AUTO_BACKUP_STATISTICS_PNG",DEF_AUTO_BACKUP_STATISTICS_PNG);
 			BACKUP_DELAY = prefs.getInt("BACKUP_DELAY",DEF_BACKUP_DELAY);
 			LOCAL_PORT = prefs.getInt("LOCAL_PORT",DEF_LOCAL_PORT); //$NON-NLS-1$
 			USER_NAME = prefs.get("USER_NAME",DEF_USER_NAME);
