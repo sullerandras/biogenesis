@@ -423,7 +423,7 @@ public class World implements Serializable{
 		_organisms = Collections.synchronizedList(new ArrayList<Organism>(Utils.ORGANISMS_VECTOR_SIZE));
 		inCorridors = Collections.synchronizedList(new ArrayList<InCorridor>());
 		outCorridors = Collections.synchronizedList(new ArrayList<OutCorridor>());
-		worldStatistics = new WorldStatistics();
+		worldStatistics = new WorldStatistics(_visibleWorld.getMainWindow());
 
 		Utils.addRepaintWorldChangeListener(new RepaintWorldChangeListener() {
 			@Override
@@ -462,7 +462,7 @@ public class World implements Serializable{
 		_height = Utils.WORLD_HEIGHT;
 		_visibleWorld.setPreferredSize(new Dimension(Utils.WORLD_WIDTH, Utils.WORLD_HEIGHT));
 		// Create statistics
-		worldStatistics = new WorldStatistics();
+		worldStatistics = new WorldStatistics(_visibleWorld.getMainWindow());
 		// Create organisms
 		for (int i=0; i<Utils.INITIAL_ORGANISMS; i++) {
 			Organism b = new Organism(this);

@@ -142,7 +142,18 @@ public class WorldStatistics implements Serializable {
 
 	private List<Double> methaneList = new ArrayList<Double>(100);
 
-	public void saveGameLoaded() {
+	private transient MainWindow mainWindow;
+
+	public WorldStatistics(MainWindow mainWindow) {
+		if (mainWindow == null) {
+			throw new IllegalArgumentException("mainWindow == null");
+		}
+		this.mainWindow = mainWindow;
+	}
+
+	public void saveGameLoaded(MainWindow mainWindow) {
+		this.mainWindow = mainWindow;
+
 		// Since we renamed `distinctSpiciesList` to `distinctCladesList`, the existing saves
 		// may not have this attribute, in which case the value is going to be reset to `null`
 		// for some reason.
@@ -522,6 +533,10 @@ public class WorldStatistics implements Serializable {
 		methaneList.add(Double.valueOf(Math.sqrt(Math.sqrt(CH4))));
 		deathLastTime = 0;
 		birthLastTime = 0;
+
+		if (mainWindow.getBioFile() != null) {
+			mainWindow.getBioFile().appendToCsv(time, population, distinctClades, O2, CO2, CH4);
+		}
 	}
 
 	public void findBestAliveBeings(List<Organism> organisms) {
