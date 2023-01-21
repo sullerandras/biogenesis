@@ -624,7 +624,7 @@ public class World implements Serializable{
 			_visibleWorld.getMainWindow().getInfoPanel().recalculate();
 		if (nFrames % 256 == 0) {
 			nFrames = 0;
-			worldStatistics.eventTime(_population, getDistinctCladeIDCount(), _O2, _CO2, _CH4);
+			worldStatistics.eventTime(_population, getDistinctCladeIDCount(), _O2, _CO2, _CH4, _organisms);
 		}
 	}
 	/**

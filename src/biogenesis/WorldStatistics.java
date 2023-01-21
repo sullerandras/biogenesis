@@ -444,7 +444,7 @@ public class WorldStatistics implements Serializable {
 		infectionsSum++;
 	}
 
-	public void eventTime(int population, int distinctClades, double O2, double CO2, double CH4) {
+	public void eventTime(int population, int distinctClades, double O2, double CO2, double CH4, List<Organism> organisms) {
 		time++;
 		if (deathLastTime > 1.5 * getAverageDeaths()) {
 			if (deathLastTime > 3 * getAverageDeaths()) {
@@ -535,7 +535,7 @@ public class WorldStatistics implements Serializable {
 		birthLastTime = 0;
 
 		if (mainWindow.getBioFile() != null) {
-			mainWindow.getBioFile().appendToCsv(time, population, distinctClades, O2, CO2, CH4);
+			mainWindow.getBioFile().appendToCsv(time, population, distinctClades, O2, CO2, CH4, organisms);
 		}
 	}
 
