@@ -61,8 +61,8 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 	private WorldStatistics worldStatistics;
 	private List<Organism> organisms;
 
-	public StatisticsWindow(MainWindowInterface w, WorldStatistics ws, List<Organism> os) {
-		super(w.getFrame());
+	public StatisticsWindow(MainWindow w, WorldStatistics ws, List<Organism> os) {
+		super(w);
 		world = w.getWorld();
 		visibleWorld = w.getVisibleWorld();
 		worldStatistics = ws;
@@ -116,7 +116,7 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 				0, Color.GREEN, Messages.getString("T_BIRTHS")); //$NON-NLS-1$
 		populationGraphPanel.addGraph(worldStatistics.getPopulationList(), max,
 				0, Color.WHITE, Messages.getString("T_POPULATION")); //$NON-NLS-1$
-		populationGraphPanel.addGraph(worldStatistics.getDistinctCladesList(), Math.sqrt(max),
+		populationGraphPanel.addGraph(worldStatistics.getDistinctCladesList(), max,
 				0, Color.ORANGE, Messages.getString("T_CLADES")); //$NON-NLS-1$
 		populationGraphPanel.updateLegend();
 

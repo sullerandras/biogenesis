@@ -92,7 +92,7 @@ public class World implements Serializable{
 	 * to indicate which parts of the world should be repainted due to
 	 * events in the world.
 	 */
-	transient protected VisibleWorldInterface _visibleWorld;
+	transient protected VisibleWorld _visibleWorld;
 	/**
 	 * Frame counter. 256 frames are a time unit. This value is used to count
 	 * time and to trigger some window updating at regular intervals.
@@ -416,7 +416,7 @@ public class World implements Serializable{
 	 *
 	 * @param visibleWorld  A reference to the visual representation of this world.
 	 */
-	public World(VisibleWorldInterface visibleWorld) {
+	public World(VisibleWorld visibleWorld) {
 		_visibleWorld = visibleWorld;
 		_width = Utils.WORLD_WIDTH;
 		_height = Utils.WORLD_HEIGHT;

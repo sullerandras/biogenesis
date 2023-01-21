@@ -63,7 +63,7 @@ import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.border.EtchedBorder;
 
-public class MainWindow extends JFrame implements MainWindowInterface {
+public class MainWindow extends JFrame {
 	private static final long serialVersionUID = Utils.FILE_VERSION;
 
 	protected VisibleWorld _visibleWorld;
@@ -74,7 +74,6 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 	protected JFileChooser worldChooser = new JFileChooser();
 	protected JFileChooser geneticCodeChooser = new JFileChooser();
 	protected File _gameFile = null;
-	protected boolean _isBackedUp = false;
 
 	protected JScrollPane scrollPane;
 	protected StdAction newGameAction;
@@ -154,7 +153,7 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 		return _isProcessActive;
 	}
 
-	public InfoToolbarInterface getInfoPanel() {
+	public InfoToolbar getInfoPanel() {
 		return infoToolbar;
 	}
 
@@ -182,11 +181,6 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 				Utils.setMainWindowInFocus(false);
 			}
 		});
-	}
-
-	@Override
-	public Frame getFrame() {
-		return this;
 	}
 
 	/**
@@ -851,7 +845,8 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 				} else {
 					if ((Messages.getLanguage().equals("ca")) || (Messages.getLanguage().equals("es"))
 							|| (Messages.getLanguage().equals("en"))) {
-						BareBonesBrowserLaunch.openURL("http://biogenesis.sourceforge.net/manual." + Messages.getLanguage() + ".php"); //$NON-NLS-1$
+						BareBonesBrowserLaunch.openURL("http://biogenesis.sourceforge.net/manual."
+							+ Messages.getLanguage() + ".php"); //$NON-NLS-1$
 					} else {
 						BareBonesBrowserLaunch.openURL("http://biogenesis.sourceforge.net/manual.en.php"); //$NON-NLS-1$
 					}
@@ -1213,14 +1208,10 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 						}
 						// Do automatic backups if we already saved the game. Ignore automatic backup
 						// if the world has not been saved yet (i.e. after started a new world).
-						if (Utils.AUTO_BACKUP && _world.getTime() % Utils.BACKUP_DELAY == 0 && _world.getTime() > 0
-								&& _gameFile != null) {
-							if (!_isBackedUp) {
+						if (Utils.AUTO_BACKUP && _world.getTime() % Utils.BACKUP_DELAY == 0) {
+							if (_world.getFrame() == 0 && _world.getTime() > 0 && _gameFile != null) {
 								backupGameAction.actionPerformed(null);
-								_isBackedUp = true;
 							}
-						} else {
-							_isBackedUp = false;
 						}
 					}
 				} catch (InterruptedException e) {

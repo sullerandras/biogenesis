@@ -275,7 +275,7 @@ public final class Utils {
 	/**
 	 * This is the default energy that is consumed when a modified leaf segment is used.
 	 */
-	final static double DEF_MODLEAF_ENERGY_CONSUMPTION = 0.98d;
+	final static double DEF_MODLEAF_ENERGY_CONSUMPTION = 0.99d;
 	/**
 	 * This is the default energy that is consumed when a lime segment is used.
 	 */
@@ -1504,7 +1504,7 @@ public final class Utils {
 	/**
 	 * Precalculated vision color (used for non terminal eyes)
 	 */
-	static final Color ColorVISION = new Color(216,216,108);
+	static final Color ColorVISION = new Color(232,145,70);
 	/**
 	 * Precalculated mint color
 	 */

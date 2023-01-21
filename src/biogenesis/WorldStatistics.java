@@ -29,7 +29,7 @@ public class WorldStatistics implements Serializable {
 
 	private long time;
 
-	private int maxPopulation;
+	private int maxPopulation = 0;
 
 	private int maxBirths = 0;
 
@@ -37,7 +37,7 @@ public class WorldStatistics implements Serializable {
 
 	private long maxPopulationTime;
 
-	private int minPopulation = Utils.INITIAL_ORGANISMS;
+	private int minPopulation = 100000;
 
 	private long minPopulationTime;
 
@@ -380,14 +380,14 @@ public class WorldStatistics implements Serializable {
 	}
 
 	public void eventPopulationIncrease(int newPopulation) {
-		if (newPopulation > maxPopulation) {
+		if ((newPopulation > maxPopulation) && (time >= 10)) {
 			maxPopulation = newPopulation;
 			maxPopulationTime = time;
 		}
 	}
 
 	public void eventPopulationDecrease(int newPopulation) {
-		if (newPopulation < minPopulation) {
+		if ((newPopulation < minPopulation) && (time >= 10)) {
 			minPopulation = newPopulation;
 			minPopulationTime = time;
 		}
@@ -504,7 +504,7 @@ public class WorldStatistics implements Serializable {
 		populationList.add(Double.valueOf(population));
 		if (distinctCladesList.size() == 100)
 			distinctCladesList.remove(0);
-		distinctCladesList.add(Double.valueOf(Math.sqrt(distinctClades)));
+		distinctCladesList.add(Double.valueOf(distinctClades));
 		if (deathList.size() == 100)
 			deathList.remove(0);
 		deathList.add(Double.valueOf(deathLastTime));

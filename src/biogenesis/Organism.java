@@ -354,7 +354,7 @@ public class Organism extends Rectangle {
 	/**
 	 * Reference to the visual part of the world where the organism lives.
 	 */
-	transient protected VisibleWorldInterface _visibleWorld;
+	transient protected VisibleWorld _visibleWorld;
 	/**
 	 * Identification number of this organism's parent.
 	 */
@@ -13211,11 +13211,7 @@ public class Organism extends Rectangle {
 				    	} else {
 				    		if (useEnergy(Utils.SILVER_ENERGY_CONSUMPTION)) {
 						        org.infectedBy(this);
-						        if ((org._modifiesleaf) && (org._framesColor <= 0)) {
-						        	org.setColor(Utils.ColorVISION);
-						        } else {
-						        	org.setColor(Utils.ColorBLOND);
-						        }
+						        org.setColor(Utils.ColorBLOND);
 						        setColor(Color.LIGHT_GRAY);
 							}
 				    	}
@@ -13252,11 +13248,7 @@ public class Organism extends Rectangle {
 				    	} else {
 				    		if (useEnergy(Utils.SILVER_ENERGY_CONSUMPTION)) {
 						        org.infectedBy(this);
-						        if ((org._modifiesleaf) && (org._framesColor <= 0)) {
-						        	org.setColor(Utils.ColorVISION);
-						        } else {
-						        	org.setColor(Utils.ColorBLOND);
-						        }
+						        org.setColor(Utils.ColorBLOND);
 						        setColor(Color.LIGHT_GRAY);
 							}
 				    	}
@@ -13325,11 +13317,7 @@ public class Organism extends Rectangle {
 				    	} else {
 				    		if (useEnergy(Utils.SILVER_ENERGY_CONSUMPTION)) {
 						        org.infectedBy(this);
-						        if ((org._modifiesleaf) && (org._framesColor <= 0)) {
-						        	org.setColor(Utils.ColorVISION);
-						        } else {
-						        	org.setColor(Utils.ColorBLOND);
-						        }
+						        org.setColor(Utils.ColorBLOND);
 						        setColor(Color.LIGHT_GRAY);
 							}
 				    	}
@@ -13377,13 +13365,9 @@ public class Organism extends Rectangle {
 						} else {
 							if (useEnergy(Utils.SILVER_ENERGY_CONSUMPTION)) {
 						        org.infectedBy(this);
-						        if ((org._modifiesleaf) && (org._mphoto[oseg] > 0) && (org._framesColor <= 0)) {
-						        	org.setColor(Utils.ColorVISION);
-						        } else {
-						        	org.setColor(Utils.ColorBLOND);
-						        }
+						        org.setColor(Utils.ColorBLOND);
 						        setColor(Color.LIGHT_GRAY);
-							} 
+							}
 						}
 					}
 				}
@@ -14478,21 +14462,13 @@ public class Organism extends Rectangle {
 				    		if (_isaplant) {
 								if (useEnergy(Utils.WHITE_ENERGY_CONSUMPTION)) {
 							        org.infectedBy(this);
-							        if ((org._modifiesleaf) && (org._framesColor <= 0)) {
-							        	org.setColor(Utils.ColorVISION);
-							        } else {
-							        	org.setColor(Utils.ColorBLOND);
-							        }
+							        org.setColor(Utils.ColorBLOND);
 							        setColor(Color.WHITE);
 						    	}
 						    } else {
 						    	if (useEnergy(Utils.VIRUS_ENERGY_CONSUMPTION)) {
 							        org.infectedBy(this);
-							        if ((org._modifiesleaf) && (org._framesColor <= 0)) {
-							        	org.setColor(Utils.ColorVISION);
-							        } else {
-							        	org.setColor(Utils.ColorLIGHTBROWN);
-							        }
+							        org.setColor(Utils.ColorLIGHTBROWN);
 						            setColor(Color.WHITE);
 						        }
 							}
@@ -14526,21 +14502,13 @@ public class Organism extends Rectangle {
 							if (_isaplant) {
 								if (useEnergy(Utils.WHITE_ENERGY_CONSUMPTION)) {
 							        org.infectedBy(this);
-							        if ((org._modifiesleaf) && (org._mphoto[oseg] > 0) && (org._framesColor <= 0)) {
-							        	org.setColor(Utils.ColorVISION);
-							        } else {
-							        	org.setColor(Utils.ColorBLOND);
-							        }
+							        org.setColor(Utils.ColorBLOND);
 							        setColor(Color.WHITE);
 						    	}
 						    } else {
 						    	if (useEnergy(Utils.VIRUS_ENERGY_CONSUMPTION)) {
 							        org.infectedBy(this);
-							        if ((org._modifiesleaf) && (org._mphoto[oseg] > 0) && (org._framesColor <= 0)) {
-							        	org.setColor(Utils.ColorVISION);
-							        } else {
-							        	org.setColor(Utils.ColorLIGHTBROWN);
-							        }
+							        org.setColor(Utils.ColorLIGHTBROWN);
 						            setColor(Color.WHITE);
 						        }
 							}
@@ -16427,11 +16395,7 @@ public class Organism extends Rectangle {
 						    		takenEnergyFruit = Utils.between(_energy - 0.0000002, 0, _energy);
 								    org._energy += takenEnergyFruit;
 								    _energy -= takenEnergyFruit;
-								    if ((org._modifiesleaf) && (org._framesColor <= 0)) {
-							        	org.setColor(Utils.ColorVISION);
-							        } else {
-							        	org.setColor(Utils.ColorLIGHTBROWN);
-							        }
+							        org.setColor(Utils.ColorLIGHTBROWN);
 						            org._timeToReproduce = 0;
 						        }
 							}
@@ -16462,11 +16426,7 @@ public class Organism extends Rectangle {
 								takenEnergyFruit = Utils.between(_energy - 0.0000002, 0, _energy);
 							    org._energy += takenEnergyFruit;
 							    _energy -= takenEnergyFruit;
-							    if ((org._modifiesleaf) && (org._mphoto[oseg] > 0) && (org._framesColor <= 0)) {
-						        	org.setColor(Utils.ColorVISION);
-						        } else {
-						        	org.setColor(Utils.ColorLIGHTBROWN);
-						        }
+						        org.setColor(Utils.ColorLIGHTBROWN);
 					            org._timeToReproduce = 0;
 							}
 						}
@@ -19943,9 +19903,6 @@ public class Organism extends Rectangle {
 		    //Get sun's energy
 		    if ((_framesColor == 1) && (!_color.equals(Utils.ColorDARKGREEN))) {
 		    	switch (getTypeColor(_color)) {
-		    	case VISION:
-		    		setColortwoFrames(Utils.ColorDARKGREEN);
-		    		break;
 		    	case RED:
 		    	case FIRE:
 		    	case DARKFIRE:
@@ -20165,9 +20122,6 @@ public class Organism extends Rectangle {
 			if ((_leafphoto > 0) && (_framesColor > 0)) {
 				if ((_framesColor == 1) && (!_color.equals(Utils.ColorDARKGREEN))) {
 			    	switch (getTypeColor(_color)) {
-			    	case VISION:
-			    		setColortwoFrames(Utils.ColorDARKGREEN);
-			    		break;
 			    	case RED:
 			    	case FIRE:
 			    	case DARKFIRE:
@@ -20708,9 +20662,6 @@ public class Organism extends Rectangle {
 					if (_framesColor > 0) {
 						if ((_framesColor == 1) && (!_color.equals(Utils.ColorDARKGREEN))) {
 					    	switch (getTypeColor(_color)) {
-					    	case VISION:
-					    		setColortwoFrames(Utils.ColorDARKGREEN);
-					    		break;
 					    	case RED:
 					    	case FIRE:
 					    	case DARKFIRE:
@@ -21145,9 +21096,6 @@ public class Organism extends Rectangle {
 					if (_framesColor > 0) {
 						if ((_framesColor == 1) && (!_color.equals(Utils.ColorDARKGREEN))) {
 					    	switch (getTypeColor(_color)) {
-					    	case VISION:
-					    		setColortwoFrames(Utils.ColorDARKGREEN);
-					    		break;
 					    	case RED:
 					    	case FIRE:
 					    	case DARKFIRE:
