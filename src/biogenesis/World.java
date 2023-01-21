@@ -25,6 +25,7 @@ import org.locationtech.jts.index.strtree.STRtree;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.swing.SwingUtilities;
 
@@ -82,6 +83,11 @@ public class World implements Serializable{
 	 */
 	protected int NEXT_ID;
 	/**
+	 * The next identification part of the string that will be assigned to an organisms clade
+	 * in this world
+	 */
+	protected int NEXT_CLADE_PART;
+	/**
 	 * A reference to the visible world part of this world used basically
 	 * to indicate which parts of the world should be repainted due to
 	 * events in the world.
@@ -131,7 +137,7 @@ public class World implements Serializable{
 	 * @return  A newly created StatisticsWindow.
 	 */
 	public StatisticsWindow createStatisticsWindow() {
-		return new StatisticsWindow(_visibleWorld._mainWindow, worldStatistics, _organisms);
+		return new StatisticsWindow(_visibleWorld.getMainWindow(), worldStatistics, _organisms);
 	}
 	/**
 	 * Finds an organism that has the given coordinates inside its bounding box and
@@ -184,6 +190,14 @@ public class World implements Serializable{
 		return NEXT_ID++;
 	}
 	/**
+	 * Returns the next available clade part identification number.
+	 *
+	 * @return  A unique number used to identify part of the clade string
+	 */
+	public int getNewCladePart() {
+		return NEXT_CLADE_PART++;
+	}
+	/**
 	 * Returns the actual time.
 	 *
 	 * @return  The actual time.
@@ -220,12 +234,13 @@ public class World implements Serializable{
 	 * Returns the number of distinct cladeIDs in the current population.
 	 */
 	public int getDistinctCladeIDCount() {
-		return (int) _organisms
-			.stream()
-			.map(o -> o.getGeneticCode().getcladeID())
-			.distinct()
-			.count();
-	}
+        return (int) _organisms
+            .stream()
+            .filter(o -> o.isAlive())
+            .map(o -> o.getGeneticCode().getcladeID())
+            .distinct()
+            .count();
+    }
 	/**
 	 * Increase the population counter by one.
 	 *
@@ -438,6 +453,7 @@ public class World implements Serializable{
 		_CO2 = Utils.INITIAL_CO2;
 		_CH4 = Utils.INITIAL_CH4;
 		NEXT_ID = 0;
+		NEXT_CLADE_PART = 0;
 		_population = 0;
 		_visibleWorld.setSelectedOrganism(null);
 		_organisms.clear();
@@ -605,7 +621,7 @@ public class World implements Serializable{
 		_CH4 -= y;
 		_CO2 += y;
 		if (nFrames++ % 20 == 0)
-			_visibleWorld._mainWindow.getInfoPanel().recalculate();
+			_visibleWorld.getMainWindow().getInfoPanel().recalculate();
 		if (nFrames % 256 == 0) {
 			nFrames = 0;
 			worldStatistics.eventTime(_population, getDistinctCladeIDCount(), _O2, _CO2, _CH4);
@@ -773,7 +789,7 @@ public class World implements Serializable{
 	public void addOrganism(Organism child, Organism parent) {
 		_organisms.add(child);
 		if (parent == _visibleWorld.getSelectedOrganism())
-			_visibleWorld._mainWindow.getInfoPanel().changeNChildren();
+			_visibleWorld.getMainWindow().getInfoPanel().changeNChildren();
 		if (parent != null) {
 			worldStatistics.eventOrganismBorn(child, parent);
 		}
@@ -789,7 +805,7 @@ public class World implements Serializable{
 	public void organismHasDied(Organism dyingOrganism, Organism killingOrganism) {
 		worldStatistics.eventOrganismDie(dyingOrganism, killingOrganism);
 		if (killingOrganism == _visibleWorld.getSelectedOrganism())
-			_visibleWorld._mainWindow.getInfoPanel().changeNKills();
+			_visibleWorld.getMainWindow().getInfoPanel().changeNKills();
 		if (dyingOrganism == _visibleWorld.getSelectedOrganism())
 			_visibleWorld.showDeadToolbar();
 	}
@@ -802,6 +818,6 @@ public class World implements Serializable{
 	public void organismHasBeenInfected(Organism infectedOrganism, Organism infectingOrganism) {
 		worldStatistics.eventOrganismInfects(infectedOrganism, infectingOrganism);
 		if (infectingOrganism == _visibleWorld.getSelectedOrganism())
-			_visibleWorld._mainWindow.getInfoPanel().changeNInfected();
+			_visibleWorld.getMainWindow().getInfoPanel().changeNInfected();
 	}
 }

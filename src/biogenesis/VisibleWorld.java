@@ -153,6 +153,10 @@ public class VisibleWorld extends JPanel {
 	 */
 	//transient protected InfoWindow _infoWindow = null;
 	
+	public MainWindow getMainWindow() {
+		return _mainWindow;
+	}
+	
 	class TrackAction extends StdAction {
 		private static final long serialVersionUID = 1L;
 		protected String name_key2;

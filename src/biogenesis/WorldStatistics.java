@@ -29,7 +29,7 @@ public class WorldStatistics implements Serializable {
 
 	private long time;
 
-	private int maxPopulation;
+	private int maxPopulation = 0;
 
 	private int maxBirths = 0;
 
@@ -37,7 +37,7 @@ public class WorldStatistics implements Serializable {
 
 	private long maxPopulationTime;
 
-	private int minPopulation = Utils.INITIAL_ORGANISMS;
+	private int minPopulation = 100000;
 
 	private long minPopulationTime;
 
@@ -68,25 +68,25 @@ public class WorldStatistics implements Serializable {
 
 	private long infectionsSum;
 
-	private double maxOxygen = Utils.INITIAL_O2;
+	private double maxOxygen = 0;
 
 	private long maxOxygenTime;
 
-	private double minOxygen = Utils.INITIAL_O2;
+	private double minOxygen = Utils.INITIAL_CO2 +  Utils.INITIAL_CH4 + Utils.INITIAL_O2;
 
 	private long minOxygenTime;
 
-	private double maxCarbonDioxide = Utils.INITIAL_CO2;
+	private double maxCarbonDioxide = 0;
 
-	private double maxMethane = Utils.INITIAL_CH4;
+	private double maxMethane = 0;
 
 	private long maxCarbonDioxideTime;
 
 	private long maxMethaneTime;
 
-	private double minCarbonDioxide = Utils.INITIAL_CO2;
+	private double minCarbonDioxide = Utils.INITIAL_CO2 +  Utils.INITIAL_CH4 + Utils.INITIAL_O2;
 
-	private double minMethane = Utils.INITIAL_CH4;
+	private double minMethane = Utils.INITIAL_CO2 +  Utils.INITIAL_CH4 + Utils.INITIAL_O2;
 
 	private long minCarbonDioxideTime;
 
@@ -380,14 +380,14 @@ public class WorldStatistics implements Serializable {
 	}
 
 	public void eventPopulationIncrease(int newPopulation) {
-		if (newPopulation > maxPopulation) {
+		if ((newPopulation > maxPopulation) && (time >= 10)) {
 			maxPopulation = newPopulation;
 			maxPopulationTime = time;
 		}
 	}
 
 	public void eventPopulationDecrease(int newPopulation) {
-		if (newPopulation < minPopulation) {
+		if ((newPopulation < minPopulation) && (time >= 10)) {
 			minPopulation = newPopulation;
 			minPopulationTime = time;
 		}
@@ -471,27 +471,27 @@ public class WorldStatistics implements Serializable {
 		// lastTimePopulation = population;
 		populationSum += population;
 
-		if (O2 > maxOxygen) {
+		if ((O2 > maxOxygen) && (time >= 10)) {
 			maxOxygen = O2;
 			maxOxygenTime = time;
 		}
-		if (O2 < minOxygen) {
+		if ((O2 < minOxygen) && (time >= 10)) {
 			minOxygen = O2;
 			minOxygenTime = time;
 		}
-		if (CO2 > maxCarbonDioxide) {
+		if ((CO2 > maxCarbonDioxide) && (time >= 10)) {
 			maxCarbonDioxide = CO2;
 			maxCarbonDioxideTime = time;
 		}
-		if (CO2 < minCarbonDioxide) {
+		if ((CO2 < minCarbonDioxide) && (time >= 10)) {
 			minCarbonDioxide = CO2;
 			minCarbonDioxideTime = time;
 		}
-		if (CH4 > maxMethane) {
+		if ((CH4 > maxMethane) && (time >= 10)) {
 			maxMethane = CH4;
 			maxMethaneTime = time;
 		}
-		if (CH4 < minMethane) {
+		if ((CH4 < minMethane) && (time >= 10)) {
 			minMethane = CH4;
 			minMethaneTime = time;
 		}
@@ -513,13 +513,13 @@ public class WorldStatistics implements Serializable {
 		birthList.add(Double.valueOf(birthLastTime));
 		if (oxygenList.size() == 100)
 			oxygenList.remove(0);
-		oxygenList.add(Double.valueOf(O2));
+		oxygenList.add(Double.valueOf(Math.sqrt(Math.sqrt(O2))));
 		if (carbonDioxideList.size() == 100)
 			carbonDioxideList.remove(0);
-		carbonDioxideList.add(Double.valueOf(CO2));
+		carbonDioxideList.add(Double.valueOf(Math.sqrt(Math.sqrt(CO2))));
 		if (methaneList.size() == 100)
 			methaneList.remove(0);
-		methaneList.add(Double.valueOf(CH4));
+		methaneList.add(Double.valueOf(Math.sqrt(Math.sqrt(CH4))));
 		deathLastTime = 0;
 		birthLastTime = 0;
 	}

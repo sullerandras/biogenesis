@@ -872,7 +872,9 @@ public class GeneticCode implements Cloneable, Serializable {
 			// change symmetry
 			randomSymmetry();
 			nGenes = parentCode.getNGenes();
-			_updateClade =true;
+			if (_symmetry != parentCode.getSymmetry()) {
+				_updateClade =true;
+			}
 		} else {
 			// keep symmetry
 			_symmetry = parentCode.getSymmetry();
@@ -1236,10 +1238,14 @@ public class GeneticCode implements Cloneable, Serializable {
 					_genes[i].randomizefriendReaction();
 				else
 					_genes[i].setfriendReaction(parentCode.getGene(j).getfriendReaction());
-				if (randomColor)
+				if (randomColor) {
 					_genes[i].randomizeColor();
-				else
+					if (!getGene(i).getColor().equals(parentCode.getGene(j).getColor())) {
+						_updateClade =true;
+					}
+				} else {
 					_genes[i].setColor(parentCode.getGene(j).getColor());
+				}
 				if (clonedGene != 0) {
 					if (clonedGene == -1) {
 						j--;

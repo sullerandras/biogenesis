@@ -55,6 +55,8 @@ public class ParamDialog extends JDialog {
 	private JRadioButton repaintWorldStrategyRadio2 = null;
 	private JRadioButton repaintWorldStrategyRadio3 = null;
 	private JCheckBox autoBackupsCheck = null;
+	private JCheckBox autoBackupsWorldPngCheck = null;
+	private JCheckBox autoBackupsStatisticsPngCheck = null;
 	private JTextField backupDelayText = null;
 	protected JRadioButton hardwareNoneRadio = null;
 	protected JRadioButton hardwareOpenGLRadio = null;
@@ -236,6 +238,8 @@ public class ParamDialog extends JDialog {
 		repaintWorldStrategyRadio2.setSelected(Utils.DEF_repaintWorldStrategy.equals(RepaintWorldStrategy.ONLY_WHEN_MAIN_WINDOW_IS_IN_FOCUS.toString()));
 		repaintWorldStrategyRadio3.setSelected(Utils.DEF_repaintWorldStrategy.equals(RepaintWorldStrategy.WHEN_ANY_APP_WINDOW_IS_IN_FOCUS.toString()));
 		autoBackupsCheck.setSelected(Utils.DEF_AUTO_BACKUP);
+		autoBackupsWorldPngCheck.setSelected(Utils.DEF_AUTO_BACKUP_WORLD_PNG);
+		autoBackupsStatisticsPngCheck.setSelected(Utils.DEF_AUTO_BACKUP_STATISTICS_PNG);
 		backupDelayText.setText(String.valueOf(Utils.DEF_BACKUP_DELAY));
 		rubbingText.setText(String.valueOf(Utils.DEF_RUBBING));
 		elasticityText.setText(String.valueOf(Utils.DEF_ELASTICITY));
@@ -459,26 +463,27 @@ public class ParamDialog extends JDialog {
 		generalPanel.add(panel);
 		//Backups
 		panel = new JPanel();
-		panel.setLayout(new GridLayout(2,1));
+		panel.setLayout(new GridLayout(4,1));
 		autoBackupsCheck = new JCheckBox(Messages.getString("T_AUTOMATIC_BACKUPS"));
 		label = new JLabel(Messages.getString("T_TIME_BETWEEN_BACKUPS")); //$NON-NLS-1$
 		backupDelayText = new JTextField(Integer.toString(Utils.BACKUP_DELAY),10);
-		if (Utils.AUTO_BACKUP) {
-			autoBackupsCheck.setSelected(true);
-			backupDelayText.setEnabled(true);
-		} else {
-			autoBackupsCheck.setSelected(false);
-			backupDelayText.setEnabled(false);
-		}
+		autoBackupsCheck.setSelected(Utils.AUTO_BACKUP);
+		backupDelayText.setEnabled(Utils.AUTO_BACKUP);
 		autoBackupsCheck.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
-				if (autoBackupsCheck.isSelected())
-					backupDelayText.setEnabled(true);
-				else
-					backupDelayText.setEnabled(false);
+				backupDelayText.setEnabled(autoBackupsCheck.isSelected());
 			}
 		});
 		panel.add(autoBackupsCheck);
+
+		autoBackupsWorldPngCheck = new JCheckBox(Messages.getString("T_AUTOMATIC_BACKUPS_WORLD_PNG"));
+		autoBackupsWorldPngCheck.setSelected(Utils.AUTO_BACKUP_WORLD_PNG);
+		panel.add(autoBackupsWorldPngCheck);
+
+		autoBackupsStatisticsPngCheck = new JCheckBox(Messages.getString("T_AUTOMATIC_BACKUPS_STATISTICS_PNG"));
+		autoBackupsStatisticsPngCheck.setSelected(Utils.AUTO_BACKUP_STATISTICS_PNG);
+		panel.add(autoBackupsStatisticsPngCheck);
+
 		JPanel backupDelayPanel = new JPanel();
 		backupDelayPanel.add(label);
 		backupDelayPanel.add(backupDelayText);
@@ -1189,11 +1194,9 @@ public class ParamDialog extends JDialog {
 		} catch (NumberFormatException ex) {
 			// Keep old value if there is a problem
 		}
-		if (autoBackupsCheck.isSelected()) {
-			Utils.AUTO_BACKUP = true;
-		} else {
-			Utils.AUTO_BACKUP = false;
-		}
+		Utils.AUTO_BACKUP = autoBackupsCheck.isSelected();
+		Utils.AUTO_BACKUP_WORLD_PNG = autoBackupsWorldPngCheck.isSelected();
+		Utils.AUTO_BACKUP_STATISTICS_PNG = autoBackupsStatisticsPngCheck.isSelected();
 		try {
 			i = Integer.parseInt(backupDelayText.getText());
 			if (i > 0) {
@@ -1252,7 +1255,7 @@ public class ParamDialog extends JDialog {
 		}
 		try {
 			i = Integer.parseInt(cladecomplexityText.getText());
-			if (i >= 0) Utils.CLADE_COMPLEXITY = i;
+			if (i >= -1) Utils.CLADE_COMPLEXITY = i;
 		} catch (NumberFormatException ex) {
 			// Keep old value if there is a problem
 		}
