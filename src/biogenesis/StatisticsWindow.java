@@ -53,7 +53,6 @@ import javax.swing.border.TitledBorder;
 public class StatisticsWindow extends JDialog implements ActionListener {
 	private static final long serialVersionUID = Utils.FILE_VERSION;
 
-	private JButton updateButton;
 	private JButton closeButton;
 
 	private World world;
@@ -98,7 +97,7 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 	}
 
 	public void repaintStats() {
-		StatisticsWindow.this.actionPerformed(new ActionEvent(updateButton, 0, ""));
+		StatisticsWindow.this.updatePerformed(new ActionEvent(this, 0, ""));
 	}
 
 	private void setComponents() {
@@ -107,7 +106,7 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 		nf.setMaximumFractionDigits(1);
 
 		// Population graphic
-		GraphPanel populationGraphPanel = new GraphPanel(100, 108);
+		GraphPanel populationGraphPanel = new GraphPanel(100, 104);
 		int max = Utils.max(worldStatistics.getMaxDeathsFromList(), worldStatistics.getMaxBirthFromList(),
 				worldStatistics.getMaxPopulationFromList());
 		populationGraphPanel.addGraph(worldStatistics.getDeathList(), max,
@@ -119,6 +118,14 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 		populationGraphPanel.addGraph(worldStatistics.getDistinctCladesList(), max,
 				0, Color.ORANGE, Messages.getString("T_CLADES")); //$NON-NLS-1$
 		populationGraphPanel.updateLegend();
+		
+		// Clades graphic
+		GraphPanel cladesGraphPanel = new GraphPanel(100, 52);
+		cladesGraphPanel.addGraph(worldStatistics.getDistinctCladesList(), 0,
+				0, Color.BLACK, Messages.getString("T_POPULATION")); //$NON-NLS-1$
+		cladesGraphPanel.addGraph(worldStatistics.getDistinctCladesList(), worldStatistics.getMaxDistinctClades(),
+				0, Color.ORANGE, Messages.getString("T_CLADES")); //$NON-NLS-1$
+		cladesGraphPanel.updateLegend();
 
 		// Population statistics
 		JPanel popStatsPanel = new JPanel();
@@ -145,6 +152,7 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 		// Population = population graph + population stats
 		JPanel populationPanel = new JPanel();
 		populationPanel.setLayout(new BorderLayout());
+		populationPanel.add(cladesGraphPanel, BorderLayout.NORTH);
 		populationPanel.add(populationGraphPanel, BorderLayout.CENTER);
 		populationPanel.add(popStatsPanel, BorderLayout.SOUTH);
 		Border title = BorderFactory.createTitledBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED),
@@ -152,7 +160,7 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 		populationPanel.setBorder(title);
 
 		// Atmosphere graphic
-		GraphPanel atmosphereGraphPanel = new GraphPanel(100, 108);
+		GraphPanel atmosphereGraphPanel = new GraphPanel(100, 104);
 		atmosphereGraphPanel.addGraph(worldStatistics.getOxygenList(),
 				Math.sqrt(Math.sqrt(world.getO2() + world.getCO2() + world.getCH4())),
 				0, Color.BLUE, Messages.getString("T_OXYGEN")); //$NON-NLS-1$
@@ -342,13 +350,10 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 				Messages.getString("T_REMARKABLE_ORGANISMS"), TitledBorder.LEFT, TitledBorder.TOP); //$NON-NLS-1$
 		notableBeingsPanel.setBorder(title);
 
-		// Buttons
+		// Close button
 		JPanel buttonsPanel = new JPanel();
-		updateButton = new JButton(Messages.getString("T_UPDATE")); //$NON-NLS-1$
 		closeButton = new JButton(Messages.getString("T_CLOSE")); //$NON-NLS-1$
-		buttonsPanel.add(updateButton);
 		buttonsPanel.add(closeButton);
-		updateButton.addActionListener(this);
 		closeButton.addActionListener(this);
 
 		// Add all components to the content pane
@@ -365,10 +370,13 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 		gbc.fill = GridBagConstraints.NONE;
 		gbc.anchor = GridBagConstraints.NORTHWEST;
 		leftPanel.add(notableBeingsPanel, gbc);
+		gbc.gridx = 0;
+		gbc.gridy = 2;
+		gbc.anchor = GridBagConstraints.EAST;
+		leftPanel.add(buttonsPanel, gbc);
 		JPanel rightPanel = new JPanel();
 		rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
 		rightPanel.add(worldHistoryPanel);
-		rightPanel.add(buttonsPanel);
 
 		getContentPane().setLayout(new GridBagLayout());
 		gbc = new GridBagConstraints();
@@ -460,18 +468,17 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 
 		return colorPanel;
 	}
-
-	public void actionPerformed(ActionEvent e) {
-		if (e.getSource() == updateButton) {
+	
+	public void updatePerformed(ActionEvent e) {
 			getContentPane().removeAll();
 			setComponents();
 			// pack();
 			revalidate();
 			// invalidate();
-		}
-		if (e.getSource() == closeButton) {
+	}
+
+	public void actionPerformed(ActionEvent e) {
 			dispose();
-		}
 	}
 }
 
