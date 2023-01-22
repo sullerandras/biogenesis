@@ -23,6 +23,7 @@ import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.index.strtree.STRtree;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -576,9 +577,7 @@ public class World implements Serializable{
 	 * and every 256 frames the time counter is increased by 1.
 	 */
 	public void time() {
-		colDetTree = new STRtree();
-		int i;
-		Organism b;
+		colDetTree = new OrganismBuckets(_width, _height, 70);
 		if (_corridorexists) {
 			InCorridor c;
 			synchronized (inCorridors) {
@@ -595,11 +594,11 @@ public class World implements Serializable{
 			 * will be thrown.
 			 */
 			for (Organism o: _organisms) {
-			     colDetTree.insert(new Envelope(o.getX(), o.getMaxX(), o.getY(), o.getMaxY()), o);
+			     colDetTree.insert(o);
 		    }
 			int l = _organisms.size();
-			for (i=0; i<l; i++) {
-				b = _organisms.get(i);
+			for (int i=0; i<l; i++) {
+				Organism b = _organisms.get(i);
 				if (!b.move()) {
 					// Organism has no energy -> remove from the list
 					if (Utils.repaintWorld()) {
@@ -703,6 +702,9 @@ public class World implements Serializable{
 		}
 		return null;
 	}
+
+	public transient OrganismBuckets colDetTree = new OrganismBuckets(_width, _height, 70);
+
 	/**
 	 * Checks if an organism has a high probability of being in touch with
 	 * another organism. This is done by checking if the bounding rectangles
@@ -712,17 +714,13 @@ public class World implements Serializable{
 	 * @return  The organism which bounding rectangle is touching the bounding
 	 * rectangle of {@code b1} or null if there is no such organism.
 	 */
-
-	public STRtree colDetTree = new STRtree();
-
 	public Organism fastCheckHit(Organism b1) {
-
-		List<Organism> collidingOrgs = colDetTree.query(new Envelope(b1.getX(), b1.getMaxX(), b1.getY(), b1.getMaxY()));
+		Collection<Organism> collidingOrgs = colDetTree.query(b1);
 
 		for (Organism org : collidingOrgs) {
 			if (b1 != org) {
 				if (b1.intersects(org)) {
-					return b1;
+					return org;
 				}
 			}
 		}
@@ -741,7 +739,7 @@ public class World implements Serializable{
 
 	public Organism transformCheckHit(Organism b1) {
 
-		List<Organism> collidingOrgs = colDetTree.query(new Envelope(b1.getX(), b1.getMaxX(), b1.getY(), b1.getMaxY()));
+		Collection<Organism> collidingOrgs = colDetTree.query(b1);
 
 		for (Organism org : collidingOrgs) {
 			if ((b1 != org) && (b1._ID != org._parentID) && (b1._parentID != org._ID)) {
@@ -760,7 +758,7 @@ public class World implements Serializable{
 	 * organism exists.
 	 */
 	public Organism checkHit(Organism org1) {
-		List<Organism> collidingOrgs = colDetTree.query(new Envelope(org1.getX(), org1.getMaxX(), org1.getY(), org1.getMaxY()));
+		Collection<Organism> collidingOrgs = colDetTree.query(org1);
 
 		for (Organism collidingOrganism : collidingOrgs) {
 			if (collidingOrganism != org1) {
