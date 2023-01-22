@@ -18145,26 +18145,26 @@ public class Organism extends Rectangle {
 				break;
 			case LAVENDER:
 				if (_altruist) {
-					break;
+				break;
+				} else {
+					if ((org._dodge) && (org._framesColor <= 0) && (org.useEnergy(Utils.DODGE_ENERGY_CONSUMPTION))) {
+						org.setColor(Utils.ColorTEAL);
+						setColor(Utils.ColorVIOLET);
 					} else {
-						if ((org._dodge) && (org._framesColor <= 0) && (org.useEnergy(Utils.DODGE_ENERGY_CONSUMPTION))) {
-							org.setColor(Utils.ColorTEAL);
-							setColor(Utils.ColorVIOLET);
-						} else {
-							if (useEnergy(Utils.VIOLET_ENERGY_CONSUMPTION)) {
-								if (org._isaplant) {
-								    org._segColor[oseg] = Utils.ColorGREENBROWN;
-								} else {
-									org._segColor[oseg] = Utils.ColorLIGHTBROWN;
-								}
-								org._mphoto[oseg] = -20;
-								setColor(Utils.ColorVIOLET);
-								org.segmentsRestoreEffects();
-								org._updateEffects = 2;
+						if (useEnergy(Utils.VIOLET_ENERGY_CONSUMPTION)) {
+							if (org._isaplant) {
+							    org._segColor[oseg] = Utils.ColorGREENBROWN;
+							} else {
+								org._segColor[oseg] = Utils.ColorLIGHTBROWN;
 							}
+							org._mphoto[oseg] = -20;
+							setColor(Utils.ColorVIOLET);
+							org.segmentsRestoreEffects();
+							org._updateEffects = 2;
 						}
 					}
-					break;
+				}
+				break;
 			case OLIVE:
 				if (org.useEnergy(Utils.OLIVE_ENERGY_CONSUMPTION)) {
 					if (_isaplant) {
@@ -20567,9 +20567,7 @@ public class Organism extends Rectangle {
 								break;
 							// is a fungus
 							case PINK:
-								if (!_isgray) {
-									addmaintenance -= 0.8 * _m[i];
-								}
+								addmaintenance -= 0.8 * _m[i];
 								break;
 							}
 						} else {
@@ -20933,9 +20931,7 @@ public class Organism extends Rectangle {
 								break;
 							// is a fungus
 							case PINK:
-								if (!_isgray) {
-									addmaintenance -= 0.8 * _m[i];
-								}
+								addmaintenance -= 0.8 * _m[i];
 								break;
 							}
 						} else {
@@ -21345,9 +21341,7 @@ public class Organism extends Rectangle {
 								break;
 							// is a fungus
 							case PINK:
-								if (!_isgray) {
-									addmaintenance -= 0.8 * _m[i];
-								}
+								addmaintenance -= 0.8 * _m[i];
 								break;
 							}
 						} else {
@@ -21566,9 +21560,7 @@ public class Organism extends Rectangle {
 							break;
 						// is a fungus
 						case PINK:
-							if (!_isgray) {
-								addmaintenance -= 0.8 * _m[i];
-							}
+							addmaintenance -= 0.8 * _m[i];
 							break;
 						}
 					} else {
