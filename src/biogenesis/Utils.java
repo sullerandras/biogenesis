@@ -630,6 +630,11 @@ public final class Utils {
 	 */
 	final static boolean DEF_AUTO_BACKUP = false;
 	/**
+	 * This is the default value for saving or not saving world stats as a CSV file when saving
+	 * automatic backups.
+	 */
+	final static boolean DEF_AUTO_BACKUP_CSV = false;
+	/**
 	 * This is the default value for saving or not saving the world as a PNG image when saving
 	 * automatic backups.
 	 */
@@ -1298,6 +1303,11 @@ public final class Utils {
 	 */
 	static boolean AUTO_BACKUP = DEF_AUTO_BACKUP;
 	/**
+	 * This is the value for saving or not saving world stats as a CSV file when saving
+	 * automatic backups.
+	 */
+	static boolean AUTO_BACKUP_CSV = DEF_AUTO_BACKUP_CSV;
+	/**
 	 * This is the value for saving or not saving the world as a PNG image when saving
 	 * automatic backups.
 	 */
@@ -1928,6 +1938,7 @@ public final class Utils {
 			prefs.putInt("STATUS_BAR_REFRESH_FPS",STATUS_BAR_REFRESH_FPS); //$NON-NLS-1$
 			prefs.putInt("STATISTICS_REFRESH_FPS",STATISTICS_REFRESH_FPS); //$NON-NLS-1$
 			prefs.putBoolean("AUTO_BACKUP",AUTO_BACKUP);
+			prefs.putBoolean("AUTO_BACKUP_CSV",AUTO_BACKUP_CSV);
 			prefs.putBoolean("AUTO_BACKUP_WORLD_PNG",AUTO_BACKUP_WORLD_PNG);
 			prefs.putBoolean("AUTO_BACKUP_STATISTICS_PNG",AUTO_BACKUP_STATISTICS_PNG);
 			prefs.putInt("BACKUP_DELAY",BACKUP_DELAY);
@@ -2105,6 +2116,7 @@ public final class Utils {
 			STATUS_BAR_REFRESH_FPS = prefs.getInt("STATUS_BAR_REFRESH_FPS",DEF_STATUS_BAR_REFRESH_FPS); //$NON-NLS-1$
 			STATISTICS_REFRESH_FPS = prefs.getInt("STATISTICS_REFRESH_FPS",DEF_STATISTICS_REFRESH_FPS); //$NON-NLS-1$
 			AUTO_BACKUP = prefs.getBoolean("AUTO_BACKUP",DEF_AUTO_BACKUP);
+			AUTO_BACKUP_CSV = prefs.getBoolean("AUTO_BACKUP_CSV",DEF_AUTO_BACKUP_CSV);
 			AUTO_BACKUP_WORLD_PNG = prefs.getBoolean("AUTO_BACKUP_WORLD_PNG",DEF_AUTO_BACKUP_WORLD_PNG);
 			AUTO_BACKUP_STATISTICS_PNG = prefs.getBoolean("AUTO_BACKUP_STATISTICS_PNG",DEF_AUTO_BACKUP_STATISTICS_PNG);
 			BACKUP_DELAY = prefs.getInt("BACKUP_DELAY",DEF_BACKUP_DELAY);

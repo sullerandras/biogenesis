@@ -44,7 +44,7 @@ import org.xml.sax.SAXException;
  * part: it's the place where organisms are drawn and is in charge of
  * the context menus management.
  */
-public class VisibleWorld extends JPanel {
+public class VisibleWorld extends JPanel implements VisibleWorldInterface {
 	/**
 	 * The version of this class
 	 */
@@ -58,7 +58,7 @@ public class VisibleWorld extends JPanel {
 	 */
 	protected JPopupMenu popupAlive;
 	/**
-	 * Menu option in {@link popupAlive} used to keep an organism on the center of the view. 
+	 * Menu option in {@link popupAlive} used to keep an organism on the center of the view.
 	 */
 	protected TrackAction trackAction;
 	protected StdAction feedAction;
@@ -124,18 +124,18 @@ public class VisibleWorld extends JPanel {
 	 */
 	protected StdAction randomCreateAction;
 	/**
-	 * Menu option in {@link popupVoid} used to create a new organism with a 
+	 * Menu option in {@link popupVoid} used to create a new organism with a
 	 * genetic code obtained from a file.
 	 */
 	protected StdAction importAction;
 	/**
 	 * This is the selected organism. It is drawn with an orange bounding rectangle
-	 * and, if there is an {@link InfoWindow}, it shows information about this organism. 
+	 * and, if there is an {@link InfoWindow}, it shows information about this organism.
 	 */
 	protected Organism _selectedOrganism = null;
 	/**
 	 * This is the last genetic code obtained using a Copy option. It is used when
-	 * pasting new organisms or in the genetic lab. 
+	 * pasting new organisms or in the genetic lab.
 	 */
 	protected GeneticCode clippedGeneticCode = null;
 	/**
@@ -152,22 +152,22 @@ public class VisibleWorld extends JPanel {
 	 * A reference to the {@link InfoWindow}, that is created from this class.
 	 */
 	//transient protected InfoWindow _infoWindow = null;
-	
+
 	public MainWindow getMainWindow() {
 		return _mainWindow;
 	}
-	
+
 	class TrackAction extends StdAction {
 		private static final long serialVersionUID = 1L;
 		protected String name_key2;
 		protected String desc_key2;
-		
+
 		public TrackAction(String text_key, String text_key2, String icon_path, String desc, String desc2) {
 			super(text_key, icon_path, desc);
 			name_key2 = text_key2;
 			desc_key2 = desc2;
 		}
-		
+
 		public void actionPerformed(ActionEvent e) {
 			Organism b = getSelectedOrganism();
 			if (b != null && b.isAlive()) {
@@ -177,7 +177,7 @@ public class VisibleWorld extends JPanel {
 					_mainWindow.setTrackedOrganism(b);
 			}
 		}
-		
+
 		public void setTracking(boolean isTracking) {
 			if (isTracking) {
 				putValue(NAME, Messages.getString(name_key2));
@@ -190,13 +190,13 @@ public class VisibleWorld extends JPanel {
 			}
 		}
 	}
-	
+
 	class FeedAction extends StdAction {
 		private static final long serialVersionUID = 1L;
 		public FeedAction(String text_key, String icon_path, String desc) {
 			super(text_key, icon_path, desc);
 		}
-		
+
 		public void actionPerformed(ActionEvent e) {
 			Organism b = getSelectedOrganism();
 			if (b != null && b.isAlive()) {
@@ -207,13 +207,13 @@ public class VisibleWorld extends JPanel {
 			}
 		}
 	}
-	
+
 	class WeakenAction extends StdAction {
 		private static final long serialVersionUID = 1L;
 		public WeakenAction(String text_key, String icon_path, String desc) {
 			super(text_key, icon_path, desc);
 		}
-		
+
 		public void actionPerformed(ActionEvent e) {
 			Organism b = getSelectedOrganism();
 			if (b != null && b.isAlive()) {
@@ -221,13 +221,13 @@ public class VisibleWorld extends JPanel {
 			}
 		}
 	}
-	
+
 	class KillAction extends StdAction {
 		private static final long serialVersionUID = 1L;
 		public KillAction(String text_key, String icon_path, String desc) {
 			super(text_key, icon_path, desc);
 		}
-		
+
 		public void actionPerformed(ActionEvent e) {
 			Organism b = getSelectedOrganism();
 			if (b != null && b.isAlive()) {
@@ -235,13 +235,13 @@ public class VisibleWorld extends JPanel {
 			}
 		}
 	}
-	
+
 	class CopyAction extends StdAction {
 		private static final long serialVersionUID = 1L;
 		public CopyAction(String text_key, String icon_path, String desc) {
 			super(text_key, icon_path, desc);
 		}
-		
+
 		public void actionPerformed(ActionEvent e) {
 			Organism b = getSelectedOrganism();
 			if (b != null && b.isAlive()) {
@@ -249,13 +249,13 @@ public class VisibleWorld extends JPanel {
 			}
 		}
 	}
-	
+
 	class SaveImageAction extends StdAction {
 		private static final long serialVersionUID = 1L;
 		public SaveImageAction(String text_key, String icon_path, String desc) {
 			super(text_key, icon_path, desc);
 		}
-		
+
 		public void actionPerformed(ActionEvent e) {
 			Organism b = getSelectedOrganism();
 			if (b != null && b.isAlive()) {
@@ -296,13 +296,13 @@ public class VisibleWorld extends JPanel {
 			}
 		}
 	}
-	
+
 	class ReviveAction extends StdAction {
 		private static final long serialVersionUID = 1L;
 		public ReviveAction(String text_key, String icon_path, String desc) {
 			super(text_key, icon_path, desc);
 		}
-		
+
 		public void actionPerformed(ActionEvent e) {
 			Organism b = getSelectedOrganism();
 			if (b != null && !b.isAlive()) {
@@ -351,13 +351,13 @@ public class VisibleWorld extends JPanel {
 			}
 		}
 	}
-	
+
 	class DisperseAction extends StdAction {
 		private static final long serialVersionUID = 1L;
 		public DisperseAction(String text_key, String icon_path, String desc) {
 			super(text_key, icon_path, desc);
 		}
-		
+
 		public void actionPerformed(ActionEvent e) {
 			Organism b = getSelectedOrganism();
 			if (b != null && !b.isAlive()) {
@@ -365,13 +365,13 @@ public class VisibleWorld extends JPanel {
 			}
 		}
 	}
-	
+
 	class ReproduceAction extends StdAction {
 		private static final long serialVersionUID = 1L;
 		public ReproduceAction(String text_key, String icon_path, String desc) {
 			super(text_key, icon_path, desc);
 		}
-		
+
 		public void actionPerformed(ActionEvent e) {
 			Organism b = getSelectedOrganism();
 			if (b != null && b.isAlive()) {
@@ -379,13 +379,13 @@ public class VisibleWorld extends JPanel {
 			}
 		}
 	}
-	
+
 	class RejuvenateAction extends StdAction {
 		private static final long serialVersionUID = 1L;
 		public RejuvenateAction(String text_key, String icon_path, String desc) {
 			super(text_key, icon_path, desc);
 		}
-		
+
 		public void actionPerformed(ActionEvent e) {
 			Organism b = getSelectedOrganism();
 			if (b != null && b.isAlive()) {
@@ -393,13 +393,13 @@ public class VisibleWorld extends JPanel {
 			}
 		}
 	}
-	
+
 	class ExportAction extends StdAction {
 		private static final long serialVersionUID = 1L;
 		public ExportAction(String text_key, String icon_path, String desc) {
 			super(text_key, icon_path, desc);
 		}
-		
+
 		public void actionPerformed(ActionEvent e) {
 			Organism b = getSelectedOrganism();
 			if (b != null && b.isAlive()) {
@@ -407,26 +407,26 @@ public class VisibleWorld extends JPanel {
 			}
 		}
 	}
-	
+
 	class PasteAction extends StdAction {
 		private static final long serialVersionUID = 1L;
 		public PasteAction(String text_key, String icon_path, String desc) {
 			super(text_key, icon_path, desc);
 		}
-		
+
 		public void actionPerformed(ActionEvent e) {
 			if (clippedGeneticCode != null) {
 				pasteGeneticCode(clippedGeneticCode, mouseX, mouseY);
 			}
 		}
 	}
-	
+
 	class RandomCreateAction extends StdAction {
 		private static final long serialVersionUID = 1L;
 		public RandomCreateAction(String text_key, String icon_path, String desc) {
 			super(text_key, icon_path, desc);
 		}
-		
+
 		public void actionPerformed(ActionEvent e) {
 			GeneticCode g = new GeneticCode();
 			Organism newBiot = new Organism(_mainWindow.getWorld(), g);
@@ -434,13 +434,13 @@ public class VisibleWorld extends JPanel {
 				_mainWindow.getWorld().addOrganism(newBiot, null);
 		}
 	}
-	
+
 	class ImportAction extends StdAction {
 		private static final long serialVersionUID = 1L;
 		public ImportAction(String text_key, String icon_path, String desc) {
 			super(text_key, icon_path, desc);
 		}
-		
+
 		public void actionPerformed(ActionEvent e) {
 			GeneticCode g;
 			Organism newBiot;
@@ -474,11 +474,11 @@ public class VisibleWorld extends JPanel {
     		_mainWindow._isProcessActive = processState;
 		}
 	}
-	
+
 	/**
 	 * Sets an organism as the selected organism. If required, it creates an
 	 * {@link InfoWindow} with information of this organism.
-	 * 
+	 *
 	 * @param b  The new selected organism
 	 * @param showInfo  true if an InfoWindow should be created
 	 */
@@ -504,8 +504,8 @@ public class VisibleWorld extends JPanel {
 		}
 	}
 	/**
-	 * Return the selected organism. 
-	 * 
+	 * Return the selected organism.
+	 *
 	 * @return  The selected organism, if any.
 	 */
 	public Organism getSelectedOrganism() {
@@ -514,7 +514,7 @@ public class VisibleWorld extends JPanel {
 	/**
 	 * Set a genetic code as the clipped genetic code, that will be used when
 	 * pasting a new organism or in the genetic lab as the staring genetic code.
-	 * 
+	 *
 	 * @param gc  The clipped genetic code
 	 */
 	public void setClippedGeneticCode(GeneticCode gc) {
@@ -524,7 +524,7 @@ public class VisibleWorld extends JPanel {
 	/**
 	 * Remove a genetic code as the clipped genetic code, that will be used when
 	 * pasting a new organism or in the genetic lab as the staring genetic code.
-	 * 
+	 *
 	 * @param gc  The clipped genetic code
 	 */
 	public void removeClippedGeneticCode() {
@@ -533,7 +533,7 @@ public class VisibleWorld extends JPanel {
 	/**
 	 * Creates a new VisibleWorld associated with a {@link MainWindow}.
 	 * Creates the menus and the MouseAdapter.
-	 * 
+	 *
 	 * @param mainWindow  The MainWindow associated with this VisibleWorld.
 	 */
 	public VisibleWorld(MainWindow mainWindow) {
@@ -564,7 +564,7 @@ public class VisibleWorld extends JPanel {
 	 * returns a reference to it. If more than on organism satisfies this condition,
 	 * if possible, an alive organism is returned. If non organism satisfies this
 	 * condition, this method returns null.
-	 * 
+	 *
 	 * @param x  X coordinate
 	 * @param y  Y coordinate
 	 * @return  An organism with the point (x,y) inside its bounding box, or null
@@ -603,7 +603,7 @@ public class VisibleWorld extends JPanel {
 					_selectedOrganism.width-1, _selectedOrganism.height-1);
 		}
     }
-	
+
 	private void createActions() {
 		trackAction = new TrackAction("T_TRACK", "T_ABORT_TRACKING", "images/menu_track.png", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				"T_TRACK_ORGANISM", "T_ABORT_TRACKING_ORGANISM"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -642,7 +642,7 @@ public class VisibleWorld extends JPanel {
 		toolBar.invalidate();
 		toolBar.repaint();
 	}
-	
+
 	public void showDeadToolbar() {
 		JToolBar toolBar = _mainWindow.toolBar;
 		toolBar.removeAll();
@@ -651,7 +651,7 @@ public class VisibleWorld extends JPanel {
 		toolBar.invalidate();
 		toolBar.repaint();
 	}
-	
+
 	/**
 	 * Creates all popup menus.
 	 */
@@ -690,7 +690,7 @@ public class VisibleWorld extends JPanel {
 	    popupVoid.add(new JMenuItem(pasteAction));
 	    popupVoid.add(new JMenuItem(randomCreateAction));
 	    popupVoid.add(new JMenuItem(importAction));
-	    // Only enable file management menu options if at least there is 
+	    // Only enable file management menu options if at least there is
 		//permission to read user's home directory
 		SecurityManager sec = System.getSecurityManager();
 		try {
@@ -716,7 +716,7 @@ public class VisibleWorld extends JPanel {
 	    copyAction.changeLocale();
 	    exportAction.changeLocale();
 	    saveImageAction.changeLocale();
-	    reviveAction.changeLocale();	    
+	    reviveAction.changeLocale();
 	    disperseAction.changeLocale();
 	    pasteAction.changeLocale();
 	    randomCreateAction.changeLocale();
@@ -726,12 +726,12 @@ public class VisibleWorld extends JPanel {
 	/**
 	 * Creates a new organism with the given genetic code and puts it in the world,
 	 * at the specified position.
-	 * 
+	 *
 	 * @param gc  The genetic code for the new organism
 	 * @param x  X coordinate
 	 * @param y  Y coordinate
 	 * @return  true if the organism has been created (if there is space for it), false otherwise
-	 */	
+	 */
 	public boolean pasteGeneticCode(GeneticCode gc, int x, int y) {
 		Organism newOrganism = new Organism(_mainWindow.getWorld(), gc);
 		if (newOrganism.pasteOrganism(x, y)) {
@@ -744,7 +744,7 @@ public class VisibleWorld extends JPanel {
 	 * This method is called when a mouse event occurs. If the mouse event is
 	 * a popup trigger, this method decide which popup menu is shown, based on
 	 * the position of the mouse.
-	 * 
+	 *
 	 * @param e
 	 */
 	void maybeShowPopupMenu(MouseEvent e) {

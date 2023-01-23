@@ -55,6 +55,7 @@ public class ParamDialog extends JDialog {
 	private JRadioButton repaintWorldStrategyRadio2 = null;
 	private JRadioButton repaintWorldStrategyRadio3 = null;
 	private JCheckBox autoBackupsCheck = null;
+	private JCheckBox autoBackupsCSVCheck = null;
 	private JCheckBox autoBackupsWorldPngCheck = null;
 	private JCheckBox autoBackupsStatisticsPngCheck = null;
 	private JTextField backupDelayText = null;
@@ -238,6 +239,7 @@ public class ParamDialog extends JDialog {
 		repaintWorldStrategyRadio2.setSelected(Utils.DEF_repaintWorldStrategy.equals(RepaintWorldStrategy.ONLY_WHEN_MAIN_WINDOW_IS_IN_FOCUS.toString()));
 		repaintWorldStrategyRadio3.setSelected(Utils.DEF_repaintWorldStrategy.equals(RepaintWorldStrategy.WHEN_ANY_APP_WINDOW_IS_IN_FOCUS.toString()));
 		autoBackupsCheck.setSelected(Utils.DEF_AUTO_BACKUP);
+		autoBackupsCSVCheck.setSelected(Utils.DEF_AUTO_BACKUP_CSV);
 		autoBackupsWorldPngCheck.setSelected(Utils.DEF_AUTO_BACKUP_WORLD_PNG);
 		autoBackupsStatisticsPngCheck.setSelected(Utils.DEF_AUTO_BACKUP_STATISTICS_PNG);
 		backupDelayText.setText(String.valueOf(Utils.DEF_BACKUP_DELAY));
@@ -463,7 +465,7 @@ public class ParamDialog extends JDialog {
 		generalPanel.add(panel);
 		//Backups
 		panel = new JPanel();
-		panel.setLayout(new GridLayout(4,1));
+		panel.setLayout(new GridLayout(5,1));
 		autoBackupsCheck = new JCheckBox(Messages.getString("T_AUTOMATIC_BACKUPS"));
 		label = new JLabel(Messages.getString("T_TIME_BETWEEN_BACKUPS")); //$NON-NLS-1$
 		backupDelayText = new JTextField(Integer.toString(Utils.BACKUP_DELAY),10);
@@ -475,6 +477,10 @@ public class ParamDialog extends JDialog {
 			}
 		});
 		panel.add(autoBackupsCheck);
+		
+		autoBackupsCSVCheck = new JCheckBox(Messages.getString("T_AUTOMATIC_BACKUPS_CSV"));
+		autoBackupsCSVCheck.setSelected(Utils.AUTO_BACKUP_CSV);
+		panel.add(autoBackupsCSVCheck);
 
 		autoBackupsWorldPngCheck = new JCheckBox(Messages.getString("T_AUTOMATIC_BACKUPS_WORLD_PNG"));
 		autoBackupsWorldPngCheck.setSelected(Utils.AUTO_BACKUP_WORLD_PNG);
@@ -1195,6 +1201,7 @@ public class ParamDialog extends JDialog {
 			// Keep old value if there is a problem
 		}
 		Utils.AUTO_BACKUP = autoBackupsCheck.isSelected();
+		Utils.AUTO_BACKUP_CSV = autoBackupsCSVCheck.isSelected();
 		Utils.AUTO_BACKUP_WORLD_PNG = autoBackupsWorldPngCheck.isSelected();
 		Utils.AUTO_BACKUP_STATISTICS_PNG = autoBackupsStatisticsPngCheck.isSelected();
 		try {

@@ -63,7 +63,7 @@ import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.border.EtchedBorder;
 
-public class MainWindow extends JFrame {
+public class MainWindow extends JFrame implements MainWindowInterface {
 	private static final long serialVersionUID = Utils.FILE_VERSION;
 
 	protected VisibleWorld _visibleWorld;
@@ -73,7 +73,7 @@ public class MainWindow extends JFrame {
 	protected transient Thread workerThread = null;
 	protected JFileChooser worldChooser = new JFileChooser();
 	protected JFileChooser geneticCodeChooser = new JFileChooser();
-	protected File _gameFile = null;
+	protected BioFile _gameFile = null;
 
 	protected JScrollPane scrollPane;
 	protected StdAction newGameAction;
@@ -157,6 +157,11 @@ public class MainWindow extends JFrame {
 		return infoToolbar;
 	}
 
+	@Override
+	public BioFile getBioFile() {
+		return _gameFile;
+	}
+
 	public MainWindow() {
 		createActions();
 		createMenu();
@@ -181,6 +186,11 @@ public class MainWindow extends JFrame {
 				Utils.setMainWindowInFocus(false);
 			}
 		});
+	}
+
+	@Override
+	public Frame getFrame() {
+		return this;
 	}
 
 	/**
@@ -394,7 +404,7 @@ public class MainWindow extends JFrame {
 			} else {
 				if (newWorld == JOptionPane.CANCEL_OPTION) {
 					if (_gameFile != null) {
-						saveObject(_world, _gameFile);
+						saveObject(_world, _gameFile.getFile());
 					} else {
 						if (saveGameAs() == null)
 							return;
@@ -486,7 +496,7 @@ public class MainWindow extends JFrame {
 
 		public void actionPerformed(ActionEvent e) {
 			if (_gameFile != null)
-				saveObject(_world, _gameFile);
+				saveObject(_world, _gameFile.getFile());
 			else
 				saveGameAs();
 		}
@@ -508,15 +518,9 @@ public class MainWindow extends JFrame {
 
 		public void actionPerformed(ActionEvent e) {
 			if (_gameFile != null) {
-				String filename = _gameFile.getPath();
-				String worldExt = BioFileFilter.WORLD_EXTENSION;
-				// Replace any string of format "filename@#####.ext" with "filename@TIME#.ext".
-				// Files without '@#####' ending also become "filename@TIME#.ext".
-				String baseFilename = filename.replaceFirst("(@[0-9]*)?." + worldExt + "$",
-						"@" + formatTime(_world.getTime()));
-				saveObject(_world, new File(baseFilename + "." + worldExt));
+				saveObject(_world, _gameFile.getFileForTime(_world.getTime(), BioFile.Type.REGULAR));
 				if (Utils.AUTO_BACKUP_WORLD_PNG) {
-					saveWorldImage(new File(baseFilename + ".world.png"));
+					saveWorldImage(_gameFile.getFileForTime(_world.getTime(), BioFile.Type.WORLD));
 				}
 				if (Utils.AUTO_BACKUP_STATISTICS_PNG && _statisticsWindow != null) {
 					// Apparently we have to wait for the statisticsWindow to repaint, it seems like
@@ -524,18 +528,10 @@ public class MainWindow extends JFrame {
 					// returns before it has been repainted. So we need to save the image in an AWT
 					// job to make sure the repaint has been done before the saving.
 					_statisticsWindow.repaintStats();
-					SwingUtilities.invokeLater(() -> saveStatisticsImage(new File(baseFilename + ".stats.png")));
+					SwingUtilities.invokeLater(() -> saveStatisticsImage(_gameFile.getFileForTime(_world.getTime(), BioFile.Type.STATS)));
 				}
 			} else
 				saveGameAs();
-		}
-
-		private String formatTime(long time) {
-			if (time < 1000000) {
-				return String.format("%1$05d", _world.getTime());
-			}
-
-			return Long.toString(time, 10);
 		}
 
 		@Override
@@ -680,9 +676,9 @@ public class MainWindow extends JFrame {
 						inputStream = new ObjectInputStream(fileStream);
 						_world = (World) inputStream.readObject();
 						inputStream.close();
-						_gameFile = f;
+						_gameFile = new BioFile(f);
 						_trackedOrganism = null;
-						_world.worldStatistics.saveGameLoaded();
+						_world.worldStatistics.saveGameLoaded(MainWindow.this);
 						setStatusMessage(Messages.getString("T_WORLD_LOADED_SUCCESSFULLY")); //$NON-NLS-1$
 					} catch (IOException ex) {
 						System.err.println(ex.getMessage());
@@ -698,9 +694,7 @@ public class MainWindow extends JFrame {
 								Messages.getString("T_READ_ERROR"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
 					}
 					// warn user if file is a backup file and might overwrite later backups
-					String worldExt = BioFileFilter.WORLD_EXTENSION;
-					if (_gameFile.getName().matches(".*?@[0-9]*." + worldExt + "$")
-							&& Utils.AUTO_BACKUP) {
+					if (_gameFile.fileNameContainsTime() && Utils.AUTO_BACKUP) {
 						JOptionPane.showMessageDialog(null, Messages.getString("T_WARNING_OPENING_BACKUP_FILE"));
 					}
 					// Torna a assignar els valors dels camps no guardats a l'objecte world
@@ -751,7 +745,7 @@ public class MainWindow extends JFrame {
 		if (save != JOptionPane.CANCEL_OPTION) {
 			if (save == JOptionPane.YES_OPTION) {
 				if (_gameFile != null)
-					saveObject(_world, _gameFile);
+					saveObject(_world, _gameFile.getFile());
 				else if (saveGameAs() == null)
 					return;
 			}
@@ -921,7 +915,7 @@ public class MainWindow extends JFrame {
 	protected File saveGameAs() {
 		File savedFile = saveObjectAs(_world);
 		if (savedFile != null)
-			_gameFile = savedFile;
+			_gameFile = new BioFile(savedFile);
 		return savedFile;
 	}
 
@@ -1208,9 +1202,15 @@ public class MainWindow extends JFrame {
 						}
 						// Do automatic backups if we already saved the game. Ignore automatic backup
 						// if the world has not been saved yet (i.e. after started a new world).
-						if (Utils.AUTO_BACKUP && _world.getTime() % Utils.BACKUP_DELAY == 0) {
-							if (_world.getFrame() == 0 && _world.getTime() > 0 && _gameFile != null) {
-								backupGameAction.actionPerformed(null);
+						if (Utils.AUTO_BACKUP && _world.getTime() % Utils.BACKUP_DELAY == 0 && _world.getFrame() == 1) {
+							if (_world.getTime() > 0) {
+								if (_gameFile != null) {
+									backupGameAction.actionPerformed(null);
+								}
+							} else {
+                                if (_gameFile == null) {
+                                	backupGameAction.actionPerformed(null);
+								}
 							}
 						}
 					}

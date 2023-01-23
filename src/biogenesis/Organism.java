@@ -46,7 +46,7 @@ public class Organism extends Rectangle {
 	protected GeneticCode _savedGeneticCode = null;
 	/**
 	 * The symmetry used when constructing the organism. Possible values are
-	 * 1 - 8. 
+	 * 1 - 8.
 	 */
 	protected int _symmetry;
 	/**
@@ -132,23 +132,23 @@ public class Organism extends Rectangle {
 	 */
 	protected double _maintenance;
 	/**
-	 * Segments methanotrophy 
+	 * Segments methanotrophy
 	 */
 	protected double _methanotrophy;
 	/**
-	 * Segments photosynthesis 
+	 * Segments photosynthesis
 	 */
 	protected double _photosynthesis;
 	/**
-	 * Active Forest colony photosynthesis 
+	 * Active Forest colony photosynthesis
 	 */
 	protected double _colonyPhotosynthesis;
 	/**
-	 * Forest segments photosynthesis 
+	 * Forest segments photosynthesis
 	 */
 	protected double _forestphoto;
 	/**
-	 * Leaf segments reduced photosynthesis 
+	 * Leaf segments reduced photosynthesis
 	 */
 	protected double _leafphoto;
 	/**
@@ -354,7 +354,7 @@ public class Organism extends Rectangle {
 	/**
 	 * Reference to the visual part of the world where the organism lives.
 	 */
-	transient protected VisibleWorld _visibleWorld;
+	transient protected VisibleWorldInterface _visibleWorld;
 	/**
 	 * Identification number of this organism's parent.
 	 */
@@ -629,17 +629,17 @@ public class Organism extends Rectangle {
 	protected double dtheta = 0d;
 	/**
 	 * Minimum required energy to reproduce this genetic code of an organism with blond segments.
-	 * More genes mean, that more energy is needed. 
+	 * More genes mean, that more energy is needed.
 	 */
 	protected int _earlyReproduceEnergy;
 	/**
 	 * Minimum required energy to reproduce this genetic code.
-	 * More genes mean, that more energy is needed. 
+	 * More genes mean, that more energy is needed.
 	 */
 	protected int _reproduceEnergy;
 	/**
 	 * Minimum required energy to reproduce this infected genetic code.
-	 * More genes mean, that more energy is needed. 
+	 * More genes mean, that more energy is needed.
 	 */
 	protected int _infectedReproduceEnergy;
 	/**
@@ -696,7 +696,7 @@ public class Organism extends Rectangle {
 	private static transient Vector2D v = new Vector2D();
 	/**
 	 * Returns true if this organism is alive, false otherwise.
-	 * 
+	 *
 	 * @return  true if this organism is alive, false otherwise.
 	 */
 	public boolean isAlive() {
@@ -704,7 +704,7 @@ public class Organism extends Rectangle {
 	}
 	/**
 	 * Returns the amount of chemical energy stored by this organism.
-	 * 
+	 *
 	 * @return  The amount of chemical energy stored by this organism.
 	 */
 	public double getEnergy() {
@@ -712,7 +712,7 @@ public class Organism extends Rectangle {
 	}
 	/**
 	 * Returns the identification number of this organism.
-	 * 
+	 *
 	 * @return  The identification number of this organism.
 	 */
 	public int getID() {
@@ -720,7 +720,7 @@ public class Organism extends Rectangle {
 	}
 	/**
 	 * Returns the identification number of this organism's parent.
-	 * 
+	 *
 	 * @return  The identification number of this organism's parent.
 	 */
 	public int getParentID() {
@@ -729,7 +729,7 @@ public class Organism extends Rectangle {
 	/**
 	 * Returns the energy needed to replicate this genetic code.
 	 * This energy is equal to 40 plus 3 for each segment.
-	 * 
+	 *
 	 * @return  the energy needed to replicate this genetic code.
 	 */
 	public int getReproduceEnergy() {
@@ -737,15 +737,15 @@ public class Organism extends Rectangle {
 	}
 	/**
 	 * Returns the age of this organism.
-	 * 
+	 *
 	 * @return  The age of this organism, in number of frames.
 	 */
 	public int getAge() {
 		return _age;
 	}
 	/**
-	 * Returns the maximum age that the organism can be. 
-	 * 
+	 * Returns the maximum age that the organism can be.
+	 *
 	 * @return  The maximum age that the organism can be.
 	 */
 	public int getMaxAge() {
@@ -753,7 +753,7 @@ public class Organism extends Rectangle {
 	}
 	/**
 	 * Returns the number of children that this organism produced.
-	 * 
+	 *
 	 * @return  The number of children that this organism produced.
 	 */
 	public int getTotalChildren() {
@@ -761,7 +761,7 @@ public class Organism extends Rectangle {
 	}
 	/**
 	 * Returns the number of organisms killed by this organism.
-	 * 
+	 *
 	 * @return  The number of organisms killed by this organism.
 	 */
 	public int getTotalKills() {
@@ -769,7 +769,7 @@ public class Organism extends Rectangle {
 	}
 	/**
 	 * Returns the number of organisms infected by this organism.
-	 * 
+	 *
 	 * @return  The number of organisms infected by this organism.
 	 */
 	public int getTotalInfected() {
@@ -777,7 +777,7 @@ public class Organism extends Rectangle {
 	}
 	/**
 	 * Returns a reference to this organism's genetic code.
-	 * 
+	 *
 	 * @return  A reference to this organism's genetic code.
 	 */
 	public GeneticCode getGeneticCode() {
@@ -785,7 +785,7 @@ public class Organism extends Rectangle {
 	}
 	/**
 	 * Returns the total mass of this organism.
-	 * 
+	 *
 	 * @return  The total mass of this organism calculated as the sum
 	 * of all its segments length.
 	 */
@@ -795,7 +795,7 @@ public class Organism extends Rectangle {
 	/**
 	 * Basic constructor. Doesn't initialize it: use {@link randomCreate}
 	 * or {@link inherit} to do this.
-	 * 
+	 *
 	 * @param world  A reference to the world where this organism is in.
 	 */
 	public Organism(World world) {
@@ -807,7 +807,7 @@ public class Organism extends Rectangle {
 	 * Construct an organism with a given genetic code. Doesn't initialize it:
 	 * use {@link pasteOrganism} to do it. Use {@link World.addOrganism} to add
 	 * it to the world.
-	 * 
+	 *
 	 * @param world  A reference to the world where this organism is in.
 	 * @param geneticCode  A reference to the genetic code of this organism.
 	 */
@@ -919,7 +919,7 @@ public class Organism extends Rectangle {
 	}
 	/*
 	 * Restores and removes jade, sky and spring spin
-	 */	
+	 */
 	final void segmentsCheckPlant() {
 		int i;
 		_spin = 0;
@@ -959,7 +959,7 @@ public class Organism extends Rectangle {
 	}
 	/*
 	 * Restores and removes segment dependent abilities
-	 */	
+	 */
 	final void segmentsRestoreEffects() {
 		int i;
 		_spin = 0;
@@ -1315,7 +1315,7 @@ public class Organism extends Rectangle {
 	}
 	/*
 	 * Creates segment dependent booleans
-	 */	
+	 */
 	final void segmentsCreateEffects() {
 		int i;
 		_spin = 0;
@@ -1370,7 +1370,7 @@ public class Organism extends Rectangle {
 		double photomultiplier = (photofactor * 0.0006) / Utils.GREEN_OBTAINED_ENERGY_DIVISOR;
 		for (i=_segments-1; i>=0; i--) {
 			// Manteniment
-			switch (getTypeColor(_segColor[i])) {			
+			switch (getTypeColor(_segColor[i])) {
 			case GREEN:
 				_mphoto[i] = Utils.GREEN_ENERGY_CONSUMPTION * photomultiplier * _geneticCode.getGene(i%_geneticCode.getNGenes()).getLength();
 				_isaplant =true;
@@ -2122,7 +2122,7 @@ public class Organism extends Rectangle {
 	/**
 	 * Initializes variables for a new random organism and finds a place
 	 * to put it in the world.
-	 * 
+	 *
 	 * @return  true if it found a place for this organism or false otherwise.
 	 */
 	public boolean randomCreate() {
@@ -2146,16 +2146,16 @@ public class Organism extends Rectangle {
 	 * Initializes variables for a new organism born from an existing
 	 * organism. Generates a mutated genetic code based on the parent's one
 	 * and finds a place in the world to put it.
-	 * 
-	 * @param parent  The organism from which this organism is born. 
+	 *
+	 * @param parent  The organism from which this organism is born.
 	 * @return  true if it found a place for this organism or false otherwise.
 	 */
 	public boolean inherit(Organism parent, boolean first) {
 		GeneticCode inheritGeneticCode;
 		boolean ok = true;
-		int sporeremember = 0;		
+		int sporeremember = 0;
 		int inheritReproduceEnergy = 1;
-		
+
 		// Prepare the inherited genetic code
 		if (parent._sporeversion > 0) {
 			if (parent._infectedGeneticCode != null) {
@@ -2177,7 +2177,7 @@ public class Organism extends Rectangle {
 						}
 					}
 				}
-				if ((first && Utils.random.nextInt(inheritReproduceEnergy) < 3) || (parent._nVirusChildren > 0 && !first) || (parent._sporetime < 0)) {					
+				if ((first && Utils.random.nextInt(inheritReproduceEnergy) < 3) || (parent._nVirusChildren > 0 && !first) || (parent._sporetime < 0)) {
 					if (parent._infectedReproduceEnergy > 0) {
 						inheritGeneticCode = parent._infectedGeneticCode;
 						inheritReproduceEnergy = parent._infectedReproduceEnergy;
@@ -2720,7 +2720,7 @@ public class Organism extends Rectangle {
 							                   			    _forestphoto = ((18 * _mass) + (19.5 * (double)_symmetry))/Utils.GREEN_OBTAINED_ENERGY_DIVISOR;
 							                   			    _usepretoucheffects = true;
 														}
-													} else {		
+													} else {
 														if (_isenhanced) {
 								                   			for (int i=0; i<_segments; i++) {
 								                   				_segColor[i] = Utils.ColorGRASS;
@@ -2732,7 +2732,7 @@ public class Organism extends Rectangle {
 								                   			if (largeenough) {
 								                   			    _photosynthesis = ((18 * _mass) + (19.5 * (double)_symmetry))/Utils.GREEN_OBTAINED_ENERGY_DIVISOR;
 															}
-														} else {												
+														} else {
 															if ((_jadefactor > 1) && (!_isblond)) {
 									                   			for (int i=0; i<_segments; i++) {
 									                   				_segColor[i] = Utils.ColorJADE;
@@ -2806,7 +2806,7 @@ public class Organism extends Rectangle {
 	                   		_candodge = false;
 	                   		_modifiesleaf =false;
 	                   		active = false;
-	                   		hasMoved = true;	                   	
+	                   		hasMoved = true;
 	                   		_isreproductive = false;
 	                   		if (_haseyes) {
 	                   			_haseyes = false;
@@ -2880,11 +2880,11 @@ public class Organism extends Rectangle {
 			    if (subcladecounter < Utils.CLADE_COMPLEXITY) {
 			    	if (_geneticCode.getNGenes() > inheritGeneticCode.getNGenes()) {
 			    		_geneticCode._cladeID += "+" + Integer.toHexString(_world.getNewCladePart());
-			    	} else if (_geneticCode.getNGenes() < inheritGeneticCode.getNGenes()) {				    		
+			    	} else if (_geneticCode.getNGenes() < inheritGeneticCode.getNGenes()) {
 			    		_geneticCode._cladeID += "-" + Integer.toHexString(_world.getNewCladePart());
 			    	} else if (_symmetry > inheritGeneticCode.getSymmetry()) {
 			    		_geneticCode._cladeID += ">" + Integer.toHexString(_world.getNewCladePart());
-			    	} else if (_symmetry < inheritGeneticCode.getSymmetry()) {				    		
+			    	} else if (_symmetry < inheritGeneticCode.getSymmetry()) {
 			    		_geneticCode._cladeID += "<" + Integer.toHexString(_world.getNewCladePart());
 			    	} else {
 			    		_geneticCode._cladeID += "|" + Integer.toHexString(_world.getNewCladePart());
@@ -2896,21 +2896,21 @@ public class Organism extends Rectangle {
 				parent._savedGeneticCode = _geneticCode;
 			}
 		}
-		
+
 		return ok;
 	}
 	/**
 	 * Initializes variables for a new organism born from an existing
 	 * transformed organism. Generates a mutated genetic code based on the transformers's one
 	 * and finds a place in the world to put it.
-	 * 
-	 * @param victim  The organism from which this organism is transformed. 
+	 *
+	 * @param victim  The organism from which this organism is transformed.
 	 * @return  true if it found a place for this organism or false otherwise.
 	 */
 	public boolean inheritTransformation(Organism victim, boolean first) {
 		GeneticCode inheritGeneticCode;
 		boolean ok = true;
-		
+
 		// Create the transformed genetic code
 		inheritGeneticCode = victim._infectedGeneticCode;
 		_geneticCode = new GeneticCode(inheritGeneticCode);
@@ -3216,7 +3216,7 @@ public class Organism extends Rectangle {
 							                   			    _forestphoto = ((18 * _mass) + (19.5 * (double)_symmetry))/Utils.GREEN_OBTAINED_ENERGY_DIVISOR;
 							                   			    _usepretoucheffects = true;
 														}
-													} else {		
+													} else {
 														if (_isenhanced) {
 								                   			for (int i=0; i<_segments; i++) {
 								                   				_segColor[i] = Utils.ColorGRASS;
@@ -3228,7 +3228,7 @@ public class Organism extends Rectangle {
 								                   			if (largeenough) {
 								                   			    _photosynthesis = ((18 * _mass) + (19.5 * (double)_symmetry))/Utils.GREEN_OBTAINED_ENERGY_DIVISOR;
 															}
-														} else {												
+														} else {
 															if ((_jadefactor > 1) && (!_isblond)) {
 									                   			for (int i=0; i<_segments; i++) {
 									                   				_segColor[i] = Utils.ColorJADE;
@@ -3302,7 +3302,7 @@ public class Organism extends Rectangle {
 	                   		_candodge = false;
 	                   		_modifiesleaf =false;
 	                   		active = false;
-	                   		hasMoved = true;	                   	
+	                   		hasMoved = true;
 	                   		_isreproductive = false;
 	                   		if (_haseyes) {
 	                   			_haseyes = false;
@@ -3374,11 +3374,11 @@ public class Organism extends Rectangle {
 				    if (subcladecounter < Utils.CLADE_COMPLEXITY) {
 				    	if (_geneticCode.getNGenes() > inheritGeneticCode.getNGenes()) {
 				    		_geneticCode._cladeID += "+" + Integer.toHexString(_world.getNewCladePart());
-				    	} else if (_geneticCode.getNGenes() < inheritGeneticCode.getNGenes()) {				    		
+				    	} else if (_geneticCode.getNGenes() < inheritGeneticCode.getNGenes()) {
 				    		_geneticCode._cladeID += "-" + Integer.toHexString(_world.getNewCladePart());
 				    	} else if (_symmetry > inheritGeneticCode.getSymmetry()) {
 				    		_geneticCode._cladeID += ">" + Integer.toHexString(_world.getNewCladePart());
-				    	} else if (_symmetry < inheritGeneticCode.getSymmetry()) {				    		
+				    	} else if (_symmetry < inheritGeneticCode.getSymmetry()) {
 				    		_geneticCode._cladeID += "<" + Integer.toHexString(_world.getNewCladePart());
 				    	} else {
 				    		_geneticCode._cladeID += "|" + Integer.toHexString(_world.getNewCladePart());
@@ -3388,13 +3388,13 @@ public class Organism extends Rectangle {
 			}
 		} else
 			ok = false;
-		
+
 		return ok;
 	}
 	/**
 	 * Places the organism at the specified position in the world and initializes its
 	 * variables. The organism must has an assigned genetic code.
-	 * 
+	 *
 	 * @param posx  The x coordinate of the position in the world we want to put this organism.
 	 * @param posy  The y coordinate of the position in the world we want to put this organism.
 	 * @return  true if there were enough space to put the organism, false otherwise.
@@ -3457,7 +3457,7 @@ public class Organism extends Rectangle {
 				return true;
 			}
 		}}
-		// It can't be placed		
+		// It can't be placed
 		return false;
 	}
 	/**
@@ -3480,7 +3480,7 @@ public class Organism extends Rectangle {
 			_updateEffects = 1;
 		}
 		_mass = 0;
-        
+
 		if (_haseyes) {
 			for (i=0; i<symmetry; i++) {
 				for (j=0; j<sequence; j++,segment++) {
@@ -3648,8 +3648,8 @@ public class Organism extends Rectangle {
 	 * mirror is the row and step is the column. The step represents the repetition of this vector
 	 * following the organism symmetry.
 	 * The scalation is calculated using the Utils.scale coefficients, using the organism's
-	 * _growthRatio to find the appropriate value. 
-	 * 
+	 * _growthRatio to find the appropriate value.
+	 *
 	 * @param p  The end point of the vector. The starting point is (0,0).
 	 * @param step  The repetition of the vectors pattern  we are calculating.
 	 * @param mirror  If mirroring is applied to this organism 1, otherwise 0.
@@ -3679,7 +3679,7 @@ public class Organism extends Rectangle {
 	 * Tries to find a spare place in the world for this organism and place it.
 	 * It also generates an identification number for the organism if it can be placed
 	 * somewhere.
-	 * 
+	 *
 	 * @return  true if a suitable place has been found, false if not.
 	 */
 	private boolean placeRandom() {
@@ -3737,7 +3737,7 @@ public class Organism extends Rectangle {
 	 * Tries to find a spare place near its parent for this organism and place it.
 	 * It also generates an identification number for the organism if it can be placed
 	 * somewhere and substracts its energy from its parent's energy.
-	 * 
+	 *
 	 * @return  true if a suitable place has been found, false if not.
 	 */
 	private boolean placeNearYellow(Organism parent) {
@@ -3746,7 +3746,7 @@ public class Organism extends Rectangle {
 		// Try to put it in any possible position, starting from a randomly chosen one.
 		for (int nSide = 0; nSide < 8; nSide++) {
 			// Calculate candidate position
-			_dCenterX = parent._dCenterX + (parent.width / 2 + width / 2 + 1) * Utils.side[nPos][0]; 
+			_dCenterX = parent._dCenterX + (parent.width / 2 + width / 2 + 1) * Utils.side[nPos][0];
 			_dCenterY = parent._dCenterY + (parent.height / 2 + height / 2 + 1) * Utils.side[nPos][1];
 			_centerX = (int) _dCenterX;
 			_centerY = (int) _dCenterY;
@@ -3785,7 +3785,7 @@ public class Organism extends Rectangle {
 	 * Tries to find a spare place near its parent for this organism and place it.
 	 * It also generates an identification number for the organism if it can be placed
 	 * somewhere and substracts its energy from its parent's energy.
-	 * 
+	 *
 	 * @return  true if a suitable place has been found, false if not.
 	 */
 	private boolean placeNearFirst(Organism parent) {
@@ -3793,7 +3793,7 @@ public class Organism extends Rectangle {
 		// Try to put it in any possible position, starting from a randomly chosen one.
 		for (int nSide = 0; nSide < 8; nSide++) {
 			// Calculate candidate position
-			_dCenterX = parent._dCenterX + (parent.width / 2 + width / 2 + 1) * Utils.side[nPos][0]; 
+			_dCenterX = parent._dCenterX + (parent.width / 2 + width / 2 + 1) * Utils.side[nPos][0];
 			_dCenterY = parent._dCenterY + (parent.height / 2 + height / 2 + 1) * Utils.side[nPos][1];
 			_centerX = (int) _dCenterX;
 			_centerY = (int) _dCenterY;
@@ -3828,7 +3828,7 @@ public class Organism extends Rectangle {
 	 * Tries to find a spare place near its parent for this organism and place it.
 	 * It also generates an identification number for the organism if it can be placed
 	 * somewhere and substracts its energy from its parent's energy.
-	 * 
+	 *
 	 * @return  true if a suitable place has been found, false if not.
 	 */
 	private boolean placeNear(Organism parent) {
@@ -3836,7 +3836,7 @@ public class Organism extends Rectangle {
 		// Try to put it in any possible position, starting from a randomly chosen one.
 		for (int nSide = 0; nSide < 8; nSide++) {
 			// Calculate candidate position
-			_dCenterX = parent._dCenterX + (parent.width / 2 + width / 2 + 1) * Utils.side[nPos][0]; 
+			_dCenterX = parent._dCenterX + (parent.width / 2 + width / 2 + 1) * Utils.side[nPos][0];
 			_dCenterY = parent._dCenterY + (parent.height / 2 + height / 2 + 1) * Utils.side[nPos][1];
 			_centerX = (int) _dCenterX;
 			_centerY = (int) _dCenterY;
@@ -3868,7 +3868,7 @@ public class Organism extends Rectangle {
 	 * Transforms an organism after infected by coral.
 	 * It also generates an identification number for the organism
 	 * and substracts its energy from its parent's energy.
-	 * 
+	 *
 	 * @return  true if a suitable place has been found, false if not.
 	 */
 	private boolean transform(Organism parent) {
@@ -3891,7 +3891,7 @@ public class Organism extends Rectangle {
 			// Try to put it in any possible position, starting from a randomly chosen one.
 			for (int nSide = 0; nSide < 8; nSide++) {
 				// Calculate candidate position
-				_dCenterX = parent._dCenterX + (parent.width / 2 + width / 2 + 1) * Utils.side[nPos][0]; 
+				_dCenterX = parent._dCenterX + (parent.width / 2 + width / 2 + 1) * Utils.side[nPos][0];
 				_dCenterY = parent._dCenterY + (parent.height / 2 + height / 2 + 1) * Utils.side[nPos][1];
 				_centerX = (int) _dCenterX;
 				_centerY = (int) _dCenterY;
@@ -3918,7 +3918,7 @@ public class Organism extends Rectangle {
 	/**
 	 * Draws this organism to a graphics context.
 	 * The organism is drawn at its position in the world.
-	 * 
+	 *
 	 * @param g  The graphics context to draw to.
 	 */
 	public void draw(Graphics g) {
@@ -3974,17 +3974,17 @@ public class Organism extends Rectangle {
 	 * Calculates the position of all organism points in the world, depending on
 	 * its rotation. It also calculates the bounding rectangle of the organism.
 	 * This method must be called from outside this class only when doing
-	 * manual drawing.  
-	 * 
+	 * manual drawing.
+	 *
 	 * @param force  To avoid calculations, segments position are only calculated
 	 * if the organism's rotation has changed in the last frame. If it is necessary
 	 * to calculate them even when the rotation hasn't changed, assign true to this
 	 * parameter.
 	 */
 	public void calculateBounds(boolean force) {
-		double left=java.lang.Double.MAX_VALUE, right=java.lang.Double.MIN_VALUE, 
+		double left=java.lang.Double.MAX_VALUE, right=java.lang.Double.MIN_VALUE,
 		top=java.lang.Double.MAX_VALUE, bottom=java.lang.Double.MIN_VALUE;
-		
+
 		double theta;
 		for (int i=_segments-1; i>=0; i--) {
 			/* Save calculation: if rotation hasn't changed and it is not forced,
@@ -4065,7 +4065,7 @@ public class Organism extends Rectangle {
 			hasGrown = 0;
 		}
 	}
-	
+
 	/**
 	 * Makes this organism reproduce. It tries to create at least one
 	 * child and at maximum 8 (depending on the number of yellow segments
@@ -4079,17 +4079,17 @@ public class Organism extends Rectangle {
 				       if (_nTotalChildren <    1) {
 				    _nChildren = 1;
 				} else if (_nTotalChildren <    9) {
-					_nChildren = 2; 
+					_nChildren = 2;
 				} else if (_nTotalChildren <   36) {
-					_nChildren = 3; 
+					_nChildren = 3;
 				} else if (_nTotalChildren <  100) {
-					_nChildren = 4; 
+					_nChildren = 4;
 				} else if (_nTotalChildren <  225) {
 					_nChildren = 5;
 				} else if (_nTotalChildren <  441) {
 				    _nChildren = 6;
 				} else if (_nTotalChildren <  784) {
-					_nChildren = 7; 
+					_nChildren = 7;
 				} else if (_nTotalChildren >= 784) {
 					_nChildren = 8;
 				}
@@ -4097,11 +4097,11 @@ public class Organism extends Rectangle {
 				       if (_nTotalChildren <   2) {
 				    _nChildren = 2;
 				} else if (_nTotalChildren <   5) {
-					_nChildren = 3; 
+					_nChildren = 3;
 				} else if (_nTotalChildren <   9) {
-					_nChildren = 4; 
+					_nChildren = 4;
 				} else if (_nTotalChildren <  14) {
-					_nChildren = 5; 
+					_nChildren = 5;
 				} else if (_nTotalChildren <  20) {
 					_nChildren = 6;
 				} else if (_nTotalChildren <  27) {
@@ -4120,7 +4120,7 @@ public class Organism extends Rectangle {
 			_nChildren += 1;
 		}
 		Organism newOrg;
-		
+
         if (_sporeversion > 0) {
         	for (int i=0; i < Utils.between(_nChildren,1,8); i++) {
 				newOrg = new Organism(_world);
@@ -4149,8 +4149,8 @@ public class Organism extends Rectangle {
 		}
 	}
 	/**
-	 * Makes this organism with blond segments reproduce early. It tries 
-	 * to create at least one child and at maximum 8 (depending on the 
+	 * Makes this organism with blond segments reproduce early. It tries
+	 * to create at least one child and at maximum 8 (depending on the
 	 * number of yellow segments of the organism) and put them in the world.
 	 */
 	public void reproduceEarly() {
@@ -4161,17 +4161,17 @@ public class Organism extends Rectangle {
 				       if (_nTotalChildren <    1) {
 				    _nChildren = 1;
 				} else if (_nTotalChildren <    9) {
-					_nChildren = 2; 
+					_nChildren = 2;
 				} else if (_nTotalChildren <   36) {
-					_nChildren = 3; 
+					_nChildren = 3;
 				} else if (_nTotalChildren <  100) {
-					_nChildren = 4; 
+					_nChildren = 4;
 				} else if (_nTotalChildren <  225) {
 					_nChildren = 5;
 				} else if (_nTotalChildren <  441) {
 				    _nChildren = 6;
 				} else if (_nTotalChildren <  784) {
-					_nChildren = 7; 
+					_nChildren = 7;
 				} else if (_nTotalChildren >= 784) {
 					_nChildren = 8;
 				}
@@ -4179,11 +4179,11 @@ public class Organism extends Rectangle {
 				       if (_nTotalChildren <   2) {
 				    _nChildren = 2;
 				} else if (_nTotalChildren <   5) {
-					_nChildren = 3; 
+					_nChildren = 3;
 				} else if (_nTotalChildren <   9) {
-					_nChildren = 4; 
+					_nChildren = 4;
 				} else if (_nTotalChildren <  14) {
-					_nChildren = 5; 
+					_nChildren = 5;
 				} else if (_nTotalChildren <  20) {
 					_nChildren = 6;
 				} else if (_nTotalChildren <  27) {
@@ -4200,7 +4200,7 @@ public class Organism extends Rectangle {
 		}
 		Organism newOrg;
 		boolean useblondcosts =true;
-		
+
 		for (int i=0; i < Utils.between(_nChildren,1,8); i++) {
 			newOrg = new Organism(_world);
 			if (newOrg.inherit(this, i==0)) {
@@ -4220,8 +4220,8 @@ public class Organism extends Rectangle {
 		}
 	}
 	/**
-	 * Makes this plant organism with blond segments reproduce early. It tries 
-	 * to create at least one child and at maximum 8 (depending on the 
+	 * Makes this plant organism with blond segments reproduce early. It tries
+	 * to create at least one child and at maximum 8 (depending on the
 	 * number of yellow segments of the organism) and put them in the world.
 	 */
 	public void reproduceEarlyPlant() {
@@ -4232,17 +4232,17 @@ public class Organism extends Rectangle {
 				       if (_nTotalChildren <    1) {
 				    _nChildren = 1;
 				} else if (_nTotalChildren <    9) {
-					_nChildren = 2; 
+					_nChildren = 2;
 				} else if (_nTotalChildren <   36) {
-					_nChildren = 3; 
+					_nChildren = 3;
 				} else if (_nTotalChildren <  100) {
-					_nChildren = 4; 
+					_nChildren = 4;
 				} else if (_nTotalChildren <  225) {
 					_nChildren = 5;
 				} else if (_nTotalChildren <  441) {
 				    _nChildren = 6;
 				} else if (_nTotalChildren <  784) {
-					_nChildren = 7; 
+					_nChildren = 7;
 				} else if (_nTotalChildren >= 784) {
 					_nChildren = 8;
 				}
@@ -4250,11 +4250,11 @@ public class Organism extends Rectangle {
 				       if (_nTotalChildren <   2) {
 				    _nChildren = 2;
 				} else if (_nTotalChildren <   5) {
-					_nChildren = 3; 
+					_nChildren = 3;
 				} else if (_nTotalChildren <   9) {
-					_nChildren = 4; 
+					_nChildren = 4;
 				} else if (_nTotalChildren <  14) {
-					_nChildren = 5; 
+					_nChildren = 5;
 				} else if (_nTotalChildren <  20) {
 					_nChildren = 6;
 				} else if (_nTotalChildren <  27) {
@@ -4271,7 +4271,7 @@ public class Organism extends Rectangle {
 		}
 		Organism newOrg;
 		boolean useblondcosts =true;
-		
+
 		for (int i=0; i < Utils.between(_nChildren,1,8); i++) {
 			newOrg = new Organism(_world);
 			if (newOrg.inherit(this, i==0)) {
@@ -4295,14 +4295,14 @@ public class Organism extends Rectangle {
 		}
 	}
 	/**
-	 * Makes this virus with blond segments reproduce. It tries 
+	 * Makes this virus with blond segments reproduce. It tries
 	 * to create one child and put it in the world.
 	 */
 	public void reproduceEarlyVirus() {
 		_timeToReproduce = _timeToReproduceMax;
 	    _nChildren = 1;
 		Organism newOrg;
-		
+
 		newOrg = new Organism(_world);
 		if (newOrg.inherit(this, true)) {
 			// It can be created
@@ -4332,7 +4332,7 @@ public class Organism extends Rectangle {
 		_timeToReproduce = _timeToReproduceMax;
 	    _nChildren = 1;
 		Organism newOrg;
-		
+
 		newOrg = new Organism(_world);
 		if (_infectedGeneticCode != null) {
 			_infectedGeneticCode = null;
@@ -4359,7 +4359,7 @@ public class Organism extends Rectangle {
 	public void reproduceYellow() {
 		if (_timeToReproduce < _timeToReproduceMax) {
 			_timeToReproduce = _timeToReproduceMax;
-		}		
+		}
 		boolean victimized =false;
 		// Calculate number of children
 		if (_issilver) {
@@ -4367,17 +4367,17 @@ public class Organism extends Rectangle {
 				       if (_nTotalChildren <    1) {
 				    _nChildren = 1;
 				} else if (_nTotalChildren <    9) {
-					_nChildren = 2; 
+					_nChildren = 2;
 				} else if (_nTotalChildren <   36) {
-					_nChildren = 3; 
+					_nChildren = 3;
 				} else if (_nTotalChildren <  100) {
-					_nChildren = 4; 
+					_nChildren = 4;
 				} else if (_nTotalChildren <  225) {
 					_nChildren = 5;
 				} else if (_nTotalChildren <  441) {
 				    _nChildren = 6;
 				} else if (_nTotalChildren <  784) {
-					_nChildren = 7; 
+					_nChildren = 7;
 				} else if (_nTotalChildren >= 784) {
 					_nChildren = 8;
 				}
@@ -4385,11 +4385,11 @@ public class Organism extends Rectangle {
 				       if (_nTotalChildren <   2) {
 				    _nChildren = 2;
 				} else if (_nTotalChildren <   5) {
-					_nChildren = 3; 
+					_nChildren = 3;
 				} else if (_nTotalChildren <   9) {
-					_nChildren = 4; 
+					_nChildren = 4;
 				} else if (_nTotalChildren <  14) {
-					_nChildren = 5; 
+					_nChildren = 5;
 				} else if (_nTotalChildren <  20) {
 					_nChildren = 6;
 				} else if (_nTotalChildren <  27) {
@@ -4408,7 +4408,7 @@ public class Organism extends Rectangle {
 			_nChildren += 1;
 		}
 		Organism newOrg;
-		
+
 		for (int i=0; i < Utils.between(_nVirusChildren,1,8); i++) {
 			if (_infectedGeneticCode != null) {
 				newOrg = new Organism(_world);
@@ -4439,17 +4439,17 @@ public class Organism extends Rectangle {
 				       if (_nTotalChildren <    1) {
 				    _nChildren = 1;
 				} else if (_nTotalChildren <    9) {
-					_nChildren = 2; 
+					_nChildren = 2;
 				} else if (_nTotalChildren <   36) {
-					_nChildren = 3; 
+					_nChildren = 3;
 				} else if (_nTotalChildren <  100) {
-					_nChildren = 4; 
+					_nChildren = 4;
 				} else if (_nTotalChildren <  225) {
 					_nChildren = 5;
 				} else if (_nTotalChildren <  441) {
 				    _nChildren = 6;
 				} else if (_nTotalChildren <  784) {
-					_nChildren = 7; 
+					_nChildren = 7;
 				} else if (_nTotalChildren >= 784) {
 					_nChildren = 8;
 				}
@@ -4457,11 +4457,11 @@ public class Organism extends Rectangle {
 				       if (_nTotalChildren <   2) {
 				    _nChildren = 2;
 				} else if (_nTotalChildren <   5) {
-					_nChildren = 3; 
+					_nChildren = 3;
 				} else if (_nTotalChildren <   9) {
-					_nChildren = 4; 
+					_nChildren = 4;
 				} else if (_nTotalChildren <  14) {
-					_nChildren = 5; 
+					_nChildren = 5;
 				} else if (_nTotalChildren <  20) {
 					_nChildren = 6;
 				} else if (_nTotalChildren <  27) {
@@ -4480,7 +4480,7 @@ public class Organism extends Rectangle {
 			_nChildren += 1;
 		}
 		Organism newOrg;
-		
+
 		newOrg = new Organism(_world);
 		if (newOrg.inherit(this, true)) {
 			// It can be created
@@ -4508,17 +4508,17 @@ public class Organism extends Rectangle {
 				       if (_nTotalChildren <    1) {
 				    _nChildren = 1;
 				} else if (_nTotalChildren <    9) {
-					_nChildren = 2; 
+					_nChildren = 2;
 				} else if (_nTotalChildren <   36) {
-					_nChildren = 3; 
+					_nChildren = 3;
 				} else if (_nTotalChildren <  100) {
-					_nChildren = 4; 
+					_nChildren = 4;
 				} else if (_nTotalChildren <  225) {
 					_nChildren = 5;
 				} else if (_nTotalChildren <  441) {
 				    _nChildren = 6;
 				} else if (_nTotalChildren <  784) {
-					_nChildren = 7; 
+					_nChildren = 7;
 				} else if (_nTotalChildren >= 784) {
 					_nChildren = 8;
 				}
@@ -4526,11 +4526,11 @@ public class Organism extends Rectangle {
 				       if (_nTotalChildren <   2) {
 				    _nChildren = 2;
 				} else if (_nTotalChildren <   5) {
-					_nChildren = 3; 
+					_nChildren = 3;
 				} else if (_nTotalChildren <   9) {
-					_nChildren = 4; 
+					_nChildren = 4;
 				} else if (_nTotalChildren <  14) {
-					_nChildren = 5; 
+					_nChildren = 5;
 				} else if (_nTotalChildren <  20) {
 					_nChildren = 6;
 				} else if (_nTotalChildren <  27) {
@@ -4549,7 +4549,7 @@ public class Organism extends Rectangle {
 			}
 		}
 		Organism newOrg;
-		
+
 		newOrg = new Organism(_world);
 		if (newOrg.inherit(this, true)) {
 			// It can be created
@@ -4571,7 +4571,7 @@ public class Organism extends Rectangle {
 	 */
 	public void transform() {
 		Organism newOrg;
-		
+
 		newOrg = new Organism(_world);
 		if (newOrg.inheritTransformation(this, true)) {
 			// It can be created
@@ -4882,7 +4882,7 @@ public class Organism extends Rectangle {
 							segmentsHealingEffects();
 						} else {
 							segmentsExtraEffects();
-						}					
+						}
 					} else {
 						if (_useframemovement) {
 							segmentsFrameEffects();
@@ -4992,7 +4992,7 @@ public class Organism extends Rectangle {
 	/**
 	 * Makes the organism decay an amount of energy using the
 	 * decomposition process (also used for pink feeding).
-	 * 
+	 *
 	 * @param q  The quantity of energy to decay.
 	 * @return  true if the organism has enough energy and there is
 	 * enough oxygen in the atmosphere, false otherwise.
@@ -5010,7 +5010,7 @@ public class Organism extends Rectangle {
 	/**
 	 * Makes the organism spend an amount of energy using the
 	 * respiration process.
-	 * 
+	 *
 	 * @param q  The quantity of energy to spend.
 	 * @return  true if the organism has enough energy and there is
 	 * enough oxygen in the atmosphere, false otherwise.
@@ -5374,7 +5374,7 @@ public class Organism extends Rectangle {
 		_sporeversion = -2;
 		_timeToReproduce = _sporetime / _symmetry;
 		_timeToReproduce = (_timeToReproduce * _timeToReproduce * _timeToReproduce) / 400;
-		// _gold is used for the possible hatch delay here 
+		// _gold is used for the possible hatch delay here
 		_gold = 20;
   		_usepretoucheffects = false;
   		_usefriendeffects = 0;
@@ -5411,7 +5411,7 @@ public class Organism extends Rectangle {
 		_sporeversion = -3;
 		_timeToReproduce = _sporetime / _symmetry;
 		_timeToReproduce = (_timeToReproduce * _timeToReproduce) / 40;
-		// _gold is used for the possible hatch delay here 
+		// _gold is used for the possible hatch delay here
 		_gold = 20;
   		_usepretoucheffects = false;
   		_usefriendeffects = 0;
@@ -5469,9 +5469,9 @@ public class Organism extends Rectangle {
 	}
 	/**
 	 * Applies hatching produced by a spore touching a segment
-	 * 
+	 *
 	 * @param org  The organism which is touching.
-	 * @param seg  Index of this organism's segment. 
+	 * @param seg  Index of this organism's segment.
 	 * @param oseg  Index of the other organism's segment.
 	 */
 	private final void touchHatch(Organism org, int seg, int oseg) {
@@ -5549,10 +5549,10 @@ public class Organism extends Rectangle {
 				}} else if (org._isaplant) {
 					if (org._isinfectious) {
 						if (_geneticCode.getAdaptspore() % 10 == 6) {
-						    hatch();	
+						    hatch();
 					}} else {
 						if (_geneticCode.getAdaptspore() % 10 == 7) {
-						    hatch();	
+						    hatch();
 					}
 			    }} else if (org.active) {
 			    	if (_geneticCode.getAdaptspore() % 10 == 0) {
@@ -5570,10 +5570,10 @@ public class Organism extends Rectangle {
 				}} else if (org._isaplant) {
 					if (org._isinfectious) {
 						if (_geneticCode.getAdaptspore() % 10 == 6) {
-						    hatch();	
+						    hatch();
 					}} else {
 						if (_geneticCode.getAdaptspore() % 10 == 7) {
-						    hatch();	
+						    hatch();
 					}
 			    }} else if (org.active) {
 			    	if ((!_isinfectious) && (!_iscoral) && (_geneticCode.getAdaptspore() % 10 == 0)) {
@@ -5609,10 +5609,10 @@ public class Organism extends Rectangle {
 				}} else if (org._isaplant) {
 					if (org._isinfectious) {
 						if (_geneticCode.getAdaptspore() % 10 == 6) {
-						    hatch();	
+						    hatch();
 					}} else {
 						if (_geneticCode.getAdaptspore() % 10 == 7) {
-						    hatch();	
+						    hatch();
 					}
 			    }} else if (org.active) {
 			    	if (_geneticCode.getAdaptspore() % 10 == 0) {
@@ -5623,7 +5623,7 @@ public class Organism extends Rectangle {
 	}
 	/**
 	 * Applies mimicry by a black/dark segment against other organisms reactions
-	 * 
+	 *
 	 * @param seg  Index of this organism's segment.
 	 */
 	private final void mimic(int seg) {
@@ -5685,11 +5685,11 @@ public class Organism extends Rectangle {
 			} else {
 				_segColor[seg] = Utils.ColorDARK;
 			}
-		}		
+		}
 	}
 	/**
 	 * Applies mimicry by a black/dark segment, showing the mimicked color
-	 * 
+	 *
 	 * @param seg  Index of this organism's segment.
 	 */
 	private final void mimicColor() {
@@ -5751,12 +5751,12 @@ public class Organism extends Rectangle {
 			} else {
 				setColor(Utils.ColorDARK);
 			}
-		}			
+		}
 	}
 	/**
 	 * Kills the organism. Sets its segments to brown and tells the world
 	 * about the event.
-	 * 
+	 *
 	 * @param killingOrganism  The organism that has killed this organism,
 	 * or null if it has died of natural causes.
 	 */
@@ -5791,7 +5791,7 @@ public class Organism extends Rectangle {
 	}
 	/**
 	 * Magenta segments are getting weakened by a gray segment
-	 * 
+	 *
 	 * @param grayOrganism  The organism that weakened
 	 * all magenta segments of this organism
 	 */
@@ -5809,7 +5809,7 @@ public class Organism extends Rectangle {
 	}
 	/**
 	 * Reproductive segments are getting destroyed by a fallow segment
-	 * 
+	 *
 	 * @param fallowOrganism  The organism that destroyed
 	 * the reproductive segments of this organism
 	 */
@@ -5859,7 +5859,7 @@ public class Organism extends Rectangle {
 	}
 	/**
 	 * Green and moving segments are getting destroyed by a modified sky segment
-	 * 
+	 *
 	 * @param freezingOrganism  The organism that destroyed
 	 * the green and moving segments of this organism
 	 */
@@ -6048,7 +6048,7 @@ public class Organism extends Rectangle {
 	}
 	/**
 	 * Moving segments are getting destroyed by an unmodified sky segment
-	 * 
+	 *
 	 * @param freezingOrganism  The organism that destroyed
 	 * the green and moving segments of this organism
 	 */
@@ -6101,7 +6101,7 @@ public class Organism extends Rectangle {
 	}
 	/**
 	 * Infectious, coral and fallow segments are getting destroyed by a mint segment
-	 * 
+	 *
 	 * @param mintOrganism  The organism that destroyed
 	 * the infectious, coral and fallow segments of this organism
 	 */
@@ -6201,7 +6201,7 @@ public class Organism extends Rectangle {
 	 * Infects this organism with a genetic code.
 	 * Tells the world about this event.
 	 * Not currently used.
-	 * 
+	 *
 	 * @param infectingCode  The genetic code that infects this organism.
 	 */
 	public void infectedBy(GeneticCode infectingCode) {
@@ -6212,7 +6212,7 @@ public class Organism extends Rectangle {
 	/**
 	 * Infects this organism with the genetic code of another organism.
 	 * Tells the world about this event.
-	 * 
+	 *
 	 * @param infectingOrganism  The organism that is infecting this one.
 	 */
 	public void infectedBy(Organism infectingOrganism) {
@@ -6225,7 +6225,7 @@ public class Organism extends Rectangle {
 	/**
 	 * Infects this organism with the genetic code of a fruit.
 	 * Tells the world about this event.
-	 * 
+	 *
 	 * @param infectingOrganism  The organism that is infecting this one.
 	 */
 	public void infectedByFruit(Organism infectingOrganism) {
@@ -6242,7 +6242,7 @@ public class Organism extends Rectangle {
 	/**
 	 * Infects this organism with the genetic code of a fruit (weak).
 	 * Tells the world about this event.
-	 * 
+	 *
 	 * @param infectingOrganism  The organism that is infecting this one.
 	 */
 	public void infectedByFruitWeak(Organism infectingOrganism) {
@@ -6259,7 +6259,7 @@ public class Organism extends Rectangle {
 	/**
 	 * Calculates the resulting speeds after a collision between two organisms, following
 	 * physical rules.
-	 * 
+	 *
 	 * @param org  The other organism in the collision.
 	 * @param p  Intersection point between the organisms.
 	 * @param l  Line that has collided. Of the two lines, this is the one that collided
@@ -6309,7 +6309,7 @@ public class Organism extends Rectangle {
 			}
 		}
 		// This is the j in the parallel axis theorem
-		double j = (-(1+Utils.ELASTICITY) * (vab1x * nx + vab1y * ny)) / 
+		double j = (-(1+Utils.ELASTICITY) * (vab1x * nx + vab1y * ny)) /
 			(1/_mass + 1/org._mass + Math.pow(rapx * ny - rapy * nx, 2) / _I +
 					Math.pow(rbpx * ny - rbpy * nx, 2) / org._I);
 		// Final speed
@@ -6325,7 +6325,7 @@ public class Organism extends Rectangle {
 	 * speed after the collision with the world border.
 	 * This calculation should be updated to follow the parallel axis theorem, just
 	 * like the collision between two organisms.
-	 * 
+	 *
 	 * @return  true if the organism is inside the world, false otherwise.
 	 */
 	private final boolean isInsideWorld() {
@@ -6345,14 +6345,14 @@ public class Organism extends Rectangle {
 	}
 	/**
 	 * Moves the organism and rotates it.
-	 * 
+	 *
 	 * @param offsetx  displacement on the x axis.
 	 * @param offsety  displacement on the y axis.
 	 * @param offsettheta  rotation degree.
 	 */
 	private final void offset(double offsetx, double offsety, double offsettheta) {
 		_dCenterX += offsetx; _dCenterY += offsety; _theta += offsettheta;
-		_centerX = (int)_dCenterX; _centerY = (int)_dCenterY; 
+		_centerX = (int)_dCenterX; _centerY = (int)_dCenterY;
 	}
 	/**
 	 * Stop reaction
@@ -6454,7 +6454,7 @@ public class Organism extends Rectangle {
 	/**
 	 * Finds if two organism are touching and if so applies the effects of the
 	 * collision.
-	 * 
+	 *
 	 * @param org  The organism to check for collisions.
 	 * @return  true if the two organisms are touching, false otherwise.
 	 */
@@ -6466,7 +6466,7 @@ public class Organism extends Rectangle {
 		if (!_haseyes) {
 			for (i = _segments-1; i >= 0; i--) {
 				// Consider only segments with modulus greater than 1
-				if (_m[i]>=1) { 
+				if (_m[i]>=1) {
 					line.setLine(x1[i]+_centerX, y1[i]+_centerY, x2[i]+_centerX, y2[i]+_centerY);
 					// First check if the line intersects the bounding box of the other organism
 					if (org.intersectsLine(line)) {
@@ -6614,7 +6614,7 @@ public class Organism extends Rectangle {
 			}
 		} else for (i = _segments-1; i >= 0; i--) {
 			// Consider only segments with modulus greater than 1
-			if (_m[i]>=1) { 
+			if (_m[i]>=1) {
 				line.setLine(x1[i]+_centerX, y1[i]+_centerY, x2[i]+_centerX, y2[i]+_centerY);
 				// First check if the line intersects the bounding box of the other organism
 				if (org.intersectsLine(line)) {
@@ -6826,9 +6826,9 @@ public class Organism extends Rectangle {
 	}
 	/**
 	 * Applies forest photosynthesis, reactions and some other effects produced by two touching segments.
-	 * 
+	 *
 	 * @param org  The organism which is touching.
-	 * @param seg  Index of this organism's segment. 
+	 * @param seg  Index of this organism's segment.
 	 * @param oseg  Index of the other organism's segment.
 	 */
 	private final void pretouchEffects(Organism org, int seg, int oseg) {
@@ -6956,7 +6956,7 @@ public class Organism extends Rectangle {
 								    _segfriendReaction[x] = org._segfriendReaction[oseg];
 								}
 							}
-						} else {										
+						} else {
 							if (org._segColor[oseg].equals(Utils.ColorBARK)) {
 								if (_isaplant) {
 									_segColor[seg] = Utils.ColorBARK;
@@ -7018,7 +7018,7 @@ public class Organism extends Rectangle {
 			}
 		}
 		if (_forestphoto > 0) {
-		    if (org._photosynthesis > 0) {				
+		    if (org._photosynthesis > 0) {
 				// Enhance photosynthesis in a colony, _mphoto value of -0.2 is darkgray
 		    	if ((_mphoto[seg] <= 0) && (_mphoto[seg] != -0.2)) {
 		    		if (org._mphoto[oseg] <= 0) {
@@ -7050,7 +7050,7 @@ public class Organism extends Rectangle {
 							break;
 						case DARKGRAY:
 							break;
-						default:						
+						default:
 							if (_colonyPhotosynthesis == 0) {
 								_colonyPhotosynthesis += 0.425 * _forestphoto;
 							} else {
@@ -7097,7 +7097,7 @@ public class Organism extends Rectangle {
 								break;
 							case DARKGRAY:
 								break;
-							default:						
+							default:
 								if (_colonyPhotosynthesis == 0) {
 									_colonyPhotosynthesis += 0.925 * _forestphoto;
 								} else {
@@ -7144,7 +7144,7 @@ public class Organism extends Rectangle {
 								break;
 							case DARKGRAY:
 								break;
-							default:						
+							default:
 								if (_colonyPhotosynthesis == 0) {
 									_colonyPhotosynthesis += 0.525 * _forestphoto;
 								} else {
@@ -7187,7 +7187,7 @@ public class Organism extends Rectangle {
 								break;
 							case DARKGRAY:
 								break;
-							default:						
+							default:
 								if (_colonyPhotosynthesis == 0) {
 									_colonyPhotosynthesis += 0.425 * _forestphoto;
 								} else {
@@ -7242,7 +7242,7 @@ public class Organism extends Rectangle {
 								break;
 							case DARKGRAY:
 								break;
-							default:						
+							default:
 								if (_colonyPhotosynthesis == 0) {
 									_colonyPhotosynthesis += 0.825 * _forestphoto;
 								} else {
@@ -7251,7 +7251,7 @@ public class Organism extends Rectangle {
 								break;
 							}
 				    	}
-						break;	
+						break;
 					}
 		    	}
 			}
@@ -7289,9 +7289,9 @@ public class Organism extends Rectangle {
 	}
 	/**
 	 * Applies the friendly effects produced by two touching segments.
-	 * 
+	 *
 	 * @param org  The organism which is touching.
-	 * @param seg  Index of this organism's segment. 
+	 * @param seg  Index of this organism's segment.
 	 * @param oseg  Index of the other organism's segment.
 	 */
 	private final void touchfriendEffects(Organism org, int seg, int oseg) {
@@ -7323,7 +7323,7 @@ public class Organism extends Rectangle {
 						org._timeToReproduce = 0;
 					}
 				} else {
-					if ((_peaceful) && (_isaplant) && (!org._altruist) && (org._transfersenergy) && (org.active) && 
+					if ((_peaceful) && (_isaplant) && (!org._altruist) && (org._transfersenergy) && (org.active) &&
 						(!org._isaplant) && (!org._isaconsumer) && (!org._isafungus)) {
 						// Transfers energy
 						double takenEnergy3 = Utils.between(0.5 * Utils.ORGANIC_OBTAINED_ENERGY, 0, (_energy - (org._energy+2)));
@@ -7349,7 +7349,7 @@ public class Organism extends Rectangle {
 				if ((org._segColor[j].equals(Utils.ColorLIGHTBROWN)) || (org._segColor[j].equals(Utils.ColorGREENBROWN)) || (org._segColor[j].equals(Utils.ColorBROKEN))
 					|| (org._segColor[j].equals(Utils.ColorLIGHT_BLUE)) || (org._segColor[j].equals(Utils.ColorICE)) || (org._segColor[j].equals(Utils.ColorDARKFIRE))) {
 					    if ((org.useEnergy(Utils.MAGENTA_ENERGY_CONSUMPTION/2)) && (useEnergy(Utils.MAGENTA_ENERGY_CONSUMPTION/2))) {
-							org._segColor[j] = org._geneticCode.getGene(j%org._geneticCode.getNGenes()).getColor();  
+							org._segColor[j] = org._geneticCode.getGene(j%org._geneticCode.getNGenes()).getColor();
 							setColor(Color.MAGENTA);
 							heal1 =true;
 					    }
@@ -7371,7 +7371,7 @@ public class Organism extends Rectangle {
 			        if ((org._segColor[j].equals(Utils.ColorLIGHTBROWN)) || (org._segColor[j].equals(Utils.ColorGREENBROWN)) || (org._segColor[j].equals(Utils.ColorBROKEN))
 						|| (org._segColor[j].equals(Utils.ColorLIGHT_BLUE)) || (org._segColor[j].equals(Utils.ColorICE)) || (org._segColor[j].equals(Utils.ColorDARKFIRE))) {
 			        	if ((org.useEnergy(Utils.MAGENTA_ENERGY_CONSUMPTION/2)) && (useEnergy(Utils.MAGENTA_ENERGY_CONSUMPTION/2))) {
-							    org._segColor[j] = org._geneticCode.getGene(j%org._geneticCode.getNGenes()).getColor();  
+							    org._segColor[j] = org._geneticCode.getGene(j%org._geneticCode.getNGenes()).getColor();
 							    setColor(Color.MAGENTA);
 							    heal2 =true;
 					        }
@@ -7400,7 +7400,7 @@ public class Organism extends Rectangle {
 					if ((org._segColor[j].equals(Utils.ColorLIGHTBROWN)) || (org._segColor[j].equals(Utils.ColorGREENBROWN)) || (org._segColor[j].equals(Utils.ColorBROKEN))
 						|| (org._segColor[j].equals(Utils.ColorLIGHT_BLUE)) || (org._segColor[j].equals(Utils.ColorICE)) || (org._segColor[j].equals(Utils.ColorDARKFIRE))) {
 						if ((org.useEnergy(Utils.MAGENTA_ENERGY_CONSUMPTION/2)) && (useEnergy(Utils.MAGENTA_ENERGY_CONSUMPTION/2))) {
-								org._segColor[j] = org._geneticCode.getGene(j%org._geneticCode.getNGenes()).getColor();  
+								org._segColor[j] = org._geneticCode.getGene(j%org._geneticCode.getNGenes()).getColor();
 								setColor(Color.MAGENTA);
 								heal3 =true;
 							}
@@ -7483,7 +7483,7 @@ public class Organism extends Rectangle {
 				}
 			}
 		}
-		// Lavender segment: Immunity vs Plague, Coral and Fallow, it can immunize other organisms temporarily. 
+		// Lavender segment: Immunity vs Plague, Coral and Fallow, it can immunize other organisms temporarily.
 		if ((_segColor[seg].equals(Utils.ColorLAVENDER)) || ((_transfersenergy) && (_createlavender > 0))) {
 			switch (getTypeColor(org._segColor[oseg])) {
 			case BROWN:
@@ -7561,9 +7561,9 @@ public class Organism extends Rectangle {
 	}
 	/**
 	 * Applies the friendly reaction effects produced by two touching segments.
-	 * 
+	 *
 	 * @param org  The organism which is touching.
-	 * @param seg  Index of this organism's segment. 
+	 * @param seg  Index of this organism's segment.
 	 * @param oseg  Index of the other organism's segment.
 	 */
 	private final void touchfriendReaction(Organism org, int seg, int oseg) {
@@ -7592,7 +7592,7 @@ public class Organism extends Rectangle {
 			    	    	    dx=Utils.between(((x1[0]-x2[seg])*(_m[i]*_m[i])+12d*(x2[i]-x1[i]))/(3 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
 			    	    	    dy=Utils.between(((y1[0]-y2[seg])*(_m[i]*_m[i])+12d*(y2[i]-y1[i]))/(3 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
 			    	    	    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
-		                    }} else 
+		                    }} else
 		                    if (_segfriendReaction[seg] == 4) {
 		                    if (((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) && (useEnergy(Utils.TEAL_ENERGY_CONSUMPTION))) {
 							    dx=Utils.between(((x2[seg]-x1[seg])*(_m[i]*_m[i])+12d*(x2[i]-x1[i]))/(3 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
@@ -7604,7 +7604,7 @@ public class Organism extends Rectangle {
 								dx=Utils.between(((org._centerX-_centerX)*(_m[i]*_m[i])+12d*(x2[i]-x1[i]))/(3 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
 								dy=Utils.between(((org._centerY-_centerY)*(_m[i]*_m[i])+12d*(y2[i]-y1[i]))/(3 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
 								dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
-			                }}                 
+			                }}
 					}
 					break;
 				}
@@ -7614,9 +7614,9 @@ public class Organism extends Rectangle {
 	}
 	/**
 	 * Applies the reaction effects produced by two touching segments.
-	 * 
+	 *
 	 * @param org  The organism which is touching.
-	 * @param seg  Index of this organism's segment. 
+	 * @param seg  Index of this organism's segment.
 	 * @param oseg  Index of the other organism's segment.
 	 */
 	private final void touchReaction(Organism org, int seg, int oseg) {
@@ -7653,7 +7653,7 @@ public class Organism extends Rectangle {
 		    				    dx=Utils.between(((x1[0]-x2[seg])*(_m[i]*_m[i])+12d*(x2[i]-x1[i]))/(1.5 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
 		    				    dy=Utils.between(((y1[0]-y2[seg])*(_m[i]*_m[i])+12d*(y2[i]-y1[i]))/(1.5 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
 		    					dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
-		    	            }} else 
+		    	            }} else
 		                    if (_segsickReaction[seg] == 4) {
 		                    if (((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) && (useEnergy(Utils.TEAL_ENERGY_CONSUMPTION))) {
 							    dx=Utils.between(((x2[seg]-x1[seg])*(_m[i]*_m[i])+12d*(x2[i]-x1[i]))/(1.5 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
@@ -7661,11 +7661,11 @@ public class Organism extends Rectangle {
 							    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 		                    }} else
 		                    if (_segsickReaction[seg] == 5) {
-		                    if (((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) && (useEnergy(Utils.TEAL_ENERGY_CONSUMPTION))) {  
+		                    if (((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) && (useEnergy(Utils.TEAL_ENERGY_CONSUMPTION))) {
 								dx=Utils.between(((org._centerX-_centerX)*(_m[i]*_m[i])+12d*(x2[i]-x1[i]))/(1.5 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
 								dy=Utils.between(((org._centerY-_centerY)*(_m[i]*_m[i])+12d*(y2[i]-y1[i]))/(1.5 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
 								dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
-			                }}                  
+			                }}
 					  }
 					  break;
 				default:
@@ -7687,7 +7687,7 @@ public class Organism extends Rectangle {
 	    	    	    	    dx=Utils.between(((x1[0]-x2[seg])*(_m[i]*_m[i])+12d*(x2[i]-x1[i]))/(1.5 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
 	    	    	    	    dy=Utils.between(((y1[0]-y2[seg])*(_m[i]*_m[i])+12d*(y2[i]-y1[i]))/(1.5 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
 	    	    	    	    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
-	  	                    }} else 
+	  	                    }} else
 	  	                    if (_segorangeReaction[seg] == 4) {
 	  	                    if (((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) && (useEnergy(Utils.TEAL_ENERGY_CONSUMPTION))) {
 	    						dx=Utils.between(((x2[seg]-x1[seg])*(_m[i]*_m[i])+12d*(x2[i]-x1[i]))/(1.5 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
@@ -7717,7 +7717,7 @@ public class Organism extends Rectangle {
 	    	    	    	    dx=Utils.between(((x1[0]-x2[seg])*(_m[i]*_m[i])+12d*(x2[i]-x1[i]))/(1.5 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
 	    	    	    	    dy=Utils.between(((y1[0]-y2[seg])*(_m[i]*_m[i])+12d*(y2[i]-y1[i]))/(1.5 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
 	    	    	    	    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
-		                    }} else 
+		                    }} else
 		                    if (_segfireReaction[seg] == 4) {
 		                    if (((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) && (useEnergy(Utils.TEAL_ENERGY_CONSUMPTION))) {
 							    dx=Utils.between(((x2[seg]-x1[seg])*(_m[i]*_m[i])+12d*(x2[i]-x1[i]))/(1.5 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
@@ -7747,7 +7747,7 @@ public class Organism extends Rectangle {
 		    	    		    dx=Utils.between(((x1[0]-x2[seg])*(_m[i]*_m[i])+12d*(x2[i]-x1[i]))/(1.5 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
 		    	    			dy=Utils.between(((y1[0]-y2[seg])*(_m[i]*_m[i])+12d*(y2[i]-y1[i]))/(1.5 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
 		    	    			dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
-		    	    	    }} else 
+		    	    	    }} else
 		                    if (_segredReaction[seg] == 4) {
 		                    if (((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) && (useEnergy(Utils.TEAL_ENERGY_CONSUMPTION))) {
 	  						    dx=Utils.between(((x2[seg]-x1[seg])*(_m[i]*_m[i])+12d*(x2[i]-x1[i]))/(1.5 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
@@ -7777,7 +7777,7 @@ public class Organism extends Rectangle {
 	    	    	    	    dx=Utils.between(((x1[0]-x2[seg])*(_m[i]*_m[i])+12d*(x2[i]-x1[i]))/(1.5 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
 	    	    	    	    dy=Utils.between(((y1[0]-y2[seg])*(_m[i]*_m[i])+12d*(y2[i]-y1[i]))/(1.5 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
 	    	    	    	    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
-	  	                    }} else   	                    
+	  	                    }} else
 	  	                    if (_segpinkReaction[seg] == 4) {
 	  	                    if (((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) && (useEnergy(Utils.TEAL_ENERGY_CONSUMPTION))) {
 	    						dx=Utils.between(((x2[seg]-x1[seg])*(_m[i]*_m[i])+12d*(x2[i]-x1[i]))/(1.5 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
@@ -7867,7 +7867,7 @@ public class Organism extends Rectangle {
 	    	    	    	    dx=Utils.between(((x1[0]-x2[seg])*(_m[i]*_m[i])+12d*(x2[i]-x1[i]))/(1.5 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
 	    	    	    	    dy=Utils.between(((y1[0]-y2[seg])*(_m[i]*_m[i])+12d*(y2[i]-y1[i]))/(1.5 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
 	    	    	    	    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
-	  	                    }} else 
+	  	                    }} else
 	  	                    if (_segochreReaction[seg] == 4) {
 	  	                    if (((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) && (useEnergy(Utils.TEAL_ENERGY_CONSUMPTION))) {
 	    						dx=Utils.between(((x2[seg]-x1[seg])*(_m[i]*_m[i])+12d*(x2[i]-x1[i]))/(1.5 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
@@ -7998,7 +7998,7 @@ public class Organism extends Rectangle {
 	              	    		dy=Utils.between(((org._centerY-_centerY)*(_m[i]*_m[i])+12d*(y2[i]-y1[i]))/(1.5 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
 	              	    		dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	              	  	    }}
-	                      } 
+	                      }
 	                      break;
 	                  case SPIKEPOINT:
 	                	    if (_segspikeReaction[seg] == 1) {
@@ -8046,7 +8046,7 @@ public class Organism extends Rectangle {
 	    	    	    	    dx=Utils.between(((x1[0]-x2[seg])*(_m[i]*_m[i])+12d*(x2[i]-x1[i]))/(1.5 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
 	    	    	    	    dy=Utils.between(((y1[0]-y2[seg])*(_m[i]*_m[i])+12d*(y2[i]-y1[i]))/(1.5 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
 	    	    	    	    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
-	  	                    }} else  	                    
+	  	                    }} else
 	  	                    if (_seggrayReaction[seg] == 4) {
 	  	                    if (((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) && (useEnergy(Utils.TEAL_ENERGY_CONSUMPTION))) {
 	    						dx=Utils.between(((x2[seg]-x1[seg])*(_m[i]*_m[i])+12d*(x2[i]-x1[i]))/(1.5 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
@@ -8205,7 +8205,7 @@ public class Organism extends Rectangle {
 	  	    	    	    	dx=Utils.between(((x1[0]-x2[seg])*(_m[i]*_m[i])+12d*(x2[i]-x1[i]))/(1.5 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
 	  	    	    	    	dy=Utils.between(((y1[0]-y2[seg])*(_m[i]*_m[i])+12d*(y2[i]-y1[i]))/(1.5 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
 	  	    	    	    	dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
-		                    }} else 
+		                    }} else
 		                    if (_segbarkReaction[seg] == 4) {
 		                    if (((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) && (useEnergy(Utils.TEAL_ENERGY_CONSUMPTION))) {
 	  						    dx=Utils.between(((x2[seg]-x1[seg])*(_m[i]*_m[i])+12d*(x2[i]-x1[i]))/(1.5 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
@@ -8247,9 +8247,9 @@ public class Organism extends Rectangle {
 		    	    	    	dx=Utils.between(((x1[0]-x2[seg])*(_m[i]*_m[i])+12d*(x2[i]-x1[i]))/(1.5 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
 		    	    	    	dy=Utils.between(((y1[0]-y2[seg])*(_m[i]*_m[i])+12d*(y2[i]-y1[i]))/(1.5 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
 		    	    	    	dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
-		    	    	    }} else 
+		    	    	    }} else
 		                    if (_seggreenReaction[seg] == 4) {
-		                    if (((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) && (useEnergy(Utils.TEAL_ENERGY_CONSUMPTION))) {     
+		                    if (((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) && (useEnergy(Utils.TEAL_ENERGY_CONSUMPTION))) {
 						        dx=Utils.between(((x2[seg]-x1[seg])*(_m[i]*_m[i])+12d*(x2[i]-x1[i]))/(1.5 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
 						        dy=Utils.between(((y2[seg]-y1[seg])*(_m[i]*_m[i])+12d*(y2[i]-y1[i]))/(1.5 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
 						        dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
@@ -8259,7 +8259,7 @@ public class Organism extends Rectangle {
 		    					dx=Utils.between(((org._centerX-_centerX)*(_m[i]*_m[i])+12d*(x2[i]-x1[i]))/(1.5 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
 		    					dy=Utils.between(((org._centerY-_centerY)*(_m[i]*_m[i])+12d*(y2[i]-y1[i]))/(1.5 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
 		    					dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
-		  	                }} 
+		  	                }}
 	            	        break;
 	                  case BLUE:
 	                	    if (_segblueReaction[seg] == 1) {
@@ -8277,7 +8277,7 @@ public class Organism extends Rectangle {
 	    	    	    	    dx=Utils.between(((x1[0]-x2[seg])*(_m[i]*_m[i])+12d*(x2[i]-x1[i]))/(1.5 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
 	    	    	    	    dy=Utils.between(((y1[0]-y2[seg])*(_m[i]*_m[i])+12d*(y2[i]-y1[i]))/(1.5 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
 	    	    	    	    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
-	  	                    }} else 
+	  	                    }} else
 	  	                    if (_segblueReaction[seg] == 4) {
 	  	                    if (((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) && (useEnergy(Utils.TEAL_ENERGY_CONSUMPTION))) {
 	    						dx=Utils.between(((x2[seg]-x1[seg])*(_m[i]*_m[i])+12d*(x2[i]-x1[i]))/(1.5 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
@@ -8307,7 +8307,7 @@ public class Organism extends Rectangle {
 	  	    	    	    	dx=Utils.between(((x1[0]-x2[seg])*(_m[i]*_m[i])+12d*(x2[i]-x1[i]))/(1.5 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
 	  	    	    	    	dy=Utils.between(((y1[0]-y2[seg])*(_m[i]*_m[i])+12d*(y2[i]-y1[i]))/(1.5 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
 	  	    	    	    	dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
-		                    }} else 
+		                    }} else
 		                    if (_segoliveReaction[seg] == 4) {
 		                    if (((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) && (useEnergy(Utils.TEAL_ENERGY_CONSUMPTION))) {
 							    dx=Utils.between(((x2[seg]-x1[seg])*(_m[i]*_m[i])+12d*(x2[i]-x1[i]))/(1.5 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
@@ -8338,7 +8338,7 @@ public class Organism extends Rectangle {
 	    	    	    	    dx=Utils.between(((x1[0]-x2[seg])*(_m[i]*_m[i])+12d*(x2[i]-x1[i]))/(1.5 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
 	    	    	    	    dy=Utils.between(((y1[0]-y2[seg])*(_m[i]*_m[i])+12d*(y2[i]-y1[i]))/(1.5 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
 	    	    	    	    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
-		                    }} else 
+		                    }} else
 		                    if (_segskyReaction[seg] == 4) {
 		                    if (((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) && (useEnergy(Utils.TEAL_ENERGY_CONSUMPTION))) {
 							    dx=Utils.between(((x2[seg]-x1[seg])*(_m[i]*_m[i])+12d*(x2[i]-x1[i]))/(1.5 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
@@ -8369,7 +8369,7 @@ public class Organism extends Rectangle {
 	    	      	    	    dx=Utils.between(((x1[0]-x2[seg])*(_m[i]*_m[i])+12d*(x2[i]-x1[i]))/(1.5 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
 	    	      	    	    dy=Utils.between(((y1[0]-y2[seg])*(_m[i]*_m[i])+12d*(y2[i]-y1[i]))/(1.5 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
 	    	      	    	    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
-	    	    	        }} else 
+	    	    	        }} else
 	    	    	        if (_segwhiteReaction[seg] == 4) {
 	    	    	        if (((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) && (useEnergy(Utils.TEAL_ENERGY_CONSUMPTION))) {
 	    	      				dx=Utils.between(((x2[seg]-x1[seg])*(_m[i]*_m[i])+12d*(x2[i]-x1[i]))/(1.5 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
@@ -8411,7 +8411,7 @@ public class Organism extends Rectangle {
 			    	    		dy=Utils.between(((org._centerY-_centerY)*(_m[i]*_m[i])+12d*(y2[i]-y1[i]))/(1.5 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
 			    	    		dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 			    	  	    }}
-			              }  
+			              }
 			              break;
 	                  case CORAL:
 	              	        if (_segcoralReaction[seg] == 1) {
@@ -8620,7 +8620,7 @@ public class Organism extends Rectangle {
 	            	    		dy=Utils.between(((org._centerY-_centerY)*(_m[i]*_m[i])+12d*(y2[i]-y1[i]))/(1.5 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
 	            	    		dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	            	  	    }}
-	                      } 
+	                      }
 	                	  break;
 	                  case LILAC:
 	                  case DARKLILAC:
@@ -8639,7 +8639,7 @@ public class Organism extends Rectangle {
 	    	    	    	    dx=Utils.between(((x1[0]-x2[seg])*(_m[i]*_m[i])+12d*(x2[i]-x1[i]))/(1.5 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
 	    	    	    	    dy=Utils.between(((y1[0]-y2[seg])*(_m[i]*_m[i])+12d*(y2[i]-y1[i]))/(1.5 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
 	    	    	    	    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
-		                    }} else 
+		                    }} else
 		                    if (_seglilacReaction[seg] == 4) {
 		                    if (((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) && (useEnergy(Utils.TEAL_ENERGY_CONSUMPTION))) {
 							    dx=Utils.between(((x2[seg]-x1[seg])*(_m[i]*_m[i])+12d*(x2[i]-x1[i]))/(1.5 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
@@ -8701,7 +8701,7 @@ public class Organism extends Rectangle {
 	    	    	    	    dx=Utils.between(((x1[0]-x2[seg])*(_m[i]*_m[i])+12d*(x2[i]-x1[i]))/(1.5 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
 	    	    	    	    dy=Utils.between(((y1[0]-y2[seg])*(_m[i]*_m[i])+12d*(y2[i]-y1[i]))/(1.5 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
 	    	    	    	    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
-	  	                    }} else   	                    
+	  	                    }} else
 	  	                    if (_segmagentaReaction[seg] == 4) {
 	  	                    if (((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) && (useEnergy(Utils.TEAL_ENERGY_CONSUMPTION))) {
 	    						dx=Utils.between(((x2[seg]-x1[seg])*(_m[i]*_m[i])+12d*(x2[i]-x1[i]))/(1.5 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
@@ -8793,7 +8793,7 @@ public class Organism extends Rectangle {
 	    	    	    	    dx=Utils.between(((x1[0]-x2[seg])*(_m[i]*_m[i])+12d*(x2[i]-x1[i]))/(1.5 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
 	    	    	    	    dy=Utils.between(((y1[0]-y2[seg])*(_m[i]*_m[i])+12d*(y2[i]-y1[i]))/(1.5 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
 	    	    	    	    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
-	  	                    }} else 
+	  	                    }} else
 	  	                    if (_seglightblueReaction[seg] == 4) {
 	  	                    if (((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) && (useEnergy(Utils.TEAL_ENERGY_CONSUMPTION))) {
 	    						dx=Utils.between(((x2[seg]-x1[seg])*(_m[i]*_m[i])+12d*(x2[i]-x1[i]))/(1.5 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
@@ -8986,7 +8986,7 @@ public class Organism extends Rectangle {
 	          	    		    dy=Utils.between(((org._centerY-_centerY)*(_m[i]*_m[i])+12d*(y2[i]-y1[i]))/(1.5 * _mass), -Utils.MAX_VEL, Utils.MAX_VEL);
 	          	    		    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	          	  	        }}
-	                      } 
+	                      }
 	                  	  break;
 	                  }
 	                  break;
@@ -8998,9 +8998,9 @@ public class Organism extends Rectangle {
 	}
 	/**
 	 * Applies the friendly brake effects produced by an eye segment of a non moving organism touching another segment
-	 * 
+	 *
 	 * @param org  The organism which is touching.
-	 * @param seg  Index of this organism's segment. 
+	 * @param seg  Index of this organism's segment.
 	 * @param oseg  Index of the other organism's segment.
 	 */
 	private final void touchfriendBrake(Organism org, int seg, int oseg) {
@@ -9014,16 +9014,16 @@ public class Organism extends Rectangle {
 				    if (useEnergy(Utils.TEAL_ENERGY_CONSUMPTION)) {
 				    	standstill();
 				    }}
-    	            break;	                    
+    	            break;
 			  }
 			  break;
 		}
 	}
 	/**
 	 * Applies the brake effects produced by an eye segment of a non moving organism touching another segment
-	 * 
+	 *
 	 * @param org  The organism which is touching.
-	 * @param seg  Index of this organism's segment. 
+	 * @param seg  Index of this organism's segment.
 	 * @param oseg  Index of the other organism's segment.
 	 */
 	private final void touchBrake(Organism org, int seg, int oseg) {
@@ -9085,7 +9085,7 @@ public class Organism extends Rectangle {
                     if (useEnergy(Utils.TEAL_ENERGY_CONSUMPTION)) {
                     	standstill();
         			}}
-          	        break;  
+          	        break;
             	  } else if ((org._isaconsumer) || (org._isafungus)) {
                     if (_segconsumerReaction[seg] == 1) {
                     if (useEnergy(Utils.TEAL_ENERGY_CONSUMPTION)) {
@@ -9097,7 +9097,7 @@ public class Organism extends Rectangle {
                     if (useEnergy(Utils.TEAL_ENERGY_CONSUMPTION)) {
                     	standstill();
         		    }}
-                  } 
+                  }
                   break;
               case SPIKEPOINT:
         	        if (_segspikeReaction[seg] == 1) {
@@ -9125,7 +9125,7 @@ public class Organism extends Rectangle {
                     if (useEnergy(Utils.TEAL_ENERGY_CONSUMPTION)) {
                     	standstill();
         			}}
-          	    	break;	
+          	    	break;
             		} else {
             	    if (_segwhiteReaction[seg] == 1) {
             	    if (useEnergy(Utils.TEAL_ENERGY_CONSUMPTION)) {
@@ -9196,14 +9196,14 @@ public class Organism extends Rectangle {
 	                if (useEnergy(Utils.TEAL_ENERGY_CONSUMPTION)) {
 	                	standstill();
 	  				}}
-	    	    	break;  
+	    	    	break;
             	  } else {
             		if (_segvirusReaction[seg] == 1) {
 	                if (useEnergy(Utils.TEAL_ENERGY_CONSUMPTION)) {
 	                	standstill();
 	  				}}
-	              }  
-	              break;	                	  
+	              }
+	              break;
               case CORAL:
         	        if (_segcoralReaction[seg] == 1) {
         	        if (useEnergy(Utils.TEAL_ENERGY_CONSUMPTION)) {
@@ -9228,7 +9228,7 @@ public class Organism extends Rectangle {
                   	if (useEnergy(Utils.TEAL_ENERGY_CONSUMPTION)) {
                   		standstill();
   					}}
-    	            break;  
+    	            break;
                   } else if (org._isaplant) {
               	    if (_seggreenReaction[seg] == 1) {
               	    if (useEnergy(Utils.TEAL_ENERGY_CONSUMPTION)) {
@@ -9246,7 +9246,7 @@ public class Organism extends Rectangle {
                     if (useEnergy(Utils.TEAL_ENERGY_CONSUMPTION)) {
                     	standstill();
       				}}
-                  } 
+                  }
             	  break;
               case LILAC:
               case DARKLILAC:
@@ -9314,7 +9314,7 @@ public class Organism extends Rectangle {
                     if (useEnergy(Utils.TEAL_ENERGY_CONSUMPTION)) {
                     	standstill();
     				}}
-      	            break;  
+      	            break;
                   } else if (org._isaplant) {
                 	if (_segplantReaction[seg] == 1) {
                 	if (useEnergy(Utils.TEAL_ENERGY_CONSUMPTION)) {
@@ -9326,7 +9326,7 @@ public class Organism extends Rectangle {
                   	if (useEnergy(Utils.TEAL_ENERGY_CONSUMPTION)) {
                   		standstill();
     				}}
-                  } 
+                  }
               	  break;
               }
               break;
@@ -9336,9 +9336,9 @@ public class Organism extends Rectangle {
 	/**
 	 * Applies the hostile effects produced by two touching segments.
 	 * Version for segments, that can drain energy
-	 * 
+	 *
 	 * @param org  The organism which is touching.
-	 * @param seg  Index of this organism's segment. 
+	 * @param seg  Index of this organism's segment.
 	 * @param oseg  Index of the other organism's segment.
 	 */
 	private final void touchEffects1(Organism org, int seg, int oseg) {
@@ -9351,14 +9351,14 @@ public class Organism extends Rectangle {
 		    }
 			switch (getTypeColor(org._segColor[oseg])) {
 			case WHITE:
-				if ((org._isaplant) || (org._isaconsumer) || (org._isafungus) || (org._plagueversion > 0) || (org._isauburn)) {			    
+				if ((org._isaplant) || (org._isaconsumer) || (org._isafungus) || (org._plagueversion > 0) || (org._isauburn)) {
 					if (useEnergy(Utils.ORANGE_ENERGY_CONSUMPTION)) {
 						// Get energy depending on segment length
 						takenEnergyOrange = Utils.between((Math.sqrt(_m[seg])) * Utils.ORGANIC_OBTAINED_ENERGY, 0, org._energy);
 						// The other organism will be shown in yellow
 						org.setColor(Color.YELLOW);
 						// This organism will be shown in orange
-						setColor(Color.ORANGE);					    
+						setColor(Color.ORANGE);
 				    }
 			    }
 				break;
@@ -9420,14 +9420,14 @@ public class Organism extends Rectangle {
 				}
 				break;
 			case VIOLET:
-				if ((org._isaplant) || (org._isaconsumer) || (org._isafungus) || (org._plagueversion > 0) || (org._isauburn)) {			    
+				if ((org._isaplant) || (org._isaconsumer) || (org._isafungus) || (org._plagueversion > 0) || (org._isauburn)) {
 					if (useEnergy(Utils.ORANGE_ENERGY_CONSUMPTION)) {
 						// Get energy depending on segment length
 						takenEnergyOrange = Utils.between((Math.sqrt(_m[seg])) * Utils.ORGANIC_OBTAINED_ENERGY, 0, org._energy);
 						// The other organism will be shown in yellow
 						org.setColor(Color.YELLOW);
 						// This organism will be shown in orange
-						setColor(Color.ORANGE);					    
+						setColor(Color.ORANGE);
 				    }
 			    } else {
 			    	if (useEnergy(Utils.ORANGE_ENERGY_CONSUMPTION)) {
@@ -9652,7 +9652,7 @@ public class Organism extends Rectangle {
 						org.setColor(Color.YELLOW);
 						// This organism will be shown in orange
 						setColor(Color.ORANGE);
-					}	
+					}
 				}
 				break;
 			case LIGHT_BLUE:
@@ -9668,7 +9668,7 @@ public class Organism extends Rectangle {
 						org.setColor(Color.YELLOW);
 						// This organism will be shown in orange
 						setColor(Color.ORANGE);
-					}	
+					}
 				}
 				break;
 			case SKY:
@@ -9688,7 +9688,7 @@ public class Organism extends Rectangle {
 							org.setColor(Color.YELLOW);
 							// This organism will be shown in orange
 							setColor(Color.ORANGE);
-						}	
+						}
 					}
 				}
 				break;
@@ -9786,7 +9786,7 @@ public class Organism extends Rectangle {
 						// The other organism will be shown in yellow
 						org.setColor(Color.YELLOW);
 						// This organism will be shown in orange
-						setColor(Color.ORANGE);					    
+						setColor(Color.ORANGE);
 				    }
 			    }
 				break;
@@ -9821,7 +9821,7 @@ public class Organism extends Rectangle {
 			case DARKOLIVE:
 			case SPIKEPOINT:
 			case BROWN:
-				break;	
+				break;
 			default:
 				if (useEnergy(Utils.ORANGE_ENERGY_CONSUMPTION)) {
 					// Get energy depending on segment length
@@ -9918,7 +9918,7 @@ public class Organism extends Rectangle {
 						// This organism will be shown in fire
 						setColor(Utils.ColorFIRE);
 					}
-				} else  
+				} else
 					if (useEnergy(Utils.FIRE_ENERGY_CONSUMPTION)) {
 						// Get energy depending on segment length
 						takenEnergyFire = Utils.between((0.25 * Math.sqrt(_m[seg])) * Utils.ORGANIC_OBTAINED_ENERGY, 0, org._energy);
@@ -9926,7 +9926,7 @@ public class Organism extends Rectangle {
 						org.setColor(Color.YELLOW);
 						// This organism will be shown in dark fire
 						setColor(Utils.ColorDARKFIRE);
-				}					
+				}
 				break;
             case PINK:
             	if ((org._isgray) && (org._modifiespink)) {
@@ -10262,7 +10262,7 @@ public class Organism extends Rectangle {
 						org.setColor(Color.YELLOW);
 						// This organism will be shown in dark fire
 						setColor(Utils.ColorDARKFIRE);
-					}	
+					}
 				}
 				break;
 			case LIGHT_BLUE:
@@ -10278,7 +10278,7 @@ public class Organism extends Rectangle {
 						org.setColor(Color.YELLOW);
 						// This organism will be shown in dark fire
 						setColor(Utils.ColorDARKFIRE);
-					}	
+					}
 				}
 			    break;
 			case SKY:
@@ -10298,7 +10298,7 @@ public class Organism extends Rectangle {
 							org.setColor(Color.YELLOW);
 							// This organism will be shown in dark fire
 							setColor(Utils.ColorDARKFIRE);
-						}	
+						}
 					}
 				}
 				break;
@@ -10748,7 +10748,7 @@ public class Organism extends Rectangle {
 				takenEnergyRed = takenEnergyRed * Utils.ORGANIC_SUBS_PRODUCED;
 				useEnergy(takenEnergyRed);
 			}
-			break;	
+			break;
 		case PINK:
 			// Pink segment: try to get energy from corpses, weak organisms, viruses and parasites
 			double takenEnergyPink = 0;
@@ -10944,7 +10944,7 @@ public class Organism extends Rectangle {
 							org.setColor(Utils.ColorGREENBROWN);
 							// This organism will be shown in dark fire
 							setColor(Utils.ColorDARKFIRE);
-						}	
+						}
 					} else {
 						if (useEnergy(Utils.PINK_ENERGY_CONSUMPTION)) {
 							// Get energy depending on segment length
@@ -10953,8 +10953,8 @@ public class Organism extends Rectangle {
 							org.setColor(Color.YELLOW);
 							// This organism will be shown in dark fire
 							setColor(Utils.ColorDARKFIRE);
-						}	
-					}				
+						}
+					}
 				}
 				break;
 			case CORAL:
@@ -11099,7 +11099,7 @@ public class Organism extends Rectangle {
 				}
 				break;
 			default:
-				break;	
+				break;
 			}
 			// energy interchange
 			if (takenEnergyPink > 0) {
@@ -11344,7 +11344,7 @@ public class Organism extends Rectangle {
 						org.setColor(Color.YELLOW);
 						// This organism will be shown in auburn
 						setColor(Utils.ColorAUBURN);
-					}					
+					}
 				}
 				break;
 			case SILVER:
@@ -11357,7 +11357,7 @@ public class Organism extends Rectangle {
 						// The other organism will be shown in yellow
 						org.setColor(Color.YELLOW);
 						// This organism will be shown in auburn
-						setColor(Utils.ColorAUBURN);								    
+						setColor(Utils.ColorAUBURN);
 					}
 				}
 				break;
@@ -11368,7 +11368,7 @@ public class Organism extends Rectangle {
 					// The other organism will be shown in yellow
 					org.setColor(Color.YELLOW);
 					// This organism will be shown in auburn
-					setColor(Utils.ColorAUBURN);								    
+					setColor(Utils.ColorAUBURN);
 				}
 				break;
 			case LAVENDER:
@@ -11393,7 +11393,7 @@ public class Organism extends Rectangle {
 							}
 							// This organism will be shown in auburn
 							setColor(Utils.ColorAUBURN);
-						}					
+						}
 					}
 				}
 				break;
@@ -11421,7 +11421,7 @@ public class Organism extends Rectangle {
 							}
 							// This organism will be shown in auburn
 							setColor(Utils.ColorAUBURN);
-						}					
+						}
 					}
 				}
 				break;
@@ -11451,7 +11451,7 @@ public class Organism extends Rectangle {
 					// The other organism will be shown in yellow
 					org.setColor(Color.YELLOW);
 					// This organism will be shown in auburn
-					setColor(Utils.ColorAUBURN);								    
+					setColor(Utils.ColorAUBURN);
 				}
 				break;
 			case DARK:
@@ -11465,12 +11465,12 @@ public class Organism extends Rectangle {
 						// The other organism will be shown in yellow
 						org.setColor(Color.YELLOW);
 						// This organism will be shown in auburn
-						setColor(Utils.ColorAUBURN);								    
+						setColor(Utils.ColorAUBURN);
 					}
 				}
 				break;
 			default:
-				break;	
+				break;
 			}
 			// energy interchange
 			if (takenEnergyMaroon > 0) {
@@ -11838,7 +11838,7 @@ public class Organism extends Rectangle {
 						org.setColor(Utils.ColorGREENBROWN);
 						// This organism will be shown in cream
 						setColor(Utils.ColorCREAM);
-					}						
+					}
 				}
 			    break;
 		    case MAGENTA:
@@ -12788,7 +12788,7 @@ public class Organism extends Rectangle {
 					}
 				}
 		    	break;
-		    case DARK:		    	
+		    case DARK:
 		    	if ((org._framesColor <= 0) && (org._blackversion > 0)) {
 					// The other organism will be shown in the color it mimicks
 					org.mimicColor();
@@ -12973,7 +12973,7 @@ public class Organism extends Rectangle {
 						org.dy=Utils.between((org._centerY-_centerY)*0.2*_m[seg]*_m[seg]/org._mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 						setColor(Utils.ColorOCHRE);
 					}
-				}	
+				}
 				break;
 			case SKY:
 			case DEEPSKY:
@@ -13048,7 +13048,7 @@ public class Organism extends Rectangle {
 							}
 							setColor(Utils.ColorOCHRE);
 						}
-					}	
+					}
 				}
 				break;
 			case OLIVE:
@@ -13072,7 +13072,7 @@ public class Organism extends Rectangle {
 						}
 						setColor(Utils.ColorOCHRE);
 					}
-				}				
+				}
 			}
 			break;
 		case SILVER:
@@ -13622,7 +13622,7 @@ public class Organism extends Rectangle {
 					        setColor(Color.LIGHT_GRAY);
 						}
 					}
-				}				
+				}
 				if (((_nTotalKills > 0) && ((_isaconsumer) || ((_isafungus) && (_isaconsumer = true)))) || (_isenhanced)) {
 					if (org.useEnergy(Utils.BLUE_ENERGY_CONSUMPTION)) {
 						if (org._isenhanced) {
@@ -14279,9 +14279,9 @@ public class Organism extends Rectangle {
 	/**
 	 * Applies the hostile effects produced by two touching segments.
 	 * Version for segments, that cannot drain energy
-	 * 
+	 *
 	 * @param org  The organism which is touching.
-	 * @param seg  Index of this organism's segment. 
+	 * @param seg  Index of this organism's segment.
 	 * @param oseg  Index of the other organism's segment.
 	 */
 	private final void touchEffects2(Organism org, int seg, int oseg) {
@@ -14328,7 +14328,7 @@ public class Organism extends Rectangle {
 			case SILVER:
 				if (org._infectedGeneticCode != _geneticCode) {
 					if ((org._isaplant) || (org._isaconsumer) || ((org._isafungus) && (org._nTotalKills > 0))) {
-						if ((org._isenhanced) || (_nTotalInfected >= org._nTotalInfected)) { 
+						if ((org._isenhanced) || (_nTotalInfected >= org._nTotalInfected)) {
 							if (_isaplant) {
 								if (useEnergy(Utils.WHITE_ENERGY_CONSUMPTION)) {
 							        org.infectedBy(this);
@@ -14843,10 +14843,10 @@ public class Organism extends Rectangle {
 						}
 					}
 				}
-				break;				
+				break;
 			case CREAM:
 				if (org._isaplant) {
-				    if (org._infectedGeneticCode != _geneticCode) {						
+				    if (org._infectedGeneticCode != _geneticCode) {
 					    if (_isaplant) {
 					    	if ((_isenhanced) && (!_isakiller) && (org._indigo == 0)) {
 					    		if (useEnergy(Utils.WHITE_ENERGY_CONSUMPTION)) {
@@ -14872,7 +14872,7 @@ public class Organism extends Rectangle {
 						            org.setColor(Utils.ColorLIGHTBROWN);
 						            setColor(Color.WHITE);
 						        }
-							}						
+							}
 						}
 					}
 				}
@@ -14898,7 +14898,7 @@ public class Organism extends Rectangle {
 				break;
 			case SPIKEPOINT:
 				if ((_isenhanced) && (!_isakiller)) {
-					if (((org._isaplant) && (org._antiviral == 0)) || (org._isenhanced)) {						
+					if (((org._isaplant) && (org._antiviral == 0)) || (org._isenhanced)) {
 					    if (org._infectedGeneticCode != _geneticCode) {
 						    if (_isaplant) {
 						    	if (useEnergy(Utils.WHITE_ENERGY_CONSUMPTION)) {
@@ -15264,7 +15264,7 @@ public class Organism extends Rectangle {
 							}
 						}
 					}
-				}				
+				}
 				break;
 			case JADE:
 			case GREEN:
@@ -15374,7 +15374,7 @@ public class Organism extends Rectangle {
 							}
 						}
 					}
-				}				
+				}
 				break;
 			case ROSE:
 			case MAGENTA:
@@ -15386,7 +15386,7 @@ public class Organism extends Rectangle {
 							if ((org._dodge) && (org.useEnergy(Utils.DODGE_ENERGY_CONSUMPTION))) {
 								org.setColor(Utils.ColorTEAL);
 								setColor(Utils.ColorFALLOW);
-							} else {						
+							} else {
 								if (org._lavender > 0) {
 									if ((_isenhanced) && (!_isinfectious)) {
 										org.weaklavendershield();
@@ -16001,11 +16001,11 @@ public class Organism extends Rectangle {
 										}
 										org.die(this);
 									}
-								}	
+								}
 							}
-						}	
-					}					
-				}					
+						}
+					}
+				}
 				break;
 			case INDIGO:
 				if ((!org._isaplant) && (!org._isaconsumer) && ((!org._isafungus) || ((_isenhanced) && (!org._issilver)))) {
@@ -16046,10 +16046,10 @@ public class Organism extends Rectangle {
 									}
 									org.die(this);
 								}
-							}	
+							}
 						}
-					}						
-				}					
+					}
+				}
 				break;
 			case TEAL:
 			case CYAN:
@@ -16084,7 +16084,7 @@ public class Organism extends Rectangle {
 									}
 									org.die(this);
 								}
-							}	
+							}
 						}
 					}
 				}
@@ -16146,9 +16146,9 @@ public class Organism extends Rectangle {
 									}
 									org.die(this);
 								}
-							}	
+							}
 						}
-					}				
+					}
 				}
 				break;
 			case LIGHTBROWN:
@@ -16202,7 +16202,7 @@ public class Organism extends Rectangle {
 										}
 										org.die(this);
 									}
-								}	
+								}
 							}
 						}
 					}
@@ -16272,7 +16272,7 @@ public class Organism extends Rectangle {
 								org.transform();
 							}
 							org.die(this);
-						}	
+						}
 					} else {
 						org.setColor(Utils.ColorBROKEN);
 					}
@@ -16305,8 +16305,8 @@ public class Organism extends Rectangle {
 									}
 									org.die(this);
 								}
-							}	
-						}				
+							}
+						}
 					}
 				}
 				break;
@@ -16338,8 +16338,8 @@ public class Organism extends Rectangle {
 								}
 								org.die(this);
 							}
-						}	
-					}				
+						}
+					}
 				}
 			}
 			break;
@@ -17078,6 +17078,29 @@ public class Organism extends Rectangle {
 					}
 				}
 				break;
+			case OLIVE:
+				if ((!_isinfectious) && (org._infectedGeneticCode != null)) {
+					if ((_plagueversion == 1) && (org._isaplant) && (org._createlavender == 0)) {
+						if (org._lavender > 0) {
+							if ((_isenhanced) && (!_isinfectious) && (!_isaconsumer) && (!_isafungus)) {
+								org.weaklavendershield();
+							} else {
+								org.lavendershield();
+							}
+							setColor(Utils.ColorPLAGUE);
+						}
+						if (org._lavender <= 0) {
+							if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
+								if ((!_isaconsumer) && (!_isafungus)) {
+									org._nVirusChildren = -1;
+								}
+					            org.reproduceforeignVirus();
+					            setColor(Utils.ColorPLAGUE);
+				            }
+						}
+					}
+				}
+				break;
 			case MAROON:
 			case ORANGE:
 			case FIRE:
@@ -17490,7 +17513,6 @@ public class Organism extends Rectangle {
 				break;
 			case MINT:
 			case CORAL:
-			case OLIVE:
 			case BROWN:
 				break;
 			default:
@@ -17984,7 +18006,7 @@ public class Organism extends Rectangle {
 					if ((org._dodge) && (org.useEnergy(Utils.DODGE_ENERGY_CONSUMPTION))) {
 						org.setColor(Utils.ColorTEAL);
 						setColor(Utils.ColorVIOLET);
-					} else {					
+					} else {
 						org._segColor[oseg] = Utils.ColorDARKGREEN;
 					    setColor(Utils.ColorVIOLET);
 					    org._useextraeffects =true;
@@ -19034,7 +19056,7 @@ public class Organism extends Rectangle {
 					}
 		    	}
 		    	break;
-		    case DARK:		    	
+		    case DARK:
 		    	if ((org._framesColor <= 0) && (org._blackversion > 0)) {
 					// The other organism will be shown in the color it mimicks
 					org.mimicColor();
@@ -19249,7 +19271,7 @@ public class Organism extends Rectangle {
 							_mphoto[seg] = -20;
 							_useextraeffects = true;
 						}
-					}	
+					}
 				}
 				break;
 		    case RED:
@@ -19282,7 +19304,7 @@ public class Organism extends Rectangle {
 							_mphoto[seg] = -20;
 							_useextraeffects = true;
 						}
-					}	
+					}
 				}
 				break;
 		    case LAVENDER:
@@ -19451,7 +19473,7 @@ public class Organism extends Rectangle {
 							if (!org._isenhanced) {
 						    	org._isinjured =true;
 						    }
-						}	
+						}
 			    	}
 		    	}
 		    	break;
@@ -19489,7 +19511,7 @@ public class Organism extends Rectangle {
 						_mphoto[seg] = -20;
 						_useextraeffects = true;
 					}
-				}	
+				}
 			}
 			// energy interchange
 			if (takenEnergyLilac > 0) {
@@ -19547,7 +19569,7 @@ public class Organism extends Rectangle {
 								            	_timeToReproduce = 10;
 								            }
 										}
-									}					       
+									}
 								}
 							}
 				        }
@@ -19592,7 +19614,7 @@ public class Organism extends Rectangle {
 							            	_timeToReproduce = 10;
 							            }
 									}
-								}					       
+								}
 							}
 						}
 					}
@@ -19782,14 +19804,14 @@ public class Organism extends Rectangle {
 			}
 			break;
 		case LAVENDER:
-			// Lavender segment: Immunity vs cream, plague, coral and fallow, it can immunize other organisms temporarily. 
+			// Lavender segment: Immunity vs cream, plague, coral and fallow, it can immunize other organisms temporarily.
 			switch (getTypeColor(org._segColor[oseg])) {
 			case WHITE:
 			case PLAGUE:
 			case CORAL:
 			case CREAM:
 			case FALLOW:
-			case FRUIT:	        
+			case FRUIT:
 			case BROWN:
 				break;
 			default:
@@ -19814,7 +19836,7 @@ public class Organism extends Rectangle {
 							setColor(Utils.ColorLAVENDER);
 						}
 					}
-				}		    
+				}
 			}
 			break;
 		case MAGENTA:
@@ -19829,7 +19851,7 @@ public class Organism extends Rectangle {
 					if ((org._segColor[j].equals(Utils.ColorLIGHTBROWN)) || (org._segColor[j].equals(Utils.ColorGREENBROWN)) || (org._segColor[j].equals(Utils.ColorBROKEN))
 						|| (org._segColor[j].equals(Utils.ColorLIGHT_BLUE)) || (org._segColor[j].equals(Utils.ColorICE)) || (org._segColor[j].equals(Utils.ColorDARKFIRE))) {
 						if ((org.useEnergy(Utils.MAGENTA_ENERGY_CONSUMPTION/2)) && (useEnergy(Utils.MAGENTA_ENERGY_CONSUMPTION/2))) {
-						        org._segColor[j] = org._geneticCode.getGene(j%org._geneticCode.getNGenes()).getColor();  
+						        org._segColor[j] = org._geneticCode.getGene(j%org._geneticCode.getNGenes()).getColor();
 						        setColor(Color.MAGENTA);
 						        heal =true;
 				            }
@@ -19842,16 +19864,16 @@ public class Organism extends Rectangle {
 			        	org._updateEffects = 2;
 						org.segmentsRestoreEffects();
 					}
-				}			    
+				}
 			}
-			break;		
+			break;
 		}
 		// Check if the other organism has died
 		if (org.alive && org._energy < Utils.tol) {
 			org.die(this);
 		}
 	}
-	
+
 	/*
 	 * Perd velocitat pel fregament.
 	 */
@@ -19889,7 +19911,7 @@ public class Organism extends Rectangle {
 				}
 			}
 	    }
-	
+
 	/*
 	 * Apply segment effects for this frame for plants, only used for photosynthesis
 	 */
@@ -19943,7 +19965,7 @@ public class Organism extends Rectangle {
 				}
 			}
 	    }
-	
+
 	/*
 	 * Apply segment effects for this frame for jade plants, used for organisms with additional effects
 	 */
@@ -19957,7 +19979,7 @@ public class Organism extends Rectangle {
 					// Restore Jade
 					case DARKJADE:
 						if (Utils.random.nextInt(_jadefactor)<8) {
-							_segColor[i] = Utils.ColorJADE;  
+							_segColor[i] = Utils.ColorJADE;
 						} else {
 							_useextraeffects = true;
 						}
@@ -19967,13 +19989,13 @@ public class Organism extends Rectangle {
 							if ((_world.getTime() % 3) != _summerinactivity) {
 								specialphoto += _mphoto[i];
 								if (Utils.random.nextInt(_jadefactor)<8) {
-									_segColor[i] = Utils.ColorSUMMER;  
+									_segColor[i] = Utils.ColorSUMMER;
 								} else {
 									_useextraeffects = true;
 								}
 							} else {
 								if (Utils.random.nextInt(_jadefactor)<8) {
-									_segColor[i] = Utils.ColorWINTER;  
+									_segColor[i] = Utils.ColorWINTER;
 								} else {
 									_useextraeffects = true;
 								}
@@ -20224,7 +20246,7 @@ public class Organism extends Rectangle {
 				}
 			}
 	    }
-	
+
 	/*
 	 * Apply segment effects for this frame, used for organisms with additional effects
 	 */
@@ -20232,7 +20254,7 @@ public class Organism extends Rectangle {
 			int i;
 			for (i=_segments-1; i>=0; i--) {
 				if (_mphoto[i] > 0) {
-					switch (getTypeColor(_segColor[i])) {			
+					switch (getTypeColor(_segColor[i])) {
 					// Healing
 					case GREENBROWN:
 					case ICE:
@@ -20342,7 +20364,7 @@ public class Organism extends Rectangle {
 				}
 			}
 	    }
-	
+
 	/*
 	 * Apply segment effects for this frame, used for Olive, Sky, Lilac and Darkfire of non-plants and plants that move
 	 */
@@ -20423,7 +20445,7 @@ public class Organism extends Rectangle {
 				}
 			}
 	    }
-	
+
 	/*
 	 * Apply segment effects for this frame, used for Olive, Sky, Lilac and Darkfire of plants, that do not move
 	 */
@@ -20480,9 +20502,9 @@ public class Organism extends Rectangle {
 				}
 			}
 	    }
-	
+
 	/*
-	 * Similar to plantsFrameEffects, 
+	 * Similar to plantsFrameEffects,
 	 * but used when the plant grows, shrinks or some segments change color, not used if colors need to be restored or if a photosynthetic segment is injured
 	 */
 	private final void plantsUpdateEffects() {
@@ -20741,9 +20763,9 @@ public class Organism extends Rectangle {
 				}
 			}
 		}
-	
+
 	/*
-	 * Similar to plantsFrameEffects, 
+	 * Similar to plantsFrameEffects,
 	 * but used when the plant grows, shrinks or some segments change color
 	 */
 	private final void plantsExtraUpdateEffects() {
@@ -20813,7 +20835,7 @@ public class Organism extends Rectangle {
 					case DARKJADE:
 						addphoto += _mphoto[i];
 						if (Utils.random.nextInt(_jadefactor)<8) {
-							_segColor[i] = Utils.ColorJADE;  
+							_segColor[i] = Utils.ColorJADE;
 						} else {
 							_useextraeffects = true;
 						}
@@ -20824,13 +20846,13 @@ public class Organism extends Rectangle {
 								addphoto += _mphoto[i];
 								specialphoto += _mphoto[i];
 								if (Utils.random.nextInt(_jadefactor)<8) {
-									_segColor[i] = Utils.ColorSUMMER;  
+									_segColor[i] = Utils.ColorSUMMER;
 								} else {
 									_useextraeffects = true;
 								}
 							} else {
 								if (Utils.random.nextInt(_jadefactor)<8) {
-									_segColor[i] = Utils.ColorWINTER;  
+									_segColor[i] = Utils.ColorWINTER;
 								} else {
 									_useextraeffects = true;
 								}
@@ -20900,7 +20922,7 @@ public class Organism extends Rectangle {
 								addmaintenance -= 0.99 * _m[i];
 								break;
 							// Auburn always has one real child if infected
-							case AUBURN:					
+							case AUBURN:
 								addmaintenance -= 0.99 * _m[i];
 								break;
 							// Organisms with flower segments reproduce later
@@ -21236,9 +21258,9 @@ public class Organism extends Rectangle {
 				}
 			}
 		}
-	
+
 	/*
-	 * Similar to plantsFrameEffects, 
+	 * Similar to plantsFrameEffects,
 	 * but used when a C4 plant grows, shrinks or some segments change color
 	 */
 	private final void c4UpdateEffects() {
@@ -21499,9 +21521,9 @@ public class Organism extends Rectangle {
 				}
 			}
 		}
-	
+
 	/*
-	 * Similar to segmentsFrameEffects, 
+	 * Similar to segmentsFrameEffects,
 	 * but used when the organism grows, shrinks or some segments change color
 	 */
 	private final void segmentsUpdateEffects() {
@@ -21730,10 +21752,10 @@ public class Organism extends Rectangle {
 			// Effective maintenance used for breathing
 			_maintenance = (addmaintenance / Utils.SEGMENT_COST_DIVISOR);
 		}
-	
+
 	/*
 	 * Checks if the organism is still injured
-	 */	
+	 */
 	private final void darkfireRestoreEffects() {
 		int i;
 		_healing = 0;
@@ -21786,7 +21808,7 @@ public class Organism extends Rectangle {
 			}
 		}
 	}
-	
+
 	private static final int NOCOLOR=-1;
 	private static final int GREEN=0;
 	private static final int FOREST=1;
@@ -21983,27 +22005,27 @@ public class Organism extends Rectangle {
 			return BROWN;
 		return NOCOLOR;
 	}
-	
+
 	private final void setColor(Color c) {
 		_color = c;
 		_framesColor = 10;
 	}
-	
+
 	private final void setColortwoFrames(Color c) {
 		_color = c;
 		_framesColor = 2;
 	}
-	
+
 	private final void setColorforLeaf(Color c) {
 		_color = c;
 		_framesColor = -10;
 	}
-	
+
 	private final void setColorDarkgreen(Color c) {
 		_color = c;
 		_framesColor = 4;
 	}
-	
+
 	public BufferedImage getImage() {
 		BufferedImage image = new BufferedImage(width,height,BufferedImage.TYPE_INT_RGB);
 		Graphics2D g = image.createGraphics();

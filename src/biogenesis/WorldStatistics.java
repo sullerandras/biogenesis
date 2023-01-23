@@ -142,7 +142,18 @@ public class WorldStatistics implements Serializable {
 
 	private List<Double> methaneList = new ArrayList<Double>(100);
 
-	public void saveGameLoaded() {
+	private transient MainWindowInterface mainWindowInterface;
+
+	public WorldStatistics(MainWindowInterface mainWindowInterface) {
+		if (mainWindowInterface == null) {
+			throw new IllegalArgumentException("mainWindowInterface == null");
+		}
+		this.mainWindowInterface = mainWindowInterface;
+	}
+
+	public void saveGameLoaded(MainWindowInterface mainWindowInterface) {
+		this.mainWindowInterface = mainWindowInterface;
+
 		// Since we renamed `distinctSpiciesList` to `distinctCladesList`, the existing saves
 		// may not have this attribute, in which case the value is going to be reset to `null`
 		// for some reason.
@@ -433,7 +444,7 @@ public class WorldStatistics implements Serializable {
 		infectionsSum++;
 	}
 
-	public void eventTime(int population, int distinctClades, double O2, double CO2, double CH4) {
+	public void eventTime(int population, int distinctClades, double O2, double CO2, double CH4, List<Organism> organisms) {
 		time++;
 		if (deathLastTime > 1.5 * getAverageDeaths()) {
 			if (deathLastTime > 3 * getAverageDeaths()) {
@@ -522,6 +533,10 @@ public class WorldStatistics implements Serializable {
 		methaneList.add(Double.valueOf(Math.sqrt(Math.sqrt(CH4))));
 		deathLastTime = 0;
 		birthLastTime = 0;
+
+		if ((Utils.AUTO_BACKUP_CSV) && (mainWindowInterface.getBioFile() != null)) {
+			mainWindowInterface.getBioFile().appendToCsv(time, population, distinctClades, O2, CO2, CH4, organisms);
+		}
 	}
 
 	public void findBestAliveBeings(List<Organism> organisms) {
