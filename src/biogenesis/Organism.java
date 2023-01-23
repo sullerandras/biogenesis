@@ -396,16 +396,6 @@ public class Organism extends Rectangle {
 	 */
 	protected int[] _endPointY;
 	/**
-	 * Precalculated distance from the origin to the starting point of each segment.
-	 * Used to calculate rotations.
-	 */
-	protected double[] _m1;
-	/**
-	 * Precalculated distance from the origin to the ending point of each segment.
-	 * Used to calculate rotations.
-	 */
-	protected double[] _m2;
-	/**
 	 * Precalculated modulus of each segment.
 	 */
 	protected double[] _m;
@@ -829,8 +819,6 @@ public class Organism extends Rectangle {
 		_startPointY = new int[_segments];
 		_endPointX = new int[_segments];
 		_endPointY = new int[_segments];
-		_m1 = new double[_segments];
-		_m2 = new double[_segments];
 		_m = new double[_segments];
 		_mphoto = new double[_segments];
 		x1 = new int[_segments];
@@ -3629,9 +3617,6 @@ public class Organism extends Rectangle {
 			_startPointY[i]-=centerY;
 			_endPointX[i]-=centerX;
 			_endPointY[i]-=centerY;
-			// calculate points distance of the origin and modulus
-			_m1[i] = Math.sqrt(_startPointX[i]*_startPointX[i]+_startPointY[i]*_startPointY[i]);
-			_m2[i] = Math.sqrt(_endPointX[i]*_endPointX[i]+_endPointY[i]*_endPointY[i]);
 			// calculate inertia moment
 			// the mass center of a segment is its middle point
 			cx = (_startPointX[i] + _endPointX[i]) / 2d;
