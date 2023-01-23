@@ -1,1 +1,7 @@
 classes
+*.bgw
+*.jar
+*.zip
+*.png
+*.csv
+build
