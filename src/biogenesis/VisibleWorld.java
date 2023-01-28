@@ -416,7 +416,11 @@ public class VisibleWorld extends JPanel implements VisibleWorldInterface {
 
 		public void actionPerformed(ActionEvent e) {
 			if (clippedGeneticCode != null) {
+				boolean processState = _mainWindow._isProcessActive;
+				// Stop time
+	    		_mainWindow._isProcessActive = false;
 				pasteGeneticCode(clippedGeneticCode, mouseX, mouseY);
+				_mainWindow._isProcessActive = processState;
 			}
 		}
 	}

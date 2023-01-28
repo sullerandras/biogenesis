@@ -20023,6 +20023,19 @@ public class Organism extends Rectangle {
 								if (_framesColor <= 0) {
 									specialphoto += _mphoto[i];
 								}
+								if (_modifiesleaf) {
+									if (Utils.random.nextInt(Utils.DARKJADE_DELAY * 8)<8) {
+										_segColor[i] = Utils.ColorLEAF;
+									} else {
+										_useextraeffects = true;
+									}
+								} else {
+									if (Utils.random.nextInt(_jadefactor)<8) {
+										_segColor[i] = Utils.ColorLEAF;
+									} else {
+										_useextraeffects = true;
+									}
+								}
 							} else {
 								if (_geneticCode.getGene(i%_geneticCode.getNGenes()).getColor().equals(Utils.ColorLIME)) {
 									if (_crowded == true) {
@@ -20030,14 +20043,19 @@ public class Organism extends Rectangle {
 									} else {
 										specialphoto += _mphoto[i];
 									}
+									if (Utils.random.nextInt(_jadefactor)<8) {
+										_segColor[i] = Utils.ColorLIME;
+									} else {
+										_useextraeffects = true;
+									}
 								} else {
 									specialphoto += _mphoto[i];
+									if (Utils.random.nextInt(_jadefactor)<8) {
+										_segColor[i] = _geneticCode.getGene(i%_geneticCode.getNGenes()).getColor();
+									} else {
+										_useextraeffects = true;
+									}
 								}
-							}
-							if (Utils.random.nextInt(_jadefactor)<8) {
-								_segColor[i] = _geneticCode.getGene(i%_geneticCode.getNGenes()).getColor();
-							} else {
-								_useextraeffects = true;
 							}
 						}
 						break;
@@ -20880,12 +20898,30 @@ public class Organism extends Rectangle {
 								addphoto += _mphoto[i];
 								_forestphoto += _mphoto[i];
 								specialphoto += _mphoto[i];
+								if (Utils.random.nextInt(_jadefactor)<8) {
+									_segColor[i] = Utils.ColorFOREST;
+								} else {
+									_useextraeffects = true;
+								}
 							} else {
 								if (_geneticCode.getGene(i%_geneticCode.getNGenes()).getColor().equals(Utils.ColorLEAF)) {
 									addphoto += _mphoto[i];
 									_leafphoto += _mphoto[i];
 									if (_framesColor <= 0) {
 										specialphoto += _mphoto[i];
+									}
+									if (_modifiesleaf) {
+										if (Utils.random.nextInt(Utils.DARKJADE_DELAY * 8)<8) {
+											_segColor[i] = Utils.ColorLEAF;
+										} else {
+											_useextraeffects = true;
+										}
+									} else {
+										if (Utils.random.nextInt(_jadefactor)<8) {
+											_segColor[i] = Utils.ColorLEAF;
+										} else {
+											_useextraeffects = true;
+										}
 									}
 								} else {
 									if (_geneticCode.getGene(i%_geneticCode.getNGenes()).getColor().equals(Utils.ColorLIME)) {
@@ -20896,16 +20932,21 @@ public class Organism extends Rectangle {
 											addphoto += _mphoto[i];
 											specialphoto += _mphoto[i];
 										}
+										if (Utils.random.nextInt(_jadefactor)<8) {
+											_segColor[i] = Utils.ColorLIME;
+										} else {
+											_useextraeffects = true;
+										}
 									} else {
 										addphoto += _mphoto[i];
 										specialphoto += _mphoto[i];
+										if (Utils.random.nextInt(_jadefactor)<8) {
+											_segColor[i] = _geneticCode.getGene(i%_geneticCode.getNGenes()).getColor();
+										} else {
+											_useextraeffects = true;
+										}
 									}
 								}
-							}
-							if (Utils.random.nextInt(_jadefactor)<8) {
-								_segColor[i] = _geneticCode.getGene(i%_geneticCode.getNGenes()).getColor();
-							} else {
-								_useextraeffects = true;
 							}
 						}
 						break;
