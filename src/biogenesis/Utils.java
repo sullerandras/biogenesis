@@ -620,7 +620,7 @@ public final class Utils {
 	/**
 	 * This is the default number of milliseconds that pass between frames.
 	 */
-	final static int DEF_DELAY = 8;
+	final static int DEF_DELAY = 20;
 	final static boolean DEF_repaintWorld = true;
 	final static String DEF_repaintWorldStrategy = RepaintWorldStrategy.ALWAYS.toString();
 	final static int DEF_STATUS_BAR_REFRESH_FPS = 4;
@@ -2161,6 +2161,9 @@ public final class Utils {
 	}
 
 	public static void setHardwareAcceleration(int newValue) {
+		if (System.getenv("SKIP_OPENGL") != null && System.getenv("SKIP_OPENGL").equals("true")) {
+			return;
+		}
 		try {
 			switch (newValue) {
 			case 0:
@@ -2266,25 +2269,5 @@ public final class Utils {
 
 	public static void setAppInFocus(boolean appInFocus) {
 		Utils.appInFocus = appInFocus;
-	}
-
-	private static double[][] atan2Cache = new double[0][0];
-	private static int atan2CacheOffset = 0;
-	public static final double atan2(final int y, final int x) {
-		try {
-			return atan2Cache[y+atan2CacheOffset][x+atan2CacheOffset];
-		} catch (ArrayIndexOutOfBoundsException e) {
-			rebuildAtan2Cache(Math.max(Math.abs(y), Math.abs(x)));
-			return atan2Cache[y+atan2CacheOffset][x+atan2CacheOffset];
-		}
-	}
-	private static final void rebuildAtan2Cache(final int max) {
-		atan2CacheOffset = max;
-		atan2Cache = new double[max*2+1][max*2+1];
-		for (int y = -max; y <= max; y++) {
-			for (int x = -max; x <= max; x++) {
-				atan2Cache[y+atan2CacheOffset][x+atan2CacheOffset] = Math.atan2(y, x);
-			}
-		}
 	}
 }

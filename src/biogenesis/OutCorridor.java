@@ -23,16 +23,16 @@ import java.awt.Graphics;
 
 public class OutCorridor extends Corridor {
 	private static final long serialVersionUID = Utils.FILE_VERSION;
-	
+
 	public boolean canSendOrganism() {
 		return travellingOrganism == null ? true : false;
 	}
-	
+
 	public OutCorridor(World w, Connection c) {
 		super(w);
 		connection = c;
 	}
-	
+
 	public boolean sendOrganism(Organism org) {
 		if (travellingOrganism == null && connection.state == Connection.STATE_CONNECTED) {
 			boolean usernametocladeID = true;
@@ -53,7 +53,7 @@ public class OutCorridor extends Corridor {
 		}
 		return false;
 	}
-	
+
 	@Override
 	public void draw(Graphics g) {
 		g.setColor(Color.BLUE);
@@ -65,13 +65,13 @@ public class OutCorridor extends Corridor {
 				travellingOrganism._growthRatio++;
 				travellingOrganism._theta += Math.PI / 6;
 				travellingOrganism.symmetric();
-				travellingOrganism.calculateBounds(true);
+				travellingOrganism.calculateBounds();
 				travellingOrganism.draw(g);
 			} else {
 				travellingOrganism=null;
 			}
 		}
 	}
-	
-	
+
+
 }

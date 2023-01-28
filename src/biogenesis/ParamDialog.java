@@ -445,10 +445,11 @@ public class ParamDialog extends JDialog {
 		generalPanel.add(panel);
 		//World repaint
 		panel = new JPanel();
-		panel.setBorder(BorderFactory.createTitledBorder("World repaint"));
-		repaintWorldStrategyRadio1 = new JRadioButton("Always");
-		repaintWorldStrategyRadio2 = new JRadioButton("Only when the main window is in focus");
-		repaintWorldStrategyRadio3 = new JRadioButton("When any of the app windows is in focus");
+		panel.setBorder(BorderFactory.createTitledBorder(Messages.getString("T_RENDER_WORLD")));
+		panel.setLayout(new GridLayout(3,1));
+		repaintWorldStrategyRadio1 = new JRadioButton(Messages.getString("T_ALWAYS"));
+		repaintWorldStrategyRadio2 = new JRadioButton(Messages.getString("T_ONLY_WHEN_MAIN_WINDOW_IS_IN_FOCUS"));
+		repaintWorldStrategyRadio3 = new JRadioButton(Messages.getString("T_WHEN_ANY_APP_WINDOW_IS_IN_FOCUS"));
 		panel.add(repaintWorldStrategyRadio1);
 		panel.add(repaintWorldStrategyRadio2);
 		panel.add(repaintWorldStrategyRadio3);

@@ -83,7 +83,7 @@ public class GeneticCode implements Cloneable, Serializable {
 	/**
 	 * If the number of genes or the symmetry changed, the clade has to be updated.
 	 */
-	protected boolean _updateClade;
+	protected int _updateClade;
 	/**
 	 * Version of the plague. Possible values are
 	 * true and false.
@@ -228,7 +228,7 @@ public class GeneticCode implements Cloneable, Serializable {
 	 * 
 	 * @return  true or false.
 	 */
-	public boolean getUpdateClade() {
+	public int getUpdateClade() {
 		return _updateClade;
 	}
 	/**
@@ -873,7 +873,7 @@ public class GeneticCode implements Cloneable, Serializable {
 			randomSymmetry();
 			nGenes = parentCode.getNGenes();
 			if (_symmetry != parentCode.getSymmetry()) {
-				_updateClade =true;
+				_updateClade = -1;
 			}
 		} else {
 			// keep symmetry
@@ -887,7 +887,7 @@ public class GeneticCode implements Cloneable, Serializable {
 					else {
 						nGenes = parentCode.getNGenes() + 1;
 						addedGene = Utils.random.nextInt(nGenes);
-						_updateClade =true;
+						_updateClade = -1;
 					}
 				} else {
 				// decrease segments
@@ -896,7 +896,7 @@ public class GeneticCode implements Cloneable, Serializable {
 					else {
 						nGenes = parentCode.getNGenes() - 1;
 						removedGene = Utils.random.nextInt(parentCode.getNGenes());
-						_updateClade =true;
+						_updateClade = -1;
 						repairBranch = true;
 					}
 				}
@@ -1240,8 +1240,12 @@ public class GeneticCode implements Cloneable, Serializable {
 					_genes[i].setfriendReaction(parentCode.getGene(j).getfriendReaction());
 				if (randomColor) {
 					_genes[i].randomizeColor();
-					if (!getGene(i).getColor().equals(parentCode.getGene(j).getColor())) {
-						_updateClade =true;
+					if ((!getGene(i).getColor().equals(parentCode.getGene(j).getColor())) && (clonedGene == 0)) {
+						if (_updateClade <= 0) {
+							_updateClade = 1;
+						} else {
+							_updateClade++;
+						}
 					}
 				} else {
 					_genes[i].setColor(parentCode.getGene(j).getColor());

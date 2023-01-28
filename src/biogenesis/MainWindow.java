@@ -44,6 +44,7 @@ import java.util.List;
 import java.util.TimerTask;
 
 import javax.imageio.ImageIO;
+import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
@@ -245,8 +246,9 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 		checkLastVersionAction = new CheckLastVersionAction("T_CHECK_LAST_VERSION", null, "T_CHECK_LAST_VERSION"); //$NON-NLS-1$ //$NON-NLS-2$
 		netConfigAction = new NetConfigAction("T_CONFIGURE_NETWORK", null, "T_CONFIGURE_NETWORK"); //$NON-NLS-1$ //$NON-NLS-2$
 
-		toggleRepaintWorld = new JCheckBox("repaint world");
+		toggleRepaintWorld = new JCheckBox(Messages.getString("T_RENDER_WORLD"));
 		toggleRepaintWorld.setSelected(Utils.isRepaintWorld());
+		toggleRepaintWorld.setAlignmentY(100);
 		toggleRepaintWorld.addActionListener(arg0 -> Utils.setRepaintWorld(!Utils.isRepaintWorld()));
 	}
 
@@ -262,6 +264,7 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 		toolBar.add(saveWorldImageAction);
 		toolBar.add(abortTrackingAction);
 		abortTrackingAction.setEnabled(_trackedOrganism != null);
+		toolBar.add(Box.createHorizontalGlue());
 		toolBar.add(toggleRepaintWorld);
 		toolBar.invalidate();
 		toolBar.repaint();
