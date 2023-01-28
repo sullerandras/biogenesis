@@ -60,8 +60,8 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 	private WorldStatistics worldStatistics;
 	private List<Organism> organisms;
 
-	public StatisticsWindow(MainWindow w, WorldStatistics ws, List<Organism> os) {
-		super(w);
+	public StatisticsWindow(MainWindowInterface w, WorldStatistics ws, List<Organism> os) {
+		super(w.getFrame());
 		world = w.getWorld();
 		visibleWorld = w.getVisibleWorld();
 		worldStatistics = ws;

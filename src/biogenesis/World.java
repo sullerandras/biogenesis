@@ -19,15 +19,10 @@
  */
 package biogenesis;
 
-import org.locationtech.jts.geom.Envelope;
-import org.locationtech.jts.index.strtree.STRtree;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
-
 import javax.swing.SwingUtilities;
 
 import java.util.Collections;
@@ -93,7 +88,7 @@ public class World implements Serializable{
 	 * to indicate which parts of the world should be repainted due to
 	 * events in the world.
 	 */
-	transient protected VisibleWorld _visibleWorld;
+	transient protected VisibleWorldInterface _visibleWorld;
 	/**
 	 * Frame counter. 256 frames are a time unit. This value is used to count
 	 * time and to trigger some window updating at regular intervals.
@@ -417,7 +412,7 @@ public class World implements Serializable{
 	 *
 	 * @param visibleWorld  A reference to the visual representation of this world.
 	 */
-	public World(VisibleWorld visibleWorld) {
+	public World(VisibleWorldInterface visibleWorld) {
 		_visibleWorld = visibleWorld;
 		_width = Utils.WORLD_WIDTH;
 		_height = Utils.WORLD_HEIGHT;
@@ -439,7 +434,7 @@ public class World implements Serializable{
 	 *
 	 * @param visibleWorld  A reference to the visual representation of this world.
 	 */
-	public void init(VisibleWorld visibleWorld) {
+	public void init(VisibleWorldInterface visibleWorld) {
 		_visibleWorld = visibleWorld;
 		_visibleWorld.setPreferredSize(new Dimension(getWidth(), getHeight()));
 	}

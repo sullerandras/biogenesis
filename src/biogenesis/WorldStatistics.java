@@ -142,17 +142,17 @@ public class WorldStatistics implements Serializable {
 
 	private List<Double> methaneList = new ArrayList<Double>(100);
 
-	private transient MainWindow mainWindow;
+	private transient MainWindowInterface mainWindowInterface;
 
-	public WorldStatistics(MainWindow mainWindow) {
-		if (mainWindow == null) {
-			throw new IllegalArgumentException("mainWindow == null");
+	public WorldStatistics(MainWindowInterface mainWindowInterface) {
+		if (mainWindowInterface == null) {
+			throw new IllegalArgumentException("mainWindowInterface == null");
 		}
-		this.mainWindow = mainWindow;
+		this.mainWindowInterface = mainWindowInterface;
 	}
 
-	public void saveGameLoaded(MainWindow mainWindow) {
-		this.mainWindow = mainWindow;
+	public void saveGameLoaded(MainWindowInterface mainWindowInterface) {
+		this.mainWindowInterface = mainWindowInterface;
 
 		// Since we renamed `distinctSpiciesList` to `distinctCladesList`, the existing saves
 		// may not have this attribute, in which case the value is going to be reset to `null`
@@ -534,8 +534,8 @@ public class WorldStatistics implements Serializable {
 		deathLastTime = 0;
 		birthLastTime = 0;
 
-		if (mainWindow.getBioFile() != null) {
-			mainWindow.getBioFile().appendToCsv(time, population, distinctClades, O2, CO2, CH4, organisms);
+		if ((Utils.AUTO_BACKUP_CSV) && (mainWindowInterface.getBioFile() != null)) {
+			mainWindowInterface.getBioFile().appendToCsv(time, population, distinctClades, O2, CO2, CH4, organisms);
 		}
 	}
 

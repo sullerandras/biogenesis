@@ -3,5 +3,5 @@ classes
 *.jar
 *.zip
 *.png
+*.csv
 build
-biogenesis.jar

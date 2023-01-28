@@ -47,8 +47,8 @@ public class OrganismBuckets {
    * @param o
    */
   public void insert(Organism o) {
-    final int minx = (int) (o.getMinX() / (double) bucketSize);
-    final int miny = (int) (o.getMinY() / (double) bucketSize);
+    final int minx = Math.max(0, (int) (o.getMinX() / (double) bucketSize));
+    final int miny = Math.max(0, (int) (o.getMinY() / (double) bucketSize));
     final int maxx = Math.min(maxWidth, (int) (o.getMaxX() / (double) bucketSize));
     final int maxy = Math.min(maxHeight, (int) (o.getMaxY() / (double) bucketSize));
 
@@ -72,8 +72,8 @@ public class OrganismBuckets {
    * @return
    */
   public Collection<Organism> query(Organism o) {
-    final int minx = (int) (o.getMinX() / (double) bucketSize);
-    final int miny = (int) (o.getMinY() / (double) bucketSize);
+	final int minx = Math.max(0, (int) (o.getMinX() / (double) bucketSize));
+	final int miny = Math.max(0, (int) (o.getMinY() / (double) bucketSize));
     final int maxx = Math.min(maxWidth, (int) (o.getMaxX() / (double) bucketSize));
     final int maxy = Math.min(maxHeight, (int) (o.getMaxY() / (double) bucketSize));
 

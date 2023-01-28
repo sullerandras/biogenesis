@@ -41,9 +41,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TimerTask;
-
 import javax.imageio.ImageIO;
+import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
@@ -63,7 +62,7 @@ import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.border.EtchedBorder;
 
-public class MainWindow extends JFrame {
+public class MainWindow extends JFrame implements MainWindowInterface {
 	private static final long serialVersionUID = Utils.FILE_VERSION;
 
 	protected VisibleWorld _visibleWorld;
@@ -157,6 +156,7 @@ public class MainWindow extends JFrame {
 		return infoToolbar;
 	}
 
+	@Override
 	public BioFile getBioFile() {
 		return _gameFile;
 	}
@@ -185,6 +185,11 @@ public class MainWindow extends JFrame {
 				Utils.setMainWindowInFocus(false);
 			}
 		});
+	}
+
+	@Override
+	public Frame getFrame() {
+		return this;
 	}
 
 	/**
@@ -239,8 +244,9 @@ public class MainWindow extends JFrame {
 		checkLastVersionAction = new CheckLastVersionAction("T_CHECK_LAST_VERSION", null, "T_CHECK_LAST_VERSION"); //$NON-NLS-1$ //$NON-NLS-2$
 		netConfigAction = new NetConfigAction("T_CONFIGURE_NETWORK", null, "T_CONFIGURE_NETWORK"); //$NON-NLS-1$ //$NON-NLS-2$
 
-		toggleRepaintWorld = new JCheckBox("repaint world");
+		toggleRepaintWorld = new JCheckBox(Messages.getString("T_RENDER_WORLD"));
 		toggleRepaintWorld.setSelected(Utils.isRepaintWorld());
+		toggleRepaintWorld.setAlignmentY(100);
 		toggleRepaintWorld.addActionListener(arg0 -> Utils.setRepaintWorld(!Utils.isRepaintWorld()));
 	}
 
@@ -256,6 +262,7 @@ public class MainWindow extends JFrame {
 		toolBar.add(saveWorldImageAction);
 		toolBar.add(abortTrackingAction);
 		abortTrackingAction.setEnabled(_trackedOrganism != null);
+		toolBar.add(Box.createHorizontalGlue());
 		toolBar.add(toggleRepaintWorld);
 		toolBar.invalidate();
 		toolBar.repaint();
@@ -1196,9 +1203,15 @@ public class MainWindow extends JFrame {
 						}
 						// Do automatic backups if we already saved the game. Ignore automatic backup
 						// if the world has not been saved yet (i.e. after started a new world).
-						if (Utils.AUTO_BACKUP && _world.getTime() % Utils.BACKUP_DELAY == 0) {
-							if (_world.getFrame() == 0 && _world.getTime() > 0 && _gameFile != null) {
-								backupGameAction.actionPerformed(null);
+						if (Utils.AUTO_BACKUP && _world.getTime() % Utils.BACKUP_DELAY == 0 && _world.getFrame() == 1) {
+							if (_world.getTime() > 0) {
+								if (_gameFile != null) {
+									backupGameAction.actionPerformed(null);
+								}
+							} else {
+                                if (_gameFile == null) {
+                                	backupGameAction.actionPerformed(null);
+								}
 							}
 						}
 					}

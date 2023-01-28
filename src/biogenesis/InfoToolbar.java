@@ -45,11 +45,11 @@ public class InfoToolbar extends JToolBar {
 	protected MainWindow _mainWindow;
 
 	private JLabel _lT_REPRODUCTION;
-	
+
 	private JLabel _lT_MAXAGE;
-	
+
 	private JLabel _lT_MUTATIONRATE;
-	
+
 	private JLabel _lT_CLADEID;
 
 	private JLabel _lT_ID;
@@ -67,7 +67,7 @@ public class InfoToolbar extends JToolBar {
 	private JLabel _lT_INFECTED;
 
 	private JLabel _lT_MASS;
-	
+
 	public void setSelectedOrganism(Organism selectedOrganism) {
 		_selOrganism = selectedOrganism;
 		_lID.setText(_selOrganism!=null?_nf.format(_selOrganism.getID()):"-1");
@@ -85,27 +85,27 @@ public class InfoToolbar extends JToolBar {
 		_geneticCodePanel.repaint();
 		setVisible(_selOrganism != null);
 	}
-	
+
 	// Recalculate continuously changing parameters
 	public void recalculate() {
 		_lEnergy.setText(_selOrganism!=null?_nf.format(_selOrganism.getEnergy()):"0"); //$NON-NLS-1$
 		_lAge.setText(_selOrganism!=null?_nf.format(_selOrganism.getAge()>>8):"0"); //$NON-NLS-1$
 		_lMass.setText(_selOrganism!=null?_nf.format(_selOrganism.getMass()):"0"); //$NON-NLS-1$
 	}
-	
+
 	// Notify panel of important events
 	public void changeNChildren() {
 		_lChildren.setText(_selOrganism!=null?_nf.format(_selOrganism.getTotalChildren()):"0"); //$NON-NLS-1$
 	}
-	
+
 	public void changeNKills() {
 		_lKills.setText(_selOrganism!=null?_nf.format(_selOrganism.getTotalKills()):"0"); //$NON-NLS-1$
 	}
-	
+
 	public void changeNInfected() {
 		_lInfected.setText(_selOrganism!=null?_nf.format(_selOrganism.getTotalInfected()):"0"); //$NON-NLS-1$
 	}
-	
+
 	public InfoToolbar(Organism selectedOrganism, MainWindow mainWindow) {
 		Dimension dimension = new Dimension(60,10);
 		_selOrganism = selectedOrganism;
@@ -125,7 +125,7 @@ public class InfoToolbar extends JToolBar {
 	    _geneticCodePanel = new GeneticCodePanel(_selOrganism!=null?_selOrganism.getGeneticCode():null, _mainWindow.getVisibleWorld());
 	    _geneticCodePanel.setPreferredSize(new Dimension(50,50));
 	    add(_geneticCodePanel, gridBagConstraints);
-	    
+
 	    gridBagConstraints.gridheight=1;
 	    gridBagConstraints.gridx = 1;
 	    gridBagConstraints.gridy = 0;
@@ -265,13 +265,13 @@ public class InfoToolbar extends JToolBar {
 		_lCladeID.setBackground(Utils.ColorDARKWHITE);
 		_lCladeID.setFocusable(false);
 		_lCladeID.setLineWrap(true);
-		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL; 
+		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
 		add(_lCladeID, gridBagConstraints);
-		
+
 		setSize(200,200);
 		setVisible(_selOrganism != null);
 	}
-	
+
 	public void changeLocale() {
 		_lT_ID.setText(Messages.getString("T_ID")); //$NON-NLS-1$
 		_lT_GENERATION.setText(Messages.getString("T_GENERATION")); //$NON-NLS-1$
