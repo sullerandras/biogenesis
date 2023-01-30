@@ -680,6 +680,7 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 						_gameFile = new BioFile(f);
 						_trackedOrganism = null;
 						_world.worldStatistics.saveGameLoaded(MainWindow.this);
+						_world._isbackuped = true;
 						setStatusMessage(Messages.getString("T_WORLD_LOADED_SUCCESSFULLY")); //$NON-NLS-1$
 					} catch (IOException ex) {
 						System.err.println(ex.getMessage());
@@ -1205,8 +1206,9 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 						// if the world has not been saved yet (i.e. after started a new world).
 						if (Utils.AUTO_BACKUP && _world.getTime() % Utils.BACKUP_DELAY == 0 && _world.getFrame() == 1) {
 							if (_world.getTime() > 0) {
-								if (_gameFile != null) {
+								if ((_gameFile != null) && (!_world._isbackuped)) {
 									backupGameAction.actionPerformed(null);
+									_world._isbackuped = true;
 								}
 							} else {
                                 if (_gameFile == null) {

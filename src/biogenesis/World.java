@@ -111,6 +111,10 @@ public class World implements Serializable{
 	 */
 	protected boolean _corridorexists;
 	/**
+	 * Did we backup already?
+	 */
+	protected boolean _isbackuped;
+	/**
 	 * Reference to the object that keeps track of all world statistics.
 	 */
 	protected WorldStatistics worldStatistics;
@@ -619,6 +623,7 @@ public class World implements Serializable{
 		if (nFrames % 256 == 0) {
 			nFrames = 0;
 			worldStatistics.eventTime(_population, getDistinctCladeIDCount(), _O2, _CO2, _CH4, _organisms);
+			_isbackuped = false;
 		}
 	}
 	/**

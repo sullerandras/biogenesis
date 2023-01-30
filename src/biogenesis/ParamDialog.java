@@ -81,6 +81,10 @@ public class ParamDialog extends JDialog {
 	private JTextField minmutationrateText = null;
 	private JTextField maxclonerateText = null;
 	private JTextField minclonerateText = null;
+	private JTextField reactionvelocityText = null;
+	private JTextField spore1velocityText = null;
+	private JTextField spore5velocityText = null;
+	private JTextField spore10velocityText = null;
 	private JTextField redcostText = null;
 	private JTextField greencostText = null;
 	private JTextField bluecostText = null;
@@ -261,6 +265,10 @@ public class ParamDialog extends JDialog {
 		minmutationrateText.setText(String.valueOf(Utils.DEF_MIN_MUTATION_RATE));
 		maxclonerateText.setText(String.valueOf(Utils.DEF_MAX_CLONE_RATE));
 		minclonerateText.setText(String.valueOf(Utils.DEF_MIN_CLONE_RATE));
+		reactionvelocityText.setText(String.valueOf(Utils.DEF_REACTION_VEL));
+		spore1velocityText.setText(String.valueOf(Utils.DEF_SPORE1_VEL));
+		spore5velocityText.setText(String.valueOf(Utils.DEF_SPORE5_VEL));
+		spore10velocityText.setText(String.valueOf(Utils.DEF_SPORE10_VEL));
 		segmentcostText.setText(String.valueOf(Utils.DEF_SEGMENT_COST_DIVISOR));
 		drainText.setText(String.valueOf(Utils.DEF_DRAIN_SUBS_DIVISOR));
 		greenenergyText.setText(String.valueOf(Utils.DEF_GREEN_OBTAINED_ENERGY_DIVISOR));
@@ -667,6 +675,28 @@ public class ParamDialog extends JDialog {
 		agedivisorText = new JTextField(Integer.toString(Utils.AGE_DIVISOR),6);
 		panel.add(agedivisorText);
 		organismsPanel.add(panel);
+		// Spore-1 velocity factor - Spore-5 velocity factor
+		panel = new JPanel();
+		label = new JLabel(Messages.getString("T_SPORE1_VELOCITY")); //$NON-NLS-1$
+		panel.add(label);
+		spore1velocityText = new JTextField(Double.toString(Utils.SPORE1_VEL),6);
+		panel.add(spore1velocityText);
+		label = new JLabel(Messages.getString("T_SPORE5_VELOCITY")); //$NON-NLS-1$
+		panel.add(label);
+		spore5velocityText = new JTextField(Double.toString(Utils.SPORE5_VEL),6);
+		panel.add(spore5velocityText);
+		organismsPanel.add(panel);
+		// Spore-10-12 velocity factor -  Reaction velocity factor
+		panel = new JPanel();
+		label = new JLabel(Messages.getString("T_SPORE10-12_VELOCITY")); //$NON-NLS-1$
+		panel.add(label);
+		spore10velocityText = new JTextField(Double.toString(Utils.SPORE10_VEL),6);
+		panel.add(spore10velocityText);
+		label = new JLabel(Messages.getString("T_REACTION_VELOCITY")); //$NON-NLS-1$
+		panel.add(label);
+		reactionvelocityText = new JTextField(Double.toString(Utils.REACTION_VEL),6);
+		panel.add(reactionvelocityText);
+		organismsPanel.add(panel);
 		// Upkeep cost
 		panel = new JPanel();
 		label = new JLabel(Messages.getString("T_UPKEEP_COST_DIVISOR")); //$NON-NLS-1$
@@ -818,7 +848,7 @@ public class ParamDialog extends JDialog {
 
 	protected JPanel setGenesTab() {
 		JPanel genesPanel = new JPanel();
-		genesPanel.setLayout(new GridLayout(13,3));
+		genesPanel.setLayout(new GridLayout(15,3));
 		JLabel label;
 
 		genesPanel.add(new JLabel(Messages.getString("T_COLOR2"),SwingConstants.CENTER)); //$NON-NLS-1$
@@ -908,13 +938,27 @@ public class ParamDialog extends JDialog {
 		genesPanel.add(darkgrayprobText);
 		darkgraycostText = new JTextField(Double.toString(Utils.DARKGRAY_ENERGY_CONSUMPTION));
 		genesPanel.add(darkgraycostText);
+		
+		label = new JLabel(Messages.getString("T_CYAN"),SwingConstants.CENTER); //$NON-NLS-1$
+		genesPanel.add(label);
+		cyanprobText = new JTextField(Integer.toString(Utils.CYAN_PROB));
+		genesPanel.add(cyanprobText);
+		cyancostText = new JTextField(Double.toString(Utils.CYAN_ENERGY_CONSUMPTION));
+		genesPanel.add(cyancostText);
+
+		label = new JLabel(Messages.getString("T_TEAL"),SwingConstants.CENTER); //$NON-NLS-1$
+		genesPanel.add(label);
+		tealprobText = new JTextField(Integer.toString(Utils.TEAL_PROB));
+		genesPanel.add(tealprobText);
+		tealcostText = new JTextField(Double.toString(Utils.TEAL_ENERGY_CONSUMPTION));
+		genesPanel.add(tealcostText);
 
 		return genesPanel;
 	}
 
 	protected JPanel setGenes2Tab() {
 		JPanel genesPanel = new JPanel();
-		genesPanel.setLayout(new GridLayout(18,3));
+		genesPanel.setLayout(new GridLayout(17,3));
 		JLabel label;
 
 		genesPanel.add(new JLabel(Messages.getString("T_COLOR2"),SwingConstants.CENTER)); //$NON-NLS-1$
@@ -1033,24 +1077,24 @@ public class ParamDialog extends JDialog {
 		fallowcostText = new JTextField(Double.toString(Utils.FALLOW_ENERGY_CONSUMPTION));
 		genesPanel.add(fallowcostText);
 
+		return genesPanel;
+	}
+
+	protected JPanel setGenes3Tab() {
+		JPanel genesPanel = new JPanel();
+		genesPanel.setLayout(new GridLayout(17,3));
+		JLabel label;
+
+		genesPanel.add(new JLabel(Messages.getString("T_COLOR2"),SwingConstants.CENTER)); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_PROBABILITY"),SwingConstants.CENTER)); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_COST"),SwingConstants.CENTER)); //$NON-NLS-1$
+		
 		label = new JLabel(Messages.getString("T_SPORE"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
 		sporeprobText = new JTextField(Integer.toString(Utils.SPORE_PROB));
 		genesPanel.add(sporeprobText);
 		sporecostText = new JTextField(Double.toString(Utils.SPORE_ENERGY_CONSUMPTION));
 		genesPanel.add(sporecostText);
-
-		return genesPanel;
-	}
-
-	protected JPanel setGenes3Tab() {
-		JPanel genesPanel = new JPanel();
-		genesPanel.setLayout(new GridLayout(18,3));
-		JLabel label;
-
-		genesPanel.add(new JLabel(Messages.getString("T_COLOR2"),SwingConstants.CENTER)); //$NON-NLS-1$
-		genesPanel.add(new JLabel(Messages.getString("T_PROBABILITY"),SwingConstants.CENTER)); //$NON-NLS-1$
-		genesPanel.add(new JLabel(Messages.getString("T_COST"),SwingConstants.CENTER)); //$NON-NLS-1$
 
 		label = new JLabel(Messages.getString("T_WHITE"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
@@ -1100,20 +1144,6 @@ public class ParamDialog extends JDialog {
 		genesPanel.add(roseprobText);
 		rosecostText = new JTextField(Double.toString(Utils.ROSE_ENERGY_CONSUMPTION));
 		genesPanel.add(rosecostText);
-
-		label = new JLabel(Messages.getString("T_CYAN"),SwingConstants.CENTER); //$NON-NLS-1$
-		genesPanel.add(label);
-		cyanprobText = new JTextField(Integer.toString(Utils.CYAN_PROB));
-		genesPanel.add(cyanprobText);
-		cyancostText = new JTextField(Double.toString(Utils.CYAN_ENERGY_CONSUMPTION));
-		genesPanel.add(cyancostText);
-
-		label = new JLabel(Messages.getString("T_TEAL"),SwingConstants.CENTER); //$NON-NLS-1$
-		genesPanel.add(label);
-		tealprobText = new JTextField(Integer.toString(Utils.TEAL_PROB));
-		genesPanel.add(tealprobText);
-		tealcostText = new JTextField(Double.toString(Utils.TEAL_ENERGY_CONSUMPTION));
-		genesPanel.add(tealcostText);
 
 		label = new JLabel(Messages.getString("T_YELLOW"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
@@ -1318,6 +1348,30 @@ public class ParamDialog extends JDialog {
 		try {
 			i = Integer.parseInt(minclonerateText.getText());
 			if (i >= 0 && i <= Utils.MAX_CLONE_RATE) Utils.MIN_CLONE_RATE = i;
+		} catch (NumberFormatException ex) {
+			// Keep old value if there is a problem
+		}
+		try {
+			d = Double.parseDouble(reactionvelocityText.getText());
+			if (d >= 0) Utils.REACTION_VEL = d;
+		} catch (NumberFormatException ex) {
+			// Keep old value if there is a problem
+		}
+		try {
+			d = Double.parseDouble(spore1velocityText.getText());
+			if (d >= 0) Utils.SPORE1_VEL = d;
+		} catch (NumberFormatException ex) {
+			// Keep old value if there is a problem
+		}
+		try {
+			d = Double.parseDouble(spore5velocityText.getText());
+			if (d >= 0) Utils.SPORE5_VEL = d;
+		} catch (NumberFormatException ex) {
+			// Keep old value if there is a problem
+		}
+		try {
+			d = Double.parseDouble(spore10velocityText.getText());
+			if (d >= 0) Utils.SPORE10_VEL = d;
 		} catch (NumberFormatException ex) {
 			// Keep old value if there is a problem
 		}
