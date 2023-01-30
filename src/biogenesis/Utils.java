@@ -211,7 +211,7 @@ public final class Utils {
 	/**
 	 * This is the default energy that is consumed when a cyan segment is used.
 	 */
-	final static double DEF_CYAN_ENERGY_CONSUMPTION = 0d;
+	final static double DEF_CYAN_ENERGY_CONSUMPTION = 12d;
 	/**
 	 * This is the default energy that is consumed when a white segment is used.
 	 */
@@ -311,7 +311,7 @@ public final class Utils {
 	/**
 	 * This is the default energy that is consumed when a c4 segment is used.
 	 */
-	final static double DEF_C4_ENERGY_CONSUMPTION = 0.55d;
+	final static double DEF_C4_ENERGY_CONSUMPTION = 0.54d;
 	/**
 	 * This is the default energy that is consumed when a violet segment is used.
 	 */
@@ -319,7 +319,7 @@ public final class Utils {
 	/**
 	 * This is the default energy that is consumed when a teal segment is used.
 	 */
-	final static double DEF_TEAL_ENERGY_CONSUMPTION = 0d;
+	final static double DEF_TEAL_ENERGY_CONSUMPTION = 11.88d;
 	/**
 	 * This is the default energy that is consumed when an eye segment is used.
 	 */
@@ -602,6 +602,22 @@ public final class Utils {
 	 * if it isn't a child of another organism.
 	 */
 	final static int DEF_INITIAL_ENERGY = 40;
+	/**
+	 * This is the default value for the reaction speed factor.
+	 */
+	final static double DEF_REACTION_VEL = 8d;
+	/**
+	 * This is the default value for the spore-1 speed factor.
+	 */
+	final static double DEF_SPORE1_VEL = 12d;
+	/**
+	 * This is the default value for the spore-5 speed factor.
+	 */
+	final static double DEF_SPORE5_VEL = 1.33d;
+	/**
+	 * This is the default value for the spore-10-12 speed factor.
+	 */
+	final static double DEF_SPORE10_VEL = 12d;
 	/**
 	 * This is the default value for the maximum speed that an organism can
 	 * achieve.
@@ -1243,6 +1259,22 @@ public final class Utils {
 	 * if it isn't a child of another organism.
 	 */
 	static int INITIAL_ENERGY = DEF_INITIAL_ENERGY;
+	/**
+	 * This is the value for the reaction speed factor.
+	 */
+	static double REACTION_VEL = DEF_REACTION_VEL;
+	/**
+	 * This is the value for the spore-1 speed factor.
+	 */
+	static double SPORE1_VEL = DEF_SPORE1_VEL;
+	/**
+	 * This is the value for the spore-5 speed factor.
+	 */
+	static double SPORE5_VEL = DEF_SPORE5_VEL;
+	/**
+	 * This is the value for the spore-10-12 speed factor.
+	 */
+	static double SPORE10_VEL = DEF_SPORE10_VEL;
 	/**
 	 * This is the value for the maximum speed that an organism can
 	 * achieve.
@@ -1929,6 +1961,10 @@ public final class Utils {
 			prefs.putInt("SPORE_PROB",SPORE_PROB); //$NON-NLS-1$
 			prefs.putInt("DRAIN_SUBS_DIVISOR",DRAIN_SUBS_DIVISOR); //$NON-NLS-1$
 			prefs.putInt("INITIAL_ENERGY",INITIAL_ENERGY); //$NON-NLS-1$
+			prefs.putDouble("REACTION_VEL",REACTION_VEL); //$NON-NLS-1$
+			prefs.putDouble("SPORE1_VEL",SPORE1_VEL); //$NON-NLS-1$
+			prefs.putDouble("SPORE5_VEL",SPORE5_VEL); //$NON-NLS-1$
+			prefs.putDouble("SPORE10_VEL",SPORE10_VEL); //$NON-NLS-1$
 			prefs.putDouble("MAX_VEL",MAX_VEL); //$NON-NLS-1$
 			prefs.putDouble("MAX_ROT",MAX_ROT); //$NON-NLS-1$
 			prefs.putDouble("ELASTICITY",ELASTICITY); //$NON-NLS-1$
@@ -2107,6 +2143,10 @@ public final class Utils {
 			SPORE_PROB = prefs.getInt("SPORE_PROB",DEF_SPORE_PROB); //$NON-NLS-1$
 			DRAIN_SUBS_DIVISOR = prefs.getInt("DRAIN_SUBS_DIVISOR",DEF_DRAIN_SUBS_DIVISOR); //$NON-NLS-1$
 			INITIAL_ENERGY = prefs.getInt("INITIAL_ENERGY",DEF_INITIAL_ENERGY); //$NON-NLS-1$
+			REACTION_VEL = prefs.getDouble("REACTION_VEL",DEF_REACTION_VEL); //$NON-NLS-1$
+			SPORE1_VEL = prefs.getDouble("SPORE1_VEL",DEF_SPORE1_VEL); //$NON-NLS-1$
+			SPORE5_VEL = prefs.getDouble("SPORE5_VEL",DEF_SPORE5_VEL); //$NON-NLS-1$
+			SPORE10_VEL = prefs.getDouble("SPORE10_VEL",DEF_SPORE10_VEL); //$NON-NLS-1$
 			MAX_VEL = prefs.getDouble("MAX_VEL",DEF_MAX_VEL); //$NON-NLS-1$
 			MAX_ROT = prefs.getDouble("MAX_ROT",DEF_MAX_ROT); //$NON-NLS-1$
 			ELASTICITY = prefs.getDouble("ELASTICITY",DEF_ELASTICITY); //$NON-NLS-1$
