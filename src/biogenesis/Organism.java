@@ -1844,57 +1844,46 @@ public class Organism extends Rectangle {
 		}
 		if (_isonlyc4 > 0) {
 			if ((!_isaplant) && (_methanotrophy == 0) && (_blackversion >= 0)) {
-				if ((!_isaconsumer) && (!_isafungus) && (!_isakiller) && (!_isinfectious) && (_plagueversion == 0) && (isprotective < 2)) {
-					if ((!_iscoral) && (isprotective == 0)) {
-						_isonlyc4 = 2;
+				if ((!_isaconsumer) && (!_isafungus) && (!_isakiller) && (!_isinfectious) && (_plagueversion == 0) && (isprotective == 0)) {
+					_isonlyc4 = 2;
+					if (!_iscoral) {
 						_candodge =true;
-						if ((_indigo > 0) && (_jadefactor == 0)) {
-							_jadefactor = -1;
-						}
-						int j;
-						for (j=_segments-1; j>=0; j--) {
-							switch (getTypeColor(_segColor[j])) {
-							case C4:
-								if ((_sporetime == 0) || (_geneticCode.getModifiesspore() <= 6)) {
-									_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * (11 + _geneticCode.getGene(j%_geneticCode.getNGenes()).getLength());
-								}
-								break;
-							case TEAL:
-								if ((_reproducelate == 0) && (_age == 0)) {
-									_reproduceEnergy -= 1;
-								}
-								break;
-							case LAVENDER:
-								if ((_reproducelate == 0) && (_age == 0)) {
-									_reproduceEnergy -= 2;
-								}
-								break;
-							case SPORE:
-								if ((_geneticCode.getModifiesspore() >= 3) && (_geneticCode.getModifiesspore() <= 6) && (_reproducelate == 0) && (_age == 0)) {
-									_reproduceEnergy -= 3;
-								}
-								break;
-							case BLOND:
-							case GOLD:
-							case DARK:
-								break;
-							default:
-								if ((_reproducelate == 0) && (_age == 0)) {
-									_reproduceEnergy -= 3;
-								}
-								break;
+					}					
+					if ((_indigo > 0) && (_jadefactor == 0)) {
+						_jadefactor = -1;
+					}
+					int j;
+					for (j=_segments-1; j>=0; j--) {
+						switch (getTypeColor(_segColor[j])) {
+						case C4:
+							if ((_sporetime == 0) || (_geneticCode.getModifiesspore() <= 6)) {
+								_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * (11 + (1.05 * _geneticCode.getGene(j%_geneticCode.getNGenes()).getLength()));
 							}
-						}
-					} else {
-						int j;
-						for (j=_segments-1; j>=0; j--) {
-							switch (getTypeColor(_segColor[j])) {
-							case C4:
-								if ((_sporetime == 0) || (_geneticCode.getModifiesspore() <= 6)) {
-									_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * (11 + _geneticCode.getGene(j%_geneticCode.getNGenes()).getLength());
-								}
-								break;
+							break;
+						case TEAL:
+							if ((_reproducelate == 0) && (_age == 0)) {
+								_reproduceEnergy -= 1;
 							}
+							break;
+						case LAVENDER:
+							if ((_reproducelate == 0) && (_age == 0)) {
+								_reproduceEnergy -= 2;
+							}
+							break;
+						case SPORE:
+							if ((_geneticCode.getModifiesspore() >= 3) && (_geneticCode.getModifiesspore() <= 6) && (_reproducelate == 0) && (_age == 0)) {
+								_reproduceEnergy -= 3;
+							}
+							break;
+						case BLOND:
+						case GOLD:
+						case DARK:
+							break;
+						default:
+							if ((_reproducelate == 0) && (_age == 0)) {
+								_reproduceEnergy -= 3;
+							}
+							break;
 						}
 					}
 				}
