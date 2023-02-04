@@ -116,6 +116,8 @@ public class BioFile {
       stats.put("use extra effects", stats.getOrDefault("use extra effects", 0) + (o._useextraeffects ? 1 : 0));
       stats.put("use frame movement", stats.getOrDefault("use frame movement", 0) + (o._useframemovement ? 1 : 0));
       stats.put("use pretouch effects", stats.getOrDefault("use pretouch effects", 0) + (o._usepretoucheffects ? 1 : 0));
+      stats.put("methanotrophs", stats.getOrDefault("methanotrophs", 0) + (o._methanotrophy > 0 ? 1 : 0));
+      stats.put("true plant", stats.getOrDefault("true plant", 0) + (o._photosynthesis > 0 ? 1 : 0));
     });
 
     return stats;
