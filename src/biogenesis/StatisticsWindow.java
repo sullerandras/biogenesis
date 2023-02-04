@@ -505,7 +505,7 @@ class ColorPanel extends JPanel {
 				infoAndColor = it.next();
 				x = width * infoAndColor.info / (double) total;
 				g.setColor(infoAndColor.color);
-				g.fillRect((int) lastX, 0, (int) (lastX + x) - (int) x, height);
+				g.fillRect((int) lastX, 0, (int) (lastX + x) - (int) lastX, height);
 				lastX += x;
 			}
 		}
