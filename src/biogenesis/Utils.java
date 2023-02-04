@@ -605,7 +605,7 @@ public final class Utils {
 	/**
 	 * This is the default value for the reaction speed factor.
 	 */
-	final static double DEF_REACTION_VEL = 8d;
+	final static double DEF_REACTION_VEL = 1d;
 	/**
 	 * This is the default value for the spore-1 speed factor.
 	 */
