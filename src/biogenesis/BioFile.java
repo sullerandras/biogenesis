@@ -22,7 +22,7 @@ public class BioFile {
   }
 
   public File getCsvFile() {
-    return new File(getFile().getName().replaceFirst("." + BioFileFilter.WORLD_EXTENSION + "$", ".csv"));
+    return new File(getFile().getPath().replaceFirst("." + BioFileFilter.WORLD_EXTENSION + "$", ".csv"));
   }
 
   public File getFile() {
