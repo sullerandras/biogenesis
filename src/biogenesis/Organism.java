@@ -1857,7 +1857,7 @@ public class Organism extends Rectangle {
 						switch (getTypeColor(_segColor[j])) {
 						case C4:
 							if ((_sporetime == 0) || (_geneticCode.getModifiesspore() <= 6)) {
-								_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * (11 + (1.05 * _geneticCode.getGene(j%_geneticCode.getNGenes()).getLength()));
+								_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * (11 + (1.04 * _geneticCode.getGene(j%_geneticCode.getNGenes()).getLength()));
 							}
 							break;
 						case TEAL:
@@ -7588,26 +7588,26 @@ public class Organism extends Rectangle {
 						    } else
 						    if (_segfriendReaction[seg] == 2) {
 						    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-							    dx=Utils.between((0.5*Utils.REACTION_VEL*_m[i]*(10*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-							    dy=Utils.between((0.5*Utils.REACTION_VEL*_m[i]*(10*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+							    dx=Utils.between((0.5*Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+							    dy=Utils.between((0.5*Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 							    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 						    }} else
 			                if (_segfriendReaction[seg] == 3) {
 			    	    	if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-			    	    	    dx=Utils.between((0.5*Utils.REACTION_VEL*_m[i]*(10*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-			    	    	    dy=Utils.between((0.5*Utils.REACTION_VEL*_m[i]*(10*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+			    	    	    dx=Utils.between((0.5*Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+			    	    	    dy=Utils.between((0.5*Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 			    	    	    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 		                    }} else
 		                    if (_segfriendReaction[seg] == 4) {
 		                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-							    dx=Utils.between((0.5*Utils.REACTION_VEL*_m[i]*(10*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-							    dy=Utils.between((0.5*Utils.REACTION_VEL*_m[i]*(10*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+							    dx=Utils.between((0.5*Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+							    dy=Utils.between((0.5*Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 							    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 		                    }} else
 		                    if (_segfriendReaction[seg] == 5) {
 		                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-								dx=Utils.between((0.5*Utils.REACTION_VEL*_m[i]*(10*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-								dy=Utils.between((0.5*Utils.REACTION_VEL*_m[i]*(10*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+								dx=Utils.between((0.5*Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+								dy=Utils.between((0.5*Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 								dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 			                }}
 					}
@@ -7648,26 +7648,26 @@ public class Organism extends Rectangle {
 						    } else
 						    if (_segsickReaction[seg] == 2) {
 						    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-							    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-							    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+							    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+							    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 							    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 		                    }} else
 		                    if (_segsickReaction[seg] == 3) {
 		    			    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-		    				    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-		    				    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+		    				    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+		    				    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 		    					dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 		    	            }} else
 		                    if (_segsickReaction[seg] == 4) {
 		                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-							    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-							    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+							    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+							    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 							    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 		                    }} else
 		                    if (_segsickReaction[seg] == 5) {
 		                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-								dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-								dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+								dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+								dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 								dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 			                }}
 					  }
@@ -7681,26 +7681,26 @@ public class Organism extends Rectangle {
 						    } else
 	                    	if (_segorangeReaction[seg] == 2) {
 	                    	if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    						dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	                    	}} else
 	    	                if (_segorangeReaction[seg] == 3) {
 	    	    	    	if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    	    	    	    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	  	                    }} else
 	  	                    if (_segorangeReaction[seg] == 4) {
 	  	                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    						dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	  	                    }} else
 	  	                    if (_segorangeReaction[seg] == 5) {
 	  	                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	  	    					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	  	    					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	  	    					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	  	    					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	  	    					dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	  	  	                }}
 	                	    break;
@@ -7710,26 +7710,26 @@ public class Organism extends Rectangle {
 						    } else
 	                	    if (_segfireReaction[seg] == 2) {
 	                	    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-							    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-							    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+							    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+							    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 							    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	                	    }} else
 	    	                if (_segfireReaction[seg] == 3) {
 	    	    	    	if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    	    	    	    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 		                    }} else
 		                    if (_segfireReaction[seg] == 4) {
 		                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-							    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-							    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+							    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+							    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 							    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 		                    }} else
 		                    if (_segfireReaction[seg] == 5) {
 		                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-		  						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-		  						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+		  						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+		  						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 		  						dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 			                }}
 	              	        break;
@@ -7739,26 +7739,26 @@ public class Organism extends Rectangle {
 						    } else
 	                  	    if (_segredReaction[seg] == 2) {
 	                  	    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	  						    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	  						    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	  						    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	  						    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	  						    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 		                    }} else
 		                    if (_segredReaction[seg] == 3) {
 		    	    	    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-		    	    		    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-		    	    			dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+		    	    		    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+		    	    			dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 		    	    			dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 		    	    	    }} else
 		                    if (_segredReaction[seg] == 4) {
 		                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	  						    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	  						    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	  						    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	  						    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	  						    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 		                    }} else
 		                    if (_segredReaction[seg] == 5) {
 		                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-		  						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-		  						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+		  						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+		  						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 		  						dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 			                }}
 	                	    break;
@@ -7768,26 +7768,26 @@ public class Organism extends Rectangle {
 						    } else
 	                    	if (_segpinkReaction[seg] == 2) {
 	                    	if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    						dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	                    	}} else
 	    	                if (_segpinkReaction[seg] == 3) {
 	    	    	    	if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    	    	    	    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	  	                    }} else
 	  	                    if (_segpinkReaction[seg] == 4) {
 	  	                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    						dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	  	                    }} else
 	  	                    if (_segpinkReaction[seg] == 5) {
 	  	                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	  	    					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	  	    					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	  	    					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	  	    					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	  	    					dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	  	  	                }}
 	                	    break;
@@ -7797,26 +7797,26 @@ public class Organism extends Rectangle {
 						    } else
 	                    	if (_segmaroonReaction[seg] == 2) {
 	                    	if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    						dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	                    	}} else
 	    	                if (_segmaroonReaction[seg] == 3) {
 	    	    	    	if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    	    	    	    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	  	                    }} else
 	  	                    if (_segmaroonReaction[seg] == 4) {
 	  	                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    						dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	  	                    }} else
 	  	                    if (_segmaroonReaction[seg] == 5) {
 	  	                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	  	    					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	  	    					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	  	    					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	  	    					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	  	    					dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	  	  	                }}
 	                	    break;
@@ -7826,26 +7826,26 @@ public class Organism extends Rectangle {
 						    } else
 	                    	if (_segcreamReaction[seg] == 2) {
 	                    	if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    						dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	                    	}} else
 	    	                if (_segcreamReaction[seg] == 3) {
 	    	    	    	if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    	    	    	    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	  	                    }} else
 	  	                    if (_segcreamReaction[seg] == 4) {
 	  	                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    						dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	  	                    }} else
 	  	                    if (_segcreamReaction[seg] == 5) {
 	  	                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	  	    					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	  	    					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	  	    					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	  	    					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	  	    					dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	  	  	                }}
 	                	    break;
@@ -7855,26 +7855,26 @@ public class Organism extends Rectangle {
 						    } else
 	                    	if (_segochreReaction[seg] == 2) {
 	                    	if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    						dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	                    	}} else
 	    	                if (_segochreReaction[seg] == 3) {
 	    	    	    	if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    	    	    	    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	  	                    }} else
 	  	                    if (_segochreReaction[seg] == 4) {
 	  	                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    						dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	  	                    }} else
 	  	                    if (_segochreReaction[seg] == 5) {
 	  	                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	  	    					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	  	    					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	  	    					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	  	    					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	  	    					dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	  	  	                }}
 	                	    break;
@@ -7885,26 +7885,26 @@ public class Organism extends Rectangle {
 						    } else
 	                    	if (_segsilverReaction[seg] == 2) {
 	                    	if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    						dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	                    	}} else
 	    	                if (_segsilverReaction[seg] == 3) {
 	    	    	    	if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    	    	    	    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	  	                    }} else
 	  	                    if (_segsilverReaction[seg] == 4) {
 	  	                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    						dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	  	                    }} else
 	  	                    if (_segsilverReaction[seg] == 5) {
 	  	                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	  	    					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	  	    					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	  	    					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	  	    					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	  	    					dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	  	  	                }}
 	                	  } else if (org._isaplant) {
@@ -7913,26 +7913,26 @@ public class Organism extends Rectangle {
 	            			} else
 	                        if (_segplantReaction[seg] == 2) {
 	                        if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	                			dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	                			dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	                			dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	                			dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	                			dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	                        }} else
 	          	            if (_segplantReaction[seg] == 3) {
 	          	    	    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	          	    	    	dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	          	    	    	dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	          	    	    	dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	          	    	    	dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	          	    	    	dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	              	        }} else
 	              	        if (_segplantReaction[seg] == 4) {
 	              	        if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	                			dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	                			dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	                			dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	                			dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	                			dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	              	        }} else
 	              	        if (_segplantReaction[seg] == 5) {
 	              	        if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	              	    		dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	              	    		dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	              	    		dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	              	    		dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	              	    		dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	              	  	    }}
 	                	  } else if ((org._isaconsumer) || (org._isafungus)) {
@@ -7941,26 +7941,26 @@ public class Organism extends Rectangle {
 	        				} else
 	                        if (_segconsumerReaction[seg] == 2) {
 	                        if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	            				dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	            				dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	            				dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	            				dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	            				dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	                        }} else
 	          	            if (_segconsumerReaction[seg] == 3) {
 	          	    	    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	          	    	    	dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	          	    	    	dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	          	    	    	dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	          	    	    	dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	          	    	    	dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	          	            }} else
 	          	            if (_segconsumerReaction[seg] == 4) {
 	          	            if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	            				dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	            				dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	            				dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	            				dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	            				dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	          	            }} else
 	          	            if (_segconsumerReaction[seg] == 5) {
 	          	            if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	          	    			dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	          	    			dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	          	    			dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	          	    			dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	          	    			dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	          	  	        }}
 	                      } else {
@@ -7969,26 +7969,26 @@ public class Organism extends Rectangle {
 	            		    } else
 	                        if (_segdefaultReaction[seg] == 2) {
 	                        if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	                			dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	                			dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	                			dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	                			dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	                			dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	                        }} else
 	          	            if (_segdefaultReaction[seg] == 3) {
 	          	    	    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	          	    	    	dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	          	    	    	dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	          	    	    	dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	          	    	    	dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	          	    	    	dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	              	        }} else
 	              	        if (_segdefaultReaction[seg] == 4) {
 	              	        if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	                			dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	                			dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	                			dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	                			dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	                			dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	              	        }} else
 	              	        if (_segdefaultReaction[seg] == 5) {
 	              	        if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	              	    		dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	              	    		dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	              	    		dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	              	    		dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	              	    		dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	              	  	    }}
 	                      }
@@ -7999,26 +7999,26 @@ public class Organism extends Rectangle {
 						    } else
 	                    	if (_segspikeReaction[seg] == 2) {
 	                    	if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    						dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	                    	}} else
 	    	                if (_segspikeReaction[seg] == 3) {
 	    	    	    	if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    	    	    	    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	  	                    }} else
 	  	                    if (_segspikeReaction[seg] == 4) {
 	  	                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    						dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	  	                    }} else
 	  	                    if (_segspikeReaction[seg] == 5) {
 	  	                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	  	    					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	  	    					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	  	    					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	  	    					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	  	    					dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	  	  	                }}
 	                	    break;
@@ -8028,26 +8028,26 @@ public class Organism extends Rectangle {
 						    } else
 	                    	if (_seggrayReaction[seg] == 2) {
 	                    	if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    						dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	                    	}} else
 	    	                if (_seggrayReaction[seg] == 3) {
 	    	    	    	if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    	    	    	    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	  	                    }} else
 	  	                    if (_seggrayReaction[seg] == 4) {
 	  	                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    						dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	  	                    }} else
 	  	                    if (_seggrayReaction[seg] == 5) {
 	  	                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	  	    					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	  	    					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	  	    					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	  	    					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	  	    					dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	  	  	                }}
 	                	    break;
@@ -8066,26 +8066,26 @@ public class Organism extends Rectangle {
 	            			} else
 	                        if (_segplagueReaction[seg] == 2) {
 	                        if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	                			dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	                			dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	                			dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	                			dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	                			dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	                        }} else
 	    	                if (_segplagueReaction[seg] == 3) {
 	    	    	    	if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    	    	    	    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	              	        }} else
 	              	        if (_segplagueReaction[seg] == 4) {
 	              	        if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	                			dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	                			dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	                			dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	                			dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	                			dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	              	        }} else
 	              	        if (_segplagueReaction[seg] == 5) {
 	              	        if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	              	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	              	    		dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	              	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	              	    		dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	              	    		dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	              	  	    }}
 	                		} else {
@@ -8094,26 +8094,26 @@ public class Organism extends Rectangle {
 						    } else
 	                    	if (_segwhiteReaction[seg] == 2) {
 	                    	if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    						dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	                    	}} else
 	    	                if (_segwhiteReaction[seg] == 3) {
 	    	    	    	if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    	    	    	    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	  	                    }} else
 	  	                    if (_segwhiteReaction[seg] == 4) {
 	  	                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    						dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	  	                    }} else
 	  	                    if (_segwhiteReaction[seg] == 5) {
 	  	                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	  	    					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	  	    					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	  	    					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	  	    					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	  	    					dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	  	  	                }}
 	                		}
@@ -8123,26 +8123,26 @@ public class Organism extends Rectangle {
 	    					} else
 	                        if (_segscourgeReaction[seg] == 2) {
 	                        if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	        					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	        					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	        					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	        					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	        					dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	                        }} else
 	    	                if (_segscourgeReaction[seg] == 3) {
 	    	    	    	if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    	    	    	    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	      	                }} else
 	      	                if (_segscourgeReaction[seg] == 4) {
 	      	                if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	        					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	        					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	        					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	        					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	        					dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	      	                }} else
 	      	                if (_segscourgeReaction[seg] == 5) {
 	      	                if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	      	    			    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	      	    				dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	      	    			    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	      	    				dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	      	    				dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	      	  	            }}
 	                	  } else {
@@ -8151,26 +8151,26 @@ public class Organism extends Rectangle {
 	  					    } else
 	                      	if (_segvirusReaction[seg] == 2) {
 	                      	if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	      						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	      						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	      						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	      						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	      						dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	                      	}} else
 	    	                if (_segvirusReaction[seg] == 3) {
 	    	    	    	if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    	    	    	    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	    	                }} else
 	    	                if (_segvirusReaction[seg] == 4) {
 	    	                if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	      						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	      						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	      						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	      						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	      						dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	    	                }} else
 	    	                if (_segvirusReaction[seg] == 5) {
 	    	                if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    	    			    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    	    				dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    			    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    				dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    	    				dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	    	  	            }}
 	                	  }
@@ -8182,26 +8182,26 @@ public class Organism extends Rectangle {
 						    } else
 	                  	    if (_segbarkReaction[seg] == 2) {
 	                  	    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	  						    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	  						    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	  						    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	  						    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	  						    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	                  	    }} else
 	  	                    if (_segbarkReaction[seg] == 3) {
 	  	    	    	    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	  	    	    	    	dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	  	    	    	    	dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	  	    	    	    	dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	  	    	    	    	dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	  	    	    	    	dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 		                    }} else
 		                    if (_segbarkReaction[seg] == 4) {
 		                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	  						    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	  						    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	  						    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	  						    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	  						    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 		                    }} else
 		                    if (_segbarkReaction[seg] == 5) {
 		                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-		    					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-		    					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+		    					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+		    					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 		    					dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 		  	                }}
 	              	        break;
@@ -8223,26 +8223,26 @@ public class Organism extends Rectangle {
 						    } else
 	                        if (_seggreenReaction[seg] == 2) {
 	                        if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-						        dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-						        dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+						        dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+						        dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 						        dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 		                    }} else
 		                    if (_seggreenReaction[seg] == 3) {
 		    	    	    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-		    	    	    	dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-		    	    	    	dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+		    	    	    	dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+		    	    	    	dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 		    	    	    	dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 		    	    	    }} else
 		                    if (_seggreenReaction[seg] == 4) {
 		                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-						        dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-						        dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+						        dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+						        dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 						        dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 		                    }} else
 		                    if (_seggreenReaction[seg] == 5) {
 		                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-		    					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-		    					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+		    					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+		    					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 		    					dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 		  	                }}
 	            	        break;
@@ -8252,26 +8252,26 @@ public class Organism extends Rectangle {
 						    } else
 	                    	if (_segblueReaction[seg] == 2) {
 	                    	if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    						dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	                    	}} else
 	    	                if (_segblueReaction[seg] == 3) {
 	    	    	    	if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    	    	    	    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	  	                    }} else
 	  	                    if (_segblueReaction[seg] == 4) {
 	  	                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    						dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	  	                    }} else
 	  	                    if (_segblueReaction[seg] == 5) {
 	  	                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	  	    					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	  	    					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	  	    					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	  	    					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	  	    					dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	  	  	                }}
 	                	    break;
@@ -8281,26 +8281,26 @@ public class Organism extends Rectangle {
 						    } else
 	              	        if (_segoliveReaction[seg] == 2) {
 	              	        if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-							    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-							    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+							    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+							    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 							    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	              	        }} else
 	  	                    if (_segoliveReaction[seg] == 3) {
 	  	    	    	    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	  	    	    	    	dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	  	    	    	    	dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	  	    	    	    	dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	  	    	    	    	dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	  	    	    	    	dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 		                    }} else
 		                    if (_segoliveReaction[seg] == 4) {
 		                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-							    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-							    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+							    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+							    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 							    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 		                    }} else
 		                    if (_segoliveReaction[seg] == 5) {
 		                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-								dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-								dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+								dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+								dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 								dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 			                }}
 	                	    break;
@@ -8311,26 +8311,26 @@ public class Organism extends Rectangle {
 						    } else
 	                	    if (_segskyReaction[seg] == 2) {
 	                	    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-							    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-							    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+							    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+							    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 							    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	                	    }} else
 	    	                if (_segskyReaction[seg] == 3) {
 	    	    	    	if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    	    	    	    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 		                    }} else
 		                    if (_segskyReaction[seg] == 4) {
 		                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-							    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-							    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+							    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+							    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 							    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 		                    }} else
 		                    if (_segskyReaction[seg] == 5) {
 		                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-								dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-								dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+								dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+								dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 								dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 			                }}
 	                	    break;
@@ -8341,26 +8341,26 @@ public class Organism extends Rectangle {
 	    	  				} else
 	    	                if (_segwhiteReaction[seg] == 2) {
 	    	                if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    	      				dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    	      				dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	      				dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	      				dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    	      				dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	    	                }} else
 	    	      	        if (_segwhiteReaction[seg] == 3) {
 	    	      	    	if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    	      	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    	      	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	      	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	      	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    	      	    	    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	    	    	        }} else
 	    	    	        if (_segwhiteReaction[seg] == 4) {
 	    	    	        if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    	      				dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    	      				dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	      				dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	      				dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    	      				dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	    	    	        }} else
 	    	    	        if (_segwhiteReaction[seg] == 5) {
 	    	    	        if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    	    	    		dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    	    	    		dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    		dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    		dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    	    	    		dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	    	    	  	    }}
 	                	  } else {
@@ -8369,26 +8369,26 @@ public class Organism extends Rectangle {
 			  				} else
 			                if (_segvirusReaction[seg] == 2) {
 			                if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-			      				dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-			      				dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+			      				dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+			      				dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 			      				dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 			                }} else
 			    	        if (_segvirusReaction[seg] == 3) {
 			    	    	if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-			    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-			    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+			    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+			    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 			    	    	    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 			    	        }} else
 			    	        if (_segvirusReaction[seg] == 4) {
 			    	        if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-			      				dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-			      				dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+			      				dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+			      				dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 			      				dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 			    	        }} else
 			    	        if (_segvirusReaction[seg] == 5) {
 			    	        if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-			    	    		dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-			    	    		dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+			    	    		dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+			    	    		dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 			    	    		dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 			    	  	    }}
 			              }
@@ -8399,26 +8399,26 @@ public class Organism extends Rectangle {
 						    } else
 	                  	    if (_segcoralReaction[seg] == 2) {
 	                  	    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	  						    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	  						    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	  						    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	  						    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	  						    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	                  	    }} else
 	  	                    if (_segcoralReaction[seg] == 3) {
 	  	    	    	    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	  	    	    	    	dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	  	    	    	    	dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	  	    	    	    	dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	  	    	    	    	dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	  	    	    	    	dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 		                    }} else
 		                    if (_segcoralReaction[seg] == 4) {
 		                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	  						    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	  						    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	  						    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	  						    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	  						    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 		                    }} else
 		                    if (_segcoralReaction[seg] == 5) {
 		                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-		    					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-		    					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+		    					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+		    					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 		    					dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 		  	                }}
 	              	        break;
@@ -8428,26 +8428,26 @@ public class Organism extends Rectangle {
 						    } else
 	                    	if (_segfallowReaction[seg] == 2) {
 	                    	if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    						dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	                    	}} else
 	    	                if (_segfallowReaction[seg] == 3) {
 	    	    	    	if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    	    	    	    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	  	                    }} else
 	  	                    if (_segfallowReaction[seg] == 4) {
 	  	                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    						dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	  	                    }} else
 	  	                    if (_segfallowReaction[seg] == 5) {
 	  	                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	  	    					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	  	    					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	  	    					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	  	    					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	  	    					dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	  	  	                }}
 	                	    break;
@@ -8457,26 +8457,26 @@ public class Organism extends Rectangle {
 						    } else
 	                    	if (_segvioletReaction[seg] == 2) {
 	                    	if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    						dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	                    	}} else
 	    	                if (_segvioletReaction[seg] == 3) {
 	    	    	    	if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    	    	    	    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	  	                    }} else
 	  	                    if (_segvioletReaction[seg] == 4) {
 	  	                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    						dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	  	                    }} else
 	  	                    if (_segvioletReaction[seg] == 5) {
 	  	                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	  	    					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	  	    					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	  	    					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	  	    					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	  	    					dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	  	  	                }}
 	                	    break;
@@ -8487,26 +8487,26 @@ public class Organism extends Rectangle {
 	      					} else
 	                        if (_segspikeReaction[seg] == 2) {
 	                        if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	          				    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	          					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	          				    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	          					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	          					dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	                        }} else
 	    	                if (_segspikeReaction[seg] == 3) {
 	    	    	    	if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    	    	    	    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	        	            }} else
 	        	            if (_segspikeReaction[seg] == 4) {
 	        	            if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	          					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	          					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	          					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	          					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	          					dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	        	            }} else
 	        	            if (_segspikeReaction[seg] == 5) {
 	        	            if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	        	    			dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	        	    			dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	        	    			dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	        	    			dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	        	    			dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	        	  	        }}
 	                      } else if (org._isaplant) {
@@ -8515,26 +8515,26 @@ public class Organism extends Rectangle {
 	  					    } else
 	                      	if (_seggreenReaction[seg] == 2) {
 	                      	if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	      						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	      						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	      						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	      						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	      						dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	                      	}} else
 	    	                if (_seggreenReaction[seg] == 3) {
 	    	    	    	if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    	    	    	    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	    	                }} else
 	    	                if (_seggreenReaction[seg] == 4) {
 	    	                if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	      						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	      						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	      						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	      						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	      						dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	    	                }} else
 	    	                if (_seggreenReaction[seg] == 5) {
 	    	                if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    	    				dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    	    				dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    				dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    				dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    	    				dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	    	  	            }}
 	                      } else if (org._isenhanced) {
@@ -8543,26 +8543,26 @@ public class Organism extends Rectangle {
 	      					} else
 	                        if (_segconsumerReaction[seg] == 2) {
 	                        if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	          					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	          					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	          					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	          					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	          					dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	                        }} else
 	    	                if (_segconsumerReaction[seg] == 3) {
 	    	    	    	if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    	    	    	    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	        	            }} else
 	        	            if (_segconsumerReaction[seg] == 4) {
 	        	            if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	          					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	          					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	          					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	          					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	          					dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	        	            }} else
 	        	            if (_segconsumerReaction[seg] == 5) {
 	        	            if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	        	    			dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	        	    		    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	        	    			dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	        	    		    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	        	    		    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	        	  	        }}
 	                      } else {
@@ -8571,26 +8571,26 @@ public class Organism extends Rectangle {
 	          				} else
 	                        if (_segblueReaction[seg] == 2) {
 	                        if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	              				dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	              				dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	              				dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	              				dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	              				dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	                        }} else
 	        	            if (_segblueReaction[seg] == 3) {
 	        	    	    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	        	    	    	dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	        	    	    	dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	        	    	    	dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	        	    	    	dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	        	    	    	dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	            	        }} else
 	            	        if (_segblueReaction[seg] == 4) {
 	            	        if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	              				dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	              				dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	              				dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	              				dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	              				dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	            	        }} else
 	            	        if (_segblueReaction[seg] == 5) {
 	            	        if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	            	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	            	    		dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	            	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	            	    		dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	            	    		dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	            	  	    }}
 	                      }
@@ -8602,26 +8602,26 @@ public class Organism extends Rectangle {
 						    } else
 	                	    if (_seglilacReaction[seg] == 2) {
 	                	    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-							    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-							    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+							    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+							    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 							    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	                	    }} else
 	    	                if (_seglilacReaction[seg] == 3) {
 	    	    	    	if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    	    	    	    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 		                    }} else
 		                    if (_seglilacReaction[seg] == 4) {
 		                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-							    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-							    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+							    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+							    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 							    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 		                    }} else
 		                    if (_seglilacReaction[seg] == 5) {
 		                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-								dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-								dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+								dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+								dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 								dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 			                }}
 	                	    break;
@@ -8632,26 +8632,26 @@ public class Organism extends Rectangle {
 						    } else
 	                    	if (_segmintReaction[seg] == 2) {
 	                    	if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    						dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	                    	}} else
 	    	                if (_segmintReaction[seg] == 3) {
 	    	    	    	if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    	    	    	    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	  	                    }} else
 	  	                    if (_segmintReaction[seg] == 4) {
 	  	                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    						dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	  	                    }} else
 	  	                    if (_segmintReaction[seg] == 5) {
 	  	                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	  	    					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	  	    					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	  	    					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	  	    					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	  	    					dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	  	  	                }}
 	                	    break;
@@ -8662,26 +8662,26 @@ public class Organism extends Rectangle {
 						    } else
 	                    	if (_segmagentaReaction[seg] == 2) {
 	                    	if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    						dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	                    	}} else
 	    	                if (_segmagentaReaction[seg] == 3) {
 	    	    	    	if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    	    	    	    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	  	                    }} else
 	  	                    if (_segmagentaReaction[seg] == 4) {
 	  	                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    						dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	  	                    }} else
 	  	                    if (_segmagentaReaction[seg] == 5) {
 	  	                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	  	    					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	  	    					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	  	    					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	  	    					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	  	    					dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	  	  	                }}
 	                	    break;
@@ -8692,26 +8692,26 @@ public class Organism extends Rectangle {
 						    } else
 	                	    if (_seglightbrownReaction[seg] == 2) {
 	                	    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-							    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-							    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+							    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+							    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 							    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	                	    }} else
 	    	                if (_seglightbrownReaction[seg] == 3) {
 	    	    	    	if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    	    	    	    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 		                    }} else
 		                    if (_seglightbrownReaction[seg] == 4) {
 		                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-							    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-							    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+							    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+							    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 							    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 		                    }} else
 		                    if (_seglightbrownReaction[seg] == 5) {
 		                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-		    					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-		    					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+		    					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+		    					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 		    					dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 		  	                }}
 	            	        break;
@@ -8721,26 +8721,26 @@ public class Organism extends Rectangle {
 						    } else
 	                	    if (_seggreenbrownReaction[seg] == 2) {
 	                	    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-							    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-							    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+							    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+							    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 							    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	                	    }} else
 	    	                if (_seggreenbrownReaction[seg] == 3) {
 	    	    	    	if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    	    	    	    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 		                    }} else
 		                    if (_seggreenbrownReaction[seg] == 4) {
 		                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-							    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-							    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+							    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+							    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 							    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 		                    }} else
 		                    if (_seggreenbrownReaction[seg] == 5) {
 		                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-		    					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-		    					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+		    					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+		    					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 		    					dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 		  	                }}
 	            	        break;
@@ -8751,26 +8751,26 @@ public class Organism extends Rectangle {
 						    } else
 	                    	if (_seglightblueReaction[seg] == 2) {
 	                    	if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    						dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	                    	}} else
 	    	                if (_seglightblueReaction[seg] == 3) {
 	    	    	    	if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    	    	    	    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	  	                    }} else
 	  	                    if (_seglightblueReaction[seg] == 4) {
 	  	                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    						dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	  	                    }} else
 	  	                    if (_seglightblueReaction[seg] == 5) {
 	  	                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	  	    					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	  	    					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	  	    					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	  	    					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	  	    					dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	  	  	                }}
 	                	    break;
@@ -8781,26 +8781,26 @@ public class Organism extends Rectangle {
 						    } else
 	                	    if (_segiceReaction[seg] == 2) {
 	                	    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-							    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-							    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+							    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+							    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 							    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	                	    }} else
 	    	                if (_segiceReaction[seg] == 3) {
 	    	    	    	if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    	    	    	    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 		                    }} else
 		                    if (_segiceReaction[seg] == 4) {
 		                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-							    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-							    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+							    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+							    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 							    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 		                    }} else
 		                    if (_segiceReaction[seg] == 5) {
 		                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-		    					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-		    					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+		    					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+		    					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 		    					dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 		  	                }}
 	            	        break;
@@ -8810,26 +8810,26 @@ public class Organism extends Rectangle {
 						    } else
 	                    	if (_segbrokenReaction[seg] == 2) {
 	                    	if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    						dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	                    	}} else
 	    	                if (_segbrokenReaction[seg] == 3) {
 	    	    	    	if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    	    	    	    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	  	                    }} else
 	  	                    if (_segbrokenReaction[seg] == 4) {
 	  	                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    						dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	  	                    }} else
 	  	                    if (_segbrokenReaction[seg] == 5) {
 	  	                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	  	    					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	  	    					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	  	    					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	  	    					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	  	    					dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	  	  	                }}
 	                	    break;
@@ -8839,26 +8839,26 @@ public class Organism extends Rectangle {
 						    } else
 	                    	if (_segbrownReaction[seg] == 2) {
 	                    	if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    						dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	                    	}} else
 	    	                if (_segbrownReaction[seg] == 3) {
 	    	    	    	if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    	    	    	    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	  	                    }} else
 	  	                    if (_segbrownReaction[seg] == 4) {
 	  	                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	    						dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	    						dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	  	                    }} else
 	  	                    if (_segbrownReaction[seg] == 5) {
 	  	                    if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	  	    					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	  	    					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	  	    					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	  	    					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	  	    					dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	  	  	                }}
 	                	    break;
@@ -8869,26 +8869,26 @@ public class Organism extends Rectangle {
 	        				} else
 	                        if (_segconsumerReaction[seg] == 2) {
 	                        if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	            				dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	            			    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	            				dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	            			    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	            				dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	                        }} else
 	      	                if (_segconsumerReaction[seg] == 3) {
 	      	    	    	if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	      	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	      	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	      	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	      	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	      	    	    	    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	          	            }} else
 	          	            if (_segconsumerReaction[seg] == 4) {
 	          	            if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	            				dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	            				dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	            				dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	            				dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	            				dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	          	            }} else
 	          	            if (_segconsumerReaction[seg] == 5) {
 	          	            if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	          	    			dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	          	    			dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	          	    			dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	          	    			dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	          	    			dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	          	  	        }}
 	                      } else if (org._isaplant) {
@@ -8897,26 +8897,26 @@ public class Organism extends Rectangle {
 	    					} else
 	                        if (_segplantReaction[seg] == 2) {
 	                        if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	        					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	        					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	        					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	        					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	        					dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	                        }} else
 	      	                if (_segplantReaction[seg] == 3) {
 	      	    	    	if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	      	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	      	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	      	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	      	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	      	    	    	    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	      	                }} else
 	      	                if (_segplantReaction[seg] == 4) {
 	      	                if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	        					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	        					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	        					dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	        					dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	        					dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	      	                }} else
 	      	                if (_segplantReaction[seg] == 5) {
 	      	                if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	      	    				dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	      	    				dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	      	    				dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	      	    				dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	      	    				dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	      	  	            }}
 	                      } else {
@@ -8925,26 +8925,26 @@ public class Organism extends Rectangle {
 	        				} else
 	                        if (_segdefaultReaction[seg] == 2) {
 	                        if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	            				dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	            				dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	            				dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[seg]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	            				dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[seg]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	            				dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	                        }} else
 	      	                if (_segdefaultReaction[seg] == 3) {
 	      	    	    	if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	      	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	      	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	      	    	    	    dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x1[0]-x2[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	      	    	    	    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y1[0]-y2[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	      	    	    	    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	          	            }} else
 	          	            if (_segdefaultReaction[seg] == 4) {
 	          	            if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	            				dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	            				dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	            				dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(x2[seg]-x1[seg])+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	            				dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(y2[seg]-y1[seg])+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	            				dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	          	            }} else
 	          	            if (_segdefaultReaction[seg] == 5) {
 	          	            if ((!_candodge && Utils.random.nextBoolean()) || (_candodge && Utils.random.nextInt(10)>2)) {
-	          	    			dx=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
-	          	    		    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(10*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	          	    			dx=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerX-_centerX)+(x2[i]-x1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
+	          	    		    dy=Utils.between((Utils.REACTION_VEL*_m[i]*(Math.ceil(_m[i])*(org._centerY-_centerY)+(y2[i]-y1[i])))/_mass, -Utils.MAX_VEL, Utils.MAX_VEL);
 	          	    		    dtheta=Utils.between(dtheta+Utils.randomSign()*_m[i]*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	          	  	        }}
 	                      }
