@@ -24,9 +24,12 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
+import com.google.gson.annotations.Expose;
+
 public class WorldStatistics implements Serializable {
 	private static final long serialVersionUID = Utils.FILE_VERSION;
 
+	@Expose
 	private long time;
 
 	private int maxPopulation = 0;

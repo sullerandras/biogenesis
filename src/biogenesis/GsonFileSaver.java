@@ -60,9 +60,9 @@ public class GsonFileSaver {
     try {
       final FileWriter w = new FileWriter(f);
       try {
-        GsonBuilder builder = new GsonBuilder();
-        builder.registerTypeAdapter(java.awt.Color.class, new JavaAwtColorAdapter());
-        builder.setExclusionStrategies(new ExclusionStrategyForGson());
+        GsonBuilder builder = new GsonBuilder()
+            .registerTypeAdapter(java.awt.Color.class, new JavaAwtColorAdapter())
+            .excludeFieldsWithoutExposeAnnotation();
         w.write(builder.create().toJson(world));
       } finally {
         w.close();

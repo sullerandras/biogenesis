@@ -20,6 +20,9 @@ package biogenesis;
 
 import java.awt.*;
 import java.awt.image.*;
+
+import com.google.gson.annotations.Expose;
+
 import java.awt.geom.*;
 /**
  * This class implements an organism.
@@ -33,6 +36,7 @@ public class Organism extends Rectangle {
 	/**
 	 * A reference to the genetic code of this organism
 	 */
+	@Expose
 	protected GeneticCode _geneticCode;
 	/**
 	 * If this organism has been infected by a white segment, here we have the
@@ -363,6 +367,7 @@ public class Organism extends Rectangle {
 	/**
 	 * Identification number of this organism.
 	 */
+	@Expose
 	protected int _ID;
 	/**
 	 * String to check already used positions for a child
@@ -679,6 +684,7 @@ public class Organism extends Rectangle {
 	/**
 	 * Indicates if the organism is alive.
 	 */
+	@Expose
 	protected boolean alive = true;
 	/**
 	 * Indicates if the organism is active.
