@@ -12,7 +12,8 @@ public class BioFile {
   public enum Type {
     REGULAR,
     WORLD,
-    STATS
+    STATS,
+    JSON
   }
 
   private final File file;
@@ -41,6 +42,9 @@ public class BioFile {
         break;
       case STATS:
         suffix = "stats.png";
+        break;
+      case JSON:
+        suffix = "json";
         break;
       default:
         throw new IllegalArgumentException("Type " + type + " is not supported");

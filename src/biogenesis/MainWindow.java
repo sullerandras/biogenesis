@@ -523,6 +523,7 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 				if (Utils.AUTO_BACKUP_WORLD_PNG) {
 					saveWorldImage(_gameFile.getFileForTime(_world.getTime(), BioFile.Type.WORLD));
 				}
+				GsonFileSaver.saveWorldJson(_world, _gameFile.getFileForTime(_world.getTime(), BioFile.Type.JSON));
 				if (Utils.AUTO_BACKUP_STATISTICS_PNG && _statisticsWindow != null) {
 					// Apparently we have to wait for the statisticsWindow to repaint, it seems like
 					// `repaintStats()` just enqueus an AWT job to repaint the dialog and the method

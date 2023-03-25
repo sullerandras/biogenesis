@@ -350,6 +350,7 @@ public class Organism extends Rectangle {
 	/**
 	 * Reference to the world where the organism lives.
 	 */
+	@GsonFileSaver.ExcludeFromGson
 	protected World _world;
 	/**
 	 * Reference to the visual part of the world where the organism lives.
