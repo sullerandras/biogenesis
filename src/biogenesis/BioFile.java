@@ -23,7 +23,7 @@ public class BioFile {
   }
 
   public File getCsvFile() {
-    return new File(getFile().getPath().replaceFirst("." + BioFileFilter.WORLD_EXTENSION + "$", ".csv"));
+    return new File(getFile().getPath().replaceFirst("\\." + BioFileFilter.WORLD_EXTENSION + "(\\.gz)?$", ".csv"));
   }
 
   public File getFile() {
@@ -35,7 +35,11 @@ public class BioFile {
     final String suffix;
     switch (type) {
       case REGULAR:
-        suffix = BioFileFilter.WORLD_EXTENSION;
+        if (Utils.COMPRESS_BACKUPS) {
+          suffix = BioFileFilter.WORLD_EXTENSION + ".gz";
+        } else {
+          suffix = BioFileFilter.WORLD_EXTENSION;
+        }
         break;
       case WORLD:
         suffix = "world.png";
@@ -54,7 +58,7 @@ public class BioFile {
   }
 
   public boolean fileNameContainsTime() {
-    return getFile().getName().matches(".*?@[0-9]*." + BioFileFilter.WORLD_EXTENSION + "$");
+    return getFile().getName().matches(".*?@[0-9]*\\." + BioFileFilter.WORLD_EXTENSION + "(\\.gz)?$");
   }
 
   public void appendToCsv(long time, int population, int distinctClades, double O2, double CO2, double CH4, List<Organism> organisms) {
@@ -131,7 +135,7 @@ public class BioFile {
   // Files without '@#####' ending also become "filename@TIME".
   private static String baseFilename(String filename, long time) {
     return filename.replaceFirst(
-        "(@[0-9]*)?." + BioFileFilter.WORLD_EXTENSION + "$",
+        "(@[0-9]*)?\\." + BioFileFilter.WORLD_EXTENSION + "(\\.gz)?$",
         "@" + formatTime(time));
   }
 

@@ -24,18 +24,28 @@ import javax.swing.filechooser.FileFilter;
 
 public class BioFileFilter extends FileFilter {
 	private String validExtension = ""; //$NON-NLS-1$
+	private String validExtension2 = ""; //$NON-NLS-1$
 	public static final String WORLD_EXTENSION = "bgw"; //$NON-NLS-1$
 	public static final String GENETIC_CODE_EXTENSION = "bgg"; //$NON-NLS-1$
 	
 	public BioFileFilter(String ext) {
+		this(ext, "");
+	}
+
+	public BioFileFilter(String ext1, String ext2) {
 		super();
-		validExtension = ext;
+		validExtension = ext1;
+		validExtension2 = ext2;
 	}
 	
 	public String getValidExtension() {
 		return validExtension;
 	}
 	
+	public String getValidExtension2() {
+		return validExtension2;
+	}
+
 	public BioFileFilter(Object obj) {
 		super();
 		if (obj instanceof World)
@@ -51,20 +61,7 @@ public class BioFileFilter extends FileFilter {
 		if (f.isDirectory())
 			return true;
 		
-		String extension = null;
-        String s = f.getName();
-        int i = s.lastIndexOf('.');
-
-        if (i > 0 &&  i < s.length() - 1) {
-            extension = s.substring(i+1).toLowerCase();
-        }
-        
-		if (extension != null) {
-			if (extension.equals(validExtension)) {
-				return true;
-		    }
-		}
-		return false;
+		return f.getName().toLowerCase().endsWith(validExtension) || f.getName().toLowerCase().endsWith(validExtension2);
 	}
 
 	@Override
