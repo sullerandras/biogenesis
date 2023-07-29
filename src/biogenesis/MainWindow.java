@@ -1185,6 +1185,15 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 			}
 		}).start();
 
+		new javax.swing.Timer(1000, new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				synchronized (_world._organisms) {
+					CladeStats.printStats(_world._organisms);
+				}
+			}
+		}).start();
+
 		if (isAcceptingConnections())
 			startServer();
 	}
