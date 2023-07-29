@@ -1,5 +1,6 @@
 package biogenesis;
 
+import java.awt.Graphics2D;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -26,9 +27,24 @@ public class CladeStore {
     rootClades.put(clade.getId(), clade);
   }
 
+  public int getCladeCount() {
+    return allClades.size();
+  }
+
   public void print() {
     for (Clade clade : rootClades.values()) {
       clade.print(0);
+    }
+  }
+
+  public void draw(Graphics2D graphics) {
+    int x = 0;
+    int y = 0;
+    int width = 100;
+    int height = 100;
+    for (Clade clade : rootClades.values()) {
+      int heightUsed = clade.draw(graphics, x, y, width, height);
+      y += heightUsed;
     }
   }
 }
