@@ -32,6 +32,9 @@ public class CladeStore {
   }
 
   public void print() {
+    System.out.println("===================================================");
+    System.out.println("Clade stats:");
+
     for (Clade clade : rootClades.values()) {
       clade.print(0);
     }

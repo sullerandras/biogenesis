@@ -2,22 +2,17 @@ package biogenesis;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.awt.Rectangle;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-import javax.imageio.ImageIO;
-
 public class CladeStats {
-  public static void printStats(List<Organism> organisms) {
-    System.out.println("===================================================");
-    System.out.println("Clade stats:");
+  private final CladeStore cladeStore = new CladeStore();
+
+  public CladeStats(List<Organism> organisms) {
     Map<CladeId, GeneticCode> cladeIdToGeneticCode = new HashMap<>();
     for (Organism o : organisms) {
       CladeId cladeId = new CladeId(o.getGeneticCode().getcladeID());
@@ -36,8 +31,6 @@ public class CladeStats {
         .sorted((e1, e2) -> e1.getKey().compareTo(e2.getKey()))
         .collect(Collectors.toList());
 
-    CladeStore cladeStore = new CladeStore();
-
     for (int i = 0; i < sortedCladeIds.size(); i++) {
       Entry<String, Long> e = sortedCladeIds.get(i);
 
@@ -47,23 +40,26 @@ public class CladeStats {
     }
 
     cladeStore.print();
+  }
 
+  /**
+   * Returns how big image is needed to renger the clade tree.
+   */
+  public Rectangle getBounds() {
+    return new Rectangle(0, 0, 10 * Clade.CLADE_SIZE, Clade.CLADE_SIZE * cladeStore.getCladeCount());
+  }
+
+  /**
+   * Draws the clade tree to the given graphics object.
+   */
+  public void draw(Graphics2D g) {
     if (cladeStore.getCladeCount() == 0) {
       return;
     }
 
-    File f = new File("cladestats.png"); //$NON-NLS-1$
-    final BufferedImage img = new BufferedImage(10 * Clade.CLADE_SIZE, Clade.CLADE_SIZE * cladeStore.getCladeCount(), BufferedImage.TYPE_INT_ARGB);
-    Graphics2D g = (java.awt.Graphics2D) img.getGraphics();
+    Rectangle bounds = getBounds();
     g.setColor(Color.BLACK);
-    g.fillRect(0, 0, img.getWidth(), img.getHeight());
+    g.fillRect(0, 0, bounds.width, bounds.height);
     cladeStore.draw(g);
-    try {
-      ImageIO.write(img, "PNG", f); //$NON-NLS-1$
-    } catch (FileNotFoundException ex) {
-      System.err.println(ex.getMessage());
-    } catch (IOException ex) {
-      System.err.println(ex.getMessage());
-    }
   }
 }

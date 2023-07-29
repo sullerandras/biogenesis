@@ -13,7 +13,8 @@ public class BioFile {
     REGULAR,
     WORLD,
     STATS,
-    JSON
+    JSON,
+    CLADES
   }
 
   private final File file;
@@ -49,6 +50,9 @@ public class BioFile {
         break;
       case JSON:
         suffix = "json";
+        break;
+      case CLADES:
+        suffix = "clades.png";
         break;
       default:
         throw new IllegalArgumentException("Type " + type + " is not supported");
