@@ -53,7 +53,7 @@ public class CladeStats {
     }
 
     File f = new File("cladestats.png"); //$NON-NLS-1$
-    final BufferedImage img = new BufferedImage(1000, 100 * cladeStore.getCladeCount(), BufferedImage.TYPE_INT_ARGB);
+    final BufferedImage img = new BufferedImage(10 * Clade.CLADE_SIZE, Clade.CLADE_SIZE * cladeStore.getCladeCount(), BufferedImage.TYPE_INT_ARGB);
     Graphics2D g = (java.awt.Graphics2D) img.getGraphics();
     g.setColor(Color.BLACK);
     g.fillRect(0, 0, img.getWidth(), img.getHeight());
