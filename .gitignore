@@ -5,3 +5,4 @@ classes
 *.png
 *.csv
 build
+/test*
