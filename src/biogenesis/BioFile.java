@@ -65,12 +65,14 @@ public class BioFile {
     return getFile().getName().matches(".*?@[0-9]*\\." + BioFileFilter.WORLD_EXTENSION + "(\\.gz)?$");
   }
 
-  public void appendToCsv(long time, int population, int distinctClades, double O2, double CO2, double CH4, List<Organism> organisms) {
+  public void appendToCsv(long time, int population, int distinctClades, int distinctCladesWith10Orgs, int distinctCladesWith100Orgs, double O2, double CO2, double CH4, List<Organism> organisms) {
     File csvFile = getCsvFile();
     Row row = new Row();
     row.add("time", time);
     row.add("population", population);
     row.add("clades", distinctClades);
+    row.add("clades w 10 orgs", distinctCladesWith10Orgs);
+    row.add("clades w 100 orgs", distinctCladesWith100Orgs);
     row.add("o2", O2, 2);
     row.add("co2", CO2, 2);
     row.add("ch4", CH4, 2);
