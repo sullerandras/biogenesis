@@ -23,7 +23,7 @@ import com.google.gson.JsonSyntaxException;
  * Reads json files of the backups and saves the summary in a sqlite database.
  * It keeps a record of which backups have been analyzed and skips the ones that are already processed.
  */
-public class Main {
+public class Analyzer {
   public static void main(String args[]) {
     if (args.length != 1) {
       System.err.println("Usage: java biogenesis.clade_analyzer.Main <backup_dir>");
