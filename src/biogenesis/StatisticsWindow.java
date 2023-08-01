@@ -75,6 +75,7 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 		setPreferredSize(new Dimension(minSize.width + 30, minSize.height));
 		setSize(new Dimension(minSize.width + 30, minSize.height));
 		setMinimumSize(minSize);
+		WindowManager.registerWindow(this, getWidth(), getHeight(), 0, 0);
 
 		Timer timer = new Timer(1000 / Utils.STATISTICS_REFRESH_FPS, new ActionListener() {
 			@Override

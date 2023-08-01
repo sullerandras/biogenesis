@@ -139,6 +139,7 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setComponents();
 		pack();
+		WindowManager.registerWindow(this, getWidth(), getHeight(), 0, 0);
 		//setResizable(false);
 		cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {

@@ -174,6 +174,9 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 		createMenu();
 		createToolBar();
 		setControls();
+		setResizable(true);
+		setSize(new Dimension(Utils.WINDOW_WIDTH, Utils.WINDOW_HEIGHT));
+		WindowManager.registerWindow(this, getWidth(), getHeight(), 0, 0);
 		configureApp();
 		_world = new World(_visibleWorld);
 		startApp();
@@ -1187,8 +1190,6 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 		 * validate();
 		 * } else {
 		 */
-		setResizable(true);
-		setSize(new Dimension(Utils.WINDOW_WIDTH, Utils.WINDOW_HEIGHT));
 		setVisible(true);
 		// }
 
