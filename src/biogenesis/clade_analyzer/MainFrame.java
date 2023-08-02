@@ -60,7 +60,7 @@ public class MainFrame extends javax.swing.JFrame {
     longestSurvivorsButton.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         try {
-          java.util.List<CladeSummary> cladeSummaries = db.getCladeSummaries();
+          java.util.List<CladeSummary> cladeSummaries = db.getLongestSurvivors();
           System.out.println("Found " + cladeSummaries.size() + " clades");
           cladeListPanel.setCladeList(cladeSummaries);
         } catch (SQLException e) {

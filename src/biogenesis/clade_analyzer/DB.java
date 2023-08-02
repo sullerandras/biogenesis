@@ -119,8 +119,9 @@ public class DB {
         relativePath(summaryFile) + "')");
   }
 
-  public List<CladeSummary> getCladeSummaries() throws SQLException {
-    ResultSet rs = executeQuery("select * from clades order by LAST_SEEN_TIME - FIRST_SEEN_TIME desc limit 10");
+  public List<CladeSummary> getLongestSurvivors() throws SQLException {
+    ResultSet rs = executeQuery(
+        "select * from " + CLADES_TABLE + " order by LAST_SEEN_TIME - FIRST_SEEN_TIME desc limit 10");
 
     return readCladeSummaries(rs);
   }
