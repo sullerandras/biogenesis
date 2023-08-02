@@ -1,4 +1,4 @@
-package biogenesis.clade_analyzer;
+package biogenesis.clade_analyzer.gui;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -15,6 +15,7 @@ import javax.swing.UIManager;
 
 import biogenesis.Clade;
 import biogenesis.GeneticCode;
+import biogenesis.clade_analyzer.CladeSummary;
 
 public class CladePanel extends javax.swing.JPanel {
   private CladeSummary cladeSummary;

@@ -1,4 +1,4 @@
-package biogenesis.clade_analyzer;
+package biogenesis.clade_analyzer.gui;
 
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -7,6 +7,8 @@ import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
+
+import biogenesis.clade_analyzer.CladeSummary;
 
 public class CladeListPanel extends javax.swing.JPanel {
   private List<ActionListener> actionListeners = new ArrayList<ActionListener>();

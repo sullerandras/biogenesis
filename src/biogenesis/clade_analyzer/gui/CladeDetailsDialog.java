@@ -1,9 +1,10 @@
-package biogenesis.clade_analyzer;
+package biogenesis.clade_analyzer.gui;
 
 import java.awt.Frame;
 import java.util.List;
 
 import biogenesis.WindowManager;
+import biogenesis.clade_analyzer.CladeSummary;
 
 /**
  * Shows details about the selected clade:

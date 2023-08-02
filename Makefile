@@ -5,7 +5,7 @@ run-analyzer: build build-src-jar
 	SKIP_OPENGL=true java -Dsun.java2d.opengl=True -Dsun.java2d.opengl.fbobject=false -cp biogenesis.jar biogenesis.clade_analyzer.Main ${BACKUP_DIR}
 
 run-analyzer-gui: build build-src-jar
-	SKIP_OPENGL=true java -Dsun.java2d.opengl=True -Dsun.java2d.opengl.fbobject=false -cp biogenesis.jar biogenesis.clade_analyzer.MainFrame
+	SKIP_OPENGL=true java -Dsun.java2d.opengl=True -Dsun.java2d.opengl.fbobject=false -cp biogenesis.jar biogenesis.clade_analyzer.GUI
 
 build: compile
 	rm -rf build

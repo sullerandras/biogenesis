@@ -1,4 +1,4 @@
-package biogenesis.clade_analyzer;
+package biogenesis.clade_analyzer.gui;
 
 import java.io.File;
 import java.sql.SQLException;
@@ -7,6 +7,8 @@ import java.util.List;
 import javax.swing.JButton;
 
 import biogenesis.WindowManager;
+import biogenesis.clade_analyzer.CladeSummary;
+import biogenesis.clade_analyzer.DB;
 
 public class MainFrame extends javax.swing.JFrame {
   private DB db = null;
@@ -113,13 +115,5 @@ public class MainFrame extends javax.swing.JFrame {
       System.err.println("Error opening database: " + e);
       e.printStackTrace();
     }
-  }
-
-  public static void main(String args[]) {
-    java.awt.EventQueue.invokeLater(new Runnable() {
-      public void run() {
-        new MainFrame().setVisible(true);
-      }
-    });
   }
 }
