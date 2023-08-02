@@ -126,6 +126,19 @@ public class DB {
     return readCladeSummaries(rs);
   }
 
+  public List<TimeAndPopulation> getPopulationHistory(String cladeIdStr) throws SQLException {
+    ResultSet rs = executeQuery("select TIME, POPULATION from " + CLADE_SUMMARIES_TABLE + " where CLADEID = '"
+        + cladeIdStr + "' order by TIME");
+
+    List<TimeAndPopulation> list = new ArrayList<>();
+
+    while (rs.next()) {
+      list.add(new TimeAndPopulation(rs.getInt("TIME"), rs.getInt("POPULATION")));
+    }
+
+    return list;
+  }
+
   public List<CladeSummary> getCladeAncestors(String cladeIdStr) throws SQLException {
     CladeId cladeId = new CladeId(cladeIdStr);
 

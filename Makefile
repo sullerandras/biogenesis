@@ -13,6 +13,7 @@ build: compile
 	mkdir build
 	unzip -o lib/gson-2.10.1.jar -d build
 	unzip -o lib/sqlite-jdbc-3.42.0.0.jar -d build
+	unzip -o lib/xchart-3.8.5.jar -d build
 	cp -r classes/* build
 	cp changes.md build
 	jar -cfe biogenesis.jar biogenesis.MainWindow -C build .
@@ -26,7 +27,7 @@ build-src-jar:
 	jar -cfe biogenesis-src.jar biogenesis.MainWindow -C build .
 
 compile:
-	javac --class-path lib/gson-2.10.1.jar --source-path src src/biogenesis/*.java src/biogenesis/clade_analyzer/*.java --source 8 --target 8 -d classes
+	javac --class-path lib/gson-2.10.1.jar:lib/xchart-3.8.5.jar --source-path src src/biogenesis/*.java src/biogenesis/clade_analyzer/*.java --source 8 --target 8 -d classes
 	cp -r src/biogenesis/messages classes/biogenesis
 	cp -r src/biogenesis/images classes/biogenesis
 

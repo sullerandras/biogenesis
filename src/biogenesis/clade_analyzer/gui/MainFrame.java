@@ -9,6 +9,7 @@ import javax.swing.JButton;
 import biogenesis.WindowManager;
 import biogenesis.clade_analyzer.CladeSummary;
 import biogenesis.clade_analyzer.DB;
+import biogenesis.clade_analyzer.TimeAndPopulation;
 
 public class MainFrame extends javax.swing.JFrame {
   private DB db = null;
@@ -78,8 +79,8 @@ public class MainFrame extends javax.swing.JFrame {
         System.out.println("Selected clade: " + cladeSummary);
         try {
           List<CladeSummary> ancestors = db.getCladeAncestors(cladeSummary.getCladeId());
-          System.out.println("Found " + ancestors.size() + " ancestors");
-          CladeDetailsDialog cladeDetailsDialog = new CladeDetailsDialog(MainFrame.this, ancestors);
+          List<TimeAndPopulation> populationOverTime = db.getPopulationHistory(cladeSummary.getCladeId());
+          CladeDetailsDialog cladeDetailsDialog = new CladeDetailsDialog(MainFrame.this, ancestors, populationOverTime);
           cladeDetailsDialog.setVisible(true);
         } catch (SQLException e) {
           System.err.println("Error getting clade ancestors: " + e);

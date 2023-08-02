@@ -33,9 +33,9 @@ public class CladeListPanel extends javax.swing.JPanel {
     panel.setLayout(new java.awt.GridLayout(cladeList.size(), 1));
 
     for (CladeSummary cladeSummary : cladeList) {
-      System.out.println(
-          cladeSummary.getCladeId() + " " + cladeSummary.getFirstSeenTime() + " " + cladeSummary.getLastSeenTime()
-              + " " + cladeSummary.getGeneticCode() + " " + cladeSummary.getMaxPopulation());
+      // System.out.println(
+      //     cladeSummary.getCladeId() + " " + cladeSummary.getFirstSeenTime() + " " + cladeSummary.getLastSeenTime()
+      //         + " " + cladeSummary.getGeneticCode() + " " + cladeSummary.getMaxPopulation());
       CladePanel cladePanel = new CladePanel(cladeSummary);
       panel.add(cladePanel);
       cladePanel.addActionListener(new java.awt.event.ActionListener() {
