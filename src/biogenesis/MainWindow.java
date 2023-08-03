@@ -532,8 +532,11 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 			if (_gameFile != null) {
 				saveObject(_world, _gameFile.getFileForTime(_world.getTime(), BioFile.Type.REGULAR));
 				if (Utils.AUTO_BACKUP_WORLD_PNG) {
+					boolean processState = _isProcessActive;
+					_isProcessActive = false;
 					saveWorldImage(_gameFile.getFileForTime(_world.getTime(), BioFile.Type.WORLD));
 					saveCladeImage(_gameFile.getFileForTime(_world.getTime(), BioFile.Type.CLADES));
+					_isProcessActive = processState;
 				}
 				GsonFileSaver.saveWorldJson(_world, _gameFile.getFileForTime(_world.getTime(), BioFile.Type.JSON));
 				if (Utils.AUTO_BACKUP_STATISTICS_PNG && _statisticsWindow != null) {

@@ -263,7 +263,7 @@ public final class Utils {
 	/**
 	 * This is the default energy that is consumed when an organism touches a symbiont (with rose segments).
 	 */
-	final static double DEF_SYMBIONT_ENERGY_CONSUMPTION = 0.6d;
+	final static double DEF_SYMBIONT_ENERGY_CONSUMPTION = 0.58d;
 	/**
 	 * This is the default energy that is consumed when a spring segment is used.
 	 */
