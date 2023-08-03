@@ -1,6 +1,6 @@
 classes
 *.bgw
-*.jar
+/*.jar
 *.zip
 *.png
 *.csv
