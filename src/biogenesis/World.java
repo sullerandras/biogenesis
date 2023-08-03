@@ -25,6 +25,8 @@ import java.util.Iterator;
 import java.util.List;
 import javax.swing.SwingUtilities;
 
+import com.google.gson.annotations.Expose;
+
 import java.util.Collections;
 import java.io.*;
 import java.awt.*;
@@ -54,6 +56,7 @@ public class World implements Serializable{
 	 * Note that this must be a synchronized list so it is mandatory to
 	 * manually synchronize when iterating over it.
 	 */
+	@Expose
 	protected List<Organism> _organisms;
 	/**
 	 * A list of all input biological corridors from where organisms
@@ -117,6 +120,7 @@ public class World implements Serializable{
 	/**
 	 * Reference to the object that keeps track of all world statistics.
 	 */
+	@Expose
 	protected WorldStatistics worldStatistics;
 	/**
 	 * Called by the JRE when an instance of this class is read from a file

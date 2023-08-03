@@ -21,6 +21,8 @@ package biogenesis;
 import java.awt.Color;
 import java.io.Serializable;
 
+import com.google.gson.annotations.Expose;
+
 /**
  * This class implements a single organism's gene. A gene is a colored segment.
  * This segment is part of the organism's body and will be drawn several times
@@ -33,15 +35,19 @@ public class Gene implements Cloneable, Serializable {
 	 * The version number of this class
 	 */
 	private static final long serialVersionUID = Utils.FILE_VERSION;
+	@Expose
 	private double _length = 0;
+	@Expose
 	private double _theta = 0;
 	/**
 	 * Segment's color
 	 */
+	@Expose
 	private Color _color;
 	/**
 	 * Where a segment branches from another segment (-1 is no branch).
 	 */
+	@Expose
 	private int _branch = 0;
 	/**
 	 * Segment's reactions

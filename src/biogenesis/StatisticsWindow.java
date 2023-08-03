@@ -118,7 +118,7 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 		populationGraphPanel.addGraph(worldStatistics.getDistinctCladesList(), max,
 				0, Color.ORANGE, Messages.getString("T_CLADES")); //$NON-NLS-1$
 		populationGraphPanel.updateLegend();
-		
+
 		// Clades graphic
 		GraphPanel cladesGraphPanel = new GraphPanel(100, 52);
 		cladesGraphPanel.addGraph(worldStatistics.getDistinctCladesList(), 0,
@@ -468,7 +468,7 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 
 		return colorPanel;
 	}
-	
+
 	public void updatePerformed(ActionEvent e) {
 			getContentPane().removeAll();
 			setComponents();

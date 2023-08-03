@@ -23,6 +23,8 @@ import java.awt.Graphics2D;
 import java.io.Serializable;
 import java.util.List;
 
+import com.google.gson.annotations.Expose;
+
 /**
  * This class implements a full organism's genetic code. A genetic code is
  * composed by a number of genes, a symmetry, optional mirroring, optional children
@@ -53,17 +55,20 @@ public class GeneticCode implements Cloneable, Serializable {
 	 * Array with the genes. Every gene is represented by symmetry
 	 * segments when drawing the organism.
 	 */
+	@Expose
 	protected Gene[] _genes;
 	/**
 	 * The symmetry used when drawing the organism. Possible values are
 	 * 1 - 8. 
 	 */
+	@Expose
 	protected int _symmetry;
 	/**
 	 * Mirroring indicates if symmetric segments are drawn in the same
 	 * way than the original, only changing their angle, or if they are
 	 * drawn like in a mirror. 0 = not mirrored, 1 = mirrored
 	 */
+	@Expose
 	protected int _mirror;
 	/**
 	 * The mutationrate of this organism. Possible values are
@@ -181,6 +186,7 @@ public class GeneticCode implements Cloneable, Serializable {
 	/**
 	 * Identification number of this organisms clade.
 	 */
+	@Expose
 	protected String _cladeID;
 	// Getters
 	/**

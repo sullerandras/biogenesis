@@ -34,13 +34,18 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
+
 import javax.imageio.ImageIO;
 import javax.swing.Box;
 import javax.swing.ImageIcon;
@@ -521,8 +526,12 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 			if (_gameFile != null) {
 				saveObject(_world, _gameFile.getFileForTime(_world.getTime(), BioFile.Type.REGULAR));
 				if (Utils.AUTO_BACKUP_WORLD_PNG) {
+					boolean processState = _isProcessActive;
+					_isProcessActive = false;
 					saveWorldImage(_gameFile.getFileForTime(_world.getTime(), BioFile.Type.WORLD));
+					_isProcessActive = processState;
 				}
+				GsonFileSaver.saveWorldJson(_world, _gameFile.getFileForTime(_world.getTime(), BioFile.Type.JSON));
 				if (Utils.AUTO_BACKUP_STATISTICS_PNG && _statisticsWindow != null) {
 					// Apparently we have to wait for the statisticsWindow to repaint, it seems like
 					// `repaintStats()` just enqueus an AWT job to repaint the dialog and the method
@@ -673,7 +682,10 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 					ObjectInputStream inputStream;
 					try {
 						File f = getWorldChooser().getSelectedFile();
-						FileInputStream fileStream = new FileInputStream(f);
+						InputStream fileStream = new FileInputStream(f);
+						if (f.getName().endsWith(".gz")) {
+							fileStream = new GZIPInputStream(fileStream);
+						}
 						inputStream = new ObjectInputStream(fileStream);
 						_world = (World) inputStream.readObject();
 						inputStream.close();
@@ -959,7 +971,7 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 		getContentPane().add(_statusLabel, BorderLayout.SOUTH);
 		getContentPane().add(toolBar, BorderLayout.NORTH);
 
-		worldChooser.setFileFilter(new BioFileFilter(BioFileFilter.WORLD_EXTENSION));
+		worldChooser.setFileFilter(new BioFileFilter(BioFileFilter.WORLD_EXTENSION, BioFileFilter.WORLD_EXTENSION+".gz"));
 		geneticCodeChooser.setFileFilter(new BioFileFilter(BioFileFilter.GENETIC_CODE_EXTENSION));
 		geneticCodeChooser = setUpdateUI(geneticCodeChooser);
 	}
@@ -979,12 +991,16 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 				int canWrite = JOptionPane.YES_OPTION;
 				File f = chooser.getSelectedFile();
-				String filename = f.getName();
-				String ext = (filename.lastIndexOf(".") == -1) ? ""
-						: filename.substring(filename.lastIndexOf(".") + 1, filename.length());
-				if (ext.equals("")) {
-					f = new File(f.getAbsolutePath() + "." + ((BioFileFilter) chooser.getFileFilter()).getValidExtension());
-					chooser.setSelectedFile(f);
+				String filename = f.getName().toLowerCase();
+				BioFileFilter bff = (BioFileFilter) chooser.getFileFilter();
+				boolean fullFilename = filename.endsWith(bff.getValidExtension()) ||
+				 	(!bff.getValidExtension2().equals("") && filename.endsWith(bff.getValidExtension2()));
+				if (!fullFilename) {
+					if (Utils.COMPRESS_BACKUPS) {
+						f = new File(f.getAbsolutePath() + "." + bff.getValidExtension()+".gz");
+					} else {
+						f = new File(f.getAbsolutePath() + "." + bff.getValidExtension());
+					}
 				}
 				if (f.exists()) {
 					canWrite = JOptionPane.showConfirmDialog(null, Messages.getString("T_CONFIRM_FILE_OVERRIDE"), //$NON-NLS-1$
@@ -1014,7 +1030,10 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 	public boolean saveObject(Object obj, File f) {
 		ObjectOutputStream outputStream;
 		try {
-			FileOutputStream fileStream = new FileOutputStream(f);
+			OutputStream fileStream = new FileOutputStream(f);
+			if (f.getName().endsWith(".gz")) {
+				fileStream = new GZIPOutputStream(fileStream);
+			}
 			outputStream = new ObjectOutputStream(fileStream);
 			outputStream.writeObject(obj);
 			outputStream.close();
