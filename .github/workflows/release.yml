@@ -20,7 +20,7 @@ jobs:
       - name: Get current date and time
         id: date
         run: |
-          echo "{date}={$(date +'%Y-%m-%d--%H-%M')}" >> $GITHUB_STATE
+          echo "date=$(date +'%Y-%m-%d--%H-%M')" >> "$GITHUB_ENV"
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
