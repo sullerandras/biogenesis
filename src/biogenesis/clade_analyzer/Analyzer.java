@@ -13,11 +13,15 @@ import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import javax.swing.ProgressMonitor;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
+
+import biogenesis.BioFile;
 
 /**
  * Reads json files of the backups and saves the summary in a sqlite database.
@@ -60,6 +64,40 @@ public class Analyzer {
         }
       }
     }
+  }
+
+  public static void analyze(BioFile bioFile, DB db, ProgressMonitor progressMonitor)
+      throws JsonIOException, JsonSyntaxException, FileNotFoundException, SQLException {
+    db.createTables();
+    String jsonFilePrefix = bioFile.getWorldName() + "@";// we only process json files that start with this prefix
+
+    File[] files = bioFile.getFile().getParentFile().listFiles();
+    Arrays.sort(files);
+    List<File> filesToProcess = new ArrayList<>();
+    for (File file : files) {
+      if (file.getName().startsWith(jsonFilePrefix) && file.getName().endsWith(".json")) {
+        filesToProcess.add(file);
+      }
+    }
+
+    for (int i = 0; i < filesToProcess.size(); i++) {
+      File file = filesToProcess.get(i);
+      if (progressMonitor != null) {
+        if (progressMonitor.isCanceled()) {
+          return;
+        }
+
+        final int index = i;
+        java.awt.EventQueue.invokeLater(() -> {
+          progressMonitor.setProgress(index * 100 / filesToProcess.size());
+          progressMonitor.setNote("Analyzing " + file.getName());
+        });
+      }
+
+      System.out.println("Analyzing " + file.getName());
+      analyzeJsonFile(file, db);
+    }
+    System.out.println("Done");
   }
 
   private static void analyzeJsonFile(File file, DB db)

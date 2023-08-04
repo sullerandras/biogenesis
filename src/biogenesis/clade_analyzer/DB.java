@@ -192,6 +192,6 @@ public class DB {
   }
 
   private String relativePath(File file) {
-    return new File(".").toPath().relativize(file.toPath()).toString();
+    return new File(".").getAbsoluteFile().getParentFile().toPath().relativize(file.getAbsoluteFile().toPath()).toString();
   }
 }

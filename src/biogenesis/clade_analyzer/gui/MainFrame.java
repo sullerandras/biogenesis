@@ -1,11 +1,21 @@
 package biogenesis.clade_analyzer.gui;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.SQLException;
 
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
+import javax.swing.ProgressMonitor;
 
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonSyntaxException;
+
+import biogenesis.BioFile;
+import biogenesis.BioFileFilter;
 import biogenesis.WindowManager;
+import biogenesis.clade_analyzer.Analyzer;
 import biogenesis.clade_analyzer.CladeSummary;
 import biogenesis.clade_analyzer.DB;
 
@@ -18,7 +28,7 @@ public class MainFrame extends javax.swing.JFrame {
 
     initComponents();
 
-    openDatabase(new File("test5"));
+    openDatabaseFile(new BioFile(new File("test5/test5.bgw.gz")));
   }
 
   private void initComponents() {
@@ -88,27 +98,58 @@ public class MainFrame extends javax.swing.JFrame {
   private void openButtonActionPerformed(java.awt.event.ActionEvent evt) {
     javax.swing.JFileChooser fileChooser = new javax.swing.JFileChooser();
     fileChooser.setCurrentDirectory(new java.io.File("."));
-    fileChooser.setFileSelectionMode(javax.swing.JFileChooser.DIRECTORIES_ONLY);
+    fileChooser.setFileSelectionMode(javax.swing.JFileChooser.FILES_ONLY);
+    fileChooser.setFileFilter(new BioFileFilter(BioFileFilter.WORLD_EXTENSION, BioFileFilter.WORLD_EXTENSION + ".gz"));
     int result = fileChooser.showOpenDialog(this);
     if (result == javax.swing.JFileChooser.APPROVE_OPTION) {
-      java.io.File backupDir = fileChooser.getSelectedFile();
-      System.out.println("Selected backup directory: " + backupDir.getAbsolutePath());
-      openDatabase(backupDir);
+      java.io.File worldFile;
+      try {
+        worldFile = fileChooser.getSelectedFile().getCanonicalFile();
+      } catch (IOException e) {
+        e.printStackTrace();
+        return;
+      }
+
+      BioFile bioFile = new BioFile(worldFile);
+      if (bioFile.fileNameContainsTime()) {
+        JOptionPane.showMessageDialog(this, "Please select the world file without @ character in the name.",
+            "Error", JOptionPane.ERROR_MESSAGE);
+        return;
+      }
+      openDatabaseFile(bioFile);
     }
   }
 
-  private void openDatabase(File backupDir) {
-    try {
-      if (db != null) {
-        db.close();
-      }
+  private void openDatabaseFile(BioFile bioFile) {
+    new Thread() {
+      public void run() {
+        try {
+          if (db != null) {
+            db.close();
+          }
 
-      db = new DB(new File(backupDir, "clades.sqlite"));
-      maxTime = db.getMaxTime();
-      setTitle("DB: " + db.getDbFile().getAbsolutePath() + "  MaxTime: " + maxTime);
-    } catch (ClassNotFoundException | SQLException e) {
-      System.err.println("Error opening database: " + e);
-      e.printStackTrace();
-    }
+          db = new DB(bioFile.getSqliteFile());
+          ProgressMonitor progressMonitor = new ProgressMonitor(MainFrame.this, "Loading database", "", 0, 100);
+          Analyzer.analyze(bioFile, db, progressMonitor);
+          if (progressMonitor.isCanceled()) {
+            db.close();
+            db = null;
+            return;
+          }
+
+          progressMonitor.close();
+
+          maxTime = db.getMaxTime();
+          setTitle("DB: " + relativePath(db.getDbFile()) + "  MaxTime: " + maxTime);
+        } catch (ClassNotFoundException | SQLException | JsonIOException | JsonSyntaxException | FileNotFoundException e) {
+          System.err.println("Error opening database: " + e);
+          e.printStackTrace();
+        }
+      }
+    }.start();
+  }
+
+  private String relativePath(File file) {
+    return new File(".").getAbsoluteFile().getParentFile().toPath().relativize(file.getAbsoluteFile().toPath()).toString();
   }
 }

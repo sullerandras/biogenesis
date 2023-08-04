@@ -14,7 +14,8 @@ public class BioFile {
     WORLD,
     STATS,
     JSON,
-    CLADES
+    CLADES,
+    SQLITE
   }
 
   private final File file;
@@ -25,6 +26,22 @@ public class BioFile {
 
   public File getCsvFile() {
     return new File(getFile().getPath().replaceFirst("\\." + BioFileFilter.WORLD_EXTENSION + "(\\.gz)?$", ".csv"));
+  }
+
+  public File getSqliteFile() {
+    return new File(getFile().getPath().replaceFirst("\\." + BioFileFilter.WORLD_EXTENSION + "(\\.gz)?$", ".sqlite"));
+  }
+
+  /**
+   * Returns the name of the world file name without the time and without the extension.
+   * Example:
+   *  "/home/andras/firstworld.bgw.gz" => "firstworld"
+   *  "/home/andras/Downloads/bestworld@00005.bgw" => "bestworld"
+   */
+  public String getWorldName() {
+    return getFile().getName().replaceFirst(
+        "(@[0-9]*)?\\." + BioFileFilter.WORLD_EXTENSION + "(\\.gz)?$",
+        "");
   }
 
   public File getFile() {
