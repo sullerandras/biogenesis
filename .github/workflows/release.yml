@@ -23,7 +23,7 @@ jobs:
           echo "date=$(date +'%Y-%m-%d--%H-%M')" >> "$GITHUB_ENV"
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          repo_token: "${{ secrets.TOKEN_FOR_RELEASE }}"
           automatic_release_tag: "v${{ env.date }}"
           prerelease: true
           title: "v${{ env.date }}"
