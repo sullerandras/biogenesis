@@ -2,24 +2,23 @@ package biogenesis.clade_analyzer.gui;
 
 import java.io.File;
 import java.sql.SQLException;
-import java.util.List;
 
 import javax.swing.JButton;
 
 import biogenesis.WindowManager;
 import biogenesis.clade_analyzer.CladeSummary;
 import biogenesis.clade_analyzer.DB;
-import biogenesis.clade_analyzer.TimeAndPopulation;
 
 public class MainFrame extends javax.swing.JFrame {
   private DB db = null;
+  private int maxTime;
 
   public MainFrame() {
     WindowManager.registerWindow(this, 800, 600, 0, 0);
 
     initComponents();
 
-    openDatabase(new File("./test5"));
+    openDatabase(new File("test5"));
   }
 
   private void initComponents() {
@@ -65,7 +64,7 @@ public class MainFrame extends javax.swing.JFrame {
         try {
           java.util.List<CladeSummary> cladeSummaries = db.getLongestSurvivors();
           System.out.println("Found " + cladeSummaries.size() + " clades");
-          cladeListPanel.setCladeList(cladeSummaries);
+          cladeListPanel.setCladeList(cladeSummaries, db, maxTime);
         } catch (SQLException e) {
           System.err.println("Error getting clade summaries: " + e);
           e.printStackTrace();
@@ -77,15 +76,9 @@ public class MainFrame extends javax.swing.JFrame {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         CladeSummary cladeSummary = (CladeSummary) evt.getSource();
         System.out.println("Selected clade: " + cladeSummary);
-        try {
-          List<CladeSummary> ancestors = db.getCladeAncestors(cladeSummary.getCladeId());
-          List<TimeAndPopulation> populationOverTime = db.getPopulationHistory(cladeSummary.getCladeId());
-          CladeDetailsDialog cladeDetailsDialog = new CladeDetailsDialog(MainFrame.this, ancestors, populationOverTime);
-          cladeDetailsDialog.setVisible(true);
-        } catch (SQLException e) {
-          System.err.println("Error getting clade ancestors: " + e);
-          e.printStackTrace();
-        }
+        CladeDetailsDialog cladeDetailsDialog = new CladeDetailsDialog(MainFrame.this, db, cladeSummary.getCladeId(),
+            maxTime);
+        cladeDetailsDialog.setVisible(true);
       }
     });
 
@@ -111,7 +104,8 @@ public class MainFrame extends javax.swing.JFrame {
       }
 
       db = new DB(new File(backupDir, "clades.sqlite"));
-      setTitle("DB: " + db.getDbFile().getAbsolutePath());
+      maxTime = db.getMaxTime();
+      setTitle("DB: " + db.getDbFile().getAbsolutePath() + "  MaxTime: " + maxTime);
     } catch (ClassNotFoundException | SQLException e) {
       System.err.println("Error opening database: " + e);
       e.printStackTrace();

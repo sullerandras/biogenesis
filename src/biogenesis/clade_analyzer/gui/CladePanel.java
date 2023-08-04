@@ -16,15 +16,36 @@ import javax.swing.UIManager;
 import biogenesis.Clade;
 import biogenesis.GeneticCode;
 import biogenesis.clade_analyzer.CladeSummary;
+import biogenesis.clade_analyzer.DB;
+import biogenesis.clade_analyzer.TimeAndPopulation;
 
 public class CladePanel extends javax.swing.JPanel {
   private CladeSummary cladeSummary;
+  private CladePopulationOverTime populationOverTimeChart;
   private List<ActionListener> actionListeners = new ArrayList<ActionListener>();
 
-  public CladePanel(CladeSummary cladeSummary) {
+  public CladePanel(CladeSummary cladeSummary, DB db, int maxTime) {
     this.cladeSummary = cladeSummary;
-    setMinimumSize(new Dimension(500, Clade.NET_CLADE_SIZE));
-    setPreferredSize(new Dimension(500, Clade.NET_CLADE_SIZE));
+    initComponents();
+
+    if (db != null) {
+      new Thread() {
+        @Override
+        public void run() {
+          try {
+            List<TimeAndPopulation> populationOverTime = db.getPopulationHistory(cladeSummary.getCladeId());
+            java.awt.EventQueue.invokeLater(() -> populationOverTimeChart.setData(populationOverTime, maxTime));
+          } catch (Exception e) {
+            e.printStackTrace();
+          }
+        }
+      }.start();
+    }
+  }
+
+  public void initComponents() {
+    setMinimumSize(new Dimension(500, 200));
+    setPreferredSize(new Dimension(500, 200));
     setBorder(BorderFactory.createLoweredBevelBorder());
     setLayout(new java.awt.GridBagLayout());
 
@@ -70,6 +91,12 @@ public class CladePanel extends javax.swing.JPanel {
     add(infoPanel, new java.awt.GridBagConstraints(1, 0, 1, 1, 1.0, 1.0, java.awt.GridBagConstraints.NORTHWEST,
         java.awt.GridBagConstraints.BOTH, new java.awt.Insets(0, 0, 0, 0), 0, 0));
 
+    // Population over time chart
+    populationOverTimeChart = new CladePopulationOverTime();
+    add(populationOverTimeChart,
+        new java.awt.GridBagConstraints(2, 0, 1, 1, 1.0, 0, java.awt.GridBagConstraints.NORTHWEST,
+            java.awt.GridBagConstraints.HORIZONTAL, new java.awt.Insets(0, 0, 0, 0), 0, 0));
+
     java.awt.event.MouseAdapter mouseAdapter = new java.awt.event.MouseAdapter() {
       @Override
       public void mousePressed(MouseEvent e) {
@@ -97,7 +124,8 @@ public class CladePanel extends javax.swing.JPanel {
 
   private void openDetails() {
     // System.out.println("===> mouse clicked " + cladeSummary);
-    actionListeners.forEach(actionListener -> actionListener.actionPerformed(new ActionEvent(cladeSummary, 0, "click")));
+    actionListeners
+        .forEach(actionListener -> actionListener.actionPerformed(new ActionEvent(cladeSummary, 0, "click")));
   }
 
   class CladeImageRenderer extends JPanel {

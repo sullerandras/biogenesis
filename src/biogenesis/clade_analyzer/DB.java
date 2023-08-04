@@ -157,6 +157,11 @@ public class DB {
     return ancestors;
   }
 
+  public int getMaxTime() throws SQLException {
+    ResultSet rs = executeQuery("select max(TIME) from " + CLADE_SUMMARIES_TABLE);
+    return rs.getInt(1);
+  }
+
   private List<CladeSummary> readCladeSummaries(ResultSet rs) throws SQLException {
     List<CladeSummary> list = new ArrayList<>();
 
