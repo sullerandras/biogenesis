@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.prefs.Preferences;
 
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -22,13 +23,13 @@ import biogenesis.clade_analyzer.DB;
 public class MainFrame extends javax.swing.JFrame {
   private DB db = null;
   private int maxTime;
+  private Preferences prefs;
 
   public MainFrame() {
     WindowManager.registerWindow(this, 800, 600, 0, 0);
+    prefs = Preferences.userRoot().node("biogenesis/clade_analyzer");
 
     initComponents();
-
-    openDatabaseFile(new BioFile(new File("test5/test5.bgw.gz")));
   }
 
   private void initComponents() {
@@ -97,7 +98,7 @@ public class MainFrame extends javax.swing.JFrame {
 
   private void openButtonActionPerformed(java.awt.event.ActionEvent evt) {
     javax.swing.JFileChooser fileChooser = new javax.swing.JFileChooser();
-    fileChooser.setCurrentDirectory(new java.io.File("."));
+    fileChooser.setCurrentDirectory(new File(prefs.get("lastDirectory", ".")));
     fileChooser.setFileSelectionMode(javax.swing.JFileChooser.FILES_ONLY);
     fileChooser.setFileFilter(new BioFileFilter(BioFileFilter.WORLD_EXTENSION, BioFileFilter.WORLD_EXTENSION + ".gz"));
     int result = fileChooser.showOpenDialog(this);
@@ -109,6 +110,7 @@ public class MainFrame extends javax.swing.JFrame {
         e.printStackTrace();
         return;
       }
+      prefs.put("lastDirectory", worldFile.getParent());
 
       BioFile bioFile = new BioFile(worldFile);
       if (bioFile.fileNameContainsTime()) {
@@ -141,7 +143,8 @@ public class MainFrame extends javax.swing.JFrame {
 
           maxTime = db.getMaxTime();
           setTitle("DB: " + relativePath(db.getDbFile()) + "  MaxTime: " + maxTime);
-        } catch (ClassNotFoundException | SQLException | JsonIOException | JsonSyntaxException | FileNotFoundException e) {
+        } catch (ClassNotFoundException | SQLException | JsonIOException | JsonSyntaxException
+            | FileNotFoundException e) {
           System.err.println("Error opening database: " + e);
           e.printStackTrace();
         }
@@ -150,6 +153,7 @@ public class MainFrame extends javax.swing.JFrame {
   }
 
   private String relativePath(File file) {
-    return new File(".").getAbsoluteFile().getParentFile().toPath().relativize(file.getAbsoluteFile().toPath()).toString();
+    return new File(".").getAbsoluteFile().getParentFile().toPath().relativize(file.getAbsoluteFile().toPath())
+        .toString();
   }
 }
