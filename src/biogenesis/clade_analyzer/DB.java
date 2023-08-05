@@ -121,7 +121,7 @@ public class DB {
         relativePath(summaryFile) + "')");
   }
 
-  public List<CladeSummary> getLongestSurvivors() throws SQLException {
+  public List<CladeDetails> getLongestSurvivors() throws SQLException {
     ResultSet rs = executeQuery(
         "select * from " + CLADES_TABLE + " order by LAST_SEEN_TIME - FIRST_SEEN_TIME desc limit 10");
 
@@ -141,10 +141,21 @@ public class DB {
     return list;
   }
 
-  public List<CladeSummary> getCladeAncestors(String cladeIdStr) throws SQLException {
+  public List<CladeDetails> getMostPopulousClades(int time) throws SQLException {
+    ResultSet rs = executeQuery(
+        "select c.*, cs.TIME, cs.POPULATION " +
+            " from " + CLADE_SUMMARIES_TABLE + " cs" +
+            " join " + CLADES_TABLE + " c using (CLADEID)" +
+            " where cs.TIME = " + time +
+            " order by cs.POPULATION desc limit 10");
+
+    return readFullCladeDetails(rs);
+  }
+
+  public List<CladeDetails> getCladeAncestors(String cladeIdStr) throws SQLException {
     CladeId cladeId = new CladeId(cladeIdStr);
 
-    List<CladeSummary> ancestors = new ArrayList<>();
+    List<CladeDetails> ancestors = new ArrayList<>();
 
     while (cladeId != null) {
       ResultSet rs = executeQuery("select * from clades where CLADEID = '" + cladeId.getId() + "'");
@@ -162,17 +173,38 @@ public class DB {
     return rs.getInt(1);
   }
 
-  private List<CladeSummary> readCladeSummaries(ResultSet rs) throws SQLException {
-    List<CladeSummary> list = new ArrayList<>();
+  private List<CladeDetails> readCladeSummaries(ResultSet rs) throws SQLException {
+    List<CladeDetails> list = new ArrayList<>();
 
     try {
       while (rs.next()) {
-        list.add(CladeSummaryParser.parse(
+        list.add(CladeParser.parse(
             rs.getString("CLADEID"),
             rs.getInt("FIRST_SEEN_TIME"),
             rs.getInt("LAST_SEEN_TIME"),
             rs.getString("GENETIC_CODE"),
             rs.getInt("MAX_POPULATION")));
+      }
+    } finally {
+      rs.close();
+    }
+
+    return list;
+  }
+
+  private List<CladeDetails> readFullCladeDetails(ResultSet rs) throws SQLException {
+    List<CladeDetails> list = new ArrayList<>();
+
+    try {
+      while (rs.next()) {
+        list.add(CladeParser.parse(
+            rs.getString("CLADEID"),
+            rs.getInt("FIRST_SEEN_TIME"),
+            rs.getInt("LAST_SEEN_TIME"),
+            rs.getString("GENETIC_CODE"),
+            rs.getInt("MAX_POPULATION"),
+            rs.getInt("TIME"),
+            rs.getInt("POPULATION")));
       }
     } finally {
       rs.close();
@@ -192,6 +224,7 @@ public class DB {
   }
 
   private String relativePath(File file) {
-    return new File(".").getAbsoluteFile().getParentFile().toPath().relativize(file.getAbsoluteFile().toPath()).toString();
+    return new File(".").getAbsoluteFile().getParentFile().toPath().relativize(file.getAbsoluteFile().toPath())
+        .toString();
   }
 }

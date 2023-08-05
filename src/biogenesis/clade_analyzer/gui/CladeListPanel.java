@@ -8,22 +8,22 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
-import biogenesis.clade_analyzer.CladeSummary;
+import biogenesis.clade_analyzer.CladeDetails;
 import biogenesis.clade_analyzer.DB;
 
 public class CladeListPanel extends javax.swing.JPanel {
   private List<ActionListener> actionListeners = new ArrayList<ActionListener>();
 
   public CladeListPanel() {
-    setCladeList(new java.util.ArrayList<CladeSummary>(), null, 0);
+    setCladeList(new java.util.ArrayList<CladeDetails>(), null, 0);
   }
 
-  public void setCladeList(java.util.List<CladeSummary> cladeList, DB db, int maxTime) {
+  public void setCladeList(java.util.List<CladeDetails> cladeList, DB db, int maxTime) {
     removeAll();
     initComponents(cladeList, db, maxTime);
   }
 
-  private void initComponents(java.util.List<CladeSummary> cladeList, DB db, int maxTime) {
+  private void initComponents(java.util.List<CladeDetails> cladeList, DB db, int maxTime) {
     setLayout(new java.awt.GridLayout(1, 1));
 
     JPanel panel = new JPanel();
@@ -33,11 +33,11 @@ public class CladeListPanel extends javax.swing.JPanel {
     add(jScrollPane);
     panel.setLayout(new java.awt.GridLayout(cladeList.size(), 1));
 
-    for (CladeSummary cladeSummary : cladeList) {
+    for (CladeDetails cladeSummary : cladeList) {
       // System.out.println(
       //     cladeSummary.getCladeId() + " " + cladeSummary.getFirstSeenTime() + " " + cladeSummary.getLastSeenTime()
       //         + " " + cladeSummary.getGeneticCode() + " " + cladeSummary.getMaxPopulation());
-      CladePanel cladePanel = new CladePanel(cladeSummary, db, maxTime);
+      CladeDetailsPanel cladePanel = new CladeDetailsPanel(cladeSummary, db, maxTime);
       panel.add(cladePanel);
       cladePanel.addActionListener(new java.awt.event.ActionListener() {
         public void actionPerformed(java.awt.event.ActionEvent evt) {

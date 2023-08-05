@@ -18,7 +18,7 @@ import biogenesis.BioFile;
 import biogenesis.BioFileFilter;
 import biogenesis.WindowManager;
 import biogenesis.clade_analyzer.Analyzer;
-import biogenesis.clade_analyzer.CladeSummary;
+import biogenesis.clade_analyzer.CladeDetails;
 import biogenesis.clade_analyzer.DB;
 
 public class MainFrame extends javax.swing.JFrame {
@@ -27,6 +27,7 @@ public class MainFrame extends javax.swing.JFrame {
   private Preferences prefs;
 
   private CladeListPanel longestSurvivorsPanel;
+  private CladeListPanel mostPopulousCladesPanel;
 
   public MainFrame() {
     WindowManager.registerWindow(this, 800, 600, 0, 0);
@@ -61,13 +62,16 @@ public class MainFrame extends javax.swing.JFrame {
     longestSurvivorsPanel = new CladeListPanel();
     tabbedPane.add("Longest survivors", longestSurvivorsPanel);
 
+    mostPopulousCladesPanel = new CladeListPanel();
+    tabbedPane.add("Most populous clades", mostPopulousCladesPanel);
+
     getContentPane().add(tabbedPane,
         new java.awt.GridBagConstraints(0, 1, 1, 1, 1, 1, java.awt.GridBagConstraints.NORTHWEST,
             java.awt.GridBagConstraints.BOTH, new java.awt.Insets(0, 0, 0, 0), 0, 0));
 
     longestSurvivorsPanel.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
-        CladeSummary cladeSummary = (CladeSummary) evt.getSource();
+        CladeDetails cladeSummary = (CladeDetails) evt.getSource();
         System.out.println("Selected clade: " + cladeSummary);
         CladeDetailsDialog cladeDetailsDialog = new CladeDetailsDialog(MainFrame.this, db, cladeSummary.getCladeId(),
             maxTime);
@@ -82,8 +86,10 @@ public class MainFrame extends javax.swing.JFrame {
     new Thread() {
       public void run() {
         try {
-          java.util.List<CladeSummary> cladeSummaries = db.getLongestSurvivors();
+          java.util.List<CladeDetails> cladeSummaries = db.getLongestSurvivors();
           longestSurvivorsPanel.setCladeList(cladeSummaries, db, maxTime);
+
+          mostPopulousCladesPanel.setCladeList(db.getMostPopulousClades(maxTime), db, maxTime);
         } catch (SQLException e) {
           System.err.println("Error getting clade summaries: " + e);
           e.printStackTrace();

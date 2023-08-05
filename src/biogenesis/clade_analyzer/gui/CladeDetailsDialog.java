@@ -4,7 +4,7 @@ import java.awt.Frame;
 import java.util.List;
 
 import biogenesis.WindowManager;
-import biogenesis.clade_analyzer.CladeSummary;
+import biogenesis.clade_analyzer.CladeDetails;
 import biogenesis.clade_analyzer.DB;
 
 /**
@@ -26,7 +26,7 @@ public class CladeDetailsDialog extends javax.swing.JDialog {
       @Override
       public void run() {
         try {
-          List<CladeSummary> ancestors = db.getCladeAncestors(cladeId);
+          List<CladeDetails> ancestors = db.getCladeAncestors(cladeId);
           java.awt.EventQueue.invokeLater(() -> cladeListPanel.setCladeList(ancestors, db, maxTime));
         } catch (Exception e) {
           e.printStackTrace();

@@ -10,10 +10,16 @@ import com.google.gson.JsonParser;
 import biogenesis.Gene;
 import biogenesis.GeneticCode;
 
-public class CladeSummaryParser {
-  public static CladeSummary parse(String cladeId, int firstSeenTime, int lastSeenTime, String geneticCode,
+public class CladeParser {
+  public static CladeDetails parse(String cladeId, int firstSeenTime, int lastSeenTime, String geneticCode,
       int maxPopulation) {
-    return new CladeSummary(cladeId, firstSeenTime, lastSeenTime, parseGeneticCode(geneticCode), maxPopulation);
+    return new CladeDetails(cladeId, firstSeenTime, lastSeenTime, parseGeneticCode(geneticCode), maxPopulation);
+  }
+
+  public static CladeDetails parse(String cladeId, int firstSeenTime, int lastSeenTime, String geneticCode,
+      int maxPopulation, int time, int population) {
+    return new CladeDetails(cladeId, firstSeenTime, lastSeenTime, parseGeneticCode(geneticCode), maxPopulation, time,
+        population);
   }
 
   private static GeneticCode parseGeneticCode(String str) {
