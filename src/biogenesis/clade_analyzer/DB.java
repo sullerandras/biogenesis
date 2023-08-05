@@ -71,6 +71,7 @@ public class DB {
         " GENETIC_CODE     TEXT     NOT NULL, " + // this is the genetic code from the clade_summaries table at the last seen time
         " MAX_POPULATION   INTEGER  NOT NULL " +
         ")");
+    executeUpdate("CREATE INDEX IF NOT EXISTS CLADES_SUMMARIES_TIME_INDEX ON " + CLADE_SUMMARIES_TABLE + " (TIME)");
     executeUpdate("CREATE INDEX IF NOT EXISTS CLADE_SUMMARIES_CLADEID_INDEX ON " +
         CLADE_SUMMARIES_TABLE + " (CLADEID)");
   }
