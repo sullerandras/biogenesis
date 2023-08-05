@@ -8,6 +8,7 @@ import java.util.prefs.Preferences;
 
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
+import javax.swing.JTabbedPane;
 import javax.swing.ProgressMonitor;
 
 import com.google.gson.JsonIOException;
@@ -24,6 +25,8 @@ public class MainFrame extends javax.swing.JFrame {
   private DB db = null;
   private int maxTime;
   private Preferences prefs;
+
+  private CladeListPanel longestSurvivorsPanel;
 
   public MainFrame() {
     WindowManager.registerWindow(this, 800, 600, 0, 0);
@@ -49,41 +52,20 @@ public class MainFrame extends javax.swing.JFrame {
       }
     });
     toolbar.add(openButton);
-
-    // button to show 10 clades that survived the longest
-    JButton longestSurvivorsButton = new JButton("Longest Survivors");
-    toolbar.add(longestSurvivorsButton);
-
     getContentPane().add(toolbar,
         new java.awt.GridBagConstraints(0, 0, 1, 1, 1, 0, java.awt.GridBagConstraints.NORTHWEST,
             java.awt.GridBagConstraints.HORIZONTAL, new java.awt.Insets(0, 0, 0, 0), 0, 0));
 
-    // main panel
-    javax.swing.JPanel mainPanel = new javax.swing.JPanel();
-    mainPanel.setLayout(new java.awt.GridBagLayout());
-    getContentPane().add(mainPanel,
+    JTabbedPane tabbedPane = new JTabbedPane();
+
+    longestSurvivorsPanel = new CladeListPanel();
+    tabbedPane.add("Longest survivors", longestSurvivorsPanel);
+
+    getContentPane().add(tabbedPane,
         new java.awt.GridBagConstraints(0, 1, 1, 1, 1, 1, java.awt.GridBagConstraints.NORTHWEST,
             java.awt.GridBagConstraints.BOTH, new java.awt.Insets(0, 0, 0, 0), 0, 0));
 
-    CladeListPanel cladeListPanel = new CladeListPanel();
-    mainPanel.add(cladeListPanel,
-        new java.awt.GridBagConstraints(0, 0, 1, 1, 1, 1, java.awt.GridBagConstraints.NORTHWEST,
-            java.awt.GridBagConstraints.BOTH, new java.awt.Insets(0, 0, 0, 0), 0, 0));
-
-    longestSurvivorsButton.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
-        try {
-          java.util.List<CladeSummary> cladeSummaries = db.getLongestSurvivors();
-          System.out.println("Found " + cladeSummaries.size() + " clades");
-          cladeListPanel.setCladeList(cladeSummaries, db, maxTime);
-        } catch (SQLException e) {
-          System.err.println("Error getting clade summaries: " + e);
-          e.printStackTrace();
-        }
-      }
-    });
-
-    cladeListPanel.addActionListener(new java.awt.event.ActionListener() {
+    longestSurvivorsPanel.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         CladeSummary cladeSummary = (CladeSummary) evt.getSource();
         System.out.println("Selected clade: " + cladeSummary);
@@ -94,6 +76,20 @@ public class MainFrame extends javax.swing.JFrame {
     });
 
     invalidate();
+  }
+
+  private void refreshTabs() {
+    new Thread() {
+      public void run() {
+        try {
+          java.util.List<CladeSummary> cladeSummaries = db.getLongestSurvivors();
+          longestSurvivorsPanel.setCladeList(cladeSummaries, db, maxTime);
+        } catch (SQLException e) {
+          System.err.println("Error getting clade summaries: " + e);
+          e.printStackTrace();
+        }
+      }
+    }.start();
   }
 
   private void openButtonActionPerformed(java.awt.event.ActionEvent evt) {
@@ -126,23 +122,26 @@ public class MainFrame extends javax.swing.JFrame {
     new Thread() {
       public void run() {
         try {
-          if (db != null) {
-            db.close();
-          }
-
-          db = new DB(bioFile.getSqliteFile());
+          DB newDB = new DB(bioFile.getSqliteFile());
           ProgressMonitor progressMonitor = new ProgressMonitor(MainFrame.this, "Loading database", "", 0, 100);
-          Analyzer.analyze(bioFile, db, progressMonitor);
+          Analyzer.analyze(bioFile, newDB, progressMonitor);
           if (progressMonitor.isCanceled()) {
-            db.close();
-            db = null;
+            newDB.close();
             return;
           }
 
           progressMonitor.close();
 
+          if (db != null) {
+            db.close();
+            db = null;
+          }
+
+          db = newDB;
           maxTime = db.getMaxTime();
           setTitle("DB: " + relativePath(db.getDbFile()) + "  MaxTime: " + maxTime);
+
+          refreshTabs();
         } catch (ClassNotFoundException | SQLException | JsonIOException | JsonSyntaxException
             | FileNotFoundException e) {
           System.err.println("Error opening database: " + e);
