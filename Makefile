@@ -2,7 +2,7 @@ run: build
 	SKIP_OPENGL=true java -Dsun.java2d.opengl=True -Dsun.java2d.opengl.fbobject=false -jar biogenesis.jar
 
 run-analyzer: build-analyzer
-	SKIP_OPENGL=true java -Dsun.java2d.opengl=True -Dsun.java2d.opengl.fbobject=false -cp biogenesis-analyzer.jar biogenesis.clade_analyzer.GUI
+	SKIP_OPENGL=true java -Dsun.java2d.opengl=True -Dsun.java2d.opengl.fbobject=false -jar biogenesis-analyzer.jar
 
 build: compile
 	rm -rf build
@@ -22,7 +22,7 @@ build-analyzer: compile-analyzer
 	unzip -o lib/xchart-3.8.5.jar -d build
 	cp -r classes/* build
 	cp changes.md build
-	jar -cfe biogenesis-analyzer.jar biogenesis.MainWindow -C build .
+	jar -cfe biogenesis-analyzer.jar biogenesis.clade_analyzer.GUI -C build .
 
 build-src-jar:
 	rm -rf build
