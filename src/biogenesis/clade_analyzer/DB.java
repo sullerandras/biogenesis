@@ -21,6 +21,7 @@ public class DB {
 
   public static final String CLADE_SUMMARIES_TABLE = "clade_summaries";
   public static final String CLADES_TABLE = "clades";
+  public static final String COLORS_TABLE = "colors";
 
   private final File dbFile;
   private final Connection connection;
@@ -47,9 +48,15 @@ public class DB {
     executeUpdate("DROP TABLE IF EXISTS " + SUMMARY_FILES_TABLE);
     executeUpdate("DROP TABLE IF EXISTS " + CLADE_SUMMARIES_TABLE);
     executeUpdate("DROP TABLE IF EXISTS " + CLADES_TABLE);
+    executeUpdate("DROP TABLE IF EXISTS " + COLORS_TABLE);
   }
 
   public void createTables() throws SQLException {
+    executeUpdate("CREATE TABLE IF NOT EXISTS " + COLORS_TABLE + " " +
+        "(ID INTEGER PRIMARY KEY ASC," +
+        " COLOR            TEXT     UNIQUE NOT NULL, " +
+        " NAME             TEXT     NOT NULL " +
+        ")");
     executeUpdate("CREATE TABLE IF NOT EXISTS " + SUMMARY_FILES_TABLE + " " +
         "(ID INTEGER PRIMARY KEY ASC," +
         " FILENAME       TEXT    UNIQUE NOT NULL, " +
@@ -74,6 +81,54 @@ public class DB {
     executeUpdate("CREATE INDEX IF NOT EXISTS CLADES_SUMMARIES_TIME_INDEX ON " + CLADE_SUMMARIES_TABLE + " (TIME)");
     executeUpdate("CREATE INDEX IF NOT EXISTS CLADE_SUMMARIES_CLADEID_INDEX ON " +
         CLADE_SUMMARIES_TABLE + " (CLADEID)");
+
+
+        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('green', '{\"r\":0,\"g\":255,\"b\":0,\"a\":255}')");
+        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('forest', '{\"r\":0,\"g\":128,\"b\":0,\"a\":255}')");
+        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('spring', '{\"r\":0,\"g\":255,\"b\":128,\"a\":255}')");
+        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('summer', '{\"r\":128,\"g\":255,\"b\":64,\"a\":255}')");
+        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('lime', '{\"r\":176,\"g\":255,\"b\":0,\"a\":255}')");
+        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('leaf', '{\"r\":92,\"g\":184,\"b\":0,\"a\":255}')");
+        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('c4', '{\"r\":96,\"g\":192,\"b\":96,\"a\":255}')");
+        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('jade', '{\"r\":0,\"g\":168,\"b\":107,\"a\":255}')");
+        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('grass', '{\"r\":144,\"g\":176,\"b\":64,\"a\":255}')");
+        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('bark', '{\"r\":96,\"g\":128,\"b\":64,\"a\":255}')");
+        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('purple', '{\"r\":168,\"g\":0,\"b\":84,\"a\":255}')");
+        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('red', '{\"r\":255,\"g\":0,\"b\":0,\"a\":255}')");
+        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('fire', '{\"r\":255,\"g\":100,\"b\":0,\"a\":255}')");
+        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('orange', '{\"r\":255,\"g\":200,\"b\":0,\"a\":255}')");
+        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('maroon', '{\"r\":128,\"g\":0,\"b\":0,\"a\":255}')");
+        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('pink', '{\"r\":255,\"g\":175,\"b\":175,\"a\":255}')");
+        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('cream', '{\"r\":208,\"g\":192,\"b\":140,\"a\":255}')");
+        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('silver', '{\"r\":192,\"g\":192,\"b\":192,\"a\":255}')");
+        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('spike', '{\"r\":164,\"g\":132,\"b\":100,\"a\":255}')");
+        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('lilac', '{\"r\":192,\"g\":128,\"b\":255,\"a\":255}')");
+        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('gray', '{\"r\":128,\"g\":128,\"b\":128,\"a\":255}')");
+        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('violet', '{\"r\":128,\"g\":0,\"b\":128,\"a\":255}')");
+        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('olive', '{\"r\":176,\"g\":176,\"b\":0,\"a\":255}')");
+        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('sky', '{\"r\":128,\"g\":192,\"b\":255,\"a\":255}')");
+        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('blue', '{\"r\":0,\"g\":0,\"b\":255,\"a\":255}')");
+        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('ochre', '{\"r\":204,\"g\":119,\"b\":34,\"a\":255}')");
+        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('fallow', '{\"r\":150,\"g\":113,\"b\":23,\"a\":255}')");
+        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('spore', '{\"r\":0,\"g\":80,\"b\":160,\"a\":255}')");
+        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('white', '{\"r\":255,\"g\":255,\"b\":255,\"a\":255}')");
+        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('plague', '{\"r\":255,\"g\":192,\"b\":255,\"a\":255}')");
+        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('coral', '{\"r\":255,\"g\":100,\"b\":138,\"a\":255}')");
+        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('mint', '{\"r\":160,\"g\":224,\"b\":160,\"a\":255}')");
+        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('lavender', '{\"r\":128,\"g\":96,\"b\":176,\"a\":255}')");
+        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('magenta', '{\"r\":255,\"g\":0,\"b\":255,\"a\":255}')");
+        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('rose', '{\"r\":255,\"g\":0,\"b\":128,\"a\":255}')");
+        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('cyan', '{\"r\":0,\"g\":255,\"b\":255,\"a\":255}')");
+        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('teal', '{\"r\":0,\"g\":128,\"b\":128,\"a\":255}')");
+        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('yellow', '{\"r\":255,\"g\":255,\"b\":0,\"a\":255}')");
+        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('auburn', '{\"r\":128,\"g\":48,\"b\":48,\"a\":255}')");
+        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('indigo', '{\"r\":111,\"g\":0,\"b\":255,\"a\":255}')");
+        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('blond', '{\"r\":255,\"g\":255,\"b\":128,\"a\":255}')");
+        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('flower', '{\"r\":128,\"g\":128,\"b\":255,\"a\":255}')");
+        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('darkgray', '{\"r\":64,\"g\":64,\"b\":64,\"a\":255}')");
+        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('gold', '{\"r\":212,\"g\":175,\"b\":55,\"a\":255}')");
+        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('dark', '{\"r\":64,\"g\":32,\"b\":16,\"a\":255}')");
+        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('eye', '{\"r\":0,\"g\":64,\"b\":64,\"a\":255}')");
   }
 
   public boolean isSummaryFileDone(File summaryFile) throws SQLException {
