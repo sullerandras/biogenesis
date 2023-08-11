@@ -16,6 +16,7 @@ import javax.swing.UIManager;
 import biogenesis.Clade;
 import biogenesis.GeneticCode;
 import biogenesis.clade_analyzer.CladeDetails;
+import biogenesis.clade_analyzer.CladeNameGenerator;
 import biogenesis.clade_analyzer.DB;
 import biogenesis.clade_analyzer.TimeAndPopulation;
 
@@ -78,19 +79,30 @@ public class CladeDetailsPanel extends javax.swing.JPanel {
 
     JPanel detailsPanel = new JPanel();
     detailsPanel.setBackground(null);
-    int rows = 2;
-    if (cladeSummary.getTime() > 0 && cladeSummary.getPopulation() > 0) {
-      rows = 3;
-    }
-    detailsPanel.setLayout(new java.awt.GridLayout(rows, 1));
-    detailsPanel.add(new javax.swing.JLabel("First seen: " + cladeSummary.getFirstSeenTime()));
-    detailsPanel.add(new javax.swing.JLabel("Last seen: " + cladeSummary.getLastSeenTime()));
-    detailsPanel.add(new javax.swing.JLabel("Max population: " + cladeSummary.getMaxPopulation()));
+    detailsPanel.setLayout(new java.awt.GridBagLayout());
+    detailsPanel.add(new javax.swing.JLabel("Name: " + CladeNameGenerator.generateName(cladeSummary.getGeneticCode())),
+        new java.awt.GridBagConstraints(0, 0, 2, 1, 1.0, 0.0, java.awt.GridBagConstraints.NORTHWEST,
+            java.awt.GridBagConstraints.HORIZONTAL, new java.awt.Insets(0, 0, 0, 0), 0, 0));
+    detailsPanel.add(new javax.swing.JLabel("First seen: " + cladeSummary.getFirstSeenTime()),
+        new java.awt.GridBagConstraints(0, 1, 1, 1, 1.0, 0.0, java.awt.GridBagConstraints.NORTHWEST,
+            java.awt.GridBagConstraints.HORIZONTAL, new java.awt.Insets(0, 0, 0, 0), 0, 0));
+    detailsPanel.add(new javax.swing.JLabel("Last seen: " + cladeSummary.getLastSeenTime()),
+        new java.awt.GridBagConstraints(1, 1, 1, 1, 1.0, 0.0, java.awt.GridBagConstraints.NORTHWEST,
+            java.awt.GridBagConstraints.HORIZONTAL, new java.awt.Insets(0, 0, 0, 0), 0, 0));
+    detailsPanel.add(new javax.swing.JLabel("Max population: " + cladeSummary.getMaxPopulation()),
+        new java.awt.GridBagConstraints(0, 2, 1, 1, 1.0, 0.0, java.awt.GridBagConstraints.NORTHWEST,
+            java.awt.GridBagConstraints.HORIZONTAL, new java.awt.Insets(0, 0, 0, 0), 0, 0));
     detailsPanel.add(
-        new javax.swing.JLabel("Survived time: " + (cladeSummary.getLastSeenTime() - cladeSummary.getFirstSeenTime())));
+        new javax.swing.JLabel("Survived time: " + (cladeSummary.getLastSeenTime() - cladeSummary.getFirstSeenTime())),
+        new java.awt.GridBagConstraints(1, 2, 1, 1, 1.0, 0.0, java.awt.GridBagConstraints.NORTHWEST,
+            java.awt.GridBagConstraints.HORIZONTAL, new java.awt.Insets(0, 0, 0, 0), 0, 0));
     if (cladeSummary.getTime() > 0 && cladeSummary.getPopulation() > 0) {
-      detailsPanel.add(new javax.swing.JLabel("Population: " + cladeSummary.getPopulation()));
-      detailsPanel.add(new javax.swing.JLabel("Time: " + cladeSummary.getTime()));
+      detailsPanel.add(new javax.swing.JLabel("Population: " + cladeSummary.getPopulation()),
+          new java.awt.GridBagConstraints(0, 3, 1, 1, 1.0, 0.0, java.awt.GridBagConstraints.NORTHWEST,
+              java.awt.GridBagConstraints.HORIZONTAL, new java.awt.Insets(0, 0, 0, 0), 0, 0));
+      detailsPanel.add(new javax.swing.JLabel("Time: " + cladeSummary.getTime()),
+          new java.awt.GridBagConstraints(1, 3, 1, 1, 1.0, 0.0, java.awt.GridBagConstraints.NORTHWEST,
+              java.awt.GridBagConstraints.HORIZONTAL, new java.awt.Insets(0, 0, 0, 0), 0, 0));
     }
 
     infoPanel.add(detailsPanel,

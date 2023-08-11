@@ -1854,7 +1854,7 @@ public class Organism extends Rectangle {
 				if ((!_isaconsumer) && (!_isafungus) && (!_isakiller) && (!_isinfectious) && (_plagueversion == 0) && (isprotective == 0)) {
 					if (!_iscoral) {
 						_isonlyc4 = 2;
-						_candodge =true;				
+						_candodge =true;
 						if ((_indigo > 0) && (_jadefactor == 0)) {
 							_jadefactor = -1;
 						}
@@ -22065,6 +22065,10 @@ public class Organism extends Rectangle {
 		if (c.equals(Utils.ColorBROWN))
 			return BROWN;
 		return NOCOLOR;
+	}
+
+	public static final GeneColor getGeneColor(Color c) {
+		return GeneColor.getColor(getTypeColor(c));
 	}
 
 	private final void setColor(Color c) {

@@ -39,7 +39,7 @@ import org.xml.sax.SAXParseException;
 public class BioXMLParser implements ErrorHandler {
 	protected DocumentBuilder builder = null;
 	protected Document doc = null;
-	
+
 	public BioXMLParser() {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setValidating(true);
@@ -50,7 +50,7 @@ public class BioXMLParser implements ErrorHandler {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static void writeGeneticCode(PrintStream ps, GeneticCode geneticCode) {
 		ps.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"); //$NON-NLS-1$
 		ps.println("<!DOCTYPE genetic_code ["); //$NON-NLS-1$
@@ -154,7 +154,7 @@ public class BioXMLParser implements ErrorHandler {
 			writeGene(ps,geneticCode.getGene(i));
 		ps.println("</genetic_code>"); //$NON-NLS-1$
 	}
-	
+
 	public static void writeGene(PrintStream ps, Gene gene) {
 		ps.println("\t<gene length=\""+Double.toString(gene.getLength())+"\" theta=\""+ //$NON-NLS-1$ //$NON-NLS-2$
 				Double.toString(gene.getTheta())+"\" color=\""+ //$NON-NLS-1$
@@ -197,7 +197,7 @@ public class BioXMLParser implements ErrorHandler {
 				Integer.toString(gene.getsickReaction())+"\" friendreaction=\""+ //$NON-NLS-1$
 				Integer.toString(gene.getfriendReaction())+"\" />"); //$NON-NLS-1$
 	}
-	
+
 	public GeneticCode parseGeneticCode(File f) throws SAXException, IOException {
 		int symmetry, mirror, mutationrate, clonerate, activity, modifiescream, modifiesfallow, modifiesspore, adaptspore, modifiesblack, adaptblack;
 		boolean plague;
@@ -428,7 +428,7 @@ public class BioXMLParser implements ErrorHandler {
 					selfish = false;
 				else
 					throw new SAXException("Selfish has not an allowed value."); //$NON-NLS-1$
-			
+
 			Node gene = geneticCode.getFirstChild();
 			gene = getNextElement(gene);
 			while (gene != null) {
@@ -439,13 +439,13 @@ public class BioXMLParser implements ErrorHandler {
 		}
 		throw new SAXException("This file does not contain a genetic_code."); //$NON-NLS-1$
 	}
-	
+
 	private static Node getNextElement(Node n) {
-		while (n != null && n.getNodeType() != Node.ELEMENT_NODE) 
+		while (n != null && n.getNodeType() != Node.ELEMENT_NODE)
 			n = n.getNextSibling();
 		return n;
 	}
-	
+
 	public Gene parseGene(Element gene) throws SAXException {
 		double length, theta;
 		int branch, redreaction, greenreaction, bluereaction, plaguereaction, scourgereaction, whitereaction, grayreaction, silverreaction, defaultreaction, consumerreaction
@@ -509,7 +509,7 @@ public class BioXMLParser implements ErrorHandler {
 		}
 		throw new SAXException("Parse error. "+gene.getNodeName()+" found but gene expected.");  //$NON-NLS-1$//$NON-NLS-2$
 	}
-	
+
 	private static Color stringToColor(String s) throws IllegalArgumentException {
 		if (s.equals("green")) return Color.GREEN; //$NON-NLS-1$
 		if (s.equals("forest")) return Utils.ColorFOREST; //$NON-NLS-1$
@@ -559,8 +559,8 @@ public class BioXMLParser implements ErrorHandler {
 		if (s.equals("eye")) return Utils.ColorEYE; //$NON-NLS-1$
 		throw new IllegalArgumentException();
 	}
-	
-	private static String colorToString(Color c) {
+
+	public static String colorToString(Color c) {
 		if (c.equals(Color.GREEN)) return "green"; //$NON-NLS-1$
 		if (c.equals(Utils.ColorFOREST)) return "forest"; //$NON-NLS-1$
 		if (c.equals(Utils.ColorSPRING)) return "spring"; //$NON-NLS-1$
