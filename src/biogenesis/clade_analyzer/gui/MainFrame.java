@@ -1,5 +1,6 @@
 package biogenesis.clade_analyzer.gui;
 
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -69,7 +70,7 @@ public class MainFrame extends javax.swing.JFrame {
         new java.awt.GridBagConstraints(0, 1, 1, 1, 1, 1, java.awt.GridBagConstraints.NORTHWEST,
             java.awt.GridBagConstraints.BOTH, new java.awt.Insets(0, 0, 0, 0), 0, 0));
 
-    longestSurvivorsPanel.addActionListener(new java.awt.event.ActionListener() {
+    ActionListener clickListener = new ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         CladeDetails cladeSummary = (CladeDetails) evt.getSource();
         System.out.println("Selected clade: " + cladeSummary);
@@ -77,7 +78,9 @@ public class MainFrame extends javax.swing.JFrame {
             maxTime);
         cladeDetailsDialog.setVisible(true);
       }
-    });
+    };
+    longestSurvivorsPanel.addActionListener(clickListener);
+    mostPopulousCladesPanel.addActionListener(clickListener);
 
     invalidate();
   }
