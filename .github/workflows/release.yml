@@ -7,6 +7,8 @@ on:
 
 jobs:
   build-and-create-release:
+    permissions:
+      contents: write # allows the action to create a release
     runs-on: ubuntu-latest
     env:
       IMAGE_TAG: ${{ github.sha }}
@@ -40,7 +42,6 @@ jobs:
           prerelease: true
           name: "v${{ env.date }}"
           tag_name: "v${{ env.date }}"
-          token: "${{ secrets.TOKEN_FOR_RELEASE }}"
           files: |
             LICENSE
             biogenesis.jar
