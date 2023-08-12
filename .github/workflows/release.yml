@@ -1,6 +1,9 @@
 name: Release
 
-on: [push]
+on:
+  push:
+    branches:
+      - andras-patches
 
 jobs:
   build-and-create-release:
@@ -21,11 +24,21 @@ jobs:
         id: date
         run: |
           echo "date=$(date +'%Y-%m-%d--%H-%M')" >> "$GITHUB_ENV"
-      - uses: "marvinpinto/action-automatic-releases@latest"
+
+      - name: Create tag
+        uses: rickstaa/action-create-tag@v1
         with:
-          repo_token: "${{ secrets.TOKEN_FOR_RELEASE }}"
-          automatic_release_tag: "v${{ env.date }}"
+          tag: "v${{ env.date }}"
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          draft: false
           prerelease: true
-          title: "v${{ env.date }}"
+          name: "v${{ env.date }}"
+          tag_name: "v${{ env.date }}"
+          token: "${{ secrets.TOKEN_FOR_RELEASE }}"
           files: |
-            *.jar
+            LICENSE
+            biogenesis.jar
+            biogenesis-analyzer.jar
