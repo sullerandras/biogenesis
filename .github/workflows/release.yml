@@ -30,7 +30,8 @@ jobs:
           git config user.name "Andras Suller"
           git config user.email suller.andras@gmail.com
           git tag "v${{ env.date }}"
-          git push "v${{ env.date }}"
+          git tag
+          git push origin "v${{ env.date }}"
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
