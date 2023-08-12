@@ -78,8 +78,8 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 	protected boolean _isProcessActive = false;
 	protected transient java.util.Timer _timer;
 	protected transient Thread workerThread = null;
-	protected JFileChooser worldChooser = new JFileChooser();
-	protected JFileChooser geneticCodeChooser = new JFileChooser();
+	protected JFileChooser worldChooser = new JFileChooserWithRemember();
+	protected JFileChooser geneticCodeChooser = new JFileChooserWithRemember();
 	protected BioFile _gameFile = null;
 
 	protected JScrollPane scrollPane;
