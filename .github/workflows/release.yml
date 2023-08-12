@@ -26,10 +26,11 @@ jobs:
           echo "date=$(date +'%Y-%m-%d--%H-%M')" >> "$GITHUB_ENV"
 
       - name: Create tag
-        uses: rickstaa/action-create-tag@v1
-        with:
-          tag: "v${{ env.date }}"
-          github_token: "${{ secrets.TOKEN_FOR_RELEASE }}"
+        run: |
+          git config user.name "Andras Suller"
+          git config user.email suller.andras@gmail.com
+          git tag "v${{ env.date }}"
+          git push "v${{ env.date }}"
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
