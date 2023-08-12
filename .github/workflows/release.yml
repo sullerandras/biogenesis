@@ -27,8 +27,8 @@ jobs:
 
       - name: Create tag
         run: |
-          git config user.name "Andras Suller"
-          git config user.email suller.andras@gmail.com
+          git config user.name github-actions
+          git config user.email github-actions@github.com
           git tag "v${{ env.date }}"
           git tag
           git push origin "v${{ env.date }}"
