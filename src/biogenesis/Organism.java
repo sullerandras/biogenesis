@@ -11441,7 +11441,12 @@ public class Organism extends Rectangle {
 		    case WHITE:
 				if ((org._isaplant) || (_creamversion == 2) || (org._isaconsumer) || (org._isafungus) || (org._plagueversion > 0) || (org._isauburn)) {
 					if (org._lavender > 0) {
-						org.lavendershield();
+						org._lavender -= 179 + Math.round(_m[seg]);
+						if (org._lavender <= 0) {
+							org._lavender = 0;
+						} else {
+							org.setColor(Utils.ColorLIGHT_BLUE);
+						}
 						setColor(Utils.ColorCREAM);
 					}
 					if (org._lavender <= 0) {
@@ -11462,7 +11467,12 @@ public class Organism extends Rectangle {
 					setColor(Utils.ColorCREAM);
 				} else {
 					if (org._lavender > 0) {
-						org.lavendershield();
+						org._lavender -= 179 + Math.round(_m[seg]);
+						if (org._lavender <= 0) {
+							org._lavender = 0;
+						} else {
+							org.setColor(Utils.ColorLIGHT_BLUE);
+						}
 						setColor(Utils.ColorCREAM);
 					}
 					if (org._lavender <= 0) {
@@ -11529,7 +11539,12 @@ public class Organism extends Rectangle {
 					setColor(Utils.ColorCREAM);
 				} else {
 					if (org._lavender > 0) {
-						org.lavendershield();
+						org._lavender -= 179 + Math.round(_m[seg]);
+						if (org._lavender <= 0) {
+							org._lavender = 0;
+						} else {
+							org.setColor(Utils.ColorLIGHT_BLUE);
+						}
 						setColor(Utils.ColorCREAM);
 					}
 					if (org._lavender <= 0) {
@@ -11547,7 +11562,12 @@ public class Organism extends Rectangle {
 			case SPIKE:
 		    	if (((org._isaplant) && (org._createlavender == 0)) || (org._isenhanced)) {
 		    		if (org._lavender > 0) {
-						org.lavendershield();
+		    			org._lavender -= 179 + Math.round(_m[seg]);
+						if (org._lavender <= 0) {
+							org._lavender = 0;
+						} else {
+							org.setColor(Utils.ColorLIGHT_BLUE);
+						}
 						setColor(Utils.ColorCREAM);
 					}
 					if (org._lavender <= 0) {
@@ -11569,7 +11589,12 @@ public class Organism extends Rectangle {
 					org.setColor(Color.BLUE);
 				} else {
 					if (org._lavender > 0) {
-						org.lavendershield();
+						org._lavender -= 179 + Math.round(_m[seg]);
+						if (org._lavender <= 0) {
+							org._lavender = 0;
+						} else {
+							org.setColor(Utils.ColorLIGHT_BLUE);
+						}
 						if ((_isenhanced) && (_creamversion == 3)) {
 						    // This organism will be shown in dark gray
 						    setColor(Color.DARK_GRAY);
@@ -11606,7 +11631,12 @@ public class Organism extends Rectangle {
 					} else {
 						// Doesn't have energy to use the shield
 						if (org._lavender > 0) {
-							org.lavendershield();
+							org._lavender -= 179 + Math.round(_m[seg]);
+							if (org._lavender <= 0) {
+								org._lavender = 0;
+							} else {
+								org.setColor(Utils.ColorLIGHT_BLUE);
+							}
 							setColor(Utils.ColorCREAM);
 						}
 						if (org._lavender <= 0) {
@@ -11625,7 +11655,12 @@ public class Organism extends Rectangle {
 		    case DEEPSKY:
 		    	if (((_isenhanced) || (!active)) && (_creamversion == 3)) {
 		    		if (org._lavender > 0) {
-		    			org.lavendershield();
+		    			org._lavender -= 179 + Math.round(_m[seg]);
+						if (org._lavender <= 0) {
+							org._lavender = 0;
+						} else {
+							org.setColor(Utils.ColorLIGHT_BLUE);
+						}
 						setColor(Color.DARK_GRAY);
 					}
 					if (org._lavender <= 0) {
@@ -11641,7 +11676,12 @@ public class Organism extends Rectangle {
 				} else {
 					if ((!_isfrozen) && (org._createlavender == 0)) {
 						if (org._lavender > 0) {
-							org.lavendershield();
+							org._lavender -= 179 + Math.round(_m[seg]);
+							if (org._lavender <= 0) {
+								org._lavender = 0;
+							} else {
+								org.setColor(Utils.ColorLIGHT_BLUE);
+							}
 							setColor(Utils.ColorCREAM);
 						}
 						if (org._lavender <= 0) {
@@ -11663,7 +11703,12 @@ public class Organism extends Rectangle {
 		    case OCHRE:
 		    	if (org._isaplant) {
 		    		if (org._lavender > 0) {
-						org.lavendershield();
+		    			org._lavender -= 179 + Math.round(_m[seg]);
+						if (org._lavender <= 0) {
+							org._lavender = 0;
+						} else {
+							org.setColor(Utils.ColorLIGHT_BLUE);
+						}
 						setColor(Utils.ColorCREAM);
 					}
 					if (org._lavender <= 0) {
@@ -11679,7 +11724,12 @@ public class Organism extends Rectangle {
 		    	} else {
 		    		if ((_isenhanced) && (_creamversion == 3)) {
 			    		if (org._lavender > 0) {
-			    			org.lavendershield();
+			    			org._lavender -= 179 + Math.round(_m[seg]);
+							if (org._lavender <= 0) {
+								org._lavender = 0;
+							} else {
+								org.setColor(Utils.ColorLIGHT_BLUE);
+							}
 							setColor(Color.DARK_GRAY);
 						}
 						if (org._lavender <= 0) {
@@ -11698,7 +11748,12 @@ public class Organism extends Rectangle {
 		    case FALLOW:
 		    	if (((_isenhanced) || (!active)) && (_creamversion == 3)) {
 		    		if (org._lavender > 0) {
-		    			org.lavendershield();
+		    			org._lavender -= 179 + Math.round(_m[seg]);
+						if (org._lavender <= 0) {
+							org._lavender = 0;
+						} else {
+							org.setColor(Utils.ColorLIGHT_BLUE);
+						}
 						setColor(Color.DARK_GRAY);
 					}
 					if (org._lavender <= 0) {
@@ -11716,7 +11771,12 @@ public class Organism extends Rectangle {
 		    case OLDBARK:
 		    	if (((_isenhanced) || (!active)) && (_creamversion == 3)) {
 		    		if (org._lavender > 0) {
-		    			org.lavendershield();
+		    			org._lavender -= 179 + Math.round(_m[seg]);
+						if (org._lavender <= 0) {
+							org._lavender = 0;
+						} else {
+							org.setColor(Utils.ColorLIGHT_BLUE);
+						}
 						setColor(Color.DARK_GRAY);
 					}
 					if (org._lavender <= 0) {
@@ -11743,7 +11803,12 @@ public class Organism extends Rectangle {
 		    		break;
 				} else {
 					if (org._lavender > 0) {
-						org.lavendershield();
+						org._lavender -= 179 + Math.round(_m[seg]);
+						if (org._lavender <= 0) {
+							org._lavender = 0;
+						} else {
+							org.setColor(Utils.ColorLIGHT_BLUE);
+						}
 						setColor(Utils.ColorCREAM);
 					}
 					if (org._lavender <= 0) {
@@ -11765,7 +11830,12 @@ public class Organism extends Rectangle {
 			case PINK:
 				if ((_isenhanced) && (_creamversion == 1)) {
 					if (org._lavender > 0) {
-						org.lavendershield();
+						org._lavender -= 179 + Math.round(_m[seg]);
+						if (org._lavender <= 0) {
+							org._lavender = 0;
+						} else {
+							org.setColor(Utils.ColorLIGHT_BLUE);
+						}
 						setColor(Color.DARK_GRAY);
 					}
 					if (org._lavender <= 0) {
@@ -11802,7 +11872,12 @@ public class Organism extends Rectangle {
 						setColor(Utils.ColorCREAM);
 					} else {
 						if (org._lavender > 0) {
-							org.lavendershield();
+							org._lavender -= 179 + Math.round(_m[seg]);
+							if (org._lavender <= 0) {
+								org._lavender = 0;
+							} else {
+								org.setColor(Utils.ColorLIGHT_BLUE);
+							}
 							setColor(Utils.ColorCREAM);
 						}
 						if (org._lavender <= 0) {
@@ -11842,7 +11917,12 @@ public class Organism extends Rectangle {
 						} else {
 							if (_isenhanced) {
 					    		if (org._lavender > 0) {
-					    			org.lavendershield();
+					    			org._lavender -= 179 + Math.round(_m[seg]);
+									if (org._lavender <= 0) {
+										org._lavender = 0;
+									} else {
+										org.setColor(Utils.ColorLIGHT_BLUE);
+									}
 									setColor(Color.DARK_GRAY);
 								}
 								if (org._lavender <= 0) {
@@ -11857,7 +11937,12 @@ public class Organism extends Rectangle {
 								}
 							} else {
 								if (org._lavender > 0) {
-									org.lavendershield();
+									org._lavender -= 179 + Math.round(_m[seg]);
+									if (org._lavender <= 0) {
+										org._lavender = 0;
+									} else {
+										org.setColor(Utils.ColorLIGHT_BLUE);
+									}
 									setColor(Utils.ColorCREAM);
 								}
 								if (org._lavender <= 0) {
@@ -11934,7 +12019,12 @@ public class Organism extends Rectangle {
 					org.mimicColor();
 				} else {
 					if (org._lavender > 0) {
-						org.lavendershield();
+						org._lavender -= 179 + Math.round(_m[seg]);
+						if (org._lavender <= 0) {
+							org._lavender = 0;
+						} else {
+							org.setColor(Utils.ColorLIGHT_BLUE);
+						}
 						setColor(Utils.ColorCREAM);
 					}
 					if (org._lavender <= 0) {
@@ -11969,7 +12059,12 @@ public class Organism extends Rectangle {
 				break;
 			default:
 				if (org._lavender > 0) {
-					org.lavendershield();
+					org._lavender -= 179 + Math.round(_m[seg]);
+					if (org._lavender <= 0) {
+						org._lavender = 0;
+					} else {
+						org.setColor(Utils.ColorLIGHT_BLUE);
+					}
 					setColor(Utils.ColorCREAM);
 				}
 				if (org._lavender <= 0) {
