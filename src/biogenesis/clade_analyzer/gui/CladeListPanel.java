@@ -41,9 +41,7 @@ public class CladeListPanel extends javax.swing.JPanel {
       panel.add(cladePanel);
       cladePanel.addActionListener(new java.awt.event.ActionListener() {
         public void actionPerformed(java.awt.event.ActionEvent evt) {
-          for (ActionListener actionListener : actionListeners) {
-            actionListener.actionPerformed(evt);
-          }
+          actionListeners.forEach(l -> l.actionPerformed(evt));
         }
       });
     }

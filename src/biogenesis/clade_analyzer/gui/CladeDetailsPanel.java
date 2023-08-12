@@ -10,7 +10,6 @@ import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
 import javax.swing.UIManager;
 
 import biogenesis.Clade;
@@ -63,24 +62,17 @@ public class CladeDetailsPanel extends javax.swing.JPanel {
     infoPanel.setPreferredSize(new Dimension(200, Clade.NET_CLADE_SIZE));
     infoPanel.setLayout(new java.awt.GridBagLayout());
 
-    JTextArea textAreaClade = new JTextArea(2, 20);
-    textAreaClade.setText(cladeSummary.getCladeId());
-    textAreaClade.setWrapStyleWord(true);
-    textAreaClade.setLineWrap(true);
-    textAreaClade.setOpaque(false);
-    textAreaClade.setEditable(false);
-    textAreaClade.setFocusable(false);
-    textAreaClade.setBackground(UIManager.getColor("Label.background"));
-    textAreaClade.setFont(UIManager.getFont("Label.font"));
-    textAreaClade.setBorder(UIManager.getBorder("Label.border"));
-    infoPanel.add(textAreaClade,
+    MultilineLabel labelClade = new MultilineLabel(cladeSummary.getCladeId());
+    infoPanel.add(labelClade,
         new java.awt.GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, java.awt.GridBagConstraints.NORTHWEST,
             java.awt.GridBagConstraints.BOTH, new java.awt.Insets(0, 0, 0, 0), 0, 0));
 
     JPanel detailsPanel = new JPanel();
     detailsPanel.setBackground(null);
     detailsPanel.setLayout(new java.awt.GridBagLayout());
-    detailsPanel.add(new javax.swing.JLabel("Name: " + CladeNameGenerator.generateName(cladeSummary.getGeneticCode())),
+    MultilineLabel labelName = new MultilineLabel(
+        "Name: " + CladeNameGenerator.generateName(cladeSummary.getGeneticCode()));
+    detailsPanel.add(labelName,
         new java.awt.GridBagConstraints(0, 0, 2, 1, 1.0, 0.0, java.awt.GridBagConstraints.NORTHWEST,
             java.awt.GridBagConstraints.HORIZONTAL, new java.awt.Insets(0, 0, 0, 0), 0, 0));
     detailsPanel.add(new javax.swing.JLabel("First seen: " + cladeSummary.getFirstSeenTime()),
@@ -134,7 +126,8 @@ public class CladeDetailsPanel extends javax.swing.JPanel {
       }
     };
     addMouseListener(mouseAdapter);
-    textAreaClade.addMouseListener(mouseAdapter);
+    labelClade.addMouseListener(mouseAdapter);
+    labelName.addMouseListener(mouseAdapter);
     invalidate();
   }
 
