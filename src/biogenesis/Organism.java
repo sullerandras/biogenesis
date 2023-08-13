@@ -413,10 +413,12 @@ public class Organism extends Rectangle {
 	/**
 	 * X coordinate of this organim's center of gravity.
 	 */
+	@Expose
 	protected int _centerX;
 	/**
 	 * Y coordinate of this organim's center of gravity.
 	 */
+	@Expose
 	protected int _centerY;
 	/**
 	 * Like _centerX but with double precision to be able to make movements slower than a pixel.
