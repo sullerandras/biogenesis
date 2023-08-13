@@ -27,7 +27,7 @@ public class GUI {
     try {
       final Taskbar taskbar = Taskbar.getTaskbar(); // Java 9+
       taskbar.setIconImage(createIcon("images/menu_track.png").getImage());
-    } catch (Exception e) {
+    } catch (Exception|NoClassDefFoundError e) {
       System.err.println("Unable to set icon: " + e);
     }
 
