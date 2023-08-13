@@ -16,14 +16,11 @@ import biogenesis.clade_analyzer.CladeChartManager;
 import biogenesis.clade_analyzer.TimeAndPopulation;
 
 public class CladePopulationOverTime extends JPanel {
-  private final CladeChartManager cladeChartManager;
-
   private List<TimeAndPopulation> timeAndPopulationList;
   private int maxTime;
   private int maximumY = 0;
 
   public CladePopulationOverTime(Window owner, CladeChartManager cladeChartManager) {
-    this.cladeChartManager = cladeChartManager;
     cladeChartManager.addChart(this);
 
     setData(new ArrayList<>(), 0);

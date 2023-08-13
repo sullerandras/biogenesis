@@ -177,9 +177,10 @@ public class DB {
         relativePath(summaryFile) + "')");
   }
 
-  public List<CladeDetails> getLongestSurvivors() throws SQLException {
+  public List<CladeDetails> getLongestSurvivors(int limit) throws SQLException {
     ResultSet rs = executeQuery(
-        "select * from " + CLADES_TABLE + " order by LAST_SEEN_TIME - FIRST_SEEN_TIME desc limit 10");
+        "select * from " + CLADES_TABLE + " order by LAST_SEEN_TIME - FIRST_SEEN_TIME desc"
+            + (limit >= 0 ? " limit " + limit : ""));
 
     return readCladeSummaries(rs);
   }
@@ -197,13 +198,14 @@ public class DB {
     return list;
   }
 
-  public List<CladeDetails> getMostPopulousClades(int time) throws SQLException {
+  public List<CladeDetails> getMostPopulousClades(int time, int limit) throws SQLException {
     ResultSet rs = executeQuery(
         "select c.*, cs.TIME, cs.POPULATION " +
             " from " + CLADE_SUMMARIES_TABLE + " cs" +
             " join " + CLADES_TABLE + " c using (CLADEID)" +
             " where cs.TIME = " + time +
-            " order by cs.POPULATION desc limit 10");
+            " order by cs.POPULATION desc" +
+            (limit >= 0 ? " limit " + limit : ""));
 
     return readFullCladeDetails(rs);
   }

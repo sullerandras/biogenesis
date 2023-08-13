@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import javax.swing.ProgressMonitor;
@@ -86,8 +85,11 @@ public class MainFrame extends javax.swing.JFrame {
         cladeDetailsDialog.setVisible(true);
       }
     };
-    longestSurvivorsPanel.addActionListener(clickListener);
-    mostPopulousCladesPanel.addActionListener(clickListener);
+    longestSurvivorsPanel.addClickCladeListener(clickListener);
+    mostPopulousCladesPanel.addClickCladeListener(clickListener);
+
+    longestSurvivorsPanel.addLimitChangeListener(evt -> refreshTabs());
+    mostPopulousCladesPanel.addLimitChangeListener(evt -> refreshTabs());
 
     invalidate();
   }
@@ -96,15 +98,12 @@ public class MainFrame extends javax.swing.JFrame {
     new Thread() {
       public void run() {
         try {
-          final java.util.List<CladeDetails> cladeSummaries = db.getLongestSurvivors();
-          final java.util.List<CladeDetails> mostPopulousClades = db.getMostPopulousClades(maxTime);
+          final java.util.List<CladeDetails> cladeSummaries = db.getLongestSurvivors(longestSurvivorsPanel.getLimit());
+          final java.util.List<CladeDetails> mostPopulousClades = db.getMostPopulousClades(maxTime, mostPopulousCladesPanel.getLimit());
 
           java.awt.EventQueue.invokeLater(() -> {
             longestSurvivorsPanel.setCladeList(cladeSummaries, db, maxTime);
-            longestSurvivorsPanel.getCladeChartManager().synchronizeYAxis();
-
             mostPopulousCladesPanel.setCladeList(mostPopulousClades, db, maxTime);
-            mostPopulousCladesPanel.getCladeChartManager().synchronizeYAxis();
           });
         } catch (SQLException e) {
           System.err.println("Error getting clade summaries: " + e);

@@ -24,9 +24,10 @@ import biogenesis.clade_analyzer.TimeAndPopulation;
 public class CladeDetailsPanel extends javax.swing.JPanel {
   private CladeDetails cladeSummary;
   private CladePopulationOverTime populationOverTimeChart;
-  private List<ActionListener> actionListeners = new ArrayList<ActionListener>();
+  private List<ActionListener> clickCladeListeners = new ArrayList<ActionListener>();
 
-  public CladeDetailsPanel(Window owner, CladeChartManager cladeChartManager, CladeDetails cladeSummary, DB db, int maxTime) {
+  public CladeDetailsPanel(Window owner, CladeChartManager cladeChartManager, CladeDetails cladeSummary, DB db,
+      int maxTime) {
     this.cladeSummary = cladeSummary;
 
     initComponents(owner, cladeChartManager);
@@ -138,14 +139,13 @@ public class CladeDetailsPanel extends javax.swing.JPanel {
     invalidate();
   }
 
-  public void addActionListener(ActionListener actionListener) {
-    actionListeners.add(actionListener);
+  public void addClickCladeListener(ActionListener l) {
+    clickCladeListeners.add(l);
   }
 
   private void openDetails() {
     // System.out.println("===> mouse clicked " + cladeSummary);
-    actionListeners
-        .forEach(actionListener -> actionListener.actionPerformed(new ActionEvent(cladeSummary, 0, "click")));
+    clickCladeListeners.forEach(l -> l.actionPerformed(new ActionEvent(cladeSummary, 0, "click")));
   }
 
   class CladeImageRenderer extends JPanel {
