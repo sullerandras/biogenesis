@@ -1,4 +1,4 @@
-package biogenesis.clade_analyzer;
+package biogenesis.clade_analyzer.db;
 
 import java.io.File;
 import java.sql.Connection;
@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import biogenesis.CladeId;
+import biogenesis.clade_analyzer.CladeDetails;
+import biogenesis.clade_analyzer.CladeParser;
+import biogenesis.clade_analyzer.TimeAndPopulation;
 
 /**
  * Simple abstraction for the clade database.
@@ -177,7 +180,20 @@ public class DB {
         relativePath(summaryFile) + "')");
   }
 
-  public List<CladeDetails> getLongestSurvivors(int limit) throws SQLException {
+  public Promise<List<CladeDetails>> getLongestSurvivors(int limit) {
+    Promise<List<CladeDetails>> promise = new Promise<>();
+
+    new Job<List<CladeDetails>>(promise) {
+      @Override
+      public List<CladeDetails> run() throws SQLException {
+        return getLongestSurvivorsSync(limit);
+      }
+    };
+
+    return promise;
+  }
+
+  public List<CladeDetails> getLongestSurvivorsSync(int limit) throws SQLException {
     ResultSet rs = executeQuery(
         "select * from " + CLADES_TABLE + " order by LAST_SEEN_TIME - FIRST_SEEN_TIME desc"
             + (limit >= 0 ? " limit " + limit : ""));

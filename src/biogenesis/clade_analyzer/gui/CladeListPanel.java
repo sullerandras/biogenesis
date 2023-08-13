@@ -14,7 +14,7 @@ import javax.swing.SwingUtilities;
 
 import biogenesis.clade_analyzer.CladeChartManager;
 import biogenesis.clade_analyzer.CladeDetails;
-import biogenesis.clade_analyzer.DB;
+import biogenesis.clade_analyzer.db.DB;
 
 public class CladeListPanel extends javax.swing.JPanel {
   private final List<ActionListener> clickCladeListeners = new ArrayList<ActionListener>();

@@ -21,7 +21,7 @@ import biogenesis.WindowManager;
 import biogenesis.clade_analyzer.Analyzer;
 import biogenesis.clade_analyzer.CladeChartManager;
 import biogenesis.clade_analyzer.CladeDetails;
-import biogenesis.clade_analyzer.DB;
+import biogenesis.clade_analyzer.db.DB;
 
 public class MainFrame extends javax.swing.JFrame {
   private DB db = null;
@@ -98,11 +98,18 @@ public class MainFrame extends javax.swing.JFrame {
     new Thread() {
       public void run() {
         try {
-          final java.util.List<CladeDetails> cladeSummaries = db.getLongestSurvivors(longestSurvivorsPanel.getLimit());
-          final java.util.List<CladeDetails> mostPopulousClades = db.getMostPopulousClades(maxTime, mostPopulousCladesPanel.getLimit());
+          db.getLongestSurvivors(longestSurvivorsPanel.getLimit()).then(cladeSummaries -> {
+            java.awt.EventQueue.invokeLater(() -> {
+              longestSurvivorsPanel.setCladeList(cladeSummaries, db, maxTime);
+            });
+          }).onError(e -> {
+            System.err.println("Error getting clade summaries: " + e);
+            e.printStackTrace();
+          });
+          final java.util.List<CladeDetails> mostPopulousClades = db.getMostPopulousClades(maxTime,
+              mostPopulousCladesPanel.getLimit());
 
           java.awt.EventQueue.invokeLater(() -> {
-            longestSurvivorsPanel.setCladeList(cladeSummaries, db, maxTime);
             mostPopulousCladesPanel.setCladeList(mostPopulousClades, db, maxTime);
           });
         } catch (SQLException e) {

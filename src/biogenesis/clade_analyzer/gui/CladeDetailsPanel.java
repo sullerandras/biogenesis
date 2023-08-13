@@ -18,8 +18,8 @@ import biogenesis.GeneticCode;
 import biogenesis.clade_analyzer.CladeChartManager;
 import biogenesis.clade_analyzer.CladeDetails;
 import biogenesis.clade_analyzer.CladeNameGenerator;
-import biogenesis.clade_analyzer.DB;
 import biogenesis.clade_analyzer.TimeAndPopulation;
+import biogenesis.clade_analyzer.db.DB;
 
 public class CladeDetailsPanel extends javax.swing.JPanel {
   private CladeDetails cladeSummary;

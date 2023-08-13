@@ -6,7 +6,7 @@ import java.util.List;
 import biogenesis.WindowManager;
 import biogenesis.clade_analyzer.CladeChartManager;
 import biogenesis.clade_analyzer.CladeDetails;
-import biogenesis.clade_analyzer.DB;
+import biogenesis.clade_analyzer.db.DB;
 
 /**
  * Shows details about the selected clade:

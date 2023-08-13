@@ -22,6 +22,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 
 import biogenesis.BioFile;
+import biogenesis.clade_analyzer.db.DB;
 
 /**
  * Reads json files of the backups and saves the summary in a sqlite database.
