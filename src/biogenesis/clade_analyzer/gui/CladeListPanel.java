@@ -8,6 +8,7 @@ import java.util.List;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
 
 import biogenesis.clade_analyzer.CladeChartManager;
@@ -63,6 +64,7 @@ public class CladeListPanel extends javax.swing.JPanel {
     JScrollPane jScrollPane = new JScrollPane(panel);
     jScrollPane.getHorizontalScrollBar().setUnitIncrement(20);
     jScrollPane.getVerticalScrollBar().setUnitIncrement(20);
+    jScrollPane.getViewport().setScrollMode(JViewport.BACKINGSTORE_SCROLL_MODE);
     add(jScrollPane,
         new java.awt.GridBagConstraints(0, 1, 1, 1, 1, 1, java.awt.GridBagConstraints.NORTHWEST,
             java.awt.GridBagConstraints.BOTH, new java.awt.Insets(0, 0, 0, 0), 0, 0));

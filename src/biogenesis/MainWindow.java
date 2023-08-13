@@ -64,6 +64,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
+import javax.swing.JViewport;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -961,6 +962,7 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 		scrollPane = new JScrollPane(_visibleWorld);
 		scrollPane.getHorizontalScrollBar().setUnitIncrement(10);
 		scrollPane.getVerticalScrollBar().setUnitIncrement(10);
+    scrollPane.getViewport().setScrollMode(JViewport.BACKINGSTORE_SCROLL_MODE);
 		setLocation(Utils.WINDOW_X, Utils.WINDOW_Y);
 		setExtendedState(Utils.WINDOW_STATE);
 		getContentPane().setLayout(new BorderLayout());
