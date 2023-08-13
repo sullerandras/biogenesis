@@ -23,10 +23,9 @@ public class GUI {
     // Set the name of the application menu item on macOS. Also, set the name of the application seen in Activity Monitor.
     System.setProperty("apple.awt.application.name", "Biogenesis Analyzer");
 
-
     // Set application icon. This should work on macOS and Windows as well.
-    final Taskbar taskbar = Taskbar.getTaskbar();
     try {
+      final Taskbar taskbar = Taskbar.getTaskbar(); // Java 9+
       taskbar.setIconImage(createIcon("images/menu_track.png").getImage());
     } catch (Exception e) {
       System.err.println("Unable to set icon: " + e);
