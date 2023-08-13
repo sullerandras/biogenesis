@@ -2,6 +2,7 @@ package biogenesis.clade_analyzer.gui;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -14,6 +15,7 @@ import javax.swing.UIManager;
 
 import biogenesis.Clade;
 import biogenesis.GeneticCode;
+import biogenesis.clade_analyzer.CladeChartManager;
 import biogenesis.clade_analyzer.CladeDetails;
 import biogenesis.clade_analyzer.CladeNameGenerator;
 import biogenesis.clade_analyzer.DB;
@@ -24,9 +26,10 @@ public class CladeDetailsPanel extends javax.swing.JPanel {
   private CladePopulationOverTime populationOverTimeChart;
   private List<ActionListener> actionListeners = new ArrayList<ActionListener>();
 
-  public CladeDetailsPanel(CladeDetails cladeSummary, DB db, int maxTime) {
+  public CladeDetailsPanel(Window owner, CladeChartManager cladeChartManager, CladeDetails cladeSummary, DB db, int maxTime) {
     this.cladeSummary = cladeSummary;
-    initComponents();
+
+    initComponents(owner, cladeChartManager);
 
     if (db != null) {
       new Thread() {
@@ -43,7 +46,11 @@ public class CladeDetailsPanel extends javax.swing.JPanel {
     }
   }
 
-  public void initComponents() {
+  public void initComponents(Window owner, CladeChartManager cladeChartManager) {
+    if (!java.awt.EventQueue.isDispatchThread()) {
+      throw new RuntimeException("Not in dispatch thread");
+    }
+
     setMinimumSize(new Dimension(500, 200));
     setPreferredSize(new Dimension(500, 200));
     setBorder(BorderFactory.createLoweredBevelBorder());
@@ -104,7 +111,7 @@ public class CladeDetailsPanel extends javax.swing.JPanel {
         java.awt.GridBagConstraints.BOTH, new java.awt.Insets(0, 0, 0, 0), 0, 0));
 
     // Population over time chart
-    populationOverTimeChart = new CladePopulationOverTime();
+    populationOverTimeChart = new CladePopulationOverTime(owner, cladeChartManager);
     add(populationOverTimeChart,
         new java.awt.GridBagConstraints(2, 0, 1, 1, 1.0, 0, java.awt.GridBagConstraints.NORTHWEST,
             java.awt.GridBagConstraints.HORIZONTAL, new java.awt.Insets(0, 0, 0, 0), 0, 0));

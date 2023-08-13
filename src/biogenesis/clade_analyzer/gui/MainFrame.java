@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import javax.swing.ProgressMonitor;
@@ -19,6 +20,7 @@ import biogenesis.BioFileFilter;
 import biogenesis.JFileChooserWithRemember;
 import biogenesis.WindowManager;
 import biogenesis.clade_analyzer.Analyzer;
+import biogenesis.clade_analyzer.CladeChartManager;
 import biogenesis.clade_analyzer.CladeDetails;
 import biogenesis.clade_analyzer.DB;
 
@@ -36,6 +38,10 @@ public class MainFrame extends javax.swing.JFrame {
   }
 
   private void initComponents() {
+    if (!java.awt.EventQueue.isDispatchThread()) {
+      throw new RuntimeException("Not in dispatch thread");
+    }
+
     setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
     setTitle("Biogenesis Clade Analyzer");
     setMinimumSize(new java.awt.Dimension(800, 600));
@@ -45,6 +51,7 @@ public class MainFrame extends javax.swing.JFrame {
     javax.swing.JToolBar toolbar = new javax.swing.JToolBar();
     toolbar.setFloatable(false);
     toolbar.setRollover(true);
+
     JButton openButton = new JButton("Open");
     openButton.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -52,16 +59,18 @@ public class MainFrame extends javax.swing.JFrame {
       }
     });
     toolbar.add(openButton);
+
     getContentPane().add(toolbar,
         new java.awt.GridBagConstraints(0, 0, 1, 1, 1, 0, java.awt.GridBagConstraints.NORTHWEST,
             java.awt.GridBagConstraints.HORIZONTAL, new java.awt.Insets(0, 0, 0, 0), 0, 0));
 
+    // tabs
     JTabbedPane tabbedPane = new JTabbedPane();
 
-    longestSurvivorsPanel = new CladeListPanel();
+    longestSurvivorsPanel = new CladeListPanel(this, new CladeChartManager());
     tabbedPane.add("Longest survivors", longestSurvivorsPanel);
 
-    mostPopulousCladesPanel = new CladeListPanel();
+    mostPopulousCladesPanel = new CladeListPanel(this, new CladeChartManager());
     tabbedPane.add("Most populous clades", mostPopulousCladesPanel);
 
     getContentPane().add(tabbedPane,
@@ -87,10 +96,16 @@ public class MainFrame extends javax.swing.JFrame {
     new Thread() {
       public void run() {
         try {
-          java.util.List<CladeDetails> cladeSummaries = db.getLongestSurvivors();
-          longestSurvivorsPanel.setCladeList(cladeSummaries, db, maxTime);
+          final java.util.List<CladeDetails> cladeSummaries = db.getLongestSurvivors();
+          final java.util.List<CladeDetails> mostPopulousClades = db.getMostPopulousClades(maxTime);
 
-          mostPopulousCladesPanel.setCladeList(db.getMostPopulousClades(maxTime), db, maxTime);
+          java.awt.EventQueue.invokeLater(() -> {
+            longestSurvivorsPanel.setCladeList(cladeSummaries, db, maxTime);
+            longestSurvivorsPanel.getCladeChartManager().synchronizeYAxis();
+
+            mostPopulousCladesPanel.setCladeList(mostPopulousClades, db, maxTime);
+            mostPopulousCladesPanel.getCladeChartManager().synchronizeYAxis();
+          });
         } catch (SQLException e) {
           System.err.println("Error getting clade summaries: " + e);
           e.printStackTrace();

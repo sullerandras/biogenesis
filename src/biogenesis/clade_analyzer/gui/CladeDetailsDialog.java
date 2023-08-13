@@ -4,6 +4,7 @@ import java.awt.Frame;
 import java.util.List;
 
 import biogenesis.WindowManager;
+import biogenesis.clade_analyzer.CladeChartManager;
 import biogenesis.clade_analyzer.CladeDetails;
 import biogenesis.clade_analyzer.DB;
 
@@ -36,6 +37,10 @@ public class CladeDetailsDialog extends javax.swing.JDialog {
   }
 
   private void initComponents(DB db) {
+    if (!java.awt.EventQueue.isDispatchThread()) {
+      throw new RuntimeException("Not in dispatch thread");
+    }
+
     setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
     setTitle("Clade Ancestors");
     setMinimumSize(new java.awt.Dimension(800, 600));
@@ -49,7 +54,7 @@ public class CladeDetailsDialog extends javax.swing.JDialog {
             java.awt.GridBagConstraints.BOTH, new java.awt.Insets(0, 0, 0, 0), 0, 0));
 
     // ancestor clades
-    cladeListPanel = new CladeListPanel();
+    cladeListPanel = new CladeListPanel(this, new CladeChartManager());
     mainPanel.add(cladeListPanel,
         new java.awt.GridBagConstraints(0, 1, 1, 1, 1, 1, java.awt.GridBagConstraints.NORTHWEST,
             java.awt.GridBagConstraints.BOTH, new java.awt.Insets(0, 0, 0, 0), 0, 0));
