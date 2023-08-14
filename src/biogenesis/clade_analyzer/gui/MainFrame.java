@@ -97,25 +97,22 @@ public class MainFrame extends javax.swing.JFrame {
   private void refreshTabs() {
     new Thread() {
       public void run() {
-        try {
-          db.getLongestSurvivors(longestSurvivorsPanel.getLimit()).then(cladeSummaries -> {
-            java.awt.EventQueue.invokeLater(() -> {
-              longestSurvivorsPanel.setCladeList(cladeSummaries, db, maxTime);
-            });
-          }).onError(e -> {
-            System.err.println("Error getting clade summaries: " + e);
-            e.printStackTrace();
+        db.getLongestSurvivors(longestSurvivorsPanel.getLimit()).then(cladeSummaries -> {
+          java.awt.EventQueue.invokeLater(() -> {
+            longestSurvivorsPanel.setCladeList(cladeSummaries, db, maxTime);
           });
-          final java.util.List<CladeDetails> mostPopulousClades = db.getMostPopulousClades(maxTime,
-              mostPopulousCladesPanel.getLimit());
-
+        }).onError(e -> {
+          System.err.println("Error getting clade summaries: " + e);
+          e.printStackTrace();
+        });
+        db.getMostPopulousClades(maxTime, mostPopulousCladesPanel.getLimit()).then(mostPopulousClades -> {
           java.awt.EventQueue.invokeLater(() -> {
             mostPopulousCladesPanel.setCladeList(mostPopulousClades, db, maxTime);
           });
-        } catch (SQLException e) {
+        }).onError(e -> {
           System.err.println("Error getting clade summaries: " + e);
           e.printStackTrace();
-        }
+        });
       }
     }.start();
   }

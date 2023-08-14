@@ -38,7 +38,11 @@ public class CladePopulationOverTime extends JPanel {
     this.maxTime = maxTime;
     this.maximumY = timeAndPopulationList.stream().mapToInt(TimeAndPopulation::getPopulation).max().orElse(0);
 
-    initComponents(timeAndPopulationList, maxTime, maximumY);
+    java.awt.EventQueue.invokeLater(new Runnable() {
+      public void run() {
+        initComponents(timeAndPopulationList, maxTime, maximumY);
+      }
+    });
   }
 
   private void initComponents(List<TimeAndPopulation> timeAndPopulationList, int maxTime, int maximumY) {

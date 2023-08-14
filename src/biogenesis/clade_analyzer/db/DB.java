@@ -201,7 +201,20 @@ public class DB {
     return readCladeSummaries(rs);
   }
 
-  public List<TimeAndPopulation> getPopulationHistory(String cladeIdStr) throws SQLException {
+  public Promise<List<TimeAndPopulation>> getPopulationHistory(String cladeIdStr) {
+    Promise<List<TimeAndPopulation>> promise = new Promise<>();
+
+    new Job<List<TimeAndPopulation>>(promise) {
+      @Override
+      public List<TimeAndPopulation> run() throws SQLException {
+        return getPopulationHistorySync(cladeIdStr);
+      }
+    };
+
+    return promise;
+  }
+
+  public List<TimeAndPopulation> getPopulationHistorySync(String cladeIdStr) throws SQLException {
     ResultSet rs = executeQuery("select TIME, POPULATION from " + CLADE_SUMMARIES_TABLE + " where CLADEID = '"
         + cladeIdStr + "' order by TIME");
 
@@ -214,7 +227,20 @@ public class DB {
     return list;
   }
 
-  public List<CladeDetails> getMostPopulousClades(int time, int limit) throws SQLException {
+  public Promise<List<CladeDetails>> getMostPopulousClades(int time, int limit) {
+    Promise<List<CladeDetails>> promise = new Promise<>();
+
+    new Job<List<CladeDetails>>(promise) {
+      @Override
+      public List<CladeDetails> run() throws SQLException {
+        return getMostPopulousCladesSync(time, limit);
+      }
+    };
+
+    return promise;
+  }
+
+  public List<CladeDetails> getMostPopulousCladesSync(int time, int limit) throws SQLException {
     ResultSet rs = executeQuery(
         "select c.*, cs.TIME, cs.POPULATION " +
             " from " + CLADE_SUMMARIES_TABLE + " cs" +

@@ -18,7 +18,6 @@ import biogenesis.GeneticCode;
 import biogenesis.clade_analyzer.CladeChartManager;
 import biogenesis.clade_analyzer.CladeDetails;
 import biogenesis.clade_analyzer.CladeNameGenerator;
-import biogenesis.clade_analyzer.TimeAndPopulation;
 import biogenesis.clade_analyzer.db.DB;
 
 public class CladeDetailsPanel extends javax.swing.JPanel {
@@ -36,12 +35,12 @@ public class CladeDetailsPanel extends javax.swing.JPanel {
       new Thread() {
         @Override
         public void run() {
-          try {
-            List<TimeAndPopulation> populationOverTime = db.getPopulationHistory(cladeSummary.getCladeId());
-            java.awt.EventQueue.invokeLater(() -> populationOverTimeChart.setData(populationOverTime, maxTime));
-          } catch (Exception e) {
+          db.getPopulationHistory(cladeSummary.getCladeId()).then(populationOverTime -> {
+            populationOverTimeChart.setData(populationOverTime, maxTime);
+          }).onError(e -> {
+            System.err.println("Error getting population history: " + e);
             e.printStackTrace();
-          }
+          });
         }
       }.start();
     }

@@ -15,6 +15,7 @@ import javax.swing.SwingUtilities;
 import biogenesis.clade_analyzer.CladeChartManager;
 import biogenesis.clade_analyzer.CladeDetails;
 import biogenesis.clade_analyzer.db.DB;
+import biogenesis.clade_analyzer.db.JobManager;
 
 public class CladeListPanel extends javax.swing.JPanel {
   private final List<ActionListener> clickCladeListeners = new ArrayList<ActionListener>();
@@ -29,6 +30,12 @@ public class CladeListPanel extends javax.swing.JPanel {
   public CladeListPanel(Window owner, CladeChartManager cladeChartManager) {
     this.owner = owner;
     this.cladeChartManager = cladeChartManager;
+
+    JobManager.addTasksDoneListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        cladeChartManager.synchronizeYAxis();
+      }
+    });
 
     initComponents(new java.util.ArrayList<CladeDetails>(), null, 0);
   }
@@ -67,9 +74,6 @@ public class CladeListPanel extends javax.swing.JPanel {
     limitsComboBox = new JComboBox<Limit>(Limit.values());
     limitsComboBox.addActionListener(new ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
-        // disable synchronization when changing limit since the charts will not be syncronized anymore
-        synchronizeYAxisCheckBox.setSelected(false);
-
         limitChangeListeners.forEach(l -> l.actionPerformed(evt));
       }
     });
