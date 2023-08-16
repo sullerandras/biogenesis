@@ -166,7 +166,7 @@ public class MainFrame extends javax.swing.JFrame {
 
           refreshTabs();
         } catch (ClassNotFoundException | SQLException | JsonIOException | JsonSyntaxException
-            | FileNotFoundException e) {
+            | IOException e) {
           System.err.println("Error opening database: " + e);
           e.printStackTrace();
         }

@@ -1,33 +1,30 @@
 package biogenesis.clade_analyzer.db;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.sql.Statement;
 import java.util.List;
 
-import biogenesis.CladeId;
 import biogenesis.clade_analyzer.CladeDetails;
-import biogenesis.clade_analyzer.CladeParser;
 import biogenesis.clade_analyzer.TimeAndPopulation;
+import biogenesis.clade_analyzer.db.models.DBClade;
+import biogenesis.clade_analyzer.db.models.DBCladePopulation;
+import biogenesis.clade_analyzer.db.models.DBGeneticCode;
+import biogenesis.clade_analyzer.db.models.DBSummaryFile;
 
 /**
  * Simple abstraction for the clade database.
  */
 public class DB {
-  public static final String SUMMARY_FILES_TABLE = "summary_files";
-  public static final String SUMMARY_FILES_STATE_COLUMN = "state";
-  public static final String SUMMARY_FILES_STATES_PENDING = "pending";
-  public static final String SUMMARY_FILES_STATES_DONE = "done";
-
-  public static final String CLADE_SUMMARIES_TABLE = "clade_summaries";
-  public static final String CLADES_TABLE = "clades";
-  public static final String COLORS_TABLE = "colors";
+  public static final String SCHEMA_MIGRATIONS_TABLE = "schema_migrations";
 
   private final File dbFile;
   private final Connection connection;
+  private Statement statement;
 
   public DB(File dbFile) throws ClassNotFoundException, SQLException {
     this.dbFile = dbFile;
@@ -44,140 +41,49 @@ public class DB {
   }
 
   public void close() throws SQLException {
+    if (statement != null) {
+      statement.close();
+    }
     connection.close();
   }
 
-  public void dropTables() throws SQLException {
-    executeUpdate("DROP TABLE IF EXISTS " + SUMMARY_FILES_TABLE);
-    executeUpdate("DROP TABLE IF EXISTS " + CLADE_SUMMARIES_TABLE);
-    executeUpdate("DROP TABLE IF EXISTS " + CLADES_TABLE);
-    executeUpdate("DROP TABLE IF EXISTS " + COLORS_TABLE);
-  }
-
-  public void createTables() throws SQLException {
-    executeUpdate("CREATE TABLE IF NOT EXISTS " + COLORS_TABLE + " " +
-        "(ID INTEGER PRIMARY KEY ASC," +
-        " COLOR            TEXT     UNIQUE NOT NULL, " +
-        " NAME             TEXT     NOT NULL " +
+  public void createTables() throws SQLException, IOException {
+    executeUpdate("CREATE TABLE IF NOT EXISTS " + SCHEMA_MIGRATIONS_TABLE + " (" +
+        "ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+        "FILENAME TEXT UNIQUE " +
         ")");
-    executeUpdate("CREATE TABLE IF NOT EXISTS " + SUMMARY_FILES_TABLE + " " +
-        "(ID INTEGER PRIMARY KEY ASC," +
-        " FILENAME       TEXT    UNIQUE NOT NULL, " +
-        " STATE          TEXT    NOT NULL " +
-        ")");
-    executeUpdate("CREATE TABLE IF NOT EXISTS " + CLADE_SUMMARIES_TABLE + " " +
-        "(ID INTEGER PRIMARY KEY ASC," +
-        " SUMMARY_FILE_ID INTEGER    NOT NULL, " +
-        " CLADEID        TEXT        NOT NULL, " +
-        " TIME           INTEGER     NOT NULL, " +
-        " GENETIC_CODE   TEXT        NOT NULL, " + // this is the most common genetic code for this clade in this time
-        " POPULATION     INTEGER     NOT NULL " +
-        ")");
-    executeUpdate("CREATE TABLE IF NOT EXISTS " + CLADES_TABLE + " " +
-        "(ID INTEGER PRIMARY KEY ASC," +
-        " CLADEID          TEXT     UNIQUE NOT NULL, " +
-        " FIRST_SEEN_TIME  INTEGER  NOT NULL, " +
-        " LAST_SEEN_TIME   INTEGER  NOT NULL, " +
-        " GENETIC_CODE     TEXT     NOT NULL, " + // this is the genetic code from the clade_summaries table at the last seen time
-        " MAX_POPULATION   INTEGER  NOT NULL " +
-        ")");
-    executeUpdate("CREATE INDEX IF NOT EXISTS CLADES_SUMMARIES_TIME_INDEX ON " + CLADE_SUMMARIES_TABLE + " (TIME)");
-    executeUpdate("CREATE INDEX IF NOT EXISTS CLADE_SUMMARIES_CLADEID_INDEX ON " +
-        CLADE_SUMMARIES_TABLE + " (CLADEID)");
-
-
-        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('green', '{\"r\":0,\"g\":255,\"b\":0,\"a\":255}')");
-        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('forest', '{\"r\":0,\"g\":128,\"b\":0,\"a\":255}')");
-        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('spring', '{\"r\":0,\"g\":255,\"b\":128,\"a\":255}')");
-        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('summer', '{\"r\":128,\"g\":255,\"b\":64,\"a\":255}')");
-        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('lime', '{\"r\":176,\"g\":255,\"b\":0,\"a\":255}')");
-        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('leaf', '{\"r\":92,\"g\":184,\"b\":0,\"a\":255}')");
-        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('c4', '{\"r\":96,\"g\":192,\"b\":96,\"a\":255}')");
-        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('jade', '{\"r\":0,\"g\":168,\"b\":107,\"a\":255}')");
-        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('grass', '{\"r\":144,\"g\":176,\"b\":64,\"a\":255}')");
-        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('bark', '{\"r\":96,\"g\":128,\"b\":64,\"a\":255}')");
-        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('purple', '{\"r\":168,\"g\":0,\"b\":84,\"a\":255}')");
-        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('red', '{\"r\":255,\"g\":0,\"b\":0,\"a\":255}')");
-        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('fire', '{\"r\":255,\"g\":100,\"b\":0,\"a\":255}')");
-        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('orange', '{\"r\":255,\"g\":200,\"b\":0,\"a\":255}')");
-        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('maroon', '{\"r\":128,\"g\":0,\"b\":0,\"a\":255}')");
-        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('pink', '{\"r\":255,\"g\":175,\"b\":175,\"a\":255}')");
-        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('cream', '{\"r\":208,\"g\":192,\"b\":140,\"a\":255}')");
-        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('silver', '{\"r\":192,\"g\":192,\"b\":192,\"a\":255}')");
-        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('spike', '{\"r\":164,\"g\":132,\"b\":100,\"a\":255}')");
-        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('lilac', '{\"r\":192,\"g\":128,\"b\":255,\"a\":255}')");
-        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('gray', '{\"r\":128,\"g\":128,\"b\":128,\"a\":255}')");
-        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('violet', '{\"r\":128,\"g\":0,\"b\":128,\"a\":255}')");
-        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('olive', '{\"r\":176,\"g\":176,\"b\":0,\"a\":255}')");
-        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('sky', '{\"r\":128,\"g\":192,\"b\":255,\"a\":255}')");
-        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('blue', '{\"r\":0,\"g\":0,\"b\":255,\"a\":255}')");
-        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('ochre', '{\"r\":204,\"g\":119,\"b\":34,\"a\":255}')");
-        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('fallow', '{\"r\":150,\"g\":113,\"b\":23,\"a\":255}')");
-        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('spore', '{\"r\":0,\"g\":80,\"b\":160,\"a\":255}')");
-        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('white', '{\"r\":255,\"g\":255,\"b\":255,\"a\":255}')");
-        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('plague', '{\"r\":255,\"g\":192,\"b\":255,\"a\":255}')");
-        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('coral', '{\"r\":255,\"g\":100,\"b\":138,\"a\":255}')");
-        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('mint', '{\"r\":160,\"g\":224,\"b\":160,\"a\":255}')");
-        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('lavender', '{\"r\":128,\"g\":96,\"b\":176,\"a\":255}')");
-        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('magenta', '{\"r\":255,\"g\":0,\"b\":255,\"a\":255}')");
-        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('rose', '{\"r\":255,\"g\":0,\"b\":128,\"a\":255}')");
-        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('cyan', '{\"r\":0,\"g\":255,\"b\":255,\"a\":255}')");
-        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('teal', '{\"r\":0,\"g\":128,\"b\":128,\"a\":255}')");
-        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('yellow', '{\"r\":255,\"g\":255,\"b\":0,\"a\":255}')");
-        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('auburn', '{\"r\":128,\"g\":48,\"b\":48,\"a\":255}')");
-        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('indigo', '{\"r\":111,\"g\":0,\"b\":255,\"a\":255}')");
-        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('blond', '{\"r\":255,\"g\":255,\"b\":128,\"a\":255}')");
-        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('flower', '{\"r\":128,\"g\":128,\"b\":255,\"a\":255}')");
-        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('darkgray', '{\"r\":64,\"g\":64,\"b\":64,\"a\":255}')");
-        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('gold', '{\"r\":212,\"g\":175,\"b\":55,\"a\":255}')");
-        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('dark', '{\"r\":64,\"g\":32,\"b\":16,\"a\":255}')");
-        executeUpdate("INSERT OR IGNORE INTO "+COLORS_TABLE+"(name, color) VALUES ('eye', '{\"r\":0,\"g\":64,\"b\":64,\"a\":255}')");
+    executeMigration("1.sql");
+    executeMigration("2.sql");
   }
 
   public boolean isSummaryFileDone(File summaryFile) throws SQLException {
-    String state = connection.createStatement().executeQuery(
-        "SELECT " + SUMMARY_FILES_STATE_COLUMN +
-            " FROM " + SUMMARY_FILES_TABLE +
-            " WHERE FILENAME = '" + relativePath(summaryFile) + "'")
-        .getString(SUMMARY_FILES_STATE_COLUMN);
-    return state != null && state.equals(SUMMARY_FILES_STATES_DONE);
+    return new DBSummaryFile(this).isSummaryFileDone(summaryFile);
   }
 
-  public void upsertSummaryFileToPending(File summaryFile) throws SQLException {
-    executeUpdate("INSERT OR REPLACE INTO " + SUMMARY_FILES_TABLE + " (FILENAME, STATE) " +
-        "VALUES ('" + relativePath(summaryFile) + "', '" +
-        SUMMARY_FILES_STATES_PENDING + "')");
+  public int upsertSummaryFileToPending(File summaryFile, int time) throws SQLException {
+    return new DBSummaryFile(this).upsertSummaryFileToPending(summaryFile, time);
   }
 
-  public void markSummaryFileDone(File summaryFile) throws SQLException {
-    executeUpdate("UPDATE " + SUMMARY_FILES_TABLE + " SET " + SUMMARY_FILES_STATE_COLUMN + " = '" +
-        SUMMARY_FILES_STATES_DONE + "' WHERE FILENAME = '" +
-        relativePath(summaryFile) + "'");
+  public int getSummaryFileId(File summaryFile) throws SQLException {
+    return new DBSummaryFile(this).getSummaryFileId(summaryFile);
   }
 
-  public void insertCladeSummary(File summaryFile, String cladeId, int time, String geneticCode, int population)
+  public void deleteRecordsForSummaryFile(int summaryFileId) throws SQLException {
+    new DBCladePopulation(this).deleteRecordsForSummaryFile(summaryFileId);
+  }
+
+  public void markSummaryFileDone(int summaryFileId) throws SQLException {
+    new DBSummaryFile(this).markSummaryFileDone(summaryFileId);
+  }
+
+  public void insertCladeSummary(int summaryFileId, String cladeId, int time, String geneticCode, int population)
       throws SQLException {
-    executeUpdate("INSERT INTO " + CLADE_SUMMARIES_TABLE
-        + " (SUMMARY_FILE_ID, CLADEID, TIME, GENETIC_CODE, POPULATION) " +
-        "VALUES (" +
-        "(SELECT ID FROM " + SUMMARY_FILES_TABLE + " WHERE FILENAME = '" +
-        relativePath(summaryFile) + "'), '" + cladeId + "', " + time + ", '" + geneticCode + "', " + population + ")");
-    executeUpdate("INSERT OR IGNORE INTO " + CLADES_TABLE
-        + " (CLADEID, FIRST_SEEN_TIME, LAST_SEEN_TIME, GENETIC_CODE, MAX_POPULATION) " +
-        "VALUES ('" + cladeId + "', " + time + ", " + time + ", '" + geneticCode + "', " + population + ")");
-    executeUpdate("UPDATE " + CLADES_TABLE + " SET " +
-        "LAST_SEEN_TIME = " + time + ", " +
-        "GENETIC_CODE = '" + geneticCode + "' " +
-        "WHERE CLADEID = '" + cladeId + "'");
-    executeUpdate("UPDATE " + CLADES_TABLE + " SET " +
-        "MAX_POPULATION = " + population + " " +
-        "WHERE CLADEID = '" + cladeId + "' AND MAX_POPULATION < " + population);
-  }
-
-  public void deleteRecordsForSummaryFile(File summaryFile) throws SQLException {
-    executeUpdate("DELETE FROM " + CLADE_SUMMARIES_TABLE + " WHERE SUMMARY_FILE_ID = " +
-        "(SELECT ID FROM " + SUMMARY_FILES_TABLE + " WHERE FILENAME = '" +
-        relativePath(summaryFile) + "')");
+    final int geneticCodeId = new DBGeneticCode(this).insertAndReturnId(geneticCode);
+    final DBClade dbClade = new DBClade(this);
+    final int intCladeId = dbClade.insertAndReturnId(cladeId, geneticCodeId, time, time, population);
+    new DBCladePopulation(this).insert(intCladeId, summaryFileId, geneticCodeId, population);
+    dbClade.updateLastSeenTimeAndGeneticCodeId(intCladeId, time, geneticCodeId);
+    dbClade.updateMaxPopulation(intCladeId, population);
   }
 
   public Promise<List<CladeDetails>> getLongestSurvivors(int limit) {
@@ -194,11 +100,7 @@ public class DB {
   }
 
   public List<CladeDetails> getLongestSurvivorsSync(int limit) throws SQLException {
-    ResultSet rs = executeQuery(
-        "select * from " + CLADES_TABLE + " order by LAST_SEEN_TIME - FIRST_SEEN_TIME desc"
-            + (limit >= 0 ? " limit " + limit : ""));
-
-    return readCladeSummaries(rs);
+    return new DBClade(this).getLongestSurvivorsSync(limit);
   }
 
   public Promise<List<TimeAndPopulation>> getPopulationHistory(String cladeIdStr) {
@@ -214,17 +116,8 @@ public class DB {
     return promise;
   }
 
-  public List<TimeAndPopulation> getPopulationHistorySync(String cladeIdStr) throws SQLException {
-    ResultSet rs = executeQuery("select TIME, POPULATION from " + CLADE_SUMMARIES_TABLE + " where CLADEID = '"
-        + cladeIdStr + "' order by TIME");
-
-    List<TimeAndPopulation> list = new ArrayList<>();
-
-    while (rs.next()) {
-      list.add(new TimeAndPopulation(rs.getInt("TIME"), rs.getInt("POPULATION")));
-    }
-
-    return list;
+  public List<TimeAndPopulation> getPopulationHistorySync(String cladeId) throws SQLException {
+    return new DBCladePopulation(this).getPopulationHistorySync(cladeId);
   }
 
   public Promise<List<CladeDetails>> getMostPopulousClades(int time, int limit) {
@@ -241,90 +134,61 @@ public class DB {
   }
 
   public List<CladeDetails> getMostPopulousCladesSync(int time, int limit) throws SQLException {
-    ResultSet rs = executeQuery(
-        "select c.*, cs.TIME, cs.POPULATION " +
-            " from " + CLADE_SUMMARIES_TABLE + " cs" +
-            " join " + CLADES_TABLE + " c using (CLADEID)" +
-            " where cs.TIME = " + time +
-            " order by cs.POPULATION desc" +
-            (limit >= 0 ? " limit " + limit : ""));
-
-    return readFullCladeDetails(rs);
+    return new DBCladePopulation(this).getMostPopulousCladesSync(time, limit);
   }
 
   public List<CladeDetails> getCladeAncestors(String cladeIdStr) throws SQLException {
-    CladeId cladeId = new CladeId(cladeIdStr);
-
-    List<CladeDetails> ancestors = new ArrayList<>();
-
-    while (cladeId != null) {
-      ResultSet rs = executeQuery("select * from clades where CLADEID = '" + cladeId.getId() + "'");
-
-      ancestors.addAll(readCladeSummaries(rs));
-
-      cladeId = cladeId.parentId();
-    }
-
-    return ancestors;
+    return new DBClade(this).getCladeAncestors(cladeIdStr);
   }
 
   public int getMaxTime() throws SQLException {
-    ResultSet rs = executeQuery("select max(TIME) from " + CLADE_SUMMARIES_TABLE);
-    return rs.getInt(1);
+    return new DBSummaryFile(this).getMaxTime();
   }
 
-  private List<CladeDetails> readCladeSummaries(ResultSet rs) throws SQLException {
-    List<CladeDetails> list = new ArrayList<>();
+  public void executeUpdate(String sql) throws SQLException {
+    // System.out.println(sql);
+    getStatement().executeUpdate(sql);
+  }
 
-    try {
-      while (rs.next()) {
-        list.add(CladeParser.parse(
-            rs.getString("CLADEID"),
-            rs.getInt("FIRST_SEEN_TIME"),
-            rs.getInt("LAST_SEEN_TIME"),
-            rs.getString("GENETIC_CODE"),
-            rs.getInt("MAX_POPULATION")));
-      }
-    } finally {
-      rs.close();
+  public ResultSet executeQuery(String sql) throws SQLException {
+    // System.out.println(sql);
+    return getStatement().executeQuery(sql);
+  }
+
+  private Statement getStatement() throws SQLException {
+    if (statement == null) {
+      statement = connection.createStatement();
+    }
+    return statement;
+  }
+
+  private boolean isMigrationExecuted(String filename) throws SQLException {
+    ResultSet rs = executeQuery("SELECT * FROM " + SCHEMA_MIGRATIONS_TABLE + " WHERE FILENAME = '" + filename + "'");
+    return rs.getString("FILENAME") != null;
+  }
+
+  private void executeMigration(String filename) throws IOException, SQLException {
+    if (isMigrationExecuted(filename)) {
+      return;
     }
 
-    return list;
+    executeUpdate(readMigrationFile(filename));
+    executeUpdate("INSERT INTO " + SCHEMA_MIGRATIONS_TABLE + " (FILENAME) VALUES ('" + filename + "')");
   }
 
-  private List<CladeDetails> readFullCladeDetails(ResultSet rs) throws SQLException {
-    List<CladeDetails> list = new ArrayList<>();
-
-    try {
-      while (rs.next()) {
-        list.add(CladeParser.parse(
-            rs.getString("CLADEID"),
-            rs.getInt("FIRST_SEEN_TIME"),
-            rs.getInt("LAST_SEEN_TIME"),
-            rs.getString("GENETIC_CODE"),
-            rs.getInt("MAX_POPULATION"),
-            rs.getInt("TIME"),
-            rs.getInt("POPULATION")));
-      }
-    } finally {
-      rs.close();
-    }
-
-    return list;
+  private String readMigrationFile(String filename) throws IOException {
+    return new String(getClass().getResourceAsStream("migrations/" + filename).readAllBytes());
   }
 
-  private void executeUpdate(String sql) throws SQLException {
-    // System.out.println(sql);
-    connection.createStatement().executeUpdate(sql);
+  public void startTransaction() throws SQLException {
+    connection.setAutoCommit(false);
   }
 
-  private ResultSet executeQuery(String sql) throws SQLException {
-    // System.out.println(sql);
-    return connection.createStatement().executeQuery(sql);
+  public void commitTransaction() throws SQLException {
+    connection.commit();
   }
 
-  private String relativePath(File file) {
-    return new File(".").getAbsoluteFile().getParentFile().toPath().relativize(file.getAbsoluteFile().toPath())
-        .toString();
+  public void rollbackTransaction() throws SQLException {
+    connection.rollback();
   }
 }

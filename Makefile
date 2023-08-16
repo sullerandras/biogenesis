@@ -21,6 +21,7 @@ build-analyzer: compile-analyzer
 	unzip -o lib/sqlite-jdbc-3.42.0.0.jar -d build
 	unzip -o lib/xchart-3.8.5.jar -d build
 	cp -r classes/* build
+	cp -r src/biogenesis/clade_analyzer/db/migrations build/biogenesis/clade_analyzer/db
 	cp changes.md build
 	jar -cfe biogenesis-analyzer.jar biogenesis.clade_analyzer.GUI -C build .
 

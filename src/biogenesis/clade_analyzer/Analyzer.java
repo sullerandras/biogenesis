@@ -3,6 +3,7 @@ package biogenesis.clade_analyzer;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,6 +24,7 @@ import com.google.gson.JsonSyntaxException;
 
 import biogenesis.BioFile;
 import biogenesis.clade_analyzer.db.DB;
+import biogenesis.clade_analyzer.db.models.DBSummaryFile;
 
 /**
  * Reads json files of the backups and saves the summary in a sqlite database.
@@ -68,7 +70,7 @@ public class Analyzer {
   }
 
   public static void analyze(BioFile bioFile, DB db, ProgressMonitor progressMonitor)
-      throws JsonIOException, JsonSyntaxException, FileNotFoundException, SQLException {
+      throws JsonIOException, JsonSyntaxException, SQLException, IOException {
     db.createTables();
     String jsonFilePrefix = bioFile.getWorldName() + "@";// we only process json files that start with this prefix
 
@@ -95,7 +97,6 @@ public class Analyzer {
         });
       }
 
-      System.out.println("Analyzing " + file.getName());
       analyzeJsonFile(file, db);
     }
     System.out.println("Done");
@@ -105,47 +106,56 @@ public class Analyzer {
       throws JsonIOException, JsonSyntaxException, FileNotFoundException, SQLException {
 
     if (db.isSummaryFileDone(file)) {
-      System.out.println("Skipping " + file.getName() + " because it is already done");
+      // System.out.println("Skipping " + file.getName() + " because it is already done");
       return;
     }
+    System.out.println("Analyzing " + file.getName());
 
-    db.upsertSummaryFileToPending(file);
-    db.deleteRecordsForSummaryFile(file);
+    db.startTransaction(); // using transactions to speed up the inserts
+    try {
+      JsonObject jsonObject = JsonParser.parseReader(new FileReader(file)).getAsJsonObject();
+      int time = jsonObject.get("worldStatistics").getAsJsonObject().get("time").getAsInt();
 
-    Map<String, List<String>> cladeIdToGeneticCodes = new HashMap<>();
+      int summaryFileId = db.upsertSummaryFileToPending(file, time);
+      db.deleteRecordsForSummaryFile(summaryFileId);
 
-    JsonObject jsonObject = JsonParser.parseReader(new FileReader(file)).getAsJsonObject();
-    int time = jsonObject.get("worldStatistics").getAsJsonObject().get("time").getAsInt();
-    for (JsonElement organism : jsonObject.get("_organisms").getAsJsonArray()) {
-      if (organism.getAsJsonObject().get("alive").getAsBoolean() == false) {
-        continue;
+      Map<String, List<String>> cladeIdToGeneticCodes = new HashMap<>();
+
+      for (JsonElement organism : jsonObject.get("_organisms").getAsJsonArray()) {
+        if (organism.getAsJsonObject().get("alive").getAsBoolean() == false) {
+          continue;
+        }
+
+        String cladeId = organism.getAsJsonObject().get("_geneticCode").getAsJsonObject().get("_cladeID").getAsString();
+        String geneticCode = organism.getAsJsonObject().get("_geneticCode").getAsJsonObject().toString();
+
+        cladeIdToGeneticCodes.putIfAbsent(cladeId, new ArrayList<>());
+        cladeIdToGeneticCodes.get(cladeId).add(geneticCode);
+        // db.insertCladeSummary(cladeId, time, geneticCode);
+        // System.out.println("====> cladeId: "+cladeId+", time: "+time+", geneticCode: "+geneticCode);
       }
 
-      String cladeId = organism.getAsJsonObject().get("_geneticCode").getAsJsonObject().get("_cladeID").getAsString();
-      String geneticCode = organism.getAsJsonObject().get("_geneticCode").getAsJsonObject().toString();
+      for (String cladeId : cladeIdToGeneticCodes.keySet()) {
+        Entry<String, Long> max = cladeIdToGeneticCodes.get(cladeId)
+            .stream()
+            .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
+            .entrySet()
+            .stream()
+            .max(Map.Entry.comparingByValue())
+            .get();
 
-      cladeIdToGeneticCodes.putIfAbsent(cladeId, new ArrayList<>());
-      cladeIdToGeneticCodes.get(cladeId).add(geneticCode);
-      // db.insertCladeSummary(cladeId, time, geneticCode);
-      // System.out.println("====> cladeId: "+cladeId+", time: "+time+", geneticCode: "+geneticCode);
+        String geneticCode = max.getKey();
+        // Long count = max.getValue();
+        // System.out.println(
+        //     "====> cladeId: " + cladeId + ", time: " + time + ", geneticCode: " + geneticCode + ", count: " + count);
+        db.insertCladeSummary(summaryFileId, cladeId, time, geneticCode, cladeIdToGeneticCodes.get(cladeId).size());
+      }
+
+      db.markSummaryFileDone(summaryFileId);
+      db.commitTransaction();
+    } catch (FileNotFoundException|SQLException|RuntimeException e) {
+      db.rollbackTransaction();
+      throw e;
     }
-
-    for (String cladeId : cladeIdToGeneticCodes.keySet()) {
-      Entry<String, Long> max = cladeIdToGeneticCodes.get(cladeId)
-          .stream()
-          .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
-          .entrySet()
-          .stream()
-          .max(Map.Entry.comparingByValue())
-          .get();
-
-      String geneticCode = max.getKey();
-      // Long count = max.getValue();
-      // System.out.println(
-      //     "====> cladeId: " + cladeId + ", time: " + time + ", geneticCode: " + geneticCode + ", count: " + count);
-      db.insertCladeSummary(file, cladeId, time, geneticCode, cladeIdToGeneticCodes.get(cladeId).size());
-    }
-
-    db.markSummaryFileDone(file);
   }
 }
