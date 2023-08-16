@@ -18,10 +18,13 @@ public class DBCladePopulation extends Base {
     executeUpdate("DELETE FROM clade_populations WHERE SUMMARY_FILE_ID = " + summaryFileId);
   }
 
-  public void insert(int cladeId, int summaryFileId, int geneticCodeId, int population) throws SQLException {
+  public int insertAndReturnId(int cladeId, int summaryFileId, int geneticCodeId, int population) throws SQLException {
     executeUpdate("INSERT INTO clade_populations " +
         " (CLADE_ID, SUMMARY_FILE_ID, GENETIC_CODE_ID, POPULATION) " +
         "VALUES (" + cladeId + ", " + summaryFileId + ", " + geneticCodeId + ", " + population + ")");
+
+    ResultSet rs = executeQuery("select max(CLADE_POPULATION_ID) from clade_populations");
+    return rs.getInt(1);
   }
 
   public List<TimeAndPopulation> getPopulationHistorySync(String cladeId) throws SQLException {

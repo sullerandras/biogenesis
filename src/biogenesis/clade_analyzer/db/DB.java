@@ -14,6 +14,7 @@ import biogenesis.clade_analyzer.TimeAndPopulation;
 import biogenesis.clade_analyzer.db.models.DBClade;
 import biogenesis.clade_analyzer.db.models.DBCladePopulation;
 import biogenesis.clade_analyzer.db.models.DBGeneticCode;
+import biogenesis.clade_analyzer.db.models.DBOrganism;
 import biogenesis.clade_analyzer.db.models.DBSummaryFile;
 
 /**
@@ -76,14 +77,20 @@ public class DB {
     new DBSummaryFile(this).markSummaryFileDone(summaryFileId);
   }
 
-  public void insertCladeSummary(int summaryFileId, String cladeId, int time, String geneticCode, int population)
+  /**
+   * Inserts a clade summary into the database and returns the cladePopulationId.
+   * We can use the returned cladePopulationId to insert the organisms for this clade.
+   */
+  public int insertCladeSummary(int summaryFileId, String cladeId, int time, String geneticCode, int population)
       throws SQLException {
     final int geneticCodeId = new DBGeneticCode(this).insertAndReturnId(geneticCode);
     final DBClade dbClade = new DBClade(this);
     final int intCladeId = dbClade.insertAndReturnId(cladeId, geneticCodeId, time, time, population);
-    new DBCladePopulation(this).insert(intCladeId, summaryFileId, geneticCodeId, population);
+    final int cladePopulationId = new DBCladePopulation(this).insertAndReturnId(intCladeId, summaryFileId, geneticCodeId, population);
     dbClade.updateLastSeenTimeAndGeneticCodeId(intCladeId, time, geneticCodeId);
     dbClade.updateMaxPopulation(intCladeId, population);
+
+    return cladePopulationId;
   }
 
   public Promise<List<CladeDetails>> getLongestSurvivors(int limit) {
@@ -143,6 +150,10 @@ public class DB {
 
   public int getMaxTime() throws SQLException {
     return new DBSummaryFile(this).getMaxTime();
+  }
+
+  public void insertOrganism(int cladePopulationId, int x, int y) throws SQLException {
+    new DBOrganism(this).insertOrganism(cladePopulationId, x, y);
   }
 
   public void executeUpdate(String sql) throws SQLException {

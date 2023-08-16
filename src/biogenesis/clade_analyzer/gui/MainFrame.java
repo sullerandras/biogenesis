@@ -2,7 +2,6 @@ package biogenesis.clade_analyzer.gui;
 
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
 

@@ -24,7 +24,6 @@ import com.google.gson.JsonSyntaxException;
 
 import biogenesis.BioFile;
 import biogenesis.clade_analyzer.db.DB;
-import biogenesis.clade_analyzer.db.models.DBSummaryFile;
 
 /**
  * Reads json files of the backups and saves the summary in a sqlite database.
@@ -119,7 +118,7 @@ public class Analyzer {
       int summaryFileId = db.upsertSummaryFileToPending(file, time);
       db.deleteRecordsForSummaryFile(summaryFileId);
 
-      Map<String, List<String>> cladeIdToGeneticCodes = new HashMap<>();
+      Map<String, List<GeneticCodeAndCoordinates>> cladeIdToGeneticCodes = new HashMap<>();
 
       for (JsonElement organism : jsonObject.get("_organisms").getAsJsonArray()) {
         if (organism.getAsJsonObject().get("alive").getAsBoolean() == false) {
@@ -128,9 +127,11 @@ public class Analyzer {
 
         String cladeId = organism.getAsJsonObject().get("_geneticCode").getAsJsonObject().get("_cladeID").getAsString();
         String geneticCode = organism.getAsJsonObject().get("_geneticCode").getAsJsonObject().toString();
+        int x = organism.getAsJsonObject().get("_centerX").getAsInt();
+        int y = organism.getAsJsonObject().get("_centerY").getAsInt();
 
         cladeIdToGeneticCodes.putIfAbsent(cladeId, new ArrayList<>());
-        cladeIdToGeneticCodes.get(cladeId).add(geneticCode);
+        cladeIdToGeneticCodes.get(cladeId).add(new GeneticCodeAndCoordinates(geneticCode, x, y));
         // db.insertCladeSummary(cladeId, time, geneticCode);
         // System.out.println("====> cladeId: "+cladeId+", time: "+time+", geneticCode: "+geneticCode);
       }
@@ -138,6 +139,7 @@ public class Analyzer {
       for (String cladeId : cladeIdToGeneticCodes.keySet()) {
         Entry<String, Long> max = cladeIdToGeneticCodes.get(cladeId)
             .stream()
+            .map(o -> o.geneticCode)
             .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
             .entrySet()
             .stream()
@@ -148,12 +150,17 @@ public class Analyzer {
         // Long count = max.getValue();
         // System.out.println(
         //     "====> cladeId: " + cladeId + ", time: " + time + ", geneticCode: " + geneticCode + ", count: " + count);
-        db.insertCladeSummary(summaryFileId, cladeId, time, geneticCode, cladeIdToGeneticCodes.get(cladeId).size());
+        final int cladePopulationId = db.insertCladeSummary(summaryFileId, cladeId, time, geneticCode,
+            cladeIdToGeneticCodes.get(cladeId).size());
+
+        for (GeneticCodeAndCoordinates o : cladeIdToGeneticCodes.get(cladeId)) {
+          db.insertOrganism(cladePopulationId, o.x, o.y);
+        }
       }
 
       db.markSummaryFileDone(summaryFileId);
       db.commitTransaction();
-    } catch (FileNotFoundException|SQLException|RuntimeException e) {
+    } catch (FileNotFoundException | SQLException | RuntimeException e) {
       db.rollbackTransaction();
       throw e;
     }
