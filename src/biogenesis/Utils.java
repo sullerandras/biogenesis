@@ -311,7 +311,7 @@ public final class Utils {
 	/**
 	 * This is the default energy that is consumed when a c4 segment is used.
 	 */
-	final static double DEF_C4_ENERGY_CONSUMPTION = 0.54d;
+	final static double DEF_C4_ENERGY_CONSUMPTION = 0.535d;
 	/**
 	 * This is the default energy that is consumed when a violet segment is used.
 	 */
