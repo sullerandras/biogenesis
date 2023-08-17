@@ -1853,8 +1853,8 @@ public class Organism extends Rectangle {
 		}
 		if (_isonlyc4 > 0) {
 			if ((!_isaplant) && (_methanotrophy == 0) && (_blackversion >= 0)) {
-				if ((!_isaconsumer) && (!_isafungus) && (!_isakiller) && (!_isinfectious) && (_plagueversion == 0) && (isprotective == 0)) {
-					if (!_iscoral) {
+				if ((!_isaconsumer) && (!_isafungus) && (!_isakiller) && (_plagueversion == 0) && (isprotective == 0)) {
+					if ((!_iscoral) && (!_isinfectious)) {
 						_isonlyc4 = 2;
 						_candodge =true;
 						if ((_indigo > 0) && (_jadefactor == 0)) {
@@ -1865,7 +1865,7 @@ public class Organism extends Rectangle {
 							switch (getTypeColor(_segColor[j])) {
 							case C4:
 								if ((_sporetime == 0) || (_geneticCode.getModifiesspore() <= 6)) {
-									_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * (11 + (1.048 * _geneticCode.getGene(j%_geneticCode.getNGenes()).getLength()));
+									_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * (11.2 + (1.06 * _geneticCode.getGene(j%_geneticCode.getNGenes()).getLength()));
 								}
 								break;
 							case LAVENDER:
@@ -1900,6 +1900,18 @@ public class Organism extends Rectangle {
 								break;
 							}
 						}
+					} else if (_isinfectious) {
+						_isonlyc4 = 4;
+						int j;
+						for (j=_segments-1; j>=0; j--) {
+							switch (getTypeColor(_segColor[j])) {
+							case C4:
+								if ((_sporetime == 0) || (_geneticCode.getModifiesspore() <= 6)) {
+									_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * (10.6 + (1.03 * _geneticCode.getGene(j%_geneticCode.getNGenes()).getLength()));
+								}
+								break;
+							}
+						}
 					} else {
 						_isonlyc4 = 3;
 						int j;
@@ -1907,7 +1919,7 @@ public class Organism extends Rectangle {
 							switch (getTypeColor(_segColor[j])) {
 							case C4:
 								if ((_sporetime == 0) || (_geneticCode.getModifiesspore() <= 6)) {
-									_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * (11 + (1.048 * _geneticCode.getGene(j%_geneticCode.getNGenes()).getLength()));
+									_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * (11.2 + (1.06 * _geneticCode.getGene(j%_geneticCode.getNGenes()).getLength()));
 								}
 								break;
 							}
@@ -11125,13 +11137,25 @@ public class Organism extends Rectangle {
 					setColor(Utils.ColorMAROON);
 				}
 				break;
+			case C4:
+				if ((org._dodge) && ((org._canreact) || (!_hasgoodvision)) && (org.useEnergy(Utils.DODGE_ENERGY_CONSUMPTION))) {
+					org.setColor(Utils.ColorTEAL);
+					setColor(Utils.ColorMAROON);
+				} else {
+					// Get energy depending on segment length
+					takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+				    // The other organism will be shown in yellow
+				    org.setColor(Color.YELLOW);
+				    // This organism will be shown in maroon
+				    setColor(Utils.ColorMAROON);
+				}
+				break;
 			case GREEN:
 			case FOREST:
 			case SPRING:
 			case SUMMER:
             case WINTER:
 			case LIME:
-			case C4:
 			case JADE:
 			case DARKJADE:
 			case DARKGREEN:
@@ -11287,7 +11311,7 @@ public class Organism extends Rectangle {
 			case GOLD:
 			case SPORE:
 				if ((_isenhanced) && (org._isaplant)) {
-					if ((org._dodge) && (org.useEnergy(Utils.DODGE_ENERGY_CONSUMPTION))) {
+					if ((org._dodge) && ((org._canreact) || (!_hasgoodvision)) && (org.useEnergy(Utils.DODGE_ENERGY_CONSUMPTION))) {
 						org.setColor(Utils.ColorTEAL);
 						setColor(Utils.ColorMAROON);
 					} else {
@@ -11329,7 +11353,7 @@ public class Organism extends Rectangle {
 			    break;
 				} else {
 					if ((_isenhanced) && (org._isaplant)) {
-						if ((org._dodge) && (org._framesColor <= 0) && (org.useEnergy(Utils.DODGE_ENERGY_CONSUMPTION))) {
+						if ((org._dodge) && (org._framesColor <= 0) && ((org._canreact) || (!_hasgoodvision)) && (org.useEnergy(Utils.DODGE_ENERGY_CONSUMPTION))) {
 							org.setColor(Utils.ColorTEAL);
 							setColor(Utils.ColorMAROON);
 						} else {
@@ -11357,7 +11381,7 @@ public class Organism extends Rectangle {
 				break;
 				} else {
 					if ((_isenhanced) && (org._isaplant)) {
-						if ((org._dodge) && (org.useEnergy(Utils.DODGE_ENERGY_CONSUMPTION))) {
+						if ((org._dodge) && ((org._canreact) || (!_hasgoodvision)) && (org.useEnergy(Utils.DODGE_ENERGY_CONSUMPTION))) {
 							org.setColor(Utils.ColorTEAL);
 							setColor(Utils.ColorMAROON);
 						} else {
@@ -15278,6 +15302,9 @@ public class Organism extends Rectangle {
 						}
 						org._mphoto[oseg] = -20;
 					    setColor(Utils.ColorVIOLET);
+					    if (org._isonlyc4 == 2) {
+							org._updateEffects = 2;
+						}
 					    org._isinjured =true;
 					}
 				}
@@ -15501,6 +15528,25 @@ public class Organism extends Rectangle {
 				}
 				break;
 			case DARKGRAY:
+				if ((org._dodge) && (org.useEnergy(Utils.DODGE_ENERGY_CONSUMPTION))) {
+					org.setColor(Utils.ColorTEAL);
+					setColor(Utils.ColorVIOLET);
+				} else {
+					if (useEnergy(Utils.VIOLET_ENERGY_CONSUMPTION)) {
+						if (org._isaplant) {
+						    org._segColor[oseg] = Utils.ColorGREENBROWN;
+						} else {
+							org._segColor[oseg] = Utils.ColorLIGHTBROWN;
+						}
+						org._mphoto[oseg] = -20;
+						setColor(Utils.ColorVIOLET);
+						if ((org._isonlyc4 == 2) && (!org._isblond)) {
+							org._updateEffects = 2;
+						}
+						org._isinjured =true;
+					}
+				}
+				break;
 			case CYAN:
 				if ((org._dodge) && (org.useEnergy(Utils.DODGE_ENERGY_CONSUMPTION))) {
 					org.setColor(Utils.ColorTEAL);
@@ -21519,6 +21565,12 @@ public class Organism extends Rectangle {
 							case PINK:
 								addmaintenance -= 0.8 * _m[i];
 								break;
+							// is silver
+							case SILVER:
+								if (_isonlyc4 == 2) {
+									addmaintenance -= _m[i];
+								} 
+								break;
 							}
 						} else {
 							if (_mphoto[i] <= -21) {
@@ -21631,7 +21683,7 @@ public class Organism extends Rectangle {
 									// Organisms with coral segments transform viruses into themselves
 									case CORAL:
 										if (_isonlyc4 == 3) {
-											addmaintenance -= 0.95 * _m[i];
+											addmaintenance -= 0.99 * _m[i];
 										}
 										break;
 									// Organisms with fallow segments inhibit the reproduction of other organisms
@@ -21872,7 +21924,7 @@ public class Organism extends Rectangle {
 								// Organisms with coral segments transform viruses into themselves
 								case CORAL:
 									if ((_reproducelate > 0) && (!_isinfectious) && (!_isaconsumer) && (!_isafungus)) {
-										addmaintenance -= 0.95 * _m[i];
+										addmaintenance -= 0.99 * _m[i];
 									}
 									break;
 								// Organisms with fallow segments inhibit the reproduction of other organisms
