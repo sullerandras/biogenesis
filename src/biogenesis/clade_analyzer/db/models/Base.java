@@ -12,37 +12,42 @@ import biogenesis.clade_analyzer.CladeParser;
 import biogenesis.clade_analyzer.db.DB;
 
 public class Base {
+  private static final boolean debug = System.getenv().getOrDefault("BIOSIM_CLADE_ANALYZER_DEBUG", "false")
+      .equals("true");
+
   protected final DB db;
   protected static final Map<String, Long> executionTimes = new HashMap<>();
   protected static final Map<String, Long> executionCounts = new HashMap<>();
 
   static {
-    new Thread() {
-      @Override
-      public void run() {
-        while (true) {
-          try {
-            Thread.sleep(1000);
-          } catch (InterruptedException e) {
-            e.printStackTrace();
-          }
-          synchronized (executionTimes) {
-            if (executionTimes.size() > 0) {
-              System.out.println("SQL execution times:");
-              executionTimes.entrySet().stream().map(entry -> {
-                return String.format("total %.9f sec, %9d calls, %.9f sec/call - %s\n",
-                    entry.getValue() / 1_000_000_000.0,
-                    executionCounts.get(entry.getKey()),
-                    entry.getValue() / 1_000_000_000.0 / executionCounts.get(entry.getKey()),
-                    entry.getKey());
-              }).sorted().forEach(System.out::print);
-              executionTimes.clear();
-              executionCounts.clear();
+    if (debug) {
+      new Thread() {
+        @Override
+        public void run() {
+          while (true) {
+            try {
+              Thread.sleep(1000);
+            } catch (InterruptedException e) {
+              e.printStackTrace();
+            }
+            synchronized (executionTimes) {
+              if (executionTimes.size() > 0) {
+                System.out.println("SQL execution times:");
+                executionTimes.entrySet().stream().map(entry -> {
+                  return String.format("total %.9f sec, %9d calls, %.9f sec/call - %s\n",
+                      entry.getValue() / 1_000_000_000.0,
+                      executionCounts.get(entry.getKey()),
+                      entry.getValue() / 1_000_000_000.0 / executionCounts.get(entry.getKey()),
+                      entry.getKey());
+                }).sorted().forEach(System.out::print);
+                executionTimes.clear();
+                executionCounts.clear();
+              }
             }
           }
         }
-      }
-    }.start();
+      }.start();
+    }
   }
 
   public Base(DB db) {
@@ -50,9 +55,11 @@ public class Base {
   }
 
   protected void addTime(String sql, long time) {
-    synchronized (executionTimes) {
-      executionTimes.put(sql, executionTimes.getOrDefault(sql, 0L) + time);
-      executionCounts.put(sql, executionCounts.getOrDefault(sql, 0L) + 1);
+    if (debug) {
+      synchronized (executionTimes) {
+        executionTimes.put(sql, executionTimes.getOrDefault(sql, 0L) + time);
+        executionCounts.put(sql, executionCounts.getOrDefault(sql, 0L) + 1);
+      }
     }
   }
 
