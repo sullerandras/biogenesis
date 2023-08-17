@@ -14,7 +14,7 @@ public abstract class Job<T> {
     try {
       T result = Job.this.run();
       promise.deliverResult(result);
-    } catch (SQLException e) {
+    } catch (SQLException|RuntimeException e) {
       promise.deliverException(e);
     }
   }

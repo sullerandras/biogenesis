@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
+import biogenesis.BioFile;
 import biogenesis.clade_analyzer.CladeDetails;
 import biogenesis.clade_analyzer.TimeAndPopulation;
 import biogenesis.clade_analyzer.db.models.DBClade;
@@ -23,16 +24,16 @@ import biogenesis.clade_analyzer.db.models.DBSummaryFile;
 public class DB {
   public static final String SCHEMA_MIGRATIONS_TABLE = "schema_migrations";
 
-  private final File dbFile;
+  private final BioFile dbFile;
   private final Connection connection;
   private Statement statement;
 
-  public DB(File dbFile) throws ClassNotFoundException, SQLException {
+  public DB(BioFile dbFile) throws ClassNotFoundException, SQLException {
     this.dbFile = dbFile;
-    connection = open(dbFile);
+    connection = open(dbFile.getSqliteFile());
   }
 
-  public File getDbFile() {
+  public BioFile getDbFile() {
     return dbFile;
   }
 

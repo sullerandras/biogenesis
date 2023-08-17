@@ -84,7 +84,6 @@ public class HeatMapPanel extends JPanel {
     this.times = times;
     slider.setMinimum(0);
     slider.setMaximum(times.size() - 1);
-    slider.setValue(0);
   }
 
   private void initComponents() {
@@ -98,6 +97,7 @@ public class HeatMapPanel extends JPanel {
     JPanel controlsPanel = new JPanel();
     controlsPanel.add(new JLabel("Select time: "));
     slider = new JSlider();
+    slider.setValue(0);
     controlsPanel.add(slider);
     selectedTimeLabel = new JLabel();
     controlsPanel.add(selectedTimeLabel);

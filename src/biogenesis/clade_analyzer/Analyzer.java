@@ -30,44 +30,6 @@ import biogenesis.clade_analyzer.db.DB;
  * It keeps a record of which backups have been analyzed and skips the ones that are already processed.
  */
 public class Analyzer {
-  public static void main(String args[]) {
-    if (args.length != 1) {
-      System.err.println("Usage: java biogenesis.clade_analyzer.Main <backup_dir>");
-      System.exit(1);
-    }
-
-    DB db = null;
-
-    try {
-      String backupDir = args[0];
-
-      db = new DB(new File(backupDir, "clades.sqlite"));
-      // db.dropTables();
-      db.createTables();
-
-      File[] files = new File(backupDir).listFiles();
-      Arrays.sort(files);
-      for (File file : files) {
-        if (file.getName().endsWith(".json")) {
-          System.out.println("Analyzing " + file.getName());
-          analyzeJsonFile(file, db);
-        }
-      }
-    } catch (Exception e) {
-      System.err.println("Error: " + e);
-      e.printStackTrace();
-    } finally {
-      if (db != null) {
-        try {
-          db.close();
-        } catch (SQLException e) {
-          System.err.println("Error closing database: " + e);
-          e.printStackTrace();
-        }
-      }
-    }
-  }
-
   public static void analyze(BioFile bioFile, DB db, ProgressMonitor progressMonitor)
       throws JsonIOException, JsonSyntaxException, SQLException, IOException {
     db.createTables();
@@ -98,7 +60,6 @@ public class Analyzer {
 
       analyzeJsonFile(file, db);
     }
-    System.out.println("Done");
   }
 
   private static void analyzeJsonFile(File file, DB db)

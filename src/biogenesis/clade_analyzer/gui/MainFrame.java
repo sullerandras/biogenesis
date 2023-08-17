@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import javax.swing.ProgressMonitor;
@@ -25,15 +26,27 @@ import biogenesis.clade_analyzer.db.DB;
 public class MainFrame extends javax.swing.JFrame {
   private DB db = null;
   private int maxTime;
+  private boolean analyzeInProgress = false;
 
   private CladeListPanel longestSurvivorsPanel;
   private CladeListPanel mostPopulousCladesPanel;
   private HeatMapPanel heatMapPanel;
+  private JCheckBox autoAnalyzeCheckBox;
 
   public MainFrame() {
     WindowManager.registerWindow(this, 800, 600, 0, 0);
 
     initComponents();
+
+    java.util.Timer timer = new java.util.Timer();
+    timer.schedule(new java.util.TimerTask() {
+      @Override
+      public void run() {
+        if (autoAnalyzeCheckBox.isSelected()) {
+          reanalyzeDB();
+        }
+      }
+    }, 10000, 10000);
   }
 
   private void initComponents() {
@@ -58,6 +71,18 @@ public class MainFrame extends javax.swing.JFrame {
       }
     });
     toolbar.add(openButton);
+
+    JButton analyzeNewFilesButton = new JButton("Analyze new files");
+    analyzeNewFilesButton.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        reanalyzeDB();
+      }
+    });
+    toolbar.add(analyzeNewFilesButton);
+
+    autoAnalyzeCheckBox = new JCheckBox("Auto analyze");
+    autoAnalyzeCheckBox.setSelected(true);
+    toolbar.add(autoAnalyzeCheckBox);
 
     getContentPane().add(toolbar,
         new java.awt.GridBagConstraints(0, 0, 1, 1, 1, 0, java.awt.GridBagConstraints.NORTHWEST,
@@ -152,7 +177,7 @@ public class MainFrame extends javax.swing.JFrame {
     new Thread() {
       public void run() {
         try {
-          DB newDB = new DB(bioFile.getSqliteFile());
+          DB newDB = new DB(bioFile);
           ProgressMonitor progressMonitor = new ProgressMonitor(MainFrame.this, "Loading database", "", 0, 100);
           Analyzer.analyze(bioFile, newDB, progressMonitor);
           if (progressMonitor.isCanceled()) {
@@ -169,13 +194,43 @@ public class MainFrame extends javax.swing.JFrame {
 
           db = newDB;
           maxTime = db.getMaxTime();
-          setTitle("DB: " + relativePath(db.getDbFile()) + "  MaxTime: " + maxTime);
+          setTitle("DB: " + relativePath(db.getDbFile().getFile()) + "  MaxTime: " + maxTime);
 
           refreshTabs();
         } catch (ClassNotFoundException | SQLException | JsonIOException | JsonSyntaxException
             | IOException e) {
           System.err.println("Error opening database: " + e);
           e.printStackTrace();
+        }
+      }
+    }.start();
+  }
+
+  private void reanalyzeDB() {
+    if (db == null || analyzeInProgress) {
+      return;
+    }
+    analyzeInProgress = true;
+    new Thread() {
+      public void run() {
+        try {
+          int oldMaxTime = db.getMaxTime();
+          ProgressMonitor progressMonitor = new ProgressMonitor(MainFrame.this, "Reanalyzing database", "", 0, 100);
+          Analyzer.analyze(db.getDbFile(), db, progressMonitor);
+          progressMonitor.close();
+
+          maxTime = db.getMaxTime();
+
+          if (maxTime != oldMaxTime) {
+            setTitle("DB: " + relativePath(db.getDbFile().getFile()) + "  MaxTime: " + maxTime);
+            refreshTabs();
+          }
+
+        } catch (SQLException | JsonIOException | JsonSyntaxException | IOException e) {
+          System.err.println("Error reanalyzing database: " + e);
+          e.printStackTrace();
+        } finally {
+          analyzeInProgress = false;
         }
       }
     }.start();
