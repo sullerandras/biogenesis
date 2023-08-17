@@ -28,6 +28,7 @@ public class MainFrame extends javax.swing.JFrame {
 
   private CladeListPanel longestSurvivorsPanel;
   private CladeListPanel mostPopulousCladesPanel;
+  private HeatMapPanel heatMapPanel;
 
   public MainFrame() {
     WindowManager.registerWindow(this, 800, 600, 0, 0);
@@ -71,10 +72,14 @@ public class MainFrame extends javax.swing.JFrame {
     mostPopulousCladesPanel = new CladeListPanel(this, new CladeChartManager());
     tabbedPane.add("Most populous clades", mostPopulousCladesPanel);
 
+    heatMapPanel = new HeatMapPanel();
+    tabbedPane.add("Heat map", heatMapPanel);
+
     getContentPane().add(tabbedPane,
         new java.awt.GridBagConstraints(0, 1, 1, 1, 1, 1, java.awt.GridBagConstraints.NORTHWEST,
             java.awt.GridBagConstraints.BOTH, new java.awt.Insets(0, 0, 0, 0), 0, 0));
 
+    // action listeners
     ActionListener clickListener = new ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         CladeDetails cladeSummary = (CladeDetails) evt.getSource();
@@ -104,6 +109,7 @@ public class MainFrame extends javax.swing.JFrame {
           System.err.println("Error getting clade summaries: " + e);
           e.printStackTrace();
         });
+
         db.getMostPopulousClades(maxTime, mostPopulousCladesPanel.getLimit()).then(mostPopulousClades -> {
           java.awt.EventQueue.invokeLater(() -> {
             mostPopulousCladesPanel.setCladeList(mostPopulousClades, db, maxTime);
@@ -112,6 +118,8 @@ public class MainFrame extends javax.swing.JFrame {
           System.err.println("Error getting clade summaries: " + e);
           e.printStackTrace();
         });
+
+        heatMapPanel.setDB(db);
       }
     }.start();
   }

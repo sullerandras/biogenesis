@@ -144,6 +144,40 @@ public class DB {
     return new DBCladePopulation(this).getMostPopulousCladesSync(time, limit);
   }
 
+  public Promise<List<Integer>> getListOfTimes() {
+    Promise<List<Integer>> promise = new Promise<>();
+
+    new Job<List<Integer>>(promise) {
+      @Override
+      public List<Integer> run() throws SQLException {
+        return getListOfTimesSync();
+      }
+    };
+
+    return promise;
+  }
+
+  public List<Integer> getListOfTimesSync() throws SQLException {
+    return new DBSummaryFile(this).getListOfTimesSync();
+  }
+
+  public Promise<List<CladeDetails>> getOrganismsAtTime(int time) {
+    Promise<List<CladeDetails>> promise = new Promise<>();
+
+    new Job<List<CladeDetails>>(promise) {
+      @Override
+      public List<CladeDetails> run() throws SQLException {
+        return getOrganismsAtTimeSync(time);
+      }
+    };
+
+    return promise;
+  }
+
+  public List<CladeDetails> getOrganismsAtTimeSync(int time) throws SQLException {
+    return new DBOrganism(this).getOrganismsAtTimeSync(time);
+  }
+
   public List<CladeDetails> getCladeAncestors(String cladeIdStr) throws SQLException {
     return new DBClade(this).getCladeAncestors(cladeIdStr);
   }

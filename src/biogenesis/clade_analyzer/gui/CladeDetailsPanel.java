@@ -1,6 +1,5 @@
 package biogenesis.clade_analyzer.gui;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
@@ -14,7 +13,6 @@ import javax.swing.JPanel;
 import javax.swing.UIManager;
 
 import biogenesis.Clade;
-import biogenesis.GeneticCode;
 import biogenesis.clade_analyzer.CladeChartManager;
 import biogenesis.clade_analyzer.CladeDetails;
 import biogenesis.clade_analyzer.CladeNameGenerator;
@@ -145,20 +143,5 @@ public class CladeDetailsPanel extends javax.swing.JPanel {
   private void openDetails() {
     // System.out.println("===> mouse clicked " + cladeSummary);
     clickCladeListeners.forEach(l -> l.actionPerformed(new ActionEvent(cladeSummary, 0, "click")));
-  }
-
-  class CladeImageRenderer extends JPanel {
-    private GeneticCode geneticCode;
-
-    public CladeImageRenderer(GeneticCode geneticCode) {
-      this.geneticCode = geneticCode;
-    }
-
-    @Override
-    public void paint(java.awt.Graphics g) {
-      g.setColor(Color.BLACK);
-      g.fillRect(0, 0, Clade.NET_CLADE_SIZE, Clade.NET_CLADE_SIZE);
-      geneticCode.draw(g, Clade.NET_CLADE_SIZE, Clade.NET_CLADE_SIZE);
-    }
   }
 }

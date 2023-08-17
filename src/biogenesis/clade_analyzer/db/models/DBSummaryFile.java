@@ -3,6 +3,7 @@ package biogenesis.clade_analyzer.db.models;
 import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 import biogenesis.clade_analyzer.db.DB;
 
@@ -41,6 +42,16 @@ public class DBSummaryFile extends Base {
   public int getMaxTime() throws SQLException {
     ResultSet rs = executeQuery("select max(TIME) from summary_files");
     return rs.getInt(1);
+  }
+
+  public List<Integer> getListOfTimesSync() throws SQLException {
+    ResultSet rs = executeQuery("select TIME from summary_files order by TIME");
+
+    List<Integer> times = new java.util.ArrayList<Integer>();
+    while (rs.next()) {
+      times.add(rs.getInt(1));
+    }
+    return times;
   }
 
   private String relativePath(File file) {

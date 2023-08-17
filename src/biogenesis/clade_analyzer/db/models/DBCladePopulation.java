@@ -55,6 +55,6 @@ public class DBCladePopulation extends Base {
             " order by cp.POPULATION desc" +
             (limit >= 0 ? " limit " + limit : ""));
 
-    return readFullCladeDetails(rs);
+    return readCladeDetailsWithTimeAndPopulation(rs);
   }
 }

@@ -22,6 +22,12 @@ public class CladeParser {
         population);
   }
 
+  public static CladeDetails parse(String cladeId, int firstSeenTime, int lastSeenTime, String geneticCode,
+      int maxPopulation, int time, int population, int x, int y) {
+    return new CladeDetails(cladeId, firstSeenTime, lastSeenTime, parseGeneticCode(geneticCode), maxPopulation, time,
+        population, x, y);
+  }
+
   private static GeneticCode parseGeneticCode(String str) {
     JsonObject o = JsonParser.parseString(str).getAsJsonObject();
     List<Gene> genes = o.get("_genes")

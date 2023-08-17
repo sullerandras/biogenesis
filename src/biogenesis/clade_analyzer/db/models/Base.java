@@ -63,9 +63,9 @@ public class Base {
   }
 
   protected ResultSet executeQuery(String sql) throws SQLException {
-    long start = System.currentTimeMillis();
+    long start = System.nanoTime();
     ResultSet x = db.executeQuery(sql);
-    addTime(sql.substring(0, 30), System.currentTimeMillis() - start);
+    addTime(sql.substring(0, 30), System.nanoTime() - start);
     return x;
   }
 
@@ -88,7 +88,7 @@ public class Base {
     return list;
   }
 
-  protected List<CladeDetails> readFullCladeDetails(ResultSet rs) throws SQLException {
+  protected List<CladeDetails> readCladeDetailsWithTimeAndPopulation(ResultSet rs) throws SQLException {
     List<CladeDetails> list = new ArrayList<>();
 
     try {
@@ -101,6 +101,29 @@ public class Base {
             rs.getInt("MAX_POPULATION"),
             rs.getInt("TIME"),
             rs.getInt("POPULATION")));
+      }
+    } finally {
+      rs.close();
+    }
+
+    return list;
+  }
+
+  protected List<CladeDetails> readCladeDetailsWithTimeAndPopulationAndCoordinates(ResultSet rs) throws SQLException {
+    List<CladeDetails> list = new ArrayList<>();
+
+    try {
+      while (rs.next()) {
+        list.add(CladeParser.parse(
+            rs.getString("CLADEID"),
+            rs.getInt("FIRST_SEEN_TIME"),
+            rs.getInt("LAST_SEEN_TIME"),
+            rs.getString("GENETIC_CODE"),
+            rs.getInt("MAX_POPULATION"),
+            rs.getInt("TIME"),
+            rs.getInt("POPULATION"),
+            rs.getInt("X"),
+            rs.getInt("Y")));
       }
     } finally {
       rs.close();
