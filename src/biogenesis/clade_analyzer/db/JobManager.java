@@ -4,8 +4,6 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import biogenesis.clade_analyzer.Logger;
-
 public class JobManager {
   private static final Object monitor = new Object();
 
@@ -24,7 +22,7 @@ public class JobManager {
               try {
                 monitor.wait();
               } catch (InterruptedException e) {
-                Logger.printStackTrace(e);
+                e.printStackTrace();
               }
             }
             job = jobs.remove(0);

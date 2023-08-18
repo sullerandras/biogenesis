@@ -66,10 +66,10 @@ public class Analyzer {
       throws JsonIOException, JsonSyntaxException, FileNotFoundException, SQLException {
 
     if (db.isSummaryFileDone(file)) {
-      // Logger.println("Skipping " + file.getName() + " because it is already done");
+      // System.out.println("Skipping " + file.getName() + " because it is already done");
       return;
     }
-    Logger.println("Analyzing " + file.getName());
+    System.out.println("Analyzing " + file.getName());
 
     db.startTransaction(); // using transactions to speed up the inserts
     try {
@@ -94,7 +94,7 @@ public class Analyzer {
         cladeIdToGeneticCodes.putIfAbsent(cladeId, new ArrayList<>());
         cladeIdToGeneticCodes.get(cladeId).add(new GeneticCodeAndCoordinates(geneticCode, x, y));
         // db.insertCladeSummary(cladeId, time, geneticCode);
-        // Logger.println("====> cladeId: "+cladeId+", time: "+time+", geneticCode: "+geneticCode);
+        // System.out.println("====> cladeId: "+cladeId+", time: "+time+", geneticCode: "+geneticCode);
       }
 
       for (String cladeId : cladeIdToGeneticCodes.keySet()) {
@@ -109,7 +109,7 @@ public class Analyzer {
 
         String geneticCode = max.getKey();
         // Long count = max.getValue();
-        // Logger.println(
+        // System.out.println(
         //     "====> cladeId: " + cladeId + ", time: " + time + ", geneticCode: " + geneticCode + ", count: " + count);
         final int cladePopulationId = db.insertCladeSummary(summaryFileId, cladeId, time, geneticCode,
             cladeIdToGeneticCodes.get(cladeId).size());

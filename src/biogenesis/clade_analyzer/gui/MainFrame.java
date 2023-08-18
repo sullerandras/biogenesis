@@ -21,7 +21,6 @@ import biogenesis.WindowManager;
 import biogenesis.clade_analyzer.Analyzer;
 import biogenesis.clade_analyzer.CladeChartManager;
 import biogenesis.clade_analyzer.CladeDetails;
-import biogenesis.clade_analyzer.Logger;
 import biogenesis.clade_analyzer.db.DB;
 
 public class MainFrame extends javax.swing.JFrame {
@@ -118,7 +117,7 @@ public class MainFrame extends javax.swing.JFrame {
     ActionListener clickListener = new ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         CladeDetails cladeSummary = (CladeDetails) evt.getSource();
-        Logger.println("Selected clade: " + cladeSummary);
+        System.out.println("Selected clade: " + cladeSummary);
         CladeDetailsDialog cladeDetailsDialog = new CladeDetailsDialog(MainFrame.this, db, cladeSummary.getCladeId(),
             maxTime);
         cladeDetailsDialog.setVisible(true);
@@ -141,8 +140,8 @@ public class MainFrame extends javax.swing.JFrame {
             longestSurvivorsPanel.setCladeList(cladeSummaries, db, maxTime);
           });
         }).onError(e -> {
-          Logger.println("Error getting clade summaries: " + e);
-          Logger.printStackTrace(e);
+          System.out.println("Error getting clade summaries: " + e);
+          e.printStackTrace();
         });
 
         db.getMostPopulousClades(maxTime, mostPopulousCladesPanel.getLimit()).then(mostPopulousClades -> {
@@ -150,8 +149,8 @@ public class MainFrame extends javax.swing.JFrame {
             mostPopulousCladesPanel.setCladeList(mostPopulousClades, db, maxTime);
           });
         }).onError(e -> {
-          Logger.println("Error getting clade summaries: " + e);
-          Logger.printStackTrace(e);
+          System.out.println("Error getting clade summaries: " + e);
+          e.printStackTrace();
         });
 
         heatMapPanel.setDB(db);
@@ -169,7 +168,7 @@ public class MainFrame extends javax.swing.JFrame {
       try {
         worldFile = fileChooser.getSelectedFile().getCanonicalFile();
       } catch (IOException e) {
-        Logger.printStackTrace(e);
+        e.printStackTrace();
         return;
       }
 
@@ -209,8 +208,8 @@ public class MainFrame extends javax.swing.JFrame {
           refreshTabs();
         } catch (ClassNotFoundException | SQLException | JsonIOException | JsonSyntaxException
             | IOException e) {
-          Logger.println("Error opening database: " + e);
-          Logger.printStackTrace(e);
+          System.out.println("Error opening database: " + e);
+          e.printStackTrace();
         }
       }
     }.start();
@@ -237,8 +236,8 @@ public class MainFrame extends javax.swing.JFrame {
           }
 
         } catch (SQLException | JsonIOException | JsonSyntaxException | IOException e) {
-          Logger.println("Error reanalyzing database: " + e);
-          Logger.printStackTrace(e);
+          System.out.println("Error reanalyzing database: " + e);
+          e.printStackTrace();
         } finally {
           analyzeInProgress = false;
         }

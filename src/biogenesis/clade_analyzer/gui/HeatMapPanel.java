@@ -14,7 +14,6 @@ import javax.swing.JSlider;
 import biogenesis.Clade;
 import biogenesis.clade_analyzer.CladeDetails;
 import biogenesis.clade_analyzer.CladeNameGenerator;
-import biogenesis.clade_analyzer.Logger;
 import biogenesis.clade_analyzer.db.DB;
 
 public class HeatMapPanel extends JPanel {
@@ -35,8 +34,8 @@ public class HeatMapPanel extends JPanel {
         setListOfTimes(times);
       });
     }).onError(e -> {
-      Logger.println("Error getting list of times: " + e);
-      Logger.printStackTrace(e);
+      System.out.println("Error getting list of times: " + e);
+      e.printStackTrace();
     });
 
     slider.addChangeListener(e -> {
@@ -80,8 +79,8 @@ public class HeatMapPanel extends JPanel {
         mapPanel.setOrganisms(clades);
       });
     }).onError(e -> {
-      Logger.println("Error getting clades: " + e);
-      Logger.printStackTrace(e);
+      System.out.println("Error getting clades: " + e);
+      e.printStackTrace();
     });
   }
 

@@ -4,9 +4,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 import biogenesis.WindowManager;
-import biogenesis.clade_analyzer.Logger;
+import biogenesis.clade_analyzer.LogCollector;
 
-public class LogsDialog extends javax.swing.JDialog implements Logger.TextAppendListener {
+public class LogsDialog extends javax.swing.JDialog implements LogCollector.TextAppendListener {
   private JTextArea textArea;
 
   public LogsDialog(java.awt.Frame parent) {
@@ -15,7 +15,7 @@ public class LogsDialog extends javax.swing.JDialog implements Logger.TextAppend
     WindowManager.registerWindow(this, 800, 600, 0, 0);
 
     initComponents();
-    Logger.addTextAppendListener(this);
+    LogCollector.getInstance().addTextAppendListener(this);
   }
 
   private void initComponents() {
@@ -33,13 +33,13 @@ public class LogsDialog extends javax.swing.JDialog implements Logger.TextAppend
     textArea.setLineWrap(true);
     textArea.setWrapStyleWord(true);
     textArea.setFont(new java.awt.Font("Monospaced", 0, 12));
-    textArea.setText(Logger.getOutput());
+    textArea.setText(LogCollector.getInstance().getOutput());
     getContentPane().add(new JScrollPane(textArea), new java.awt.GridBagConstraints(0, 0, 1, 1, 1.0, 1.0,
         java.awt.GridBagConstraints.CENTER, java.awt.GridBagConstraints.BOTH, new java.awt.Insets(0, 0, 0, 0), 0, 0));
 
     addWindowListener(new java.awt.event.WindowAdapter() {
       public void windowClosing(java.awt.event.WindowEvent evt) {
-        Logger.removeTextAppendListener(LogsDialog.this);
+        LogCollector.getInstance().removeTextAppendListener(LogsDialog.this);
       }
     });
 

@@ -21,6 +21,9 @@ public class GUI {
   }
 
   public static void main(String args[]) {
+    System.setOut(new java.io.PrintStream(LogCollector.getInstance()));
+    System.setErr(new java.io.PrintStream(LogCollector.getInstance()));
+
     // Set the name of the application menu item on macOS. Also, set the name of the application seen in Activity Monitor.
     System.setProperty("apple.awt.application.name", "Biogenesis Analyzer");
 
@@ -32,7 +35,7 @@ public class GUI {
         taskbar.setIconImage(imageIcon.getImage());
       }
     } catch (Exception | NoClassDefFoundError e) {
-      Logger.println("Unable to set icon: " + e);
+      System.out.println("Unable to set icon: " + e);
     }
 
     java.awt.EventQueue.invokeLater(new Runnable() {

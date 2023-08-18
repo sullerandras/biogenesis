@@ -192,21 +192,21 @@ public class DB {
   }
 
   public void executeUpdate(String sql) throws SQLException {
-    // Logger.println(sql);
+    // System.out.println(sql);
     synchronized (this) {
       getStatement().executeUpdate(sql);
     }
   }
 
   public String executeQueryString(String sql, ResultSetProcessor<String> resultSetProcessor) throws SQLException {
-    // Logger.println(sql);
+    // System.out.println(sql);
     synchronized (this) {
       return resultSetProcessor.processResultSet(getStatement().executeQuery(sql));
     }
   }
 
   public Integer executeQueryInteger(String sql, ResultSetProcessor<Integer> resultSetProcessor) throws SQLException {
-    // Logger.println(sql);
+    // System.out.println(sql);
     synchronized (this) {
       return resultSetProcessor.processResultSet(getStatement().executeQuery(sql));
     }
@@ -214,7 +214,7 @@ public class DB {
 
   public List<CladeDetails> executeQueryListOfCladeDetails(String sql,
       ResultSetProcessor<List<CladeDetails>> resultSetProcessor) throws SQLException {
-    // Logger.println(sql);
+    // System.out.println(sql);
     synchronized (this) {
       return resultSetProcessor.processResultSet(getStatement().executeQuery(sql));
     }
@@ -222,7 +222,7 @@ public class DB {
 
   public List<TimeAndPopulation> executeQueryListOfTimeAndPopulation(String sql,
       ResultSetProcessor<List<TimeAndPopulation>> resultSetProcessor) throws SQLException {
-    // Logger.println(sql);
+    // System.out.println(sql);
     synchronized (this) {
       return resultSetProcessor.processResultSet(getStatement().executeQuery(sql));
     }
@@ -230,7 +230,7 @@ public class DB {
 
   public List<Integer> executeQueryListOfIntegers(String sql, ResultSetProcessor<List<Integer>> resultSetProcessor)
       throws SQLException {
-    // Logger.println(sql);
+    // System.out.println(sql);
     synchronized (this) {
       return resultSetProcessor.processResultSet(getStatement().executeQuery(sql));
     }
