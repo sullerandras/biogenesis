@@ -16,6 +16,7 @@ import biogenesis.Clade;
 import biogenesis.clade_analyzer.CladeChartManager;
 import biogenesis.clade_analyzer.CladeDetails;
 import biogenesis.clade_analyzer.CladeNameGenerator;
+import biogenesis.clade_analyzer.Logger;
 import biogenesis.clade_analyzer.db.DB;
 
 public class CladeDetailsPanel extends javax.swing.JPanel {
@@ -36,8 +37,8 @@ public class CladeDetailsPanel extends javax.swing.JPanel {
           db.getPopulationHistory(cladeSummary.getCladeId()).then(populationOverTime -> {
             populationOverTimeChart.setData(populationOverTime, maxTime);
           }).onError(e -> {
-            System.err.println("Error getting population history: " + e);
-            e.printStackTrace();
+            Logger.println("Error getting population history: " + e);
+            Logger.printStackTrace(e);
           });
         }
       }.start();
@@ -141,7 +142,7 @@ public class CladeDetailsPanel extends javax.swing.JPanel {
   }
 
   private void openDetails() {
-    // System.out.println("===> mouse clicked " + cladeSummary);
+    // Logger.println("===> mouse clicked " + cladeSummary);
     clickCladeListeners.forEach(l -> l.actionPerformed(new ActionEvent(cladeSummary, 0, "click")));
   }
 }

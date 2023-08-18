@@ -32,7 +32,7 @@ public class GUI {
         taskbar.setIconImage(imageIcon.getImage());
       }
     } catch (Exception | NoClassDefFoundError e) {
-      System.err.println("Unable to set icon: " + e);
+      Logger.println("Unable to set icon: " + e);
     }
 
     java.awt.EventQueue.invokeLater(new Runnable() {

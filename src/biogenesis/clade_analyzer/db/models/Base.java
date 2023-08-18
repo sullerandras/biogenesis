@@ -9,6 +9,7 @@ import java.util.Map;
 
 import biogenesis.clade_analyzer.CladeDetails;
 import biogenesis.clade_analyzer.CladeParser;
+import biogenesis.clade_analyzer.Logger;
 import biogenesis.clade_analyzer.db.DB;
 
 public class Base {
@@ -28,18 +29,18 @@ public class Base {
             try {
               Thread.sleep(1000);
             } catch (InterruptedException e) {
-              e.printStackTrace();
+              Logger.printStackTrace(e);
             }
             synchronized (executionTimes) {
               if (executionTimes.size() > 0) {
-                System.out.println("SQL execution times:");
+                Logger.println("SQL execution times:");
                 executionTimes.entrySet().stream().map(entry -> {
                   return String.format("total %.9f sec, %9d calls, %.9f sec/call - %s\n",
                       entry.getValue() / 1_000_000_000.0,
                       executionCounts.get(entry.getKey()),
                       entry.getValue() / 1_000_000_000.0 / executionCounts.get(entry.getKey()),
                       entry.getKey());
-                }).sorted().forEach(System.out::print);
+                }).sorted().forEach(Logger::print);
                 executionTimes.clear();
                 executionCounts.clear();
               }
