@@ -1,6 +1,5 @@
 package biogenesis.clade_analyzer.db.models;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,19 +37,18 @@ public class DBClade extends Base {
   }
 
   public int getCladeId(String cladeId) throws SQLException {
-    ResultSet rs = executeQuery("select CLADE_ID from clades where CLADEID = '" + cladeId + "'");
-    return rs.getInt(1);
+    return executeQueryInteger("select CLADE_ID from clades where CLADEID = '" + cladeId + "'",
+        rs -> rs.getInt(1));
   }
 
   public List<CladeDetails> getLongestSurvivorsSync(int limit) throws SQLException {
-    ResultSet rs = executeQuery(
+    return executeQueryListOfCladeDetails(
         "select c.CLADEID, c.FIRST_SEEN_TIME, c.LAST_SEEN_TIME, gc.GENETIC_CODE, c.MAX_POPULATION" +
             " from clades c" +
             " join genetic_codes gc using (GENETIC_CODE_ID)" +
             " order by LAST_SEEN_TIME - FIRST_SEEN_TIME desc"
-            + (limit >= 0 ? " limit " + limit : ""));
-
-    return readCladeSummaries(rs);
+            + (limit >= 0 ? " limit " + limit : ""),
+        rs -> readCladeSummaries(rs));
   }
 
   public List<CladeDetails> getCladeAncestors(String cladeIdStr) throws SQLException {
@@ -59,13 +57,12 @@ public class DBClade extends Base {
     List<CladeDetails> ancestors = new ArrayList<>();
 
     while (cladeId != null) {
-      ResultSet rs = executeQuery(
+      ancestors.addAll(executeQueryListOfCladeDetails(
           "select c.CLADEID, c.FIRST_SEEN_TIME, c.LAST_SEEN_TIME, gc.GENETIC_CODE, c.MAX_POPULATION" +
               " from clades c" +
               " join genetic_codes gc using (GENETIC_CODE_ID)" +
-              " where CLADEID = '" + cladeId.getId() + "'");
-
-      ancestors.addAll(readCladeSummaries(rs));
+              " where CLADEID = '" + cladeId.getId() + "'",
+          rs -> readCladeSummaries(rs)));
 
       cladeId = cladeId.parentId();
     }

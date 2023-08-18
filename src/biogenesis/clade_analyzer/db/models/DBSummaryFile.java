@@ -1,7 +1,6 @@
 package biogenesis.clade_analyzer.db.models;
 
 import java.io.File;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -13,11 +12,11 @@ public class DBSummaryFile extends Base {
   }
 
   public boolean isSummaryFileDone(File summaryFile) throws SQLException {
-    String state = executeQuery(
+    String state = executeQueryString(
         "SELECT state " +
             " FROM summary_files " +
-            " WHERE FILENAME = '" + relativePath(summaryFile) + "'")
-        .getString("state");
+            " WHERE FILENAME = '" + relativePath(summaryFile) + "'",
+        rs -> rs.getString("state"));
     return state != null && state.equals("done");
   }
 
@@ -29,9 +28,10 @@ public class DBSummaryFile extends Base {
   }
 
   public int getSummaryFileId(File summaryFile) throws SQLException {
-    ResultSet rs = executeQuery("select SUMMARY_FILE_ID from summary_files where FILENAME = '" +
-        relativePath(summaryFile) + "'");
-    return rs.getInt(1);
+    return executeQueryInteger(
+        "select SUMMARY_FILE_ID from summary_files where FILENAME = '" +
+            relativePath(summaryFile) + "'",
+        rs -> rs.getInt(1));
   }
 
   public void markSummaryFileDone(int summaryFileId) throws SQLException {
@@ -40,18 +40,12 @@ public class DBSummaryFile extends Base {
   }
 
   public int getMaxTime() throws SQLException {
-    ResultSet rs = executeQuery("select max(TIME) from summary_files");
-    return rs.getInt(1);
+    return executeQueryInteger("select max(TIME) from summary_files", rs -> rs.getInt(1));
   }
 
   public List<Integer> getListOfTimesSync() throws SQLException {
-    ResultSet rs = executeQuery("select TIME from summary_files order by TIME");
-
-    List<Integer> times = new java.util.ArrayList<Integer>();
-    while (rs.next()) {
-      times.add(rs.getInt(1));
-    }
-    return times;
+    return executeQueryListOfIntegers("select TIME from summary_files order by TIME",
+        rs -> readListOfIntegers(rs));
   }
 
   private String relativePath(File file) {

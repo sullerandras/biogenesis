@@ -1,6 +1,5 @@
 package biogenesis.clade_analyzer.db.models;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -18,7 +17,7 @@ public class DBOrganism extends Base {
   }
 
   public List<CladeDetails> getOrganismsAtTimeSync(int time) throws SQLException {
-    ResultSet rs = executeQuery(
+    return executeQueryListOfCladeDetails(
         "select c.CLADEID, c.FIRST_SEEN_TIME, c.LAST_SEEN_TIME, gc.GENETIC_CODE, c.MAX_POPULATION," +
             " sf.TIME, cp.POPULATION, o.X, o.Y " +
             " from summary_files sf" +
@@ -26,8 +25,7 @@ public class DBOrganism extends Base {
             " join clades c using (CLADE_ID)" +
             " join genetic_codes gc on (gc.GENETIC_CODE_ID = c.GENETIC_CODE_ID)" +
             " join organisms o using (CLADE_POPULATION_ID) " +
-            " where sf.TIME = " + time);
-
-    return readCladeDetailsWithTimeAndPopulationAndCoordinates(rs);
+            " where sf.TIME = " + time,
+        rs -> readCladeDetailsWithTimeAndPopulationAndCoordinates(rs));
   }
 }

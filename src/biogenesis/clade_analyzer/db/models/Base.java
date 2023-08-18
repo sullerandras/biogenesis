@@ -10,7 +10,10 @@ import java.util.Map;
 import biogenesis.clade_analyzer.CladeDetails;
 import biogenesis.clade_analyzer.CladeParser;
 import biogenesis.clade_analyzer.Logger;
+import biogenesis.clade_analyzer.TimeAndPopulation;
 import biogenesis.clade_analyzer.db.DB;
+import biogenesis.clade_analyzer.db.JobManager;
+import biogenesis.clade_analyzer.db.ResultSetProcessor;
 
 public class Base {
   private static final boolean debug = System.getenv().getOrDefault("BIOSIM_CLADE_ANALYZER_DEBUG", "false")
@@ -70,11 +73,61 @@ public class Base {
     addTime(sql.substring(0, 30), System.nanoTime() - start);
   }
 
-  protected ResultSet executeQuery(String sql) throws SQLException {
+  protected String executeQueryString(String sql, ResultSetProcessor<String> resultSetProcessor) throws SQLException {
     long start = System.nanoTime();
-    ResultSet x = db.executeQuery(sql);
+    String x = db.executeQueryString(sql, resultSetProcessor);
     addTime(sql.substring(0, 30), System.nanoTime() - start);
     return x;
+  }
+
+  protected Integer executeQueryInteger(String sql, ResultSetProcessor<Integer> resultSetProcessor)
+      throws SQLException {
+    long start = System.nanoTime();
+    Integer x = db.executeQueryInteger(sql, resultSetProcessor);
+    addTime(sql.substring(0, 30), System.nanoTime() - start);
+    return x;
+  }
+
+  protected List<CladeDetails> executeQueryListOfCladeDetails(String sql,
+      ResultSetProcessor<List<CladeDetails>> resultSetProcessor) throws SQLException {
+    long start = System.nanoTime();
+    List<CladeDetails> x = db.executeQueryListOfCladeDetails(sql, resultSetProcessor);
+    addTime(sql.substring(0, 30), System.nanoTime() - start);
+    return x;
+  }
+
+  protected List<TimeAndPopulation> executeQueryListOfTimeAndPopulation(String sql,
+      ResultSetProcessor<List<TimeAndPopulation>> resultSetProcessor) throws SQLException {
+    long start = System.nanoTime();
+    List<TimeAndPopulation> x = db.executeQueryListOfTimeAndPopulation(sql, resultSetProcessor);
+    addTime(sql.substring(0, 30), System.nanoTime() - start);
+    return x;
+  }
+
+  protected List<Integer> executeQueryListOfIntegers(String sql,
+      ResultSetProcessor<List<Integer>> resultSetProcessor) throws SQLException {
+    long start = System.nanoTime();
+    List<Integer> x = db.executeQueryListOfIntegers(sql, resultSetProcessor);
+    addTime(sql.substring(0, 30), System.nanoTime() - start);
+    return x;
+  }
+
+  protected List<TimeAndPopulation> readTimeAndPopulations(ResultSet rs) throws SQLException {
+    List<TimeAndPopulation> list = new ArrayList<>();
+
+    while (rs.next()) {
+      list.add(new TimeAndPopulation(rs.getInt("TIME"), rs.getInt("POPULATION")));
+    }
+
+    return list;
+  }
+
+  protected List<Integer> readListOfIntegers(ResultSet rs) throws SQLException {
+    List<Integer> times = new java.util.ArrayList<Integer>();
+    while (rs.next()) {
+      times.add(rs.getInt(1));
+    }
+    return times;
   }
 
   protected List<CladeDetails> readCladeSummaries(ResultSet rs) throws SQLException {

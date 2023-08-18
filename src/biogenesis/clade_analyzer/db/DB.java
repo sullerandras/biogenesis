@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
@@ -87,7 +86,8 @@ public class DB {
     final int geneticCodeId = new DBGeneticCode(this).insertAndReturnId(geneticCode);
     final DBClade dbClade = new DBClade(this);
     final int intCladeId = dbClade.insertAndReturnId(cladeId, geneticCodeId, time, time, population);
-    final int cladePopulationId = new DBCladePopulation(this).insertAndReturnId(intCladeId, summaryFileId, geneticCodeId, population);
+    final int cladePopulationId = new DBCladePopulation(this).insertAndReturnId(intCladeId, summaryFileId,
+        geneticCodeId, population);
     dbClade.updateLastSeenTimeAndGeneticCodeId(intCladeId, time, geneticCodeId);
     dbClade.updateMaxPopulation(intCladeId, population);
 
@@ -192,13 +192,48 @@ public class DB {
   }
 
   public void executeUpdate(String sql) throws SQLException {
-    // System.out.println(sql);
-    getStatement().executeUpdate(sql);
+    // Logger.println(sql);
+    synchronized (this) {
+      getStatement().executeUpdate(sql);
+    }
   }
 
-  public ResultSet executeQuery(String sql) throws SQLException {
-    // System.out.println(sql);
-    return getStatement().executeQuery(sql);
+  public String executeQueryString(String sql, ResultSetProcessor<String> resultSetProcessor) throws SQLException {
+    // Logger.println(sql);
+    synchronized (this) {
+      return resultSetProcessor.processResultSet(getStatement().executeQuery(sql));
+    }
+  }
+
+  public Integer executeQueryInteger(String sql, ResultSetProcessor<Integer> resultSetProcessor) throws SQLException {
+    // Logger.println(sql);
+    synchronized (this) {
+      return resultSetProcessor.processResultSet(getStatement().executeQuery(sql));
+    }
+  }
+
+  public List<CladeDetails> executeQueryListOfCladeDetails(String sql,
+      ResultSetProcessor<List<CladeDetails>> resultSetProcessor) throws SQLException {
+    // Logger.println(sql);
+    synchronized (this) {
+      return resultSetProcessor.processResultSet(getStatement().executeQuery(sql));
+    }
+  }
+
+  public List<TimeAndPopulation> executeQueryListOfTimeAndPopulation(String sql,
+      ResultSetProcessor<List<TimeAndPopulation>> resultSetProcessor) throws SQLException {
+    // Logger.println(sql);
+    synchronized (this) {
+      return resultSetProcessor.processResultSet(getStatement().executeQuery(sql));
+    }
+  }
+
+  public List<Integer> executeQueryListOfIntegers(String sql, ResultSetProcessor<List<Integer>> resultSetProcessor)
+      throws SQLException {
+    // Logger.println(sql);
+    synchronized (this) {
+      return resultSetProcessor.processResultSet(getStatement().executeQuery(sql));
+    }
   }
 
   private Statement getStatement() throws SQLException {
@@ -209,8 +244,9 @@ public class DB {
   }
 
   private boolean isMigrationExecuted(String filename) throws SQLException {
-    ResultSet rs = executeQuery("SELECT * FROM " + SCHEMA_MIGRATIONS_TABLE + " WHERE FILENAME = '" + filename + "'");
-    return rs.getString("FILENAME") != null;
+    String f = executeQueryString("SELECT * FROM " + SCHEMA_MIGRATIONS_TABLE + " WHERE FILENAME = '" + filename + "'",
+        rs -> rs.getString("FILENAME"));
+    return f != null;
   }
 
   private void executeMigration(String filename) throws IOException, SQLException {

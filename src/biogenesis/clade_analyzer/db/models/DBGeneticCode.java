@@ -1,6 +1,5 @@
 package biogenesis.clade_analyzer.db.models;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import biogenesis.clade_analyzer.db.DB;
@@ -16,7 +15,7 @@ public class DBGeneticCode extends Base {
   }
 
   public int getGeneticCodeId(String geneticCode) throws SQLException {
-    ResultSet rs = executeQuery("select GENETIC_CODE_ID from genetic_codes where GENETIC_CODE = '" + geneticCode + "'");
-    return rs.getInt(1);
+    return executeQueryInteger("select GENETIC_CODE_ID from genetic_codes where GENETIC_CODE = '" + geneticCode + "'",
+        rs -> rs.getInt(1));
   }
 }
