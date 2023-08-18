@@ -88,13 +88,13 @@ public class Analyzer {
 
         String cladeId = organism.getAsJsonObject().get("_geneticCode").getAsJsonObject().get("_cladeID").getAsString();
         String geneticCode = organism.getAsJsonObject().get("_geneticCode").getAsJsonObject().toString();
-        int x = organism.getAsJsonObject().get("_centerX").getAsInt();
-        int y = organism.getAsJsonObject().get("_centerY").getAsInt();
+        JsonElement e = organism.getAsJsonObject().get("_centerX");
+        int x = e != null ? e.getAsInt() : Integer.MIN_VALUE;
+        e = organism.getAsJsonObject().get("_centerY");
+        int y = e != null ? e.getAsInt() : Integer.MIN_VALUE;
 
         cladeIdToGeneticCodes.putIfAbsent(cladeId, new ArrayList<>());
         cladeIdToGeneticCodes.get(cladeId).add(new GeneticCodeAndCoordinates(geneticCode, x, y));
-        // db.insertCladeSummary(cladeId, time, geneticCode);
-        // System.out.println("====> cladeId: "+cladeId+", time: "+time+", geneticCode: "+geneticCode);
       }
 
       for (String cladeId : cladeIdToGeneticCodes.keySet()) {
@@ -115,7 +115,9 @@ public class Analyzer {
             cladeIdToGeneticCodes.get(cladeId).size());
 
         for (GeneticCodeAndCoordinates o : cladeIdToGeneticCodes.get(cladeId)) {
-          db.insertOrganism(cladePopulationId, o.x, o.y);
+          if (o.x != Integer.MIN_VALUE && o.y != Integer.MIN_VALUE) {
+            db.insertOrganism(cladePopulationId, o.x, o.y);
+          }
         }
       }
 
