@@ -1,7 +1,6 @@
 package biogenesis.clade_analyzer.gui;
 
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 
@@ -22,6 +21,7 @@ import biogenesis.clade_analyzer.Analyzer;
 import biogenesis.clade_analyzer.CladeChartManager;
 import biogenesis.clade_analyzer.CladeDetails;
 import biogenesis.clade_analyzer.db.DB;
+import biogenesis.clade_analyzer.db.models.DBSummaryFile;
 
 public class MainFrame extends javax.swing.JFrame {
   private DB db = null;
@@ -263,11 +263,6 @@ public class MainFrame extends javax.swing.JFrame {
   }
 
   private void updateTitle(DB db) throws SQLException {
-    setTitle("DB: " + relativePath(db.getDbFile().getFile()) + "  MaxTime: " + maxTime);
-  }
-
-  private String relativePath(File file) {
-    return new File(".").getAbsoluteFile().getParentFile().toPath().relativize(file.getAbsoluteFile().toPath())
-        .toString();
+    setTitle("DB: " + DBSummaryFile.relativePath(db.getDbFile().getFile()) + "  MaxTime: " + maxTime);
   }
 }

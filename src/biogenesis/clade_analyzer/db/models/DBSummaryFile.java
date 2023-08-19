@@ -48,8 +48,12 @@ public class DBSummaryFile extends Base {
         rs -> readListOfIntegers(rs));
   }
 
-  private String relativePath(File file) {
-    return new File(".").getAbsoluteFile().getParentFile().toPath().relativize(file.getAbsoluteFile().toPath())
-        .toString();
+  public static String relativePath(File file) {
+    try {
+      return new File(".").getAbsoluteFile().getParentFile().toPath().relativize(file.getAbsoluteFile().toPath())
+          .toString();
+    } catch (IllegalArgumentException e) {
+      return file.getAbsolutePath();
+    }
   }
 }
