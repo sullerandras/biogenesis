@@ -141,9 +141,20 @@ public class MainFrame extends javax.swing.JFrame {
   private void refreshTabs() {
     new Thread() {
       public void run() {
+        int totalCladesCount = 0;
+        int aliveCladesCount = 0;
+        try {
+          totalCladesCount = db.getCladeCount();
+          aliveCladesCount = db.getCladeCountAtTime(maxTime);
+        } catch (SQLException e) {
+          System.out.println("Error getting clade count: " + e);
+          e.printStackTrace();
+        }
+        final int totalCladesCountFinal = totalCladesCount;
+        final int aliveCladesCountFinal = aliveCladesCount;
         db.getLongestSurvivors(longestSurvivorsPanel.getLimit()).then(cladeSummaries -> {
           java.awt.EventQueue.invokeLater(() -> {
-            longestSurvivorsPanel.setCladeList(cladeSummaries, db, maxTime);
+            longestSurvivorsPanel.setCladeList(cladeSummaries, db, maxTime, totalCladesCountFinal);
           });
         }).onError(e -> {
           System.out.println("Error getting clade summaries: " + e);
@@ -152,7 +163,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         db.getMostPopulousClades(maxTime, mostPopulousCladesPanel.getLimit()).then(mostPopulousClades -> {
           java.awt.EventQueue.invokeLater(() -> {
-            mostPopulousCladesPanel.setCladeList(mostPopulousClades, db, maxTime);
+            mostPopulousCladesPanel.setCladeList(mostPopulousClades, db, maxTime, aliveCladesCountFinal);
           });
         }).onError(e -> {
           System.out.println("Error getting clade summaries: " + e);
@@ -209,7 +220,7 @@ public class MainFrame extends javax.swing.JFrame {
 
           db = newDB;
           maxTime = db.getMaxTime();
-          setTitle("DB: " + relativePath(db.getDbFile().getFile()) + "  MaxTime: " + maxTime);
+          updateTitle(db);
 
           refreshTabs();
         } catch (ClassNotFoundException | SQLException | JsonIOException | JsonSyntaxException
@@ -237,7 +248,7 @@ public class MainFrame extends javax.swing.JFrame {
           maxTime = db.getMaxTime();
 
           if (maxTime != oldMaxTime) {
-            setTitle("DB: " + relativePath(db.getDbFile().getFile()) + "  MaxTime: " + maxTime);
+            updateTitle(db);
             refreshTabs();
           }
 
@@ -249,6 +260,10 @@ public class MainFrame extends javax.swing.JFrame {
         }
       }
     }.start();
+  }
+
+  private void updateTitle(DB db) throws SQLException {
+    setTitle("DB: " + relativePath(db.getDbFile().getFile()) + "  MaxTime: " + maxTime);
   }
 
   private String relativePath(File file) {

@@ -69,4 +69,18 @@ public class DBClade extends Base {
 
     return ancestors;
   }
+
+  public int getCladeCount() throws SQLException {
+    return executeQueryInteger("select count(1) from clades", rs -> rs.getInt(1));
+  }
+
+  public int getCladeCountAtTime(int time) throws SQLException {
+    return executeQueryInteger(
+        "select count(1)" +
+            " from clades" +
+            " join clade_populations using (CLADE_ID)" +
+            " join summary_files using (SUMMARY_FILE_ID)" +
+            " where TIME = " + time,
+        rs -> rs.getInt(1));
+  }
 }

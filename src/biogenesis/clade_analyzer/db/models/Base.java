@@ -58,6 +58,9 @@ public class Base {
 
   protected void addTime(String sql, long time) {
     if (debug) {
+      if (sql.length() > 30) {
+        sql = sql.substring(0, 30);
+      }
       synchronized (executionTimes) {
         executionTimes.put(sql, executionTimes.getOrDefault(sql, 0L) + time);
         executionCounts.put(sql, executionCounts.getOrDefault(sql, 0L) + 1);
@@ -68,13 +71,13 @@ public class Base {
   protected void executeUpdate(String sql) throws SQLException {
     long start = System.nanoTime();
     db.executeUpdate(sql);
-    addTime(sql.substring(0, 30), System.nanoTime() - start);
+    addTime(sql, System.nanoTime() - start);
   }
 
   protected String executeQueryString(String sql, ResultSetProcessor<String> resultSetProcessor) throws SQLException {
     long start = System.nanoTime();
     String x = db.executeQueryString(sql, resultSetProcessor);
-    addTime(sql.substring(0, 30), System.nanoTime() - start);
+    addTime(sql, System.nanoTime() - start);
     return x;
   }
 
@@ -82,7 +85,7 @@ public class Base {
       throws SQLException {
     long start = System.nanoTime();
     Integer x = db.executeQueryInteger(sql, resultSetProcessor);
-    addTime(sql.substring(0, 30), System.nanoTime() - start);
+    addTime(sql, System.nanoTime() - start);
     return x;
   }
 
@@ -90,7 +93,7 @@ public class Base {
       ResultSetProcessor<List<CladeDetails>> resultSetProcessor) throws SQLException {
     long start = System.nanoTime();
     List<CladeDetails> x = db.executeQueryListOfCladeDetails(sql, resultSetProcessor);
-    addTime(sql.substring(0, 30), System.nanoTime() - start);
+    addTime(sql, System.nanoTime() - start);
     return x;
   }
 
@@ -98,7 +101,7 @@ public class Base {
       ResultSetProcessor<List<TimeAndPopulation>> resultSetProcessor) throws SQLException {
     long start = System.nanoTime();
     List<TimeAndPopulation> x = db.executeQueryListOfTimeAndPopulation(sql, resultSetProcessor);
-    addTime(sql.substring(0, 30), System.nanoTime() - start);
+    addTime(sql, System.nanoTime() - start);
     return x;
   }
 
@@ -106,7 +109,7 @@ public class Base {
       ResultSetProcessor<List<Integer>> resultSetProcessor) throws SQLException {
     long start = System.nanoTime();
     List<Integer> x = db.executeQueryListOfIntegers(sql, resultSetProcessor);
-    addTime(sql.substring(0, 30), System.nanoTime() - start);
+    addTime(sql, System.nanoTime() - start);
     return x;
   }
 

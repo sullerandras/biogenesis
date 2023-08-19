@@ -28,7 +28,8 @@ public class CladeDetailsDialog extends javax.swing.JDialog {
       public void run() {
         try {
           List<CladeDetails> ancestors = db.getCladeAncestors(cladeId);
-          java.awt.EventQueue.invokeLater(() -> cladeListPanel.setCladeList(ancestors, db, maxTime));
+          int cladesCount = ancestors.size();
+          java.awt.EventQueue.invokeLater(() -> cladeListPanel.setCladeList(ancestors, db, maxTime, cladesCount));
         } catch (Exception e) {
           e.printStackTrace();
         }

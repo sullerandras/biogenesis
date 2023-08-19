@@ -187,6 +187,14 @@ public class DB {
     return new DBSummaryFile(this).getMaxTime();
   }
 
+  public int getCladeCount() throws SQLException {
+    return new DBClade(this).getCladeCount();
+  }
+
+  public int getCladeCountAtTime(int time) throws SQLException {
+    return new DBClade(this).getCladeCountAtTime(time);
+  }
+
   public void insertOrganism(int cladePopulationId, int x, int y) throws SQLException {
     new DBOrganism(this).insertOrganism(cladePopulationId, x, y);
   }

@@ -2,6 +2,7 @@ package biogenesis.clade_analyzer.gui;
 
 import java.awt.Window;
 import java.awt.event.ActionListener;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,10 +23,12 @@ public class CladeListPanel extends javax.swing.JPanel {
   private final List<ActionListener> limitChangeListeners = new ArrayList<ActionListener>();
   private final Window owner;
   private final CladeChartManager cladeChartManager;
+  private final NumberFormat cladeCountFormatter = NumberFormat.getInstance();
 
   private JComboBox<Limit> limitsComboBox;
   private JScrollPane jScrollPane;
   private JPanel cladeListPanel;
+  private javax.swing.JLabel cladesCountLabel;
 
   public CladeListPanel(Window owner, CladeChartManager cladeChartManager) {
     this.owner = owner;
@@ -44,8 +47,8 @@ public class CladeListPanel extends javax.swing.JPanel {
     return cladeChartManager;
   }
 
-  public void setCladeList(java.util.List<CladeDetails> cladeList, DB db, int maxTime) {
-    refreshCladeListPanel(cladeList, db, maxTime);
+  public void setCladeList(java.util.List<CladeDetails> cladeList, DB db, int maxTime, int cladesCount) {
+    refreshCladeListPanel(cladeList, db, maxTime, cladesCount);
   }
 
   private void initComponents(java.util.List<CladeDetails> cladeList, DB db, int maxTime) {
@@ -59,6 +62,11 @@ public class CladeListPanel extends javax.swing.JPanel {
     javax.swing.JToolBar toolbar = new javax.swing.JToolBar();
     toolbar.setFloatable(false);
     toolbar.setRollover(true);
+
+    cladesCountLabel = new javax.swing.JLabel();
+    toolbar.add(cladesCountLabel);
+
+    toolbar.addSeparator();
 
     JCheckBox synchronizeYAxisCheckBox = new JCheckBox("Synchronize Y axis");
     synchronizeYAxisCheckBox.addActionListener(new ActionListener() {
@@ -94,16 +102,22 @@ public class CladeListPanel extends javax.swing.JPanel {
             java.awt.GridBagConstraints.BOTH, new java.awt.Insets(0, 0, 0, 0), 0, 0));
     cladeListPanel.setLayout(new java.awt.GridLayout(cladeList.size(), 1));
 
-    refreshCladeListPanel(cladeList, db, maxTime);
+    refreshCladeListPanel(cladeList, db, maxTime, 0);
   }
 
-  private void refreshCladeListPanel(java.util.List<CladeDetails> cladeList, DB db, int maxTime) {
+  private void refreshCladeListPanel(java.util.List<CladeDetails> cladeList, DB db, int maxTime, int cladesCount) {
     if (!java.awt.EventQueue.isDispatchThread()) {
       throw new RuntimeException("Not in dispatch thread");
     }
 
     if (cladeListPanel == null) {
       return;
+    }
+
+    if (cladesCount > 0) {
+      cladesCountLabel.setText("Clades: " + cladeCountFormatter.format(cladesCount));
+    } else {
+      cladesCountLabel.setText("");
     }
 
     cladeListPanel.removeAll();
