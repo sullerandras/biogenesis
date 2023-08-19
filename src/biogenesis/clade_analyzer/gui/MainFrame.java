@@ -32,6 +32,7 @@ public class MainFrame extends javax.swing.JFrame {
   private CladeListPanel mostPopulousCladesPanel;
   private HeatMapPanel heatMapPanel;
   private JCheckBox autoAnalyzeCheckBox;
+  private LogsDialog logsDialog;
 
   public MainFrame() {
     WindowManager.registerWindow(this, 800, 600, 0, 0);
@@ -87,8 +88,13 @@ public class MainFrame extends javax.swing.JFrame {
     JButton logsButton = new JButton("Logs");
     logsButton.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
-        LogsDialog logsDialog = new LogsDialog(MainFrame.this);
-        logsDialog.setVisible(true);
+        if (logsDialog != null) {
+          logsDialog.dispose();
+          logsDialog = null;
+        } else {
+          logsDialog = new LogsDialog(MainFrame.this);
+          logsDialog.setVisible(true);
+        }
       }
     });
     toolbar.add(logsButton);
