@@ -1,9 +1,11 @@
 package biogenesis.clade_analyzer.gui;
 
+import java.awt.Frame;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.util.List;
 
@@ -18,13 +20,17 @@ import biogenesis.clade_analyzer.CladeNameGenerator;
 import biogenesis.clade_analyzer.db.DB;
 
 public class HeatMapPanel extends JPanel {
+  private final Frame owner;
   private DB db;
   private MapPanel mapPanel;
   private JSlider slider;
   private List<Integer> times;
   private JLabel selectedTimeLabel;
 
-  public HeatMapPanel() {
+  private CladeDetailsDialog cladeDetailsDialog;
+
+  public HeatMapPanel(Frame owner) {
+    this.owner = owner;
     initComponents();
   }
 
@@ -120,11 +126,52 @@ public class HeatMapPanel extends JPanel {
     private int maxX;
     private int maxY;
 
+    private CladeDetails selectedOrganism;
+
     public MapPanel() {
+      addMouseListener(new java.awt.event.MouseAdapter() {
+        public void mouseClicked(java.awt.event.MouseEvent evt) {
+          mapPanelMouseClicked(evt);
+        }
+      });
+    }
+
+    protected void mapPanelMouseClicked(MouseEvent evt) {
+      if (organisms == null) {
+        return;
+      }
+
+      int orgSize = Clade.NET_CLADE_SIZE / 3;
+
+      double scale = 1.0;
+      if (maxX - minX > getWidth()) {
+        scale = (double) getWidth() / (double) (maxX - minX + orgSize);
+      }
+      if (maxY - minY > getHeight()) {
+        scale = Math.min(scale, (double) getHeight() / (double) (maxY - minY + orgSize));
+      }
+
+      int x = (int) (evt.getX() / scale);
+      int y = (int) (evt.getY() / scale);
+
+      for (CladeDetails organism : organisms) {
+        if (organism.getX() <= x && x <= organism.getX() + orgSize && organism.getY() <= y
+            && y <= organism.getY() + orgSize) {
+          selectedOrganism = organism;
+          repaint();
+          if (cladeDetailsDialog != null) {
+            cladeDetailsDialog.dispose();
+          }
+          cladeDetailsDialog = new CladeDetailsDialog(owner, db, organism.getCladeId(), times.get(slider.getValue()));
+          cladeDetailsDialog.setVisible(true);
+          break;
+        }
+      }
     }
 
     public void setOrganisms(List<CladeDetails> organisms) {
       this.organisms = organisms;
+      selectedOrganism = null;
       minX = Integer.MAX_VALUE;
       minY = Integer.MAX_VALUE;
       maxX = Integer.MIN_VALUE;
@@ -167,6 +214,11 @@ public class HeatMapPanel extends JPanel {
         g.setColor(name.getColor());
         g2.fillOval(organism.getX(), organism.getY(), orgSize, orgSize);
         // organism.getGeneticCode().draw(g, Clade.NET_CLADE_SIZE, Clade.NET_CLADE_SIZE);
+      }
+      if (selectedOrganism != null) {
+        g.setColor(java.awt.Color.WHITE);
+        g2.drawOval(selectedOrganism.getX() - orgSize, selectedOrganism.getY() - orgSize, orgSize + orgSize * 2,
+            orgSize + orgSize * 2);
       }
       g2.setTransform(origTransform);
     }
