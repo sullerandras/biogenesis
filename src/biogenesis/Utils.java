@@ -1744,23 +1744,23 @@ public final class Utils {
 		return Math.max(Math.max(a,b),c);
 	}
 	/**
-	 * Return min if value<min, max if value>max and value otherwise.
+	 * Return min if value &lt; min, max if value &gt; max and value otherwise.
 	 *
 	 * @param value
 	 * @param min
 	 * @param max
-	 * @return  min if value<min, max if value>max and value otherwise
+	 * @return  min if value &lt; min, max if value &gt; max and value otherwise.
 	 */
 	public static final int between(int value, int min, int max) {
 		return Math.max(Math.min(max, value), min);
 	}
 	/**
-	 * Return min if value<min, max if value>max and value otherwise.
+	 * Return min if value &lt; min, max if value &gt; max and value otherwise.
 	 *
 	 * @param value
 	 * @param min
 	 * @param max
-	 * @return  min if value<min, max if value>max and value otherwise
+	 * @return  min if value &lt; min, max if value &gt; max and value otherwise.
 	 */
 	public static final double between(double value, double min, double max) {
 		return Math.max(Math.min(max, value), min);
