@@ -535,8 +535,8 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 				if (Utils.AUTO_BACKUP_WORLD_PNG) {
 					boolean processState = _isProcessActive;
 					_isProcessActive = false;
-					saveWorldImage(_gameFile.getFileForTime(_world.getTime(), BioFile.Type.WORLD));
-					saveCladeImage(_gameFile.getFileForTime(_world.getTime(), BioFile.Type.CLADES));
+					java.awt.EventQueue.invokeLater(() -> saveWorldImage(_gameFile.getFileForTime(_world.getTime(), BioFile.Type.WORLD)));
+					java.awt.EventQueue.invokeLater(() -> saveCladeImage(_gameFile.getFileForTime(_world.getTime(), BioFile.Type.CLADES)));
 					_isProcessActive = processState;
 				}
 				GsonFileSaver.saveWorldJson(_world, _gameFile.getFileForTime(_world.getTime(), BioFile.Type.JSON));
@@ -546,8 +546,7 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 					// returns before it has been repainted. So we need to save the image in an AWT
 					// job to make sure the repaint has been done before the saving.
 					_statisticsWindow.repaintStats();
-					SwingUtilities
-							.invokeLater(() -> saveStatisticsImage(_gameFile.getFileForTime(_world.getTime(), BioFile.Type.STATS)));
+					java.awt.EventQueue.invokeLater(() -> saveStatisticsImage(_gameFile.getFileForTime(_world.getTime(), BioFile.Type.STATS)));
 				}
 			} else
 				saveGameAs();
