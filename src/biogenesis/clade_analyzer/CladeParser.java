@@ -1,7 +1,10 @@
 package biogenesis.clade_analyzer;
 
 import java.awt.Color;
+import java.lang.ref.SoftReference;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.google.gson.JsonObject;
@@ -11,6 +14,8 @@ import biogenesis.Gene;
 import biogenesis.GeneticCode;
 
 public class CladeParser {
+  private static Map<String, SoftReference<GeneticCode>> geneticCodeCache = new HashMap<>();
+
   public static CladeDetails parse(String cladeId, int firstSeenTime, int lastSeenTime, String geneticCode,
       int maxPopulation) {
     return new CladeDetails(cladeId, firstSeenTime, lastSeenTime, parseGeneticCode(geneticCode), maxPopulation);
@@ -29,6 +34,17 @@ public class CladeParser {
   }
 
   private static GeneticCode parseGeneticCode(String str) {
+    SoftReference<GeneticCode> softReference;
+    synchronized (geneticCodeCache) {
+      softReference = geneticCodeCache.get(str);
+    }
+    if (softReference != null) {
+      GeneticCode x = softReference.get();
+      if (x != null) {
+        return softReference.get();
+      }
+    }
+
     JsonObject o = JsonParser.parseString(str).getAsJsonObject();
     List<Gene> genes = o.get("_genes")
         .getAsJsonArray()
@@ -39,8 +55,14 @@ public class CladeParser {
     int symmetry = o.get("_symmetry").getAsInt();
     int mirror = o.get("_mirror").getAsInt();
 
-    return new GeneticCode(genes, symmetry, mirror, 0, 0, 0, 0, 0, 0, 0, 0, 0, false, false, false, false, false, false,
-        false, false, false, false, false, false, false, false, false);
+    GeneticCode x = new GeneticCode(genes, symmetry, mirror, 0, 0, 0, 0, 0, 0, 0, 0, 0, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false);
+
+    synchronized (geneticCodeCache) {
+      geneticCodeCache.put(str, new SoftReference<GeneticCode>(x));
+    }
+
+    return x;
   }
 
   private static Gene parseGene(JsonObject gene) {

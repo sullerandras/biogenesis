@@ -1,12 +1,28 @@
 package biogenesis.clade_analyzer;
 
+import java.util.Map;
+import java.util.WeakHashMap;
+
 import biogenesis.Gene;
 import biogenesis.GeneColor;
 import biogenesis.GeneticCode;
 import biogenesis.Organism;
 
 public class CladeNameGenerator {
-  public static String generateName(GeneticCode geneticCode) {
+  public static Map<GeneticCode, CladeName> cladeNameCache = new WeakHashMap<>();
+
+  public static CladeName generateName(GeneticCode geneticCode) {
+    CladeName cladeName = cladeNameCache.get(geneticCode);
+    if (cladeName != null) {
+      return cladeName;
+    }
+
+    cladeName = _generateName(geneticCode);
+    cladeNameCache.put(geneticCode, cladeName);
+    return cladeName;
+  }
+
+  private static CladeName _generateName(GeneticCode geneticCode) {
     boolean isVirus = false;
     boolean isConsumer = false;
     boolean isPlant = false;
@@ -214,52 +230,7 @@ public class CladeNameGenerator {
       isOther = true;
     }
 
-    StringBuilder sb = new StringBuilder();
-
-    // type
-    if (isVirus) {
-      sb.append("V");
-    }
-    if (isConsumer) {
-      sb.append("C");
-    }
-    if (isPlant) {
-      sb.append("P");
-    }
-    if (isOther) {
-      sb.append("O");
-    }
-
-    // symmetry
-    sb.append(geneticCode.getSymmetry());
-    if (geneticCode.getMirror() == 1) {
-      sb.append("M");
-    }
-
-    if (primaryColors.size() > 0) {
-      // separator
-      sb.append(" - ");
-
-      // primary colors
-      sb.append(primaryColors);
-    }
-
-    if (secondaryColors.size() > 0) {
-      // separator
-      sb.append(" - ");
-
-      // secondary colors
-      sb.append(secondaryColors);
-    }
-
-    if (tertiaryColors.size() > 0) {
-      // separator
-      sb.append(" - ");
-
-      // tertiary colors
-      sb.append(tertiaryColors);
-    }
-
-    return sb.toString();
+    return new CladeName(isVirus, isConsumer, isPlant, isOther, geneticCode.getSymmetry(), geneticCode.getMirror() == 1,
+        primaryColors, secondaryColors, tertiaryColors);
   }
 }

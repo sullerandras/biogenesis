@@ -13,6 +13,7 @@ import javax.swing.JSlider;
 
 import biogenesis.Clade;
 import biogenesis.clade_analyzer.CladeDetails;
+import biogenesis.clade_analyzer.CladeName;
 import biogenesis.clade_analyzer.CladeNameGenerator;
 import biogenesis.clade_analyzer.db.DB;
 
@@ -162,23 +163,31 @@ public class HeatMapPanel extends JPanel {
       for (CladeDetails organism : organisms) {
         // g2.setTransform(origTransform);
         // g2.translate(organism.getX() - Clade.NET_CLADE_SIZE / 2, organism.getY() - Clade.NET_CLADE_SIZE / 2);
-        String name = CladeNameGenerator.generateName(organism.getGeneticCode());
-        switch (name.charAt(0)) {
-          case 'V':
+        CladeName name = CladeNameGenerator.generateName(organism.getGeneticCode());
+        if (name.isVirus()) {
+          if (name.isConsumer()) {
+            if (name.isPlant()) {
+              g.setColor(java.awt.Color.ORANGE);
+            } else {
+              g.setColor(java.awt.Color.PINK);
+            }
+          } else if (name.isPlant()) {
+            g.setColor(java.awt.Color.LIGHT_GRAY);
+          } else {
             g.setColor(java.awt.Color.WHITE);
-            break;
-          case 'C':
+          }
+        } else if (name.isConsumer()) {
+          if (name.isPlant()) {
+            g.setColor(java.awt.Color.MAGENTA);
+          } else {
             g.setColor(java.awt.Color.RED);
-            break;
-          case 'P':
-            g.setColor(java.awt.Color.GREEN);
-            break;
-          case 'O':
-            g.setColor(java.awt.Color.BLUE);
-            break;
-          default:
-            g.setColor(java.awt.Color.YELLOW);
-            break;
+          }
+        } else if (name.isPlant()) {
+          g.setColor(java.awt.Color.GREEN);
+        } else if (name.isOther()) {
+          g.setColor(java.awt.Color.BLUE);
+        } else {
+          g.setColor(java.awt.Color.YELLOW);
         }
         g2.fillOval(organism.getX(), organism.getY(), orgSize, orgSize);
         // organism.getGeneticCode().draw(g, Clade.NET_CLADE_SIZE, Clade.NET_CLADE_SIZE);
