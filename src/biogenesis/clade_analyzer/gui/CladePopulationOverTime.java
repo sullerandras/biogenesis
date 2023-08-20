@@ -28,6 +28,7 @@ public class CladePopulationOverTime extends JPanel {
     owner.addWindowListener(new java.awt.event.WindowAdapter() {
       @Override
       public void windowClosing(java.awt.event.WindowEvent e) {
+        owner.removeWindowListener(this);
         cladeChartManager.removeChart(CladePopulationOverTime.this);
       }
     });

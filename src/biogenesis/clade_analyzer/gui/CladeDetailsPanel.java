@@ -140,6 +140,10 @@ public class CladeDetailsPanel extends javax.swing.JPanel {
     clickCladeListeners.add(l);
   }
 
+  public void removeClickCladeListener(ActionListener l) {
+    clickCladeListeners.remove(l);
+  }
+
   private void openDetails() {
     // System.out.println("===> mouse clicked " + cladeSummary);
     clickCladeListeners.forEach(l -> l.actionPerformed(new ActionEvent(cladeSummary, 0, "click")));

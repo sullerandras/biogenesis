@@ -112,7 +112,7 @@ public class MainFrame extends javax.swing.JFrame {
     mostPopulousCladesPanel = new CladeListPanel(this, new CladeChartManager());
     tabbedPane.add("Most populous clades", mostPopulousCladesPanel);
 
-    heatMapPanel = new HeatMapPanel();
+    heatMapPanel = new HeatMapPanel(this);
     tabbedPane.add("Heat map", heatMapPanel);
 
     getContentPane().add(tabbedPane,
@@ -132,8 +132,24 @@ public class MainFrame extends javax.swing.JFrame {
     longestSurvivorsPanel.addClickCladeListener(clickListener);
     mostPopulousCladesPanel.addClickCladeListener(clickListener);
 
-    longestSurvivorsPanel.addLimitChangeListener(evt -> refreshTabs());
-    mostPopulousCladesPanel.addLimitChangeListener(evt -> refreshTabs());
+    ActionListener limitChangeListener = new ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        refreshTabs();
+      }
+    };
+    longestSurvivorsPanel.addLimitChangeListener(limitChangeListener);
+    mostPopulousCladesPanel.addLimitChangeListener(limitChangeListener);
+
+    addWindowListener(new java.awt.event.WindowAdapter() {
+      @Override
+      public void windowClosed(java.awt.event.WindowEvent evt) {
+        removeWindowListener(this);
+        longestSurvivorsPanel.removeClickCladeListener(clickListener);
+        mostPopulousCladesPanel.removeClickCladeListener(clickListener);
+        longestSurvivorsPanel.removeLimitChangeListener(limitChangeListener);
+        mostPopulousCladesPanel.removeLimitChangeListener(limitChangeListener);
+      }
+    });
 
     invalidate();
   }

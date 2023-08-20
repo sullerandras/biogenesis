@@ -48,12 +48,26 @@ public class JobManager {
    * @param listener
    */
   public static void addTasksDoneListener(ActionListener listener) {
-    tasksDoneListeners.add(listener);
+    synchronized (tasksDoneListeners) {
+      tasksDoneListeners.add(listener);
+    }
+  }
+
+  /**
+   * The given listener will not be notified when all jobs are done.
+   * This must be called when the listening object is disposed to avoid memory leaks.
+   */
+  public static void removeTasksDoneListener(ActionListener listener) {
+    synchronized (tasksDoneListeners) {
+      tasksDoneListeners.remove(listener);
+    }
   }
 
   private static void notifyTasksDone() {
-    for (ActionListener listener : tasksDoneListeners) {
-      listener.actionPerformed(null);
+    synchronized (tasksDoneListeners) {
+      for (ActionListener listener : tasksDoneListeners) {
+        listener.actionPerformed(null);
+      }
     }
   }
 }

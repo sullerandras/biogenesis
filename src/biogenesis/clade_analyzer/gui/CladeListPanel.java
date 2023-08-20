@@ -34,9 +34,17 @@ public class CladeListPanel extends javax.swing.JPanel {
     this.owner = owner;
     this.cladeChartManager = cladeChartManager;
 
-    JobManager.addTasksDoneListener(new java.awt.event.ActionListener() {
+    ActionListener tasksDoneListener = new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         cladeChartManager.synchronizeYAxis();
+      }
+    };
+    JobManager.addTasksDoneListener(tasksDoneListener);
+    owner.addWindowListener(new java.awt.event.WindowAdapter() {
+      @Override
+      public void windowClosed(java.awt.event.WindowEvent evt) {
+        owner.removeWindowListener(this);
+        JobManager.removeTasksDoneListener(tasksDoneListener);
       }
     });
 
@@ -125,9 +133,17 @@ public class CladeListPanel extends javax.swing.JPanel {
     for (CladeDetails cladeSummary : cladeList) {
       CladeDetailsPanel cladePanel = new CladeDetailsPanel(owner, cladeChartManager, cladeSummary, db, maxTime);
       cladeListPanel.add(cladePanel);
-      cladePanel.addClickCladeListener(new java.awt.event.ActionListener() {
+      ActionListener clickCladeListener = new java.awt.event.ActionListener() {
         public void actionPerformed(java.awt.event.ActionEvent evt) {
           clickCladeListeners.forEach(l -> l.actionPerformed(evt));
+        }
+      };
+      cladePanel.addClickCladeListener(clickCladeListener);
+      owner.addWindowListener(new java.awt.event.WindowAdapter() {
+        @Override
+        public void windowClosed(java.awt.event.WindowEvent evt) {
+          owner.removeWindowListener(this);
+          cladePanel.removeClickCladeListener(clickCladeListener);
         }
       });
     }
@@ -146,8 +162,16 @@ public class CladeListPanel extends javax.swing.JPanel {
     clickCladeListeners.add(l);
   }
 
+  public void removeClickCladeListener(ActionListener l) {
+    clickCladeListeners.remove(l);
+  }
+
   public void addLimitChangeListener(ActionListener l) {
     limitChangeListeners.add(l);
+  }
+
+  public void removeLimitChangeListener(ActionListener l) {
+    limitChangeListeners.remove(l);
   }
 
   public int getLimit() {

@@ -39,6 +39,7 @@ public class LogsDialog extends javax.swing.JDialog implements LogCollector.Text
 
     addWindowListener(new java.awt.event.WindowAdapter() {
       public void windowClosing(java.awt.event.WindowEvent evt) {
+        LogsDialog.this.removeWindowListener(this);
         LogCollector.getInstance().removeTextAppendListener(LogsDialog.this);
       }
     });
