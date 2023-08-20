@@ -1172,6 +1172,18 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 	};
 
 	/**
+	 * Scrolls the world so that the given organism is at the center of the view.
+	 */
+	public void scrollOrganismToCenter(Organism o) {
+		if (o == null) {
+			return;
+		}
+
+		scrollPane.getHorizontalScrollBar().setValue(o._centerX - scrollPane.getWidth() / 2);
+		scrollPane.getVerticalScrollBar().setValue(o._centerY - scrollPane.getHeight() / 2);
+	}
+
+	/**
 	 * Used for FPS calculation in the status bar.
 	 *
 	 * There are `Utils.STATUS_BAR_REFRESH_FPS` number of elements in this list.

@@ -96,14 +96,17 @@ public class WorldStatistics implements Serializable {
 	private long minMethaneTime;
 
 	private GeneticCode aliveBeingMostChildren;
+	private Organism aliveOrganismMostChildren;
 
 	private int aliveBeingMostChildrenNumber;
 
 	private GeneticCode aliveBeingMostKills;
+	private Organism aliveOrganismMostKills;
 
 	private int aliveBeingMostKillsNumber;
 
 	private GeneticCode aliveBeingMostInfections;
+	private Organism aliveOrganismMostInfections;
 
 	private int aliveBeingMostInfectionsNumber;
 
@@ -297,6 +300,10 @@ public class WorldStatistics implements Serializable {
 		return aliveBeingMostChildren;
 	}
 
+	public Organism getAliveOrganismMostChildren() {
+		return aliveOrganismMostChildren;
+	}
+
 	public int getAliveBeingMostChildrenNumber() {
 		return aliveBeingMostChildrenNumber;
 	}
@@ -305,12 +312,20 @@ public class WorldStatistics implements Serializable {
 		return aliveBeingMostKills;
 	}
 
+	public Organism getAliveOrganismMostKills() {
+		return aliveOrganismMostKills;
+	}
+
 	public int getAliveBeingMostKillsNumber() {
 		return aliveBeingMostKillsNumber;
 	}
 
 	public GeneticCode getAliveBeingMostInfections() {
 		return aliveBeingMostInfections;
+	}
+
+	public Organism getAliveOrganismMostInfections() {
+		return aliveOrganismMostInfections;
 	}
 
 	public int getAliveBeingMostInfectionsNumber() {
@@ -545,10 +560,13 @@ public class WorldStatistics implements Serializable {
 	public void findBestAliveBeings(List<Organism> organisms) {
 		Organism org;
 		aliveBeingMostChildren = null;
+		aliveOrganismMostChildren = null;
 		aliveBeingMostChildrenNumber = 0;
 		aliveBeingMostKills = null;
+		aliveOrganismMostKills = null;
 		aliveBeingMostKillsNumber = 0;
 		aliveBeingMostInfections = null;
+		aliveOrganismMostInfections = null;
 		aliveBeingMostInfectionsNumber = 0;
 		synchronized(organisms) {
 			for (Iterator<Organism> it = organisms.iterator(); it.hasNext();) {
@@ -557,14 +575,17 @@ public class WorldStatistics implements Serializable {
 					if (org.getTotalChildren() > aliveBeingMostChildrenNumber) {
 						aliveBeingMostChildrenNumber = org.getTotalChildren();
 						aliveBeingMostChildren = org.getGeneticCode();
+						aliveOrganismMostChildren = org;
 					}
 					if (org.getTotalKills() > aliveBeingMostKillsNumber) {
 						aliveBeingMostKillsNumber = org.getTotalKills();
 						aliveBeingMostKills = org.getGeneticCode();
+						aliveOrganismMostKills = org;
 					}
 					if (org.getTotalInfected() > aliveBeingMostInfectionsNumber) {
 						aliveBeingMostInfectionsNumber = org.getTotalInfected();
 						aliveBeingMostInfections = org.getGeneticCode();
+						aliveOrganismMostInfections = org;
 					}
 				}
 			}
