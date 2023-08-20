@@ -164,31 +164,7 @@ public class HeatMapPanel extends JPanel {
         // g2.setTransform(origTransform);
         // g2.translate(organism.getX() - Clade.NET_CLADE_SIZE / 2, organism.getY() - Clade.NET_CLADE_SIZE / 2);
         CladeName name = CladeNameGenerator.generateName(organism.getGeneticCode());
-        if (name.isVirus()) {
-          if (name.isConsumer()) {
-            if (name.isPlant()) {
-              g.setColor(java.awt.Color.ORANGE);
-            } else {
-              g.setColor(java.awt.Color.PINK);
-            }
-          } else if (name.isPlant()) {
-            g.setColor(java.awt.Color.LIGHT_GRAY);
-          } else {
-            g.setColor(java.awt.Color.WHITE);
-          }
-        } else if (name.isConsumer()) {
-          if (name.isPlant()) {
-            g.setColor(java.awt.Color.MAGENTA);
-          } else {
-            g.setColor(java.awt.Color.RED);
-          }
-        } else if (name.isPlant()) {
-          g.setColor(java.awt.Color.GREEN);
-        } else if (name.isOther()) {
-          g.setColor(java.awt.Color.BLUE);
-        } else {
-          g.setColor(java.awt.Color.YELLOW);
-        }
+        g.setColor(name.getColor());
         g2.fillOval(organism.getX(), organism.getY(), orgSize, orgSize);
         // organism.getGeneticCode().draw(g, Clade.NET_CLADE_SIZE, Clade.NET_CLADE_SIZE);
       }
