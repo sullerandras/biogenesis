@@ -35,6 +35,14 @@ public class JFileChooserWithRemember extends JFileChooser {
 
     return super.showOpenDialog(parent);
   }
+
+  @Override
+  public int showSaveDialog(Component parent) throws HeadlessException {
+    setCurrentDirectory(new File(prefs.get("lastDirectory", ".")));
+
+    return super.showSaveDialog(parent);
+  }
+
   @Override
   public void approveSelection() {
     super.approveSelection();
