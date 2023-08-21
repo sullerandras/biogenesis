@@ -13,7 +13,9 @@ public class BioFile {
     REGULAR,
     WORLD,
     STATS,
-    JSON
+    JSON,
+    CLADES,
+    SQLITE
   }
 
   private final File file;
@@ -24,6 +26,22 @@ public class BioFile {
 
   public File getCsvFile() {
     return new File(getFile().getPath().replaceFirst("\\." + BioFileFilter.WORLD_EXTENSION + "(\\.gz)?$", ".csv"));
+  }
+
+  public File getSqliteFile() {
+    return new File(getFile().getPath().replaceFirst("\\." + BioFileFilter.WORLD_EXTENSION + "(\\.gz)?$", ".sqlite"));
+  }
+
+  /**
+   * Returns the name of the world file name without the time and without the extension.
+   * Example:
+   *  "/home/andras/firstworld.bgw.gz" => "firstworld"
+   *  "/home/andras/Downloads/bestworld@00005.bgw" => "bestworld"
+   */
+  public String getWorldName() {
+    return getFile().getName().replaceFirst(
+        "(@[0-9]*)?\\." + BioFileFilter.WORLD_EXTENSION + "(\\.gz)?$",
+        "");
   }
 
   public File getFile() {
@@ -50,6 +68,9 @@ public class BioFile {
       case JSON:
         suffix = "json";
         break;
+      case CLADES:
+        suffix = "clades.png";
+        break;
       default:
         throw new IllegalArgumentException("Type " + type + " is not supported");
     }
@@ -61,12 +82,14 @@ public class BioFile {
     return getFile().getName().matches(".*?@[0-9]*\\." + BioFileFilter.WORLD_EXTENSION + "(\\.gz)?$");
   }
 
-  public void appendToCsv(long time, int population, int distinctClades, double O2, double CO2, double CH4, List<Organism> organisms) {
+  public void appendToCsv(long time, int population, int distinctClades, int distinctCladesWith10Orgs, int distinctCladesWith100Orgs, double O2, double CO2, double CH4, List<Organism> organisms) {
     File csvFile = getCsvFile();
     Row row = new Row();
     row.add("time", time);
     row.add("population", population);
     row.add("clades", distinctClades);
+    row.add("clades w 10 orgs", distinctCladesWith10Orgs);
+    row.add("clades w 100 orgs", distinctCladesWith100Orgs);
     row.add("o2", O2, 2);
     row.add("co2", CO2, 2);
     row.add("ch4", CH4, 2);

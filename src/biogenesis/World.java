@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.swing.SwingUtilities;
 
 import com.google.gson.annotations.Expose;
@@ -238,13 +240,22 @@ public class World implements Serializable{
 	 * Returns the number of distinct cladeIDs in the current population.
 	 */
 	public int getDistinctCladeIDCount() {
-        return (int) _organisms
-            .stream()
-            .filter(o -> o.isAlive())
-            .map(o -> o.getGeneticCode().getcladeID())
-            .distinct()
-            .count();
-    }
+		return getDistinctCladeIDCount(1);
+	}
+	/**
+	 * Returns the number of distinct cladeIDs in the current population.
+	 * @param minPopulation only count clades with at least minPopulation organisms
+	 */
+	public int getDistinctCladeIDCount(int minPopulation) {
+		return (int) _organisms
+				.stream()
+				.filter(o -> o.isAlive())
+				.collect(Collectors.groupingBy(o -> o.getGeneticCode().getcladeID(), Collectors.counting()))
+				.entrySet()
+				.stream()
+				.filter(e -> e.getValue() >= minPopulation) // only show clades with at least minPopulation organisms
+				.count();
+	}
 	/**
 	 * Increase the population counter by one.
 	 *
@@ -626,7 +637,7 @@ public class World implements Serializable{
 			_visibleWorld.getMainWindow().getInfoPanel().recalculate();
 		if (nFrames % 256 == 0) {
 			nFrames = 0;
-			worldStatistics.eventTime(_population, getDistinctCladeIDCount(), _O2, _CO2, _CH4, _organisms);
+			worldStatistics.eventTime(_population, getDistinctCladeIDCount(1), getDistinctCladeIDCount(10), getDistinctCladeIDCount(100), _O2, _CO2, _CH4, _organisms);
 			_isbackuped = false;
 		}
 	}

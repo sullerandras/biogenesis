@@ -96,14 +96,17 @@ public class WorldStatistics implements Serializable {
 	private long minMethaneTime;
 
 	private GeneticCode aliveBeingMostChildren;
+	private Organism aliveOrganismMostChildren;
 
 	private int aliveBeingMostChildrenNumber;
 
 	private GeneticCode aliveBeingMostKills;
+	private Organism aliveOrganismMostKills;
 
 	private int aliveBeingMostKillsNumber;
 
 	private GeneticCode aliveBeingMostInfections;
+	private Organism aliveOrganismMostInfections;
 
 	private int aliveBeingMostInfectionsNumber;
 
@@ -297,6 +300,10 @@ public class WorldStatistics implements Serializable {
 		return aliveBeingMostChildren;
 	}
 
+	public Organism getAliveOrganismMostChildren() {
+		return aliveOrganismMostChildren;
+	}
+
 	public int getAliveBeingMostChildrenNumber() {
 		return aliveBeingMostChildrenNumber;
 	}
@@ -305,12 +312,20 @@ public class WorldStatistics implements Serializable {
 		return aliveBeingMostKills;
 	}
 
+	public Organism getAliveOrganismMostKills() {
+		return aliveOrganismMostKills;
+	}
+
 	public int getAliveBeingMostKillsNumber() {
 		return aliveBeingMostKillsNumber;
 	}
 
 	public GeneticCode getAliveBeingMostInfections() {
 		return aliveBeingMostInfections;
+	}
+
+	public Organism getAliveOrganismMostInfections() {
+		return aliveOrganismMostInfections;
 	}
 
 	public int getAliveBeingMostInfectionsNumber() {
@@ -447,7 +462,7 @@ public class WorldStatistics implements Serializable {
 		infectionsSum++;
 	}
 
-	public void eventTime(int population, int distinctClades, double O2, double CO2, double CH4, List<Organism> organisms) {
+	public void eventTime(int population, int distinctClades, int distinctCladesWith10Orgs, int distinctCladesWith100Orgs, double O2, double CO2, double CH4, List<Organism> organisms) {
 		time++;
 		if (deathLastTime > 1.5 * getAverageDeaths()) {
 			if (deathLastTime > 3 * getAverageDeaths()) {
@@ -538,17 +553,20 @@ public class WorldStatistics implements Serializable {
 		birthLastTime = 0;
 
 		if ((Utils.AUTO_BACKUP_CSV) && (mainWindowInterface.getBioFile() != null)) {
-			mainWindowInterface.getBioFile().appendToCsv(time, population, distinctClades, O2, CO2, CH4, organisms);
+			mainWindowInterface.getBioFile().appendToCsv(time, population, distinctClades, distinctCladesWith10Orgs, distinctCladesWith100Orgs, O2, CO2, CH4, organisms);
 		}
 	}
 
 	public void findBestAliveBeings(List<Organism> organisms) {
 		Organism org;
 		aliveBeingMostChildren = null;
+		aliveOrganismMostChildren = null;
 		aliveBeingMostChildrenNumber = 0;
 		aliveBeingMostKills = null;
+		aliveOrganismMostKills = null;
 		aliveBeingMostKillsNumber = 0;
 		aliveBeingMostInfections = null;
+		aliveOrganismMostInfections = null;
 		aliveBeingMostInfectionsNumber = 0;
 		synchronized(organisms) {
 			for (Iterator<Organism> it = organisms.iterator(); it.hasNext();) {
@@ -557,14 +575,17 @@ public class WorldStatistics implements Serializable {
 					if (org.getTotalChildren() > aliveBeingMostChildrenNumber) {
 						aliveBeingMostChildrenNumber = org.getTotalChildren();
 						aliveBeingMostChildren = org.getGeneticCode();
+						aliveOrganismMostChildren = org;
 					}
 					if (org.getTotalKills() > aliveBeingMostKillsNumber) {
 						aliveBeingMostKillsNumber = org.getTotalKills();
 						aliveBeingMostKills = org.getGeneticCode();
+						aliveOrganismMostKills = org;
 					}
 					if (org.getTotalInfected() > aliveBeingMostInfectionsNumber) {
 						aliveBeingMostInfectionsNumber = org.getTotalInfected();
 						aliveBeingMostInfections = org.getGeneticCode();
+						aliveOrganismMostInfections = org;
 					}
 				}
 			}

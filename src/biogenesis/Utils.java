@@ -1438,255 +1438,255 @@ public final class Utils {
 	/**
 	 * Precalculated dark green color
 	 */
-	static final Color ColorDARK_GREEN = Color.GREEN.darker();
+	public static final Color ColorDARK_GREEN = Color.GREEN.darker();
 	/**
 	 * Precalculated dark red color
 	 */
-	static final Color ColorDARK_RED = Color.RED.darker();
+	public static final Color ColorDARK_RED = Color.RED.darker();
 	/**
 	 * Precalculated dark cyan color
 	 */
-	static final Color ColorDARK_CYAN = Color.CYAN.darker();
+	public static final Color ColorDARK_CYAN = Color.CYAN.darker();
 	/**
 	 * Precalculated dark blue color
 	 */
-	static final Color ColorDARK_BLUE = Color.BLUE.darker();
+	public static final Color ColorDARK_BLUE = Color.BLUE.darker();
 	/**
 	 * Precalculated dark magenta color
 	 */
-	static final Color ColorDARK_MAGENTA = Color.MAGENTA.darker();
+	public static final Color ColorDARK_MAGENTA = Color.MAGENTA.darker();
 	/**
 	 * Precalculated dark pink color
 	 */
-	static final Color ColorDARK_PINK = Color.PINK.darker();
+	public static final Color ColorDARK_PINK = Color.PINK.darker();
 	/**
 	 * Precalculated dark orange color
 	 */
-	static final Color ColorDARK_ORANGE = Color.ORANGE.darker();
+	public static final Color ColorDARK_ORANGE = Color.ORANGE.darker();
 	/**
 	 * Precalculated dark white color
 	 */
-	static final Color ColorDARK_WHITE = Color.WHITE.darker();
+	public static final Color ColorDARK_WHITE = Color.WHITE.darker();
 	/**
 	 * Precalculated dark gray color
 	 */
-	static final Color ColorDARK_GRAY = Color.GRAY.darker();
+	public static final Color ColorDARK_GRAY = Color.GRAY.darker();
 	/**
 	 * Precalculated dark yellow color
 	 */
-	static final Color ColorDARK_YELLOW = Color.YELLOW.darker();
+	public static final Color ColorDARK_YELLOW = Color.YELLOW.darker();
 	/**
 	 * Precalculated dark white color
 	 */
-	static final Color ColorDARKWHITE = new Color(227,227,227);
+	public static final Color ColorDARKWHITE = new Color(227,227,227);
 	/**
 	 * Precalculated brown color
 	 */
-	static final Color ColorBROWN = new Color(150,75,0);
+	public static final Color ColorBROWN = new Color(150,75,0);
 	/**
 	 * Precalculated light brown color
 	 */
-	static final Color ColorLIGHTBROWN = new Color(128,112,64);
+	public static final Color ColorLIGHTBROWN = new Color(128,112,64);
 	/**
 	 * Precalculated green brown color
 	 */
-	static final Color ColorGREENBROWN = new Color(128,132,64);
+	public static final Color ColorGREENBROWN = new Color(128,132,64);
 	/**
 	 * Precalculated poisoned jade color
 	 */
-	static final Color ColorDARKGREEN = new Color(54,84,54);
+	public static final Color ColorDARKGREEN = new Color(54,84,54);
 	/**
 	 * Precalculated light blue color
 	 */
-	static final Color ColorLIGHT_BLUE = new Color(0,0,128);
+	public static final Color ColorLIGHT_BLUE = new Color(0,0,128);
 	/**
 	 * Precalculated violet color
 	 */
-	static final Color ColorVIOLET = new Color(128,0,128);
+	public static final Color ColorVIOLET = new Color(128,0,128);
 	/**
 	 * Precalculated Forest color
 	 */
-	static final Color ColorFOREST = new Color(0,128,0);
+	public static final Color ColorFOREST = new Color(0,128,0);
 	/**
 	 * Precalculated bark color
 	 */
-	static final Color ColorBARK = new Color(96,128,64);
+	public static final Color ColorBARK = new Color(96,128,64);
 	/**
 	 * Precalculated old bark color
 	 */
-	static final Color ColorOLDBARK = new Color(80,40,0);
+	public static final Color ColorOLDBARK = new Color(80,40,0);
 	/**
 	 * Precalculated old bark color
 	 */
-	static final Color ColorDEADBARK = new Color(128,96,64);
+	public static final Color ColorDEADBARK = new Color(128,96,64);
 	/**
 	 * Precalculated jade color
 	 */
-	static final Color ColorJADE = new Color(0,168,107);
+	public static final Color ColorJADE = new Color(0,168,107);
 	/**
 	 * Precalculated spring color
 	 */
-	static final Color ColorSPRING = new Color(0,255,128);
+	public static final Color ColorSPRING = new Color(0,255,128);
 	/**
 	 * Precalculated leaf color
 	 */
-	static final Color ColorLEAF = new Color(92,184,0);
+	public static final Color ColorLEAF = new Color(92,184,0);
 	/**
 	 * Precalculated lime color
 	 */
-	static final Color ColorLIME = new Color(176,255,0);
+	public static final Color ColorLIME = new Color(176,255,0);
 	/**
 	 * Precalculated summer color
 	 */
-	static final Color ColorSUMMER = new Color(128,255,64);
+	public static final Color ColorSUMMER = new Color(128,255,64);
 	/**
 	 * Precalculated winter color
 	 */
-	static final Color ColorWINTER = new Color(54,84,0);
+	public static final Color ColorWINTER = new Color(54,84,0);
 	/**
 	 * Precalculated teal color
 	 */
-	static final Color ColorTEAL = new Color(0,128,128);
+	public static final Color ColorTEAL = new Color(0,128,128);
 	/**
 	 * Precalculated eye color
 	 */
-	static final Color ColorEYE = new Color(0,64,64);
+	public static final Color ColorEYE = new Color(0,64,64);
 	/**
 	 * Precalculated vision color (used for non terminal eyes)
 	 */
-	static final Color ColorVISION = new Color(232,145,70);
+	public static final Color ColorVISION = new Color(232,145,70);
 	/**
 	 * Precalculated mint color
 	 */
-	static final Color ColorMINT = new Color(160,224,160);
+	public static final Color ColorMINT = new Color(160,224,160);
 	/**
 	 * Precalculated maroon color
 	 */
-	static final Color ColorMAROON = new Color(128,0,0);
+	public static final Color ColorMAROON = new Color(128,0,0);
 	/**
 	 * Precalculated olive color
 	 */
-	static final Color ColorOLIVE = new Color(176,176,0);
+	public static final Color ColorOLIVE = new Color(176,176,0);
 	/**
 	 * Precalculated dark olive color
 	 */
-	static final Color ColorDARKOLIVE = new Color(88,88,0);
+	public static final Color ColorDARKOLIVE = new Color(88,88,0);
 	/**
 	 * Precalculated cream color
 	 */
-	static final Color ColorCREAM = new Color(208,192,140);
+	public static final Color ColorCREAM = new Color(208,192,140);
 	/**
 	 * Precalculated rose color
 	 */
-	static final Color ColorROSE = new Color(255,0,128);
+	public static final Color ColorROSE = new Color(255,0,128);
 	/**
 	 * Precalculated coral color
 	 */
-	static final Color ColorCORAL = new Color(255,100,138);
+	public static final Color ColorCORAL = new Color(255,100,138);
 	/**
 	 * Precalculated ochre color
 	 */
-	static final Color ColorOCHRE = new Color(204,119,34);
+	public static final Color ColorOCHRE = new Color(204,119,34);
 	/**
 	 * Precalculated sky color
 	 */
-	static final Color ColorSKY = new Color(128,192,255);
+	public static final Color ColorSKY = new Color(128,192,255);
 	/**
 	 * Precalculated deep sky color
 	 */
-	static final Color ColorDEEPSKY = new Color(64,96,255);
+	public static final Color ColorDEEPSKY = new Color(64,96,255);
 	/**
 	 * Precalculated ice color
 	 */
-	static final Color ColorICE = new Color(64,96,128);
+	public static final Color ColorICE = new Color(64,96,128);
 	/**
 	 * Precalculated lilac color
 	 */
-	static final Color ColorLILAC = new Color(192,128,255);
+	public static final Color ColorLILAC = new Color(192,128,255);
 	/**
 	 * Precalculated dark lilac color
 	 */
-	static final Color ColorDARKLILAC = new Color(96,64,96);
+	public static final Color ColorDARKLILAC = new Color(96,64,96);
 	/**
 	 * Precalculated fire color
 	 */
-	static final Color ColorFIRE = new Color(255,100,0);
+	public static final Color ColorFIRE = new Color(255,100,0);
 	/**
 	 * Precalculated dark fire color
 	 */
-	static final Color ColorDARKFIRE = new Color(232,146,70);
+	public static final Color ColorDARKFIRE = new Color(232,146,70);
 	/**
 	 * Precalculated grass color
 	 */
-	static final Color ColorGRASS = new Color(144,176,64);
+	public static final Color ColorGRASS = new Color(144,176,64);
 	/**
 	 * Precalculated purple color
 	 */
-	static final Color ColorPURPLE = new Color(168,0,84);
+	public static final Color ColorPURPLE = new Color(168,0,84);
 	/**
 	 * Precalculated c4 color
 	 */
-	static final Color ColorC4 = new Color(96,192,96);
+	public static final Color ColorC4 = new Color(96,192,96);
 	/**
 	 * Precalculated dark jade color
 	 */
-	static final Color ColorDARKJADE = new Color(0,84,54);
+	public static final Color ColorDARKJADE = new Color(0,84,54);
 	/**
 	 * Precalculated gold color
 	 */
-	static final Color ColorGOLD = new Color(212,175,55);
+	public static final Color ColorGOLD = new Color(212,175,55);
 	/**
 	 * Precalculated blond color
 	 */
-	static final Color ColorBLOND = new Color(255,255,128);
+	public static final Color ColorBLOND = new Color(255,255,128);
 	/**
 	 * Precalculated flower color
 	 */
-	static final Color ColorFLOWER = new Color(128,128,255);
+	public static final Color ColorFLOWER = new Color(128,128,255);
 	/**
 	 * Precalculated auburn color
 	 */
-	static final Color ColorAUBURN = new Color(128,48,48);
+	public static final Color ColorAUBURN = new Color(128,48,48);
 	/**
 	 * Precalculated indigo color
 	 */
-	static final Color ColorINDIGO = new Color(111,0,255);
+	public static final Color ColorINDIGO = new Color(111,0,255);
 	/**
 	 * Precalculated lavender color
 	 */
-	static final Color ColorLAVENDER = new Color(128,96,176);
+	public static final Color ColorLAVENDER = new Color(128,96,176);
 	/**
 	 * Precalculated fallow color
 	 */
-	static final Color ColorFALLOW = new Color(150,113,23);
+	public static final Color ColorFALLOW = new Color(150,113,23);
 	/**
 	 * Precalculated spore color
 	 */
-	static final Color ColorSPORE = new Color(0,80,160);
+	public static final Color ColorSPORE = new Color(0,80,160);
 	/**
 	 * Precalculated fruit color
 	 */
-	static final Color ColorFRUIT = new Color(255,128,192);
+	public static final Color ColorFRUIT = new Color(255,128,192);
 	/**
 	 * Precalculated plague color
 	 */
-	static final Color ColorPLAGUE = new Color(255,192,255);
+	public static final Color ColorPLAGUE = new Color(255,192,255);
 	/**
 	 * Precalculated spike color
 	 */
-	static final Color ColorSPIKE = new Color(164,132,100);
+	public static final Color ColorSPIKE = new Color(164,132,100);
 	/**
 	 * Precalculated spike point color
 	 */
-	static final Color ColorSPIKEPOINT = new Color(164,132,99);
+	public static final Color ColorSPIKEPOINT = new Color(164,132,99);
 	/**
 	 * Precalculated broken defense color
 	 */
-	static final Color ColorBROKEN = new Color(96,128,96);
+	public static final Color ColorBROKEN = new Color(96,128,96);
 	/**
 	 * Precalculated dark color
 	 */
-	static final Color ColorDARK = new Color(64,32,16);
+	public static final Color ColorDARK = new Color(64,32,16);
 	/**
 	 * Used through all program to calculate random numbers
 	 */

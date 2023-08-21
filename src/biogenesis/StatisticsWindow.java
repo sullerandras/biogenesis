@@ -28,8 +28,10 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.geom.AffineTransform;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -75,6 +77,7 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 		setPreferredSize(new Dimension(minSize.width + 30, minSize.height));
 		setSize(new Dimension(minSize.width + 30, minSize.height));
 		setMinimumSize(minSize);
+		WindowManager.registerWindow(this, getWidth(), getHeight(), 0, 0);
 
 		Timer timer = new Timer(1000 / Utils.STATISTICS_REFRESH_FPS, new ActionListener() {
 			@Override
@@ -278,6 +281,12 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 		gbc.fill = GridBagConstraints.NONE;
 		GeneticCodePanel aliveMostChildrenPanel = new GeneticCodePanel(worldStatistics.getAliveBeingMostChildren(),
 				visibleWorld);
+		aliveMostChildrenPanel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				showOrganism(worldStatistics.getAliveOrganismMostChildren());
+			}
+		});
 		notableBeingsPanel.add(aliveMostChildrenPanel, gbc);
 		gbc.gridx = 2;
 		GeneticCodePanel mostChildrenPanel = new GeneticCodePanel(worldStatistics.getBeingMostChildren(),
@@ -304,6 +313,12 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 		gbc.fill = GridBagConstraints.NONE;
 		GeneticCodePanel aliveMostKillsPanel = new GeneticCodePanel(worldStatistics.getAliveBeingMostKills(),
 				visibleWorld);
+		aliveMostKillsPanel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				showOrganism(worldStatistics.getAliveOrganismMostKills());
+			}
+		});
 		notableBeingsPanel.add(aliveMostKillsPanel, gbc);
 		gbc.gridx = 2;
 		GeneticCodePanel mostKillsPanel = new GeneticCodePanel(worldStatistics.getBeingMostKills(),
@@ -330,6 +345,12 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 		gbc.fill = GridBagConstraints.NONE;
 		GeneticCodePanel aliveMostInfectionsPanel = new GeneticCodePanel(worldStatistics.getAliveBeingMostInfections(),
 				visibleWorld);
+		aliveMostInfectionsPanel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				showOrganism(worldStatistics.getAliveOrganismMostInfections());
+			}
+		});
 		notableBeingsPanel.add(aliveMostInfectionsPanel, gbc);
 		gbc.gridx = 2;
 		GeneticCodePanel mostInfectionsPanel = new GeneticCodePanel(worldStatistics.getBeingMostInfections(),
@@ -480,6 +501,19 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 			dispose();
 	}
+
+	/**
+	 * Sets the given organism as the selected organism in the world,
+	 * then scrolls the worlds view so this organism is at the center,
+	 * then brings the main window to front and focus.
+	 */
+	private void showOrganism(Organism o) {
+		if (o != null) {
+			visibleWorld.setSelectedOrganism(o);
+			visibleWorld.getMainWindow().scrollOrganismToCenter(o);
+			visibleWorld.getMainWindow().toFront();
+		}
+	}
 }
 
 class ColorPanel extends JPanel {
@@ -628,6 +662,5 @@ class GraphInfo {
 			xPoints[x] = x;
 			yPoints[x] = (int) y;
 		}
-
 	}
 }

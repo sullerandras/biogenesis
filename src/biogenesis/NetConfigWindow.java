@@ -57,6 +57,7 @@ public class NetConfigWindow extends JDialog {
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setComponents();
 		pack();
+		WindowManager.registerWindow(this, getWidth(), getHeight(), 0, 0);
 		setResizable(false);
 		cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {

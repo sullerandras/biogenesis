@@ -212,6 +212,7 @@ public class ParamDialog extends JDialog {
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setComponents();
 		pack();
+		WindowManager.registerWindow(this, getWidth(), getHeight(), 0, 0);
 		setResizable(false);
 		// Configurem les accions dels butons
 		OKButton.addActionListener(new ActionListener() {
@@ -944,7 +945,7 @@ public class ParamDialog extends JDialog {
 		genesPanel.add(darkgrayprobText);
 		darkgraycostText = new JTextField(Double.toString(Utils.DARKGRAY_ENERGY_CONSUMPTION));
 		genesPanel.add(darkgraycostText);
-		
+
 		label = new JLabel(Messages.getString("T_CYAN"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
 		cyanprobText = new JTextField(Integer.toString(Utils.CYAN_PROB));
@@ -1094,7 +1095,7 @@ public class ParamDialog extends JDialog {
 		genesPanel.add(new JLabel(Messages.getString("T_COLOR2"),SwingConstants.CENTER)); //$NON-NLS-1$
 		genesPanel.add(new JLabel(Messages.getString("T_PROBABILITY"),SwingConstants.CENTER)); //$NON-NLS-1$
 		genesPanel.add(new JLabel(Messages.getString("T_COST"),SwingConstants.CENTER)); //$NON-NLS-1$
-		
+
 		label = new JLabel(Messages.getString("T_SPORE"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
 		sporeprobText = new JTextField(Integer.toString(Utils.SPORE_PROB));

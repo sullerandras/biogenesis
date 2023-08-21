@@ -23,6 +23,8 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Frame;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -61,6 +63,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
+import javax.swing.JViewport;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -75,8 +78,8 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 	protected boolean _isProcessActive = false;
 	protected transient java.util.Timer _timer;
 	protected transient Thread workerThread = null;
-	protected JFileChooser worldChooser = new JFileChooser();
-	protected JFileChooser geneticCodeChooser = new JFileChooser();
+	protected JFileChooser worldChooser = new JFileChooserWithRemember();
+	protected JFileChooser geneticCodeChooser = new JFileChooserWithRemember();
 	protected BioFile _gameFile = null;
 
 	protected JScrollPane scrollPane;
@@ -171,6 +174,9 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 		createMenu();
 		createToolBar();
 		setControls();
+		setResizable(true);
+		setSize(new Dimension(Utils.WINDOW_WIDTH, Utils.WINDOW_HEIGHT));
+		WindowManager.registerWindow(this, getWidth(), getHeight(), 0, 0);
 		configureApp();
 		_world = new World(_visibleWorld);
 		startApp();
@@ -526,10 +532,10 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 			if (_gameFile != null) {
 				saveObject(_world, _gameFile.getFileForTime(_world.getTime(), BioFile.Type.REGULAR));
 				if (Utils.AUTO_BACKUP_WORLD_PNG) {
-					boolean processState = _isProcessActive;
 					_isProcessActive = false;
 					saveWorldImage(_gameFile.getFileForTime(_world.getTime(), BioFile.Type.WORLD));
-					_isProcessActive = processState;
+					saveCladeImage(_gameFile.getFileForTime(_world.getTime(), BioFile.Type.CLADES));
+					_isProcessActive = true;
 				}
 				GsonFileSaver.saveWorldJson(_world, _gameFile.getFileForTime(_world.getTime(), BioFile.Type.JSON));
 				if (Utils.AUTO_BACKUP_STATISTICS_PNG && _statisticsWindow != null) {
@@ -538,7 +544,8 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 					// returns before it has been repainted. So we need to save the image in an AWT
 					// job to make sure the repaint has been done before the saving.
 					_statisticsWindow.repaintStats();
-					SwingUtilities.invokeLater(() -> saveStatisticsImage(_gameFile.getFileForTime(_world.getTime(), BioFile.Type.STATS)));
+					SwingUtilities
+							.invokeLater(() -> saveStatisticsImage(_gameFile.getFileForTime(_world.getTime(), BioFile.Type.STATS)));
 				}
 			} else
 				saveGameAs();
@@ -854,7 +861,7 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 					if ((Messages.getLanguage().equals("ca")) || (Messages.getLanguage().equals("es"))
 							|| (Messages.getLanguage().equals("en"))) {
 						BareBonesBrowserLaunch.openURL("http://biogenesis.sourceforge.net/manual."
-							+ Messages.getLanguage() + ".php"); //$NON-NLS-1$
+								+ Messages.getLanguage() + ".php"); //$NON-NLS-1$
 					} else {
 						BareBonesBrowserLaunch.openURL("http://biogenesis.sourceforge.net/manual.en.php"); //$NON-NLS-1$
 					}
@@ -953,6 +960,7 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 		scrollPane = new JScrollPane(_visibleWorld);
 		scrollPane.getHorizontalScrollBar().setUnitIncrement(10);
 		scrollPane.getVerticalScrollBar().setUnitIncrement(10);
+        scrollPane.getViewport().setScrollMode(JViewport.BACKINGSTORE_SCROLL_MODE);
 		setLocation(Utils.WINDOW_X, Utils.WINDOW_Y);
 		setExtendedState(Utils.WINDOW_STATE);
 		getContentPane().setLayout(new BorderLayout());
@@ -971,7 +979,7 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 		getContentPane().add(_statusLabel, BorderLayout.SOUTH);
 		getContentPane().add(toolBar, BorderLayout.NORTH);
 
-		worldChooser.setFileFilter(new BioFileFilter(BioFileFilter.WORLD_EXTENSION, BioFileFilter.WORLD_EXTENSION+".gz"));
+		worldChooser.setFileFilter(new BioFileFilter(BioFileFilter.WORLD_EXTENSION, BioFileFilter.WORLD_EXTENSION + ".gz"));
 		geneticCodeChooser.setFileFilter(new BioFileFilter(BioFileFilter.GENETIC_CODE_EXTENSION));
 		geneticCodeChooser = setUpdateUI(geneticCodeChooser);
 	}
@@ -994,10 +1002,10 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 				String filename = f.getName().toLowerCase();
 				BioFileFilter bff = (BioFileFilter) chooser.getFileFilter();
 				boolean fullFilename = filename.endsWith(bff.getValidExtension()) ||
-				 	(!bff.getValidExtension2().equals("") && filename.endsWith(bff.getValidExtension2()));
+						(!bff.getValidExtension2().equals("") && filename.endsWith(bff.getValidExtension2()));
 				if (!fullFilename) {
 					if (Utils.COMPRESS_BACKUPS) {
-						f = new File(f.getAbsolutePath() + "." + bff.getValidExtension()+".gz");
+						f = new File(f.getAbsolutePath() + "." + bff.getValidExtension() + ".gz");
 					} else {
 						f = new File(f.getAbsolutePath() + "." + bff.getValidExtension());
 					}
@@ -1056,6 +1064,24 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 		_visibleWorld.paint(worldimage.getGraphics());
 		try {
 			ImageIO.write(worldimage, "PNG", f); //$NON-NLS-1$
+		} catch (FileNotFoundException ex) {
+			System.err.println(ex.getMessage());
+		} catch (IOException ex) {
+			System.err.println(ex.getMessage());
+		}
+	}
+
+	public void saveCladeImage(File f) {
+		CladeStats cladeStats;
+		synchronized (_world._organisms) {
+			cladeStats = new CladeStats(_world._organisms);
+		}
+		Rectangle bounds = cladeStats.getBounds();
+		final BufferedImage img = new BufferedImage(bounds.width, bounds.height, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g = (Graphics2D) img.getGraphics();
+		cladeStats.draw(g);
+		try {
+			ImageIO.write(img, "PNG", f); //$NON-NLS-1$
 		} catch (FileNotFoundException ex) {
 			System.err.println(ex.getMessage());
 		} catch (IOException ex) {
@@ -1144,6 +1170,18 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 	};
 
 	/**
+	 * Scrolls the world so that the given organism is at the center of the view.
+	 */
+	public void scrollOrganismToCenter(Organism o) {
+		if (o == null) {
+			return;
+		}
+
+		scrollPane.getHorizontalScrollBar().setValue(o._centerX - scrollPane.getWidth() / 2);
+		scrollPane.getVerticalScrollBar().setValue(o._centerY - scrollPane.getHeight() / 2);
+	}
+
+	/**
 	 * Used for FPS calculation in the status bar.
 	 *
 	 * There are `Utils.STATUS_BAR_REFRESH_FPS` number of elements in this list.
@@ -1167,8 +1205,6 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 		 * validate();
 		 * } else {
 		 */
-		setResizable(true);
-		setSize(new Dimension(Utils.WINDOW_WIDTH, Utils.WINDOW_HEIGHT));
 		setVisible(true);
 		// }
 
@@ -1230,8 +1266,8 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 									_world._isbackuped = true;
 								}
 							} else {
-                                if (_gameFile == null) {
-                                	backupGameAction.actionPerformed(null);
+								if (_gameFile == null) {
+									backupGameAction.actionPerformed(null);
 								}
 							}
 						}
