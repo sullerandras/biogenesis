@@ -34,13 +34,13 @@ build-src-jar:
 	jar -cfe biogenesis-src.jar biogenesis.MainWindow -C build .
 
 compile: clean
-	mkdir classes
+	mkdir -p classes
 	javac -cp lib/gson-2.10.1.jar:lib/xchart-3.8.5.jar -sourcepath src src/biogenesis/*.java -source 8 -target 8 -d classes
 	cp -r src/biogenesis/messages classes/biogenesis
 	cp -r src/biogenesis/images classes/biogenesis
 
 compile-analyzer: clean
-	mkdir classes
+	mkdir -p classes
 	javac -cp lib/gson-2.10.1.jar:lib/xchart-3.8.5.jar -sourcepath src src/biogenesis/clade_analyzer/*.java -source 8 -target 8 -d classes
 	cp -r src/biogenesis/messages classes/biogenesis
 	cp -r src/biogenesis/images classes/biogenesis
