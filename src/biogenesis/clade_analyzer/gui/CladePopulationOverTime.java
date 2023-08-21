@@ -64,8 +64,8 @@ public class CladePopulationOverTime extends JPanel {
     chart.getStyler().setCursorEnabled(true);
     chart.getStyler().setXAxisTitleVisible(false);
 
-    List<Integer> xData = timeAndPopulationList.stream().map(TimeAndPopulation::getTime).toList();
-    List<Integer> yData = timeAndPopulationList.stream().map(TimeAndPopulation::getPopulation).toList();
+    List<Integer> xData = timeAndPopulationList.stream().map(TimeAndPopulation::getTime).collect(java.util.stream.Collectors.toList());
+    List<Integer> yData = timeAndPopulationList.stream().map(TimeAndPopulation::getPopulation).collect(java.util.stream.Collectors.toList());
 
     xData = new ArrayList<>(xData);
     xData.add(0, 0);

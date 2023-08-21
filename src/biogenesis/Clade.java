@@ -63,7 +63,13 @@ public class Clade {
   }
 
   public void print(int indentation) {
-    System.out.println("  ".repeat(indentation) + id + ": " + population);
+    // there is no String.repeat in Java 8
+    // System.out.println("  ".repeat(indentation) + id + ": " + population);
+    // so we use this instead
+    for (int i = 0; i < indentation; i++) {
+      System.out.print("  ");
+    }
+    System.out.println(id + ": " + population);
     for (Clade clade : children) {
       clade.print(indentation + 1);
     }

@@ -1,6 +1,5 @@
 package biogenesis.clade_analyzer;
 
-import java.awt.Taskbar;
 import java.net.URL;
 
 import javax.swing.ImageIcon;
@@ -30,9 +29,13 @@ public class GUI {
     ImageIcon imageIcon = createIcon("images/menu_track.png");
     try {
       // Set application icon. This only works on macOS.
-      final Taskbar taskbar = Taskbar.getTaskbar(); // Java 9+
+      // There is no Taskbar in java 8
+      // final java.awt.Taskbar taskbar = java.awt.Taskbar.getTaskbar(); // Java 9+
+      // So we use reflection to get the taskbar
       if (imageIcon != null) {
-        taskbar.setIconImage(imageIcon.getImage());
+        Class<?> taskbarClass = Class.forName("java.awt.Taskbar");
+        Object taskbar = taskbarClass.getMethod("getTaskbar").invoke(null); // Java 9+
+        taskbar.getClass().getMethod("setIconImage", java.awt.Image.class).invoke(taskbar, imageIcon.getImage());
       }
     } catch (Exception | NoClassDefFoundError e) {
       System.out.println("Unable to set icon: " + e);

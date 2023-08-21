@@ -1,5 +1,6 @@
 package biogenesis.clade_analyzer.db;
 
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
@@ -267,7 +268,16 @@ public class DB {
   }
 
   private String readMigrationFile(String filename) throws IOException {
-    return new String(getClass().getResourceAsStream("migrations/" + filename).readAllBytes());
+    // There is no readAllBytes in Java 8
+    // return new String(getClass().getResourceAsStream("migrations/" + filename).readAllBytes());
+    // So we use this instead
+    java.io.InputStream inputStream = getClass().getResourceAsStream("migrations/" + filename);
+    byte[] bytes = new byte[inputStream.available()];
+    DataInputStream dataInputStream = new DataInputStream(inputStream);
+    dataInputStream.readFully(bytes);
+    dataInputStream.close();
+
+    return new String(bytes);
   }
 
   public void startTransaction() throws SQLException {
