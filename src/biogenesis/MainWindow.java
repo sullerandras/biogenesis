@@ -21,6 +21,7 @@ package biogenesis;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Frame;
@@ -652,7 +653,7 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 				// Ask for file name
 				JFileChooser chooser = new JFileChooser();
 				chooser.setFileFilter(new BioFileFilter("png")); //$NON-NLS-1$
-				int returnVal = chooser.showSaveDialog(null);
+				int returnVal = chooser.showSaveDialog(MainWindow.this);
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					int canWrite = JOptionPane.YES_OPTION;
 					File f = chooser.getSelectedFile();
@@ -684,7 +685,7 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 		public void actionPerformed(ActionEvent e) {
 			_isProcessActive = false;
 			try {
-				int returnVal = getWorldChooser().showOpenDialog(null);
+				int returnVal = getWorldChooser().showOpenDialog(MainWindow.this);
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					// Elimina les finestres antigues
 					if (_statisticsWindow != null) {
@@ -940,7 +941,7 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 	}
 
 	protected File saveGameAs() {
-		File savedFile = saveObjectAs(_world);
+		File savedFile = saveObjectAs(this, _world);
 		if (savedFile != null)
 			_gameFile = new BioFile(savedFile);
 		return savedFile;
@@ -990,7 +991,7 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 		geneticCodeChooser = setUpdateUI(geneticCodeChooser);
 	}
 
-	public File saveObjectAs(Object obj) {
+	public File saveObjectAs(Component parent, Object obj) {
 		File resultFile = null;
 		boolean processState = _isProcessActive;
 		_isProcessActive = false;
@@ -1001,7 +1002,7 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 				chooser = getGeneticCodeChooser();
 			else
 				chooser = getWorldChooser();
-			int returnVal = chooser.showSaveDialog(null);
+			int returnVal = chooser.showSaveDialog(parent);
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 				int canWrite = JOptionPane.YES_OPTION;
 				File f = chooser.getSelectedFile();

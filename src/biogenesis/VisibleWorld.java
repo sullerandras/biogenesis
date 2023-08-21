@@ -268,7 +268,7 @@ public class VisibleWorld extends JPanel implements VisibleWorldInterface {
 					// Ask for file name
 					JFileChooser chooser = new JFileChooser();
 					chooser.setFileFilter(new BioFileFilter("png")); //$NON-NLS-1$
-					int returnVal = chooser.showSaveDialog(null);
+					int returnVal = chooser.showSaveDialog(VisibleWorld.this.getMainWindow());
 					if(returnVal == JFileChooser.APPROVE_OPTION) {
 						int canWrite = JOptionPane.YES_OPTION;
 						File f = chooser.getSelectedFile();
@@ -403,7 +403,7 @@ public class VisibleWorld extends JPanel implements VisibleWorldInterface {
 		public void actionPerformed(ActionEvent e) {
 			Organism b = getSelectedOrganism();
 			if (b != null && b.isAlive()) {
-				_mainWindow.saveObjectAs(b.getGeneticCode());
+				_mainWindow.saveObjectAs(VisibleWorld.this.getMainWindow(), b.getGeneticCode());
 			}
 		}
 	}
@@ -453,7 +453,7 @@ public class VisibleWorld extends JPanel implements VisibleWorldInterface {
     		_mainWindow._isProcessActive = false;
     		try {
     			JFileChooser chooser = _mainWindow.getGeneticCodeChooser();
-    			int returnVal = chooser.showOpenDialog(null);
+    			int returnVal = chooser.showOpenDialog(VisibleWorld.this.getMainWindow());
     			if (returnVal == JFileChooser.APPROVE_OPTION) {
     				try {
     					// Read XML code from file

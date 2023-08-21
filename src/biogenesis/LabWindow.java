@@ -720,7 +720,7 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 	    			JFileChooser chooser = mainWindow.getGeneticCodeChooser();
 				chooser=mainWindow.setUpdateUI(chooser);
 	    			chooser.setFileFilter(new BioFileFilter(BioFileFilter.GENETIC_CODE_EXTENSION));
-	    			int returnVal = chooser.showOpenDialog(null);
+	    			int returnVal = chooser.showOpenDialog(LabWindow.this);
 	    			if (returnVal == JFileChooser.APPROVE_OPTION) {
 	    				try {
 	    					// Read XML code from file
@@ -777,7 +777,7 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 					GeneticCode exportcode = new GeneticCode(genesList, symmetry, mirror, mutationrate, clonerate, activity, modifiescream, modifiesfallow,
 		            		modifiesspore, adaptspore, modifiesblack, adaptblack, plague, disperseChildren, generationBattle, siblingBattle, altruist, familial, social,
 		            		peaceful, passive, clockwise, modifiespink, modifieslilac, modifiessky, modifiesleaf, selfish);
-					mainWindow.saveObjectAs(exportcode);
+					mainWindow.saveObjectAs(LabWindow.this, exportcode);
 				}
 			}
 		});
