@@ -533,11 +533,10 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 			if (_gameFile != null) {
 				saveObject(_world, _gameFile.getFileForTime(_world.getTime(), BioFile.Type.REGULAR));
 				if (Utils.AUTO_BACKUP_WORLD_PNG) {
-					boolean processState = _isProcessActive;
 					_isProcessActive = false;
 					java.awt.EventQueue.invokeLater(() -> saveWorldImage(_gameFile.getFileForTime(_world.getTime(), BioFile.Type.WORLD)));
 					java.awt.EventQueue.invokeLater(() -> saveCladeImage(_gameFile.getFileForTime(_world.getTime(), BioFile.Type.CLADES)));
-					_isProcessActive = processState;
+					_isProcessActive = true;
 				}
 				GsonFileSaver.saveWorldJson(_world, _gameFile.getFileForTime(_world.getTime(), BioFile.Type.JSON));
 				if (Utils.AUTO_BACKUP_STATISTICS_PNG && _statisticsWindow != null) {
@@ -548,8 +547,14 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 					_statisticsWindow.repaintStats();
 					java.awt.EventQueue.invokeLater(() -> saveStatisticsImage(_gameFile.getFileForTime(_world.getTime(), BioFile.Type.STATS)));
 				}
-			} else
-				saveGameAs();
+			} else {
+				try {
+					java.awt.EventQueue.invokeAndWait(() -> saveGameAs());
+				} catch (InvocationTargetException | InterruptedException e1) {
+					System.out.println("Error saving game: "+e);
+					e1.printStackTrace();
+				}
+			}
 		}
 
 		@Override
@@ -961,7 +966,7 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 		scrollPane = new JScrollPane(_visibleWorld);
 		scrollPane.getHorizontalScrollBar().setUnitIncrement(10);
 		scrollPane.getVerticalScrollBar().setUnitIncrement(10);
-    scrollPane.getViewport().setScrollMode(JViewport.BACKINGSTORE_SCROLL_MODE);
+		scrollPane.getViewport().setScrollMode(JViewport.BACKINGSTORE_SCROLL_MODE);
 		setLocation(Utils.WINDOW_X, Utils.WINDOW_Y);
 		setExtendedState(Utils.WINDOW_STATE);
 		getContentPane().setLayout(new BorderLayout());

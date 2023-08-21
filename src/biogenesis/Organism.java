@@ -1355,13 +1355,13 @@ public class Organism extends Rectangle {
 			if (_geneticCode.getNGenes() != 1) {
 				photofactor = 1961 + Math.round(6000 / ((double)_geneticCode.getNGenes() + 2)) + Math.round(6315 / (double)_symmetry);
 			} else {
-				photofactor = 1961 + 2200 + Math.round(6315 / (double)_symmetry);
+				photofactor = 1961 + 2150 + Math.round(6315 / (double)_symmetry);
 			}
 		} else {
 			if (_geneticCode.getNGenes() != 1) {
 				photofactor = 1961.329 + Math.round(6000 / ((double)_geneticCode.getNGenes() + 2)) + Math.round(6315 / (double)_symmetry);
 			} else {
-				photofactor = 1961.329 + 2200 + Math.round(6315 / (double)_symmetry);
+				photofactor = 1961.329 + 2150 + Math.round(6315 / (double)_symmetry);
 			}
 		}
 		double photomultiplier = (photofactor * 0.0006) / Utils.GREEN_OBTAINED_ENERGY_DIVISOR;
@@ -1865,7 +1865,7 @@ public class Organism extends Rectangle {
 							switch (getTypeColor(_segColor[j])) {
 							case C4:
 								if ((_sporetime == 0) || (_geneticCode.getModifiesspore() <= 6)) {
-									_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * (11.2 + (1.06 * _geneticCode.getGene(j%_geneticCode.getNGenes()).getLength()));
+									_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * (11.23 + (1.075*_geneticCode.getGene(j%_geneticCode.getNGenes()).getLength()));
 								}
 								break;
 							case LAVENDER:
@@ -1907,7 +1907,7 @@ public class Organism extends Rectangle {
 							switch (getTypeColor(_segColor[j])) {
 							case C4:
 								if ((_sporetime == 0) || (_geneticCode.getModifiesspore() <= 6)) {
-									_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * (10.6 + (1.03 * _geneticCode.getGene(j%_geneticCode.getNGenes()).getLength()));
+									_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * (10.615 + (1.0375*_geneticCode.getGene(j%_geneticCode.getNGenes()).getLength()));
 								}
 								break;
 							}
@@ -1919,7 +1919,7 @@ public class Organism extends Rectangle {
 							switch (getTypeColor(_segColor[j])) {
 							case C4:
 								if ((_sporetime == 0) || (_geneticCode.getModifiesspore() <= 6)) {
-									_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * (11.2 + (1.06 * _geneticCode.getGene(j%_geneticCode.getNGenes()).getLength()));
+									_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * (11.23 + (1.075*_geneticCode.getGene(j%_geneticCode.getNGenes()).getLength()));
 								}
 								break;
 							}
@@ -2696,7 +2696,7 @@ public class Organism extends Rectangle {
 				                   			    _photosynthesis = ((10 * _mass) + (19.6 * (double)_symmetry))/Utils.GREEN_OBTAINED_ENERGY_DIVISOR;
 											}
 										} else {
-											if ((_isakiller) || (_fallowversion > 0)) {
+											if ((_isakiller) || (_fallowversion > 0) || (_plagueversion > 0)) {
 												_islime = false;
 					                   			for (int i=0; i<_segments; i++) {
 					                   				_segColor[i] = Utils.ColorSUMMER;
@@ -3211,7 +3211,7 @@ public class Organism extends Rectangle {
 				                   			    _photosynthesis = ((10 * _mass) + (19.6 * (double)_symmetry))/Utils.GREEN_OBTAINED_ENERGY_DIVISOR;
 											}
 										} else {
-											if ((_isakiller) || (_fallowversion > 0)) {
+											if ((_isakiller) || (_fallowversion > 0) || (_plagueversion > 0)) {
 												_islime = false;
 					                   			for (int i=0; i<_segments; i++) {
 					                   				_segColor[i] = Utils.ColorSUMMER;
@@ -15890,6 +15890,175 @@ public class Organism extends Rectangle {
 				}
 			}
 			break;
+		case OLIVE:
+			// Olive segment: Crack defense
+			switch (getTypeColor(org._segColor[oseg])) {
+			case OLIVE:
+				if (org._isaplant) {
+					if ((!_isaplant) || ((_isenhanced) && (org._isinfectious) && (!_isinfectious))) {
+						if (useEnergy(Utils.OLIVE_ENERGY_CONSUMPTION)) {
+							org._segColor[oseg] = Utils.ColorLIGHT_BLUE;
+							org._mphoto[oseg] = -20;
+							setColor(Utils.ColorOLIVE);
+							org._isinjured =true;
+						}
+					} else {
+						if ((org._isinfectious) || (!_isinfectious)) {
+							if (org.useEnergy(Utils.OLIVE_ENERGY_CONSUMPTION)) {
+						    	org._segColor[oseg] = Utils.ColorDARKOLIVE;
+						    	org._mphoto[oseg] = -20;
+						    	org._useextraeffects = true;
+						    } else {
+						    	if (useEnergy(Utils.OLIVE_ENERGY_CONSUMPTION)) {
+									org._segColor[oseg] = Utils.ColorLIGHT_BLUE;
+									org._mphoto[oseg] = -20;
+									setColor(Utils.ColorOLIVE);
+									org._isinjured =true;
+								}
+						    }
+						}
+				    }
+				}
+				break;
+			case DARKOLIVE:
+				if (org._isaplant) {
+					if ((!_isaplant) || ((_isenhanced) && (org._isinfectious) && (!_isinfectious))) {
+						if (useEnergy(Utils.OLIVE_ENERGY_CONSUMPTION)) {
+							org._segColor[oseg] = Utils.ColorLIGHT_BLUE;
+							org._mphoto[oseg] = -20;
+							setColor(Utils.ColorOLIVE);
+							org._isinjured =true;
+						}
+					}
+				}
+				break;
+			case BLUE:
+				if (org.active) {
+					if ((!_isenhanced) && ((!org._isaplant) || ((_isinfectious) && (_isaplant))) && (org.useEnergy(Utils.BLUE_ENERGY_CONSUMPTION))) {
+						setColor(Utils.ColorOLIVE);
+						org.setColor(Color.BLUE);
+					} else {
+						if (useEnergy(Utils.OLIVE_ENERGY_CONSUMPTION)) {
+							org._segColor[oseg] = Utils.ColorLIGHT_BLUE;
+							org._mphoto[oseg] = -20;
+							setColor(Utils.ColorOLIVE);
+							if (!org._isaplant) {
+								org._updateEffects = 2;
+							}
+							org._isinjured =true;
+						}
+					}
+				} else {
+					if (org._geneticCode.getModifiesspore() <= 9) {
+						if (((!_isaplant) && (!_isinfectious)) || (_iscoral) || (_isenhanced)) {
+							if (useEnergy(Utils.OLIVE_ENERGY_CONSUMPTION)) {
+								for (int a = 0; a < org._segments; a++) {
+									switch (getTypeColor(org._segColor[a])) {
+									case BLUE:
+										org._segColor[a] = Utils.ColorLIGHT_BLUE;
+										org._mphoto[a] = -20;
+										break;
+									}
+								}
+								setColor(Utils.ColorOLIVE);
+								org._framesColor = 0;
+								org._isinjured =true;
+								org._isfrozen =true;
+								org._allfrozen =true;
+							}
+						}
+					}
+				}
+				break;
+			case OCHRE:
+				if ((_isenhanced) || (org._isaplant)) {
+					if (useEnergy(Utils.OLIVE_ENERGY_CONSUMPTION)) {
+						org._segColor[oseg] = Utils.ColorLIGHT_BLUE;
+						org._mphoto[oseg] = -20;
+						setColor(Utils.ColorOLIVE);
+						org._isinjured =true;
+					}
+				}
+				break;
+			case SKY:
+			case DEEPSKY:
+				if (useEnergy(Utils.OLIVE_ENERGY_CONSUMPTION)) {
+					org._segColor[oseg] = Utils.ColorLIGHT_BLUE;
+					org._mphoto[oseg] = -20;
+					setColor(Utils.ColorOLIVE);
+					org.segmentsRestoreEffects();
+					if ((!org._isaplant) && (!org._geneticCode.getModifiessky())) {
+						org._updateEffects = 2;
+					}
+				}
+				break;
+			case LILAC:
+			case DARKLILAC:
+			case SPIKE:
+			case SPIKEPOINT:
+				if (useEnergy(Utils.OLIVE_ENERGY_CONSUMPTION)) {
+					if (org._isaplant) {
+					    org._segColor[oseg] = Utils.ColorBROKEN;
+					} else {
+						org._segColor[oseg] = Utils.ColorLIGHTBROWN;
+					}
+					org._mphoto[oseg] = -20.1;
+					setColor(Utils.ColorOLIVE);
+					org._isinjured =true;
+				}
+				break;
+			case FALLOW:
+				if (((!_isaconsumer) && (!_isafungus) && ((!_isinfectious) || (!_isaplant))) || (_isenhanced)) {
+					if (useEnergy(Utils.OLIVE_ENERGY_CONSUMPTION)) {
+						if (org._isaplant) {
+						    org._segColor[oseg] = Utils.ColorBROKEN;
+						} else {
+							org._segColor[oseg] = Utils.ColorLIGHTBROWN;
+						}
+						org._mphoto[oseg] = -20;
+						setColor(Utils.ColorOLIVE);
+						org._updateEffects = 2;
+						org._isinjured =true;
+					}
+				}
+				break;
+			case BARK:
+				if ((((!_isaplant) && (!_isaconsumer)) || (org._isaconsumer) || (_isenhanced) || (org._isenhanced)) && (org.active)) {
+					if (useEnergy(Utils.OLIVE_ENERGY_CONSUMPTION)) {
+						org._segColor[oseg] = Utils.ColorDEADBARK;
+						org._photosynthesis -= org._mphoto[oseg]*Utils.scale[org._growthRatio-1];
+						org._mphoto[oseg] = -0.5;
+						setColor(Utils.ColorOLIVE);
+						org._isfrozen =true;
+					}
+				} else {
+					org._segColor[oseg] = Utils.ColorOLDBARK;
+					if (org.active) {
+						org._photosynthesis -= org._mphoto[oseg]*Utils.scale[org._growthRatio-1];
+						org._mphoto[oseg] = -0.5;
+					}
+				}
+				break;
+			case OLDBARK:
+				if ((((!_isaplant) && (!_isaconsumer)) || (org._isaconsumer) || (_isenhanced) || (org._isenhanced)) && (org.active)) {
+					if (useEnergy(Utils.OLIVE_ENERGY_CONSUMPTION)) {
+						org._segColor[oseg] = Utils.ColorDEADBARK;
+						org._mphoto[oseg] = -0.5;
+						setColor(Utils.ColorOLIVE);
+						org._isfrozen =true;
+					}
+				}
+				break;
+			case DARK:
+				if ((org._framesColor <= 0) && (org._blackversion > 0)) {
+					// The other organism will be shown in the color it mimicks
+					org.mimicColor();
+				}
+				break;
+			default:
+				break;
+			}
+			break;
 		case FALLOW:
 			// Fallow segment: Inhibit and destroy other organisms reproduction system but let them reproduce if they are infected by this organism.
 			if (org._hasdodged == false) {
@@ -17783,7 +17952,7 @@ public class Organism extends Rectangle {
 								virusneutralized();
 							}
 						} else {
-							if ((org._dodge) && (org.useEnergy(Utils.DODGE_ENERGY_CONSUMPTION))) {
+							if ((org._dodge) && (org._energy >= 1) && (org.useEnergy(Utils.DODGE_ENERGY_CONSUMPTION))) {
 								org.setColor(Utils.ColorTEAL);
 								setColor(Utils.ColorCORAL);
 								org._hasdodged =true;
@@ -18939,175 +19108,6 @@ public class Organism extends Rectangle {
 				}
 		    }
 		    break;
-		case OLIVE:
-			// Olive segment: Crack defense
-			switch (getTypeColor(org._segColor[oseg])) {
-			case OLIVE:
-				if (org._isaplant) {
-					if ((!_isaplant) || ((_isenhanced) && (org._isinfectious) && (!_isinfectious))) {
-						if (useEnergy(Utils.OLIVE_ENERGY_CONSUMPTION)) {
-							org._segColor[oseg] = Utils.ColorLIGHT_BLUE;
-							org._mphoto[oseg] = -20;
-							setColor(Utils.ColorOLIVE);
-							org._isinjured =true;
-						}
-					} else {
-						if ((org._isinfectious) || (!_isinfectious)) {
-							if (org.useEnergy(Utils.OLIVE_ENERGY_CONSUMPTION)) {
-						    	org._segColor[oseg] = Utils.ColorDARKOLIVE;
-						    	org._mphoto[oseg] = -20;
-						    	org._useextraeffects = true;
-						    } else {
-						    	if (useEnergy(Utils.OLIVE_ENERGY_CONSUMPTION)) {
-									org._segColor[oseg] = Utils.ColorLIGHT_BLUE;
-									org._mphoto[oseg] = -20;
-									setColor(Utils.ColorOLIVE);
-									org._isinjured =true;
-								}
-						    }
-						}
-				    }
-				}
-				break;
-			case DARKOLIVE:
-				if (org._isaplant) {
-					if ((!_isaplant) || ((_isenhanced) && (org._isinfectious) && (!_isinfectious))) {
-						if (useEnergy(Utils.OLIVE_ENERGY_CONSUMPTION)) {
-							org._segColor[oseg] = Utils.ColorLIGHT_BLUE;
-							org._mphoto[oseg] = -20;
-							setColor(Utils.ColorOLIVE);
-							org._isinjured =true;
-						}
-					}
-				}
-				break;
-			case BLUE:
-				if (org.active) {
-					if ((!_isenhanced) && ((!org._isaplant) || ((_isinfectious) && (_isaplant))) && (org.useEnergy(Utils.BLUE_ENERGY_CONSUMPTION))) {
-						setColor(Utils.ColorOLIVE);
-						org.setColor(Color.BLUE);
-					} else {
-						if (useEnergy(Utils.OLIVE_ENERGY_CONSUMPTION)) {
-							org._segColor[oseg] = Utils.ColorLIGHT_BLUE;
-							org._mphoto[oseg] = -20;
-							setColor(Utils.ColorOLIVE);
-							if (!org._isaplant) {
-								org._updateEffects = 2;
-							}
-							org._isinjured =true;
-						}
-					}
-				} else {
-					if (org._geneticCode.getModifiesspore() <= 9) {
-						if (((!_isaplant) && (!_isinfectious)) || (_iscoral) || (_isenhanced)) {
-							if (useEnergy(Utils.OLIVE_ENERGY_CONSUMPTION)) {
-								for (int a = 0; a < org._segments; a++) {
-									switch (getTypeColor(org._segColor[a])) {
-									case BLUE:
-										org._segColor[a] = Utils.ColorLIGHT_BLUE;
-										org._mphoto[a] = -20;
-										break;
-									}
-								}
-								setColor(Utils.ColorOLIVE);
-								org._framesColor = 0;
-								org._isinjured =true;
-								org._isfrozen =true;
-								org._allfrozen =true;
-							}
-						}
-					}
-				}
-				break;
-			case OCHRE:
-				if ((_isenhanced) || (org._isaplant)) {
-					if (useEnergy(Utils.OLIVE_ENERGY_CONSUMPTION)) {
-						org._segColor[oseg] = Utils.ColorLIGHT_BLUE;
-						org._mphoto[oseg] = -20;
-						setColor(Utils.ColorOLIVE);
-						org._isinjured =true;
-					}
-				}
-				break;
-			case SKY:
-			case DEEPSKY:
-				if (useEnergy(Utils.OLIVE_ENERGY_CONSUMPTION)) {
-					org._segColor[oseg] = Utils.ColorLIGHT_BLUE;
-					org._mphoto[oseg] = -20;
-					setColor(Utils.ColorOLIVE);
-					org.segmentsRestoreEffects();
-					if ((!org._isaplant) && (!org._geneticCode.getModifiessky())) {
-						org._updateEffects = 2;
-					}
-				}
-				break;
-			case LILAC:
-			case DARKLILAC:
-			case SPIKE:
-			case SPIKEPOINT:
-				if (useEnergy(Utils.OLIVE_ENERGY_CONSUMPTION)) {
-					if (org._isaplant) {
-					    org._segColor[oseg] = Utils.ColorBROKEN;
-					} else {
-						org._segColor[oseg] = Utils.ColorLIGHTBROWN;
-					}
-					org._mphoto[oseg] = -20.1;
-					setColor(Utils.ColorOLIVE);
-					org._isinjured =true;
-				}
-				break;
-			case FALLOW:
-				if (((!_isaconsumer) && (!_isafungus) && ((!_isinfectious) || (!_isaplant))) || (_isenhanced)) {
-					if (useEnergy(Utils.OLIVE_ENERGY_CONSUMPTION)) {
-						if (org._isaplant) {
-						    org._segColor[oseg] = Utils.ColorBROKEN;
-						} else {
-							org._segColor[oseg] = Utils.ColorLIGHTBROWN;
-						}
-						org._mphoto[oseg] = -20;
-						setColor(Utils.ColorOLIVE);
-						org._updateEffects = 2;
-						org._isinjured =true;
-					}
-				}
-				break;
-			case BARK:
-				if ((((!_isaplant) && (!_isaconsumer)) || (org._isaconsumer) || (_isenhanced) || (org._isenhanced)) && (org.active)) {
-					if (useEnergy(Utils.OLIVE_ENERGY_CONSUMPTION)) {
-						org._segColor[oseg] = Utils.ColorDEADBARK;
-						org._photosynthesis -= org._mphoto[oseg]*Utils.scale[org._growthRatio-1];
-						org._mphoto[oseg] = -0.5;
-						setColor(Utils.ColorOLIVE);
-						org._isfrozen =true;
-					}
-				} else {
-					org._segColor[oseg] = Utils.ColorOLDBARK;
-					if (org.active) {
-						org._photosynthesis -= org._mphoto[oseg]*Utils.scale[org._growthRatio-1];
-						org._mphoto[oseg] = -0.5;
-					}
-				}
-				break;
-			case OLDBARK:
-				if ((((!_isaplant) && (!_isaconsumer)) || (org._isaconsumer) || (_isenhanced) || (org._isenhanced)) && (org.active)) {
-					if (useEnergy(Utils.OLIVE_ENERGY_CONSUMPTION)) {
-						org._segColor[oseg] = Utils.ColorDEADBARK;
-						org._mphoto[oseg] = -0.5;
-						setColor(Utils.ColorOLIVE);
-						org._isfrozen =true;
-					}
-				}
-				break;
-			case DARK:
-				if ((org._framesColor <= 0) && (org._blackversion > 0)) {
-					// The other organism will be shown in the color it mimicks
-					org.mimicColor();
-				}
-				break;
-			default:
-				break;
-			}
-			break;
 		case LILAC:
 			// Lilac segment: Weaken organisms
 			double takenEnergyLilac = 0;
