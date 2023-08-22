@@ -352,7 +352,7 @@ public class GeneticCode implements Cloneable, Serializable {
 	/**
 	 * Returns the version of black
 	 * 
-	 * @return  a value of 1 - 4.
+	 * @return  a value of 1 - 6.
 	 */
 	public int getModifiesblack() {
 		return _modifiesblack;
@@ -615,10 +615,10 @@ public class GeneticCode implements Cloneable, Serializable {
 		_adaptspore = Utils.random.nextInt(70)+1;
 	}
 	/**
-	 * Gives modifiesblack a random value (1 - 4)
+	 * Gives modifiesblack a random value (1 - 6)
 	 */
 	private void randomModifiesblack() {
-		_modifiesblack = Utils.random.nextInt(4)+1;
+		_modifiesblack = Utils.random.nextInt(6)+1;
 	}
 	/**
 	 * Gives adaptblack a random value (1 - 24)
