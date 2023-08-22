@@ -21,6 +21,8 @@ package biogenesis;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -36,6 +38,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JToolBar;
+import javax.swing.JViewport;
+import javax.swing.SwingUtilities;
 
 import org.xml.sax.SAXException;
 
@@ -562,7 +566,38 @@ public class VisibleWorld extends JPanel implements VisibleWorldInterface {
 				maybeShowPopupMenu(e);
 			}
 		});
+
+		// From https://stackoverflow.com/questions/31171502/scroll-jscrollpane-by-dragging-mouse-java-swing
+		MouseAdapter mousePanHandler = new MouseAdapter() {
+			private Point origin;
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				origin = new Point(e.getPoint());
+			}
+
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				if (origin != null) {
+					JViewport viewPort = (JViewport) SwingUtilities.getAncestorOfClass(JViewport.class, VisibleWorld.this);
+					if (viewPort != null) {
+						int deltaX = origin.x - e.getX();
+						int deltaY = origin.y - e.getY();
+
+						Rectangle view = viewPort.getViewRect();
+						view.x += deltaX;
+						view.y += deltaY;
+
+						scrollRectToVisible(view);
+					}
+				}
+			}
+		};
+
+		addMouseListener(mousePanHandler);
+		addMouseMotionListener(mousePanHandler);
 	}
+
 	/**
 	 * Finds an organism that has the given coordinates inside its bounding box and
 	 * returns a reference to it. If more than on organism satisfies this condition,
