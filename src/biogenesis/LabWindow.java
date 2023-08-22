@@ -349,7 +349,7 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 		generalPanel.add(new JLabel(Messages.getString("T_MIMICALL"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
 		gridBagConstraints.gridx = 11;
 		gridBagConstraints.gridy = 1;
-		String[] modifiesblackValues = {"1","2","3","4"};  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+		String[] modifiesblackValues = {"1","2","3","4","5","6"};  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
 		modifiesblackCombo = new JComboBox(modifiesblackValues);
 		modifiesblackCombo.setSelectedItem(Integer.toString(modifiesblack));
 		modifiesblackCombo.addItemListener(new ItemListener() {
