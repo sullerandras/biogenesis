@@ -551,6 +551,9 @@ public class VisibleWorld extends JPanel implements VisibleWorldInterface {
 		createActions();
 		createPopupMenu();
 		addMouseListener(new MouseAdapter() {
+			private boolean isPopupTrigger = false;
+			private Point mousePressedAt = new Point(0, 0);
+
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (e.getButton() == MouseEvent.BUTTON1) {
@@ -559,11 +562,18 @@ public class VisibleWorld extends JPanel implements VisibleWorldInterface {
 			}
 			@Override
 			public void mousePressed(MouseEvent e) {
-				maybeShowPopupMenu(e);
+				isPopupTrigger = e.isPopupTrigger();
+				mousePressedAt = e.getLocationOnScreen();
 			}
 			@Override
 			public void mouseReleased(MouseEvent e) {
-				maybeShowPopupMenu(e);
+				// If the mouse is released at the same position where it was pressed
+				// and it is a popup trigger, show the popup menu.
+				// On macOS the popup is triggered in the `mousePressed` but we can't show
+				// the popup there because that interfered with the panning.
+				if (mousePressedAt.equals(e.getLocationOnScreen()) && (isPopupTrigger || e.isPopupTrigger())) {
+					showPopupMenu(e);
+				}
 			}
 		});
 
@@ -786,21 +796,19 @@ public class VisibleWorld extends JPanel implements VisibleWorldInterface {
 	 *
 	 * @param e
 	 */
-	void maybeShowPopupMenu(MouseEvent e) {
-		if (e.isPopupTrigger()) {
-			mouseX = e.getX();
-			mouseY = e.getY();
-			Organism b = findOrganismFromPosition(mouseX,mouseY);
-			if (b != null) {
-				setSelectedOrganism(b);
-				if (b.isAlive()) {
-					trackAction.setTracking(_mainWindow._trackedOrganism == b);
-					popupAlive.show(e.getComponent(), mouseX, mouseY);
-				}
-				else
-					popupDead.show(e.getComponent(), mouseX, mouseY);
-			} else
-				popupVoid.show(e.getComponent(), mouseX, mouseY);
-		}
+	void showPopupMenu(MouseEvent e) {
+		mouseX = e.getX();
+		mouseY = e.getY();
+		Organism b = findOrganismFromPosition(mouseX,mouseY);
+		if (b != null) {
+			setSelectedOrganism(b);
+			if (b.isAlive()) {
+				trackAction.setTracking(_mainWindow._trackedOrganism == b);
+				popupAlive.show(e.getComponent(), mouseX, mouseY);
+			}
+			else
+				popupDead.show(e.getComponent(), mouseX, mouseY);
+		} else
+			popupVoid.show(e.getComponent(), mouseX, mouseY);
 	}
 }
