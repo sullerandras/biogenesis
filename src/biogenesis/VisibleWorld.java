@@ -585,7 +585,11 @@ public class VisibleWorld extends JPanel implements VisibleWorldInterface {
 
 			@Override
 			public void mousePressed(MouseEvent e) {
-				origin = new Point(e.getPoint());
+				if (e.getButton() == MouseEvent.BUTTON1) {
+					origin = null;
+				} else {
+					origin = new Point(e.getPoint());
+				}
 			}
 
 			@Override
