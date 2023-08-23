@@ -571,7 +571,9 @@ public class VisibleWorld extends JPanel implements VisibleWorldInterface {
 				// and it is a popup trigger, show the popup menu.
 				// On macOS the popup is triggered in the `mousePressed` but we can't show
 				// the popup there because that interfered with the panning.
-				if (mousePressedAt.equals(e.getLocationOnScreen()) && (isPopupTrigger || e.isPopupTrigger())) {
+				if (Math.abs(mousePressedAt.x - e.getLocationOnScreen().x) <= 3 &&
+						Math.abs(mousePressedAt.y - e.getLocationOnScreen().y) <= 3 &&
+						(isPopupTrigger || e.isPopupTrigger())) {
 					showPopupMenu(e);
 				}
 			}
