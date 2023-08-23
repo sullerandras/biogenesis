@@ -555,12 +555,6 @@ public class VisibleWorld extends JPanel implements VisibleWorldInterface {
 			private Point mousePressedAt = new Point(0, 0);
 
 			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (e.getButton() == MouseEvent.BUTTON1) {
-					setSelectedOrganism(findOrganismFromPosition(e.getX(),e.getY()));
-				}
-			}
-			@Override
 			public void mousePressed(MouseEvent e) {
 				isPopupTrigger = e.isPopupTrigger();
 				mousePressedAt = e.getLocationOnScreen();
@@ -572,9 +566,12 @@ public class VisibleWorld extends JPanel implements VisibleWorldInterface {
 				// On macOS the popup is triggered in the `mousePressed` but we can't show
 				// the popup there because that interfered with the panning.
 				if (Math.abs(mousePressedAt.x - e.getLocationOnScreen().x) <= 3 &&
-						Math.abs(mousePressedAt.y - e.getLocationOnScreen().y) <= 3 &&
-						(isPopupTrigger || e.isPopupTrigger())) {
-					showPopupMenu(e);
+						Math.abs(mousePressedAt.y - e.getLocationOnScreen().y) <= 3) {
+					if (isPopupTrigger || e.isPopupTrigger()) {
+						showPopupMenu(e);
+					} else if (e.getButton() == MouseEvent.BUTTON1) {
+						setSelectedOrganism(findOrganismFromPosition(e.getX(), e.getY()));
+					}
 				}
 			}
 		});
