@@ -73,10 +73,12 @@ public class ParamDialog extends JDialog {
 	private JTextField initialO2Text = null;
 	private JTextField initialCO2Text = null;
 	private JTextField initialCH4Text = null;
+	private JTextField initialDetritusText = null;
 	private JTextField maxageText = null;
 	private JTextField agedivisorText = null;
 	private JTextField CO2toCH4divisorText = null;
 	private JTextField CH4toCO2divisorText = null;
+	private JTextField detritustoCO2divisorText = null;
 	private JTextField metamutationrateText = null;
 	private JTextField maxmutationrateText = null;
 	private JTextField minmutationrateText = null;
@@ -106,6 +108,7 @@ public class ParamDialog extends JDialog {
 	private JTextField jadecostText = null;
 	private JTextField grasscostText = null;
 	private JTextField purplecostText = null;
+	private JTextField planktoncostText = null;
 	private JTextField barkcostText = null;
 	private JTextField violetcostText = null;
 	private JTextField tealcostText = null;
@@ -172,6 +175,7 @@ public class ParamDialog extends JDialog {
 	private JTextField jadeprobText = null;
 	private JTextField grassprobText = null;
 	private JTextField purpleprobText = null;
+	private JTextField planktonprobText = null;
 	private JTextField barkprobText = null;
 	private JTextField violetprobText = null;
 	private JTextField tealprobText = null;
@@ -259,10 +263,12 @@ public class ParamDialog extends JDialog {
 		initialO2Text.setText(String.valueOf(Utils.DEF_INITIAL_O2));
 		initialCO2Text.setText(String.valueOf(Utils.DEF_INITIAL_CO2));
 		initialCH4Text.setText(String.valueOf(Utils.DEF_INITIAL_CH4));
+		initialDetritusText.setText(String.valueOf(Utils.DEF_INITIAL_DETRITUS));
 		maxageText.setText(String.valueOf(Utils.DEF_MAX_AGE));
 		agedivisorText.setText(String.valueOf(Utils.DEF_AGE_DIVISOR));
 		CO2toCH4divisorText.setText(String.valueOf(Utils.DEF_CO2_TO_CH4_DIVISOR));
 		CH4toCO2divisorText.setText(String.valueOf(Utils.DEF_CH4_TO_CO2_DIVISOR));
+		detritustoCO2divisorText.setText(String.valueOf(Utils.DEF_DETRITUS_TO_CO2_DIVISOR));
 		metamutationrateText.setText(String.valueOf(Utils.DEF_META_MUTATION_RATE));
 		maxmutationrateText.setText(String.valueOf(Utils.DEF_MAX_MUTATION_RATE));
 		minmutationrateText.setText(String.valueOf(Utils.DEF_MIN_MUTATION_RATE));
@@ -312,6 +318,7 @@ public class ParamDialog extends JDialog {
 		jadecostText.setText(String.valueOf(Utils.DEF_JADE_ENERGY_CONSUMPTION));
 		grasscostText.setText(String.valueOf(Utils.DEF_GRASS_ENERGY_CONSUMPTION));
 		purplecostText.setText(String.valueOf(Utils.DEF_PURPLE_ENERGY_CONSUMPTION));
+		planktoncostText.setText(String.valueOf(Utils.DEF_PLANKTON_ENERGY_CONSUMPTION));
 		barkcostText.setText(String.valueOf(Utils.DEF_BARK_ENERGY_CONSUMPTION));
 		violetcostText.setText(String.valueOf(Utils.DEF_VIOLET_ENERGY_CONSUMPTION));
 		tealcostText.setText(String.valueOf(Utils.DEF_TEAL_ENERGY_CONSUMPTION));
@@ -358,6 +365,7 @@ public class ParamDialog extends JDialog {
 		jadeprobText.setText(String.valueOf(Utils.DEF_JADE_PROB));
 		grassprobText.setText(String.valueOf(Utils.DEF_GRASS_PROB));
 		purpleprobText.setText(String.valueOf(Utils.DEF_PURPLE_PROB));
+		planktonprobText.setText(String.valueOf(Utils.DEF_PLANKTON_PROB));
 		barkprobText.setText(String.valueOf(Utils.DEF_BARK_PROB));
 		violetprobText.setText(String.valueOf(Utils.DEF_VIOLET_PROB));
 		tealprobText.setText(String.valueOf(Utils.DEF_TEAL_PROB));
@@ -582,12 +590,16 @@ public class ParamDialog extends JDialog {
 		initialCO2Text = new JTextField(Double.toString(Utils.INITIAL_CO2),6);
 		panel.add(initialCO2Text);
 		worldPanel.add(panel);
-		// Initial CH4
+		// Initial CH4 -initial Detritus
 		panel = new JPanel();
 		label = new JLabel(Messages.getString("T_INITIAL_METHANE")); //$NON-NLS-1$
 		panel.add(label);
 		initialCH4Text = new JTextField(Double.toString(Utils.INITIAL_CH4),6);
 		panel.add(initialCH4Text);
+		label = new JLabel(Messages.getString("T_INITIAL_DETRITUS")); //$NON-NLS-1$
+		panel.add(label);
+		initialDetritusText = new JTextField(Double.toString(Utils.INITIAL_DETRITUS),6);
+		panel.add(initialDetritusText);
 		worldPanel.add(panel);
 		// CO2 -> CH4 - CH4 -> CO2
 		panel = new JPanel();
@@ -599,6 +611,13 @@ public class ParamDialog extends JDialog {
 		panel.add(label);
 		CH4toCO2divisorText = new JTextField(Integer.toString(Utils.CH4_TO_CO2_DIVISOR),6);
 		panel.add(CH4toCO2divisorText);
+		worldPanel.add(panel);
+		// Detritus -> CO2
+		panel = new JPanel();
+		label = new JLabel(Messages.getString("T_DETRITUS_TO_CO2_DIVISOR")); //$NON-NLS-1$
+		panel.add(label);
+		detritustoCO2divisorText = new JTextField(Integer.toString(Utils.DETRITUS_TO_CO2_DIVISOR),6);
+		panel.add(detritustoCO2divisorText);
 		worldPanel.add(panel);
 		// Rubbing - Elasticity
 		panel = new JPanel();
@@ -855,7 +874,7 @@ public class ParamDialog extends JDialog {
 
 	protected JPanel setGenesTab() {
 		JPanel genesPanel = new JPanel();
-		genesPanel.setLayout(new GridLayout(15,3));
+		genesPanel.setLayout(new GridLayout(16,3));
 		JLabel label;
 
 		genesPanel.add(new JLabel(Messages.getString("T_COLOR2"),SwingConstants.CENTER)); //$NON-NLS-1$
@@ -938,6 +957,13 @@ public class ParamDialog extends JDialog {
 		genesPanel.add(purpleprobText);
 		purplecostText = new JTextField(Double.toString(Utils.PURPLE_ENERGY_CONSUMPTION));
 		genesPanel.add(purplecostText);
+		
+		label = new JLabel(Messages.getString("T_PLANKTON"),SwingConstants.CENTER); //$NON-NLS-1$
+		genesPanel.add(label);
+		planktonprobText = new JTextField(Integer.toString(Utils.PLANKTON_PROB));
+		genesPanel.add(planktonprobText);
+		planktoncostText = new JTextField(Double.toString(Utils.PLANKTON_ENERGY_CONSUMPTION));
+		genesPanel.add(planktoncostText);
 
 		label = new JLabel(Messages.getString("T_DARKGRAY"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
@@ -1270,6 +1296,12 @@ public class ParamDialog extends JDialog {
 			// Keep old value if there is a problem
 		}
 		try {
+			d = Double.parseDouble(initialDetritusText.getText());
+			if (d >= 0) Utils.INITIAL_DETRITUS = d;
+		} catch (NumberFormatException ex) {
+			// Keep old value if there is a problem
+		}
+		try {
 			d = Double.parseDouble(rubbingText.getText());
 			if (d >= 0 && d <= 1) Utils.RUBBING = d;
 		} catch (NumberFormatException ex) {
@@ -1326,6 +1358,12 @@ public class ParamDialog extends JDialog {
 		try {
 			i = Integer.parseInt(CH4toCO2divisorText.getText());
 			if (i > 0) Utils.CH4_TO_CO2_DIVISOR = i;
+		} catch (NumberFormatException ex) {
+			// Keep old value if there is a problem
+		}
+		try {
+			i = Integer.parseInt(detritustoCO2divisorText.getText());
+			if (i > 0) Utils.DETRITUS_TO_CO2_DIVISOR = i;
 		} catch (NumberFormatException ex) {
 			// Keep old value if there is a problem
 		}
@@ -1500,6 +1538,12 @@ public class ParamDialog extends JDialog {
 		try {
 			d = Double.parseDouble(purplecostText.getText());
 			if (d > 0) Utils.PURPLE_ENERGY_CONSUMPTION = d;
+		} catch (NumberFormatException ex) {
+			// Keep old value if there is a problem
+		}
+		try {
+			d = Double.parseDouble(planktoncostText.getText());
+			if (d > 0) Utils.PLANKTON_ENERGY_CONSUMPTION = d;
 		} catch (NumberFormatException ex) {
 			// Keep old value if there is a problem
 		}
@@ -1776,6 +1820,12 @@ public class ParamDialog extends JDialog {
 		try {
 			i = Integer.parseInt(purpleprobText.getText());
 			if (i >= 0) Utils.PURPLE_PROB = i;
+		} catch (NumberFormatException ex) {
+			// Keep old value if there is a problem
+		}
+		try {
+			i = Integer.parseInt(planktonprobText.getText());
+			if (i >= 0) Utils.PLANKTON_PROB = i;
 		} catch (NumberFormatException ex) {
 			// Keep old value if there is a problem
 		}

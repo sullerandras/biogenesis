@@ -75,25 +75,33 @@ public class WorldStatistics implements Serializable {
 
 	private long maxOxygenTime;
 
-	private double minOxygen = Utils.INITIAL_CO2 +  Utils.INITIAL_CH4 + Utils.INITIAL_O2;
+	private double minOxygen = Utils.INITIAL_CO2 +  Utils.INITIAL_CH4 +  Utils.INITIAL_DETRITUS + Utils.INITIAL_O2;
 
 	private long minOxygenTime;
 
 	private double maxCarbonDioxide = 0;
 
 	private double maxMethane = 0;
+	
+	private double maxDetritus = 0;
 
 	private long maxCarbonDioxideTime;
 
 	private long maxMethaneTime;
+	
+	private long maxDetritusTime;
 
-	private double minCarbonDioxide = Utils.INITIAL_CO2 +  Utils.INITIAL_CH4 + Utils.INITIAL_O2;
+	private double minCarbonDioxide = Utils.INITIAL_CO2 +  Utils.INITIAL_CH4 +  Utils.INITIAL_DETRITUS + Utils.INITIAL_O2;
 
-	private double minMethane = Utils.INITIAL_CO2 +  Utils.INITIAL_CH4 + Utils.INITIAL_O2;
+	private double minMethane = Utils.INITIAL_CO2 +  Utils.INITIAL_CH4 +  Utils.INITIAL_DETRITUS + Utils.INITIAL_O2;
+	
+	private double minDetritus = Utils.INITIAL_CO2 +  Utils.INITIAL_CH4 +  Utils.INITIAL_DETRITUS + Utils.INITIAL_O2;
 
 	private long minCarbonDioxideTime;
 
 	private long minMethaneTime;
+	
+	private long minDetritusTime;
 
 	private GeneticCode aliveBeingMostChildren;
 	private Organism aliveOrganismMostChildren;
@@ -147,6 +155,8 @@ public class WorldStatistics implements Serializable {
 	private List<Double> carbonDioxideList = new ArrayList<Double>(100);
 
 	private List<Double> methaneList = new ArrayList<Double>(100);
+	
+	private List<Double> detritusList = new ArrayList<Double>(100);
 
 	private transient MainWindowInterface mainWindowInterface;
 
@@ -295,6 +305,22 @@ public class WorldStatistics implements Serializable {
 	public long getMinMethaneTime() {
 		return minMethaneTime;
 	}
+	
+	public double getMaxDetritus() {
+		return maxDetritus;
+	}
+
+	public long getMaxDetritusTime() {
+		return maxDetritusTime;
+	}
+
+	public double getMinDetritus() {
+		return minDetritus;
+	}
+
+	public long getMinDetritusTime() {
+		return minDetritusTime;
+	}
 
 	public GeneticCode getAliveBeingMostChildren() {
 		return aliveBeingMostChildren;
@@ -407,6 +433,10 @@ public class WorldStatistics implements Serializable {
 	public List<Double> getMethaneList() {
 		return methaneList;
 	}
+	
+	public List<Double> getDetritusList() {
+		return detritusList;
+	}
 
 	public void eventPopulationIncrease(int newPopulation) {
 		if ((newPopulation > maxPopulation) && (time >= 10)) {
@@ -462,7 +492,7 @@ public class WorldStatistics implements Serializable {
 		infectionsSum++;
 	}
 
-	public void eventTime(int population, int distinctClades, int distinctCladesWith10Orgs, int distinctCladesWith100Orgs, double O2, double CO2, double CH4, List<Organism> organisms) {
+	public void eventTime(int population, int distinctClades, int distinctCladesWith10Orgs, int distinctCladesWith100Orgs, double O2, double CO2, double CH4, double detritus, List<Organism> organisms) {
 		time++;
 		if (deathLastTime > 1.5 * getAverageDeaths()) {
 			if (deathLastTime > 3 * getAverageDeaths()) {
@@ -524,6 +554,14 @@ public class WorldStatistics implements Serializable {
 			minMethane = CH4;
 			minMethaneTime = time;
 		}
+		if ((detritus > maxDetritus) && (time >= 10)) {
+			maxDetritus = detritus;
+			maxDetritusTime = time;
+		}
+		if ((detritus < minDetritus) && (time >= 10)) {
+			minDetritus = detritus;
+			minDetritusTime = time;
+		}
 		if (birthLastTime > maxBirths)
 			maxBirths = birthLastTime;
 		if (deathLastTime > maxDeaths)
@@ -549,11 +587,14 @@ public class WorldStatistics implements Serializable {
 		if (methaneList.size() == 100)
 			methaneList.remove(0);
 		methaneList.add(Double.valueOf(Math.sqrt(Math.sqrt(CH4))));
+		if (detritusList.size() == 100)
+			detritusList.remove(0);
+		detritusList.add(Double.valueOf(Math.sqrt(Math.sqrt(detritus))));
 		deathLastTime = 0;
 		birthLastTime = 0;
 
 		if ((Utils.AUTO_BACKUP_CSV) && (mainWindowInterface.getBioFile() != null)) {
-			mainWindowInterface.getBioFile().appendToCsv(time, population, distinctClades, distinctCladesWith10Orgs, distinctCladesWith100Orgs, O2, CO2, CH4, organisms);
+			mainWindowInterface.getBioFile().appendToCsv(time, population, distinctClades, distinctCladesWith10Orgs, distinctCladesWith100Orgs, O2, CO2, CH4, detritus, organisms);
 		}
 	}
 

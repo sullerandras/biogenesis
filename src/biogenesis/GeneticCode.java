@@ -1291,7 +1291,8 @@ public class GeneticCode implements Cloneable, Serializable {
 			randomModifiesblack();
 		else
 			_modifiesblack = parentCode.getModifiesblack();
-		if (Utils.random.nextInt(10000) < _mutationrate)
+		// Faster mutation on purpose to make it work maybe
+		if (Utils.random.nextInt(1000) < _mutationrate)
 			randomAdaptblack();
 		else
 			_adaptblack = parentCode.getAdaptblack();

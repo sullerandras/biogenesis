@@ -84,7 +84,7 @@ public class BioXMLParser implements ErrorHandler {
 		ps.println("<!ELEMENT gene EMPTY>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST gene length CDATA #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST gene theta CDATA #REQUIRED>"); //$NON-NLS-1$
-		ps.println("<!ATTLIST gene color (green|forest|spring|summer|lime|leaf|c4|jade|grass|bark|purple|red|fire|orange|maroon|pink|cream|silver|spike|lilac|gray|violet|olive|sky|blue|ochre|fallow|spore|white|plague|coral|mint|lavender|magenta|rose|cyan|teal|yellow|auburn|indigo|blond|flower|darkgray|gold|dark|eye) #REQUIRED>"); //$NON-NLS-1$
+		ps.println("<!ATTLIST gene color (green|forest|spring|summer|lime|leaf|c4|jade|grass|bark|purple|plankton|red|fire|orange|maroon|pink|cream|silver|spike|lilac|gray|violet|olive|sky|blue|ochre|fallow|spore|white|plague|coral|mint|lavender|magenta|rose|cyan|teal|yellow|auburn|indigo|blond|flower|darkgray|gold|dark|eye) #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST gene branch CDATA #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST gene redreaction CDATA #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST gene greenreaction CDATA #REQUIRED>"); //$NON-NLS-1$
@@ -522,6 +522,7 @@ public class BioXMLParser implements ErrorHandler {
 		if (s.equals("grass")) return Utils.ColorGRASS; //$NON-NLS-1$
 		if (s.equals("bark")) return Utils.ColorBARK; //$NON-NLS-1$
 		if (s.equals("purple")) return Utils.ColorPURPLE; //$NON-NLS-1$
+		if (s.equals("plankton")) return Utils.ColorPLANKTON; //$NON-NLS-1$
 		if (s.equals("red")) return Color.RED; //$NON-NLS-1$
 		if (s.equals("fire")) return Utils.ColorFIRE; //$NON-NLS-1$
 		if (s.equals("orange")) return Color.ORANGE; //$NON-NLS-1$
@@ -572,6 +573,7 @@ public class BioXMLParser implements ErrorHandler {
 		if (c.equals(Utils.ColorGRASS)) return "grass"; //$NON-NLS-1$
 		if (c.equals(Utils.ColorBARK)) return "bark"; //$NON-NLS-1$
 		if (c.equals(Utils.ColorPURPLE)) return "purple"; //$NON-NLS-1$
+		if (c.equals(Utils.ColorPLANKTON)) return "plankton"; //$NON-NLS-1$
 		if (c.equals(Color.RED)) return "red"; //$NON-NLS-1$
 		if (c.equals(Utils.ColorFIRE)) return "fire"; //$NON-NLS-1$
 		if (c.equals(Color.ORANGE)) return "orange"; //$NON-NLS-1$

@@ -165,14 +165,17 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 		// Atmosphere graphic
 		GraphPanel atmosphereGraphPanel = new GraphPanel(100, 104);
 		atmosphereGraphPanel.addGraph(worldStatistics.getOxygenList(),
-				Math.sqrt(Math.sqrt(world.getO2() + world.getCO2() + world.getCH4())),
+				Math.sqrt(Math.sqrt(world.getO2() + world.getCO2() + world.getCH4() + world.getDetritus())),
 				0, Color.BLUE, Messages.getString("T_OXYGEN")); //$NON-NLS-1$
 		atmosphereGraphPanel.addGraph(worldStatistics.getCarbonDioxideList(),
-				Math.sqrt(Math.sqrt(world.getO2() + world.getCO2() + world.getCH4())),
+				Math.sqrt(Math.sqrt(world.getO2() + world.getCO2() + world.getCH4() + world.getDetritus())),
 				0, Color.WHITE, Messages.getString("T_CARBON_DIOXIDE")); //$NON-NLS-1$
 		atmosphereGraphPanel.addGraph(worldStatistics.getMethaneList(),
-				Math.sqrt(Math.sqrt(world.getO2() + world.getCO2() + world.getCH4())),
+				Math.sqrt(Math.sqrt(world.getO2() + world.getCO2() + world.getCH4() + world.getDetritus())),
 				0, Color.MAGENTA, Messages.getString("T_METHANE")); //$NON-NLS-1$
+		atmosphereGraphPanel.addGraph(worldStatistics.getDetritusList(),
+				Math.sqrt(Math.sqrt(world.getO2() + world.getCO2() + world.getCH4() + world.getDetritus())),
+				0, Color.YELLOW, Messages.getString("T_DETRITUS")); //$NON-NLS-1$
 		atmosphereGraphPanel.updateLegend();
 
 		// Atmosphere statistics
@@ -190,6 +193,12 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 		atmosphereStatsPanel.add(
 			new JLabel(Messages.getString("T_MINIMUM_METHANE") + nf.format(worldStatistics.getMinMethane())
 			   + " " + Messages.getString("T_AT_TIME") + nf.format(worldStatistics.getMinMethaneTime()))); //$NON-NLS-1$
+		atmosphereStatsPanel.add(
+			new JLabel(Messages.getString("T_MAXIMUM_DETRITUS") + nf.format(worldStatistics.getMaxDetritus())
+			   + " " + Messages.getString("T_AT_TIME") + nf.format(worldStatistics.getMaxDetritusTime()))); //$NON-NLS-1$
+		atmosphereStatsPanel.add(
+			new JLabel(Messages.getString("T_MINIMUM_DETRITUS") + nf.format(worldStatistics.getMinDetritus())
+			   + " " + Messages.getString("T_AT_TIME") + nf.format(worldStatistics.getMinDetritusTime()))); //$NON-NLS-1$
 		atmosphereStatsPanel.add(
 			new JLabel(Messages.getString("T_MAXIMUM_OXYGEN") + nf.format(worldStatistics.getMaxOxygen())
 			   + " " + Messages.getString("T_AT_TIME") + nf.format(worldStatistics.getMaxOxygenTime()))); //$NON-NLS-1$
@@ -233,6 +242,9 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 		gbc.gridx = 2;
 		gbc.gridy = 3;
 		currentStatePanel.add(new JLabel(Messages.getString("T_METHANE2") + nf.format(world.getCH4())), gbc); //$NON-NLS-1$
+		gbc.gridx = 2;
+		gbc.gridy = 4;
+		currentStatePanel.add(new JLabel(Messages.getString("T_DETRITUS2") + nf.format(world.getDetritus())), gbc); //$NON-NLS-1$
 		gbc.gridx = 1;
 		gbc.gridy = 3;
 		currentStatePanel.add(new JLabel(Messages.getString("T_POPULATION2") + world.getPopulation()), gbc); //$NON-NLS-1$
@@ -421,7 +433,7 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 		colorPanel.setPreferredSize(new Dimension(300, 25));
 		colorPanel.setMinimumSize(new Dimension(100, 25));
 		GeneticCode gc;
-		InfoAndColor[] colorCounter = new InfoAndColor[46];
+		InfoAndColor[] colorCounter = new InfoAndColor[47];
 		colorCounter[0] = new InfoAndColor(0, Color.GREEN);
 		colorCounter[1] = new InfoAndColor(0, Utils.ColorFOREST);
 		colorCounter[2] = new InfoAndColor(0, Utils.ColorSPRING);
@@ -433,41 +445,42 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 		colorCounter[8] = new InfoAndColor(0, Utils.ColorGRASS);
 		colorCounter[9] = new InfoAndColor(0, Utils.ColorBARK);
 		colorCounter[10] = new InfoAndColor(0, Utils.ColorPURPLE);
-		colorCounter[11] = new InfoAndColor(0, Color.RED);
-		colorCounter[12] = new InfoAndColor(0, Utils.ColorFIRE);
-		colorCounter[13] = new InfoAndColor(0, Color.ORANGE);
-		colorCounter[14] = new InfoAndColor(0, Utils.ColorMAROON);
-		colorCounter[15] = new InfoAndColor(0, Color.PINK);
-		colorCounter[16] = new InfoAndColor(0, Utils.ColorCREAM);
-		colorCounter[17] = new InfoAndColor(0, Color.LIGHT_GRAY);
-		colorCounter[18] = new InfoAndColor(0, Utils.ColorSPIKE);
-		colorCounter[19] = new InfoAndColor(0, Utils.ColorLILAC);
-		colorCounter[20] = new InfoAndColor(0, Color.GRAY);
-		colorCounter[21] = new InfoAndColor(0, Utils.ColorVIOLET);
-		colorCounter[22] = new InfoAndColor(0, Utils.ColorOLIVE);
-		colorCounter[23] = new InfoAndColor(0, Utils.ColorSKY);
-		colorCounter[24] = new InfoAndColor(0, Color.BLUE);
-		colorCounter[25] = new InfoAndColor(0, Utils.ColorOCHRE);
-		colorCounter[26] = new InfoAndColor(0, Utils.ColorFALLOW);
-		colorCounter[27] = new InfoAndColor(0, Utils.ColorSPORE);
-		colorCounter[28] = new InfoAndColor(0, Color.WHITE);
-		colorCounter[29] = new InfoAndColor(0, Utils.ColorPLAGUE);
-		colorCounter[30] = new InfoAndColor(0, Utils.ColorCORAL);
-		colorCounter[31] = new InfoAndColor(0, Utils.ColorMINT);
-		colorCounter[32] = new InfoAndColor(0, Utils.ColorLAVENDER);
-		colorCounter[33] = new InfoAndColor(0, Color.MAGENTA);
-		colorCounter[34] = new InfoAndColor(0, Utils.ColorROSE);
-		colorCounter[35] = new InfoAndColor(0, Color.CYAN);
-		colorCounter[36] = new InfoAndColor(0, Utils.ColorTEAL);
-		colorCounter[37] = new InfoAndColor(0, Color.YELLOW);
-		colorCounter[38] = new InfoAndColor(0, Utils.ColorAUBURN);
-		colorCounter[39] = new InfoAndColor(0, Utils.ColorINDIGO);
-		colorCounter[40] = new InfoAndColor(0, Utils.ColorBLOND);
-		colorCounter[41] = new InfoAndColor(0, Utils.ColorFLOWER);
-		colorCounter[42] = new InfoAndColor(0, Color.DARK_GRAY);
-		colorCounter[43] = new InfoAndColor(0, Utils.ColorGOLD);
-		colorCounter[44] = new InfoAndColor(0, Utils.ColorDARK);
-		colorCounter[45] = new InfoAndColor(0, Utils.ColorEYE);
+		colorCounter[11] = new InfoAndColor(0, Utils.ColorPLANKTON);
+		colorCounter[12] = new InfoAndColor(0, Color.RED);
+		colorCounter[13] = new InfoAndColor(0, Utils.ColorFIRE);
+		colorCounter[14] = new InfoAndColor(0, Color.ORANGE);
+		colorCounter[15] = new InfoAndColor(0, Utils.ColorMAROON);
+		colorCounter[16] = new InfoAndColor(0, Color.PINK);
+		colorCounter[17] = new InfoAndColor(0, Utils.ColorCREAM);
+		colorCounter[18] = new InfoAndColor(0, Color.LIGHT_GRAY);
+		colorCounter[19] = new InfoAndColor(0, Utils.ColorSPIKE);
+		colorCounter[20] = new InfoAndColor(0, Utils.ColorLILAC);
+		colorCounter[21] = new InfoAndColor(0, Color.GRAY);
+		colorCounter[22] = new InfoAndColor(0, Utils.ColorVIOLET);
+		colorCounter[23] = new InfoAndColor(0, Utils.ColorOLIVE);
+		colorCounter[24] = new InfoAndColor(0, Utils.ColorSKY);
+		colorCounter[25] = new InfoAndColor(0, Color.BLUE);
+		colorCounter[26] = new InfoAndColor(0, Utils.ColorOCHRE);
+		colorCounter[27] = new InfoAndColor(0, Utils.ColorFALLOW);
+		colorCounter[28] = new InfoAndColor(0, Utils.ColorSPORE);
+		colorCounter[29] = new InfoAndColor(0, Color.WHITE);
+		colorCounter[30] = new InfoAndColor(0, Utils.ColorPLAGUE);
+		colorCounter[31] = new InfoAndColor(0, Utils.ColorCORAL);
+		colorCounter[32] = new InfoAndColor(0, Utils.ColorMINT);
+		colorCounter[33] = new InfoAndColor(0, Utils.ColorLAVENDER);
+		colorCounter[34] = new InfoAndColor(0, Color.MAGENTA);
+		colorCounter[35] = new InfoAndColor(0, Utils.ColorROSE);
+		colorCounter[36] = new InfoAndColor(0, Color.CYAN);
+		colorCounter[37] = new InfoAndColor(0, Utils.ColorTEAL);
+		colorCounter[38] = new InfoAndColor(0, Color.YELLOW);
+		colorCounter[39] = new InfoAndColor(0, Utils.ColorAUBURN);
+		colorCounter[40] = new InfoAndColor(0, Utils.ColorINDIGO);
+		colorCounter[41] = new InfoAndColor(0, Utils.ColorBLOND);
+		colorCounter[42] = new InfoAndColor(0, Utils.ColorFLOWER);
+		colorCounter[43] = new InfoAndColor(0, Color.DARK_GRAY);
+		colorCounter[44] = new InfoAndColor(0, Utils.ColorGOLD);
+		colorCounter[45] = new InfoAndColor(0, Utils.ColorDARK);
+		colorCounter[46] = new InfoAndColor(0, Utils.ColorEYE);
 
 		int i, j;
 		Color c;
@@ -476,7 +489,7 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 				gc = it.next().getGeneticCode();
 				for (i = 0; i < gc.getNGenes(); i++) {
 					c = gc.getGene(i).getColor();
-					for (j = 0; j < 46; j++) {
+					for (j = 0; j < 47; j++) {
 						if (c.equals(colorCounter[j].color))
 							colorCounter[j].info++;
 					}
@@ -484,7 +497,7 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 			}
 		}
 		Arrays.sort(colorCounter);
-		for (j = 45; j >= 0; j--)
+		for (j = 46; j >= 0; j--)
 			colorPanel.addColor(colorCounter[j].info, colorCounter[j].color);
 
 		return colorPanel;

@@ -112,6 +112,10 @@ public class World implements Serializable{
 	 */
 	protected double _CH4;
 	/**
+	 * The amount of detritus in the atmosphere of this world.
+	 */
+	protected double _detritus;
+	/**
 	 * Do we need to check for corridors?
 	 */
 	protected boolean _corridorexists;
@@ -303,6 +307,14 @@ public class World implements Serializable{
 		return _CH4;
 	}
 	/**
+	 * Returns the amount of detritus that exist in the atmosphere.
+	 *
+	 * @return  The amount of detritus.
+	 */
+	public double getDetritus() {
+		return _detritus;
+	}
+	/**
 	 * Add O2 to the atmosphere.
 	 *
 	 * @param q  The amount of O2 to add.
@@ -327,6 +339,14 @@ public class World implements Serializable{
 		_CH4 += q;
 	}
 	/**
+	 * Add detritus to the atmosphere.
+	 *
+	 * @param q  The amount of detritus to add.
+	 */
+	public void addDetritus(double q) {
+		_detritus += q;
+	}
+	/**
 	 * Substracts O2 from the atmosphere.
 	 *
 	 * @param q  The amount of O2 to substract.
@@ -349,6 +369,14 @@ public class World implements Serializable{
 	 */
 	public void decreaseCH4(double q) {
 		_CH4 -= Math.min(q, _CH4);
+	}
+	/**
+	 * Substract detritus from the atmosphere.
+	 *
+	 * @param q  The amount of detritus to substract.
+	 */
+	public void decreaseDetritus(double q) {
+		_detritus -= Math.min(q, _detritus);
 	}
 	/**
 	 * Consume O2 from the atmosphere to realize the respiration process
@@ -377,6 +405,20 @@ public class World implements Serializable{
 		double d = Math.min(q,_O2);
 		_O2 -= d;
 		_CH4 += d;
+		return d;
+	}
+	/**
+	 * Feeding organisms except pink (but also produced in some other cases) release
+	 * carbon as detritus into the atmosphere
+	 *
+	 * @param q  The amount of O2 required.
+	 * @return  The amount of O2 obtained. This is always <code>q</code>
+	 * unless there weren't enough O2 in the atmosphere.
+	 */
+	public double detritusproduction(double q) {
+		double d = Math.min(q,_O2);
+		_O2 -= d;
+		_detritus += d;
 		return d;
 	}
 	/**
@@ -426,6 +468,29 @@ public class World implements Serializable{
 		return q;
 	}
 	/**
+	 * Consume detritus from the atmosphere to realize the filter feeder
+	 * process needed to obtain chemical energy. Frees the same amount
+	 * of O2 to the atmosphere than detritus consumed.
+	 *
+	 * The detritus obtained is calculated as follows: the total length of the
+	 * organism's plankton segments is divided by a fixed parameter that indicates
+	 * plankton segment effectiveness. Then, the result is multiplied by the total
+	 * detritus in the atmosphere and divided by another parameter that indicates
+	 * the concentration of detritus needed to absorb it. The result is the total
+	 * amount of detritus that the organism can get. This value can't be greater than
+	 * the total amount of detritus in the atmosphere, nor the effectiveness of the
+	 * initial length.
+	 *
+	 * @param q  The total length of the organism's plankton segments.
+	 * @return  The amount of detritus obtained.
+	 */
+	public double filterfeeding(double q) {
+		q = Utils.min(q,q*_detritus/Utils.DRAIN_SUBS_DIVISOR,_detritus);
+		_detritus -= q;
+		_O2 += q;
+		return q;
+	}
+	/**
 	 * Constructor of the World class. All internal structures are initialized and
 	 * the world's size is obtained from parameters.
 	 *
@@ -467,6 +532,7 @@ public class World implements Serializable{
 		_O2 = Utils.INITIAL_O2;
 		_CO2 = Utils.INITIAL_CO2;
 		_CH4 = Utils.INITIAL_CH4;
+		_detritus = Utils.INITIAL_DETRITUS;
 		NEXT_ID = 0;
 		NEXT_CLADE_PART = 0;
 		_population = 0;
@@ -626,18 +692,21 @@ public class World implements Serializable{
 				}
 			}
 		}
-		// Reactions turning CO2 and CH4 into each other
+		// Reactions turning CO2 and CH4 into each other and detritus into CO2
 		double x = Math.min(getCO2()/Utils.CO2_TO_CH4_DIVISOR,getCO2());
 		_CO2 -= x;
 		_CH4 += x;
 		double y = Math.min(getCH4()/Utils.CH4_TO_CO2_DIVISOR,getCH4());
 		_CH4 -= y;
 		_CO2 += y;
+		double z = Math.min(getDetritus()/Utils.DETRITUS_TO_CO2_DIVISOR,getDetritus());
+		_detritus -= z;
+		_CO2 += z;
 		if (nFrames++ % 20 == 0)
 			_visibleWorld.getMainWindow().getInfoPanel().recalculate();
 		if (nFrames % 256 == 0) {
 			nFrames = 0;
-			worldStatistics.eventTime(_population, getDistinctCladeIDCount(1), getDistinctCladeIDCount(10), getDistinctCladeIDCount(100), _O2, _CO2, _CH4, _organisms);
+			worldStatistics.eventTime(_population, getDistinctCladeIDCount(1), getDistinctCladeIDCount(10), getDistinctCladeIDCount(100), _O2, _CO2, _CH4, _detritus, _organisms);
 			_isbackuped = false;
 		}
 	}
