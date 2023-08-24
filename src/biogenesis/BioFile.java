@@ -82,7 +82,7 @@ public class BioFile {
     return getFile().getName().matches(".*?@[0-9]*\\." + BioFileFilter.WORLD_EXTENSION + "(\\.gz)?$");
   }
 
-  public void appendToCsv(long time, int population, int distinctClades, int distinctCladesWith10Orgs, int distinctCladesWith100Orgs, double O2, double CO2, double CH4, List<Organism> organisms) {
+  public void appendToCsv(long time, int population, int distinctClades, int distinctCladesWith10Orgs, int distinctCladesWith100Orgs, double O2, double CO2, double CH4, double detritus, List<Organism> organisms) {
     File csvFile = getCsvFile();
     Row row = new Row();
     row.add("time", time);
@@ -93,6 +93,7 @@ public class BioFile {
     row.add("o2", O2, 2);
     row.add("co2", CO2, 2);
     row.add("ch4", CH4, 2);
+    row.add("detritus", detritus, 2);
 
     Map<String, Integer> organismStats = prepareOrganismStats(organisms);
     organismStats.entrySet().stream().forEach(e -> row.add(e.getKey(), e.getValue()));
@@ -148,6 +149,7 @@ public class BioFile {
       stats.put("use frame movement", stats.getOrDefault("use frame movement", 0) + (o._useframemovement ? 1 : 0));
       stats.put("use pretouch effects", stats.getOrDefault("use pretouch effects", 0) + (o._usepretoucheffects ? 1 : 0));
       stats.put("methanotrophs", stats.getOrDefault("methanotrophs", 0) + (o._methanotrophy > 0 ? 1 : 0));
+      stats.put("filter feeders", stats.getOrDefault("filter feeders", 0) + (o._filterfeeding > 0 ? 1 : 0));
       stats.put("true plant", stats.getOrDefault("true plant", 0) + (o._photosynthesis > 0 ? 1 : 0));
     });
 

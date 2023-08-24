@@ -76,6 +76,10 @@ public final class Utils {
 	 */
 	final static double DEF_INITIAL_CH4 = 0;
 	/**
+	 * This is the default amount of detritus that exists in a newly created world.
+	 */
+	final static double DEF_INITIAL_DETRITUS = 0;
+	/**
 	 * This is the initial size of the organisms vector.
 	 */
 	final static int DEF_ORGANISMS_VECTOR_SIZE = 50;
@@ -107,6 +111,11 @@ public final class Utils {
 	 * which turns CH4 into CO2, divided by this value.
 	 */
 	final static int DEF_CH4_TO_CO2_DIVISOR = 1000;
+	/**
+	 * This is the default detritus to CO2 divisor,
+	 * which turns detritus into CO2, divided by this value.
+	 */
+	final static int DEF_DETRITUS_TO_CO2_DIVISOR = 400;
 	/**
 	 * This is the default rubbing coefficient that is applied to movements. This value is
 	 * multiplied by the speed at every frame.
@@ -309,6 +318,10 @@ public final class Utils {
 	 */
 	final static double DEF_PURPLE_ENERGY_CONSUMPTION = 4d;
 	/**
+	 * This is the default energy that is consumed when a plankton segment is used.
+	 */
+	final static double DEF_PLANKTON_ENERGY_CONSUMPTION = 1d;
+	/**
 	 * This is the default energy that is consumed when a c4 segment is used.
 	 */
 	final static double DEF_C4_ENERGY_CONSUMPTION = 0.535d;
@@ -496,6 +509,10 @@ public final class Utils {
 	 * This is the default probability for a new segment to be purple.
 	 */
 	final static int DEF_PURPLE_PROB = 3;
+	/**
+	 * This is the default probability for a new segment to be plankton.
+	 */
+	final static int DEF_PLANKTON_PROB = 3;
 	/**
 	 * This is the default probability for a new segment to be c4.
 	 */
@@ -737,6 +754,10 @@ public final class Utils {
 	 */
 	static double INITIAL_CH4 = DEF_INITIAL_CH4;
 	/**
+	 * This is the effective amount of detritus that exists in a newly created world.
+	 */
+	static double INITIAL_DETRITUS = DEF_INITIAL_DETRITUS;
+	/**
 	 * This is the effective size of the organisms vector.
 	 */
 	static int ORGANISMS_VECTOR_SIZE = DEF_ORGANISMS_VECTOR_SIZE;
@@ -768,6 +789,11 @@ public final class Utils {
 	 * which turns CH4 into CO2, divided by this value.
 	 */
 	static int CH4_TO_CO2_DIVISOR = DEF_CH4_TO_CO2_DIVISOR;
+	/**
+	 * This is the detritus to CO2 divisor,
+	 * which turns detritus into CO2, divided by this value.
+	 */
+	static int DETRITUS_TO_CO2_DIVISOR = DEF_DETRITUS_TO_CO2_DIVISOR;
 	/**
 	 * This is the rubbing coefficient that is applied to movements. This value is
 	 * multiplied by the speed at every frame.
@@ -970,6 +996,10 @@ public final class Utils {
 	 */
 	static double PURPLE_ENERGY_CONSUMPTION = DEF_PURPLE_ENERGY_CONSUMPTION;
 	/**
+	 * This is the energy that is consumed when a plankton segment is used.
+	 */
+	static double PLANKTON_ENERGY_CONSUMPTION = DEF_PLANKTON_ENERGY_CONSUMPTION;
+	/**
 	 * This is the energy that is consumed when a c4 segment is used.
 	 */
 	static double C4_ENERGY_CONSUMPTION = DEF_C4_ENERGY_CONSUMPTION;
@@ -1157,6 +1187,10 @@ public final class Utils {
 	 * This is the probability for a new segment to be purple.
 	 */
 	static int PURPLE_PROB = DEF_PURPLE_PROB;
+	/**
+	 * This is the probability for a new segment to be plankton.
+	 */
+	static int PLANKTON_PROB = DEF_PLANKTON_PROB;
 	/**
 	 * This is the probability for a new segment to be c4.
 	 */
@@ -1624,6 +1658,10 @@ public final class Utils {
 	 */
 	public static final Color ColorPURPLE = new Color(168,0,84);
 	/**
+	 * Precalculated plankton color
+	 */
+	public static final Color ColorPLANKTON = new Color(96,192,192);
+	/**
 	 * Precalculated c4 color
 	 */
 	public static final Color ColorC4 = new Color(96,192,96);
@@ -1793,6 +1831,7 @@ public final class Utils {
 		if (c.equals(Utils.ColorGRASS)) return Messages.getString("T_GRASS"); //$NON-NLS-1$
 		if (c.equals(Utils.ColorBARK)) return Messages.getString("T_BARK"); //$NON-NLS-1$
 		if (c.equals(Utils.ColorPURPLE)) return Messages.getString("T_PURPLE"); //$NON-NLS-1$
+		if (c.equals(Utils.ColorPLANKTON)) return Messages.getString("T_PLANKTON"); //$NON-NLS-1$
 		if (c.equals(Color.RED)) return Messages.getString("T_RED"); //$NON-NLS-1$
 		if (c.equals(Utils.ColorFIRE)) return Messages.getString("T_FIRE"); //$NON-NLS-1$
 		if (c.equals(Color.ORANGE)) return Messages.getString("T_ORANGE"); //$NON-NLS-1$
@@ -1843,6 +1882,7 @@ public final class Utils {
 			prefs.putDouble("INITIAL_O2",INITIAL_O2); //$NON-NLS-1$
 			prefs.putDouble("INITIAL_CO2",INITIAL_CO2); //$NON-NLS-1$
 			prefs.putDouble("INITIAL_CH4",INITIAL_CH4); //$NON-NLS-1$
+			prefs.putDouble("INITIAL_DETRITUS",INITIAL_DETRITUS); //$NON-NLS-1$
 			prefs.putInt("ORGANISMS_VECTOR_SIZE",ORGANISMS_VECTOR_SIZE); //$NON-NLS-1$
 			prefs.putInt("WORLD_WIDTH",WORLD_WIDTH); //$NON-NLS-1$
 			prefs.putInt("WORLD_HEIGHT",WORLD_HEIGHT); //$NON-NLS-1$
@@ -1850,6 +1890,7 @@ public final class Utils {
 			prefs.putInt("AGE_DIVISOR",AGE_DIVISOR); //$NON-NLS-1$
 			prefs.putInt("CO2_TO_CH4_DIVISOR",CO2_TO_CH4_DIVISOR); //$NON-NLS-1$
 			prefs.putInt("CH4_TO_CO2_DIVISOR",CH4_TO_CO2_DIVISOR); //$NON-NLS-1$
+			prefs.putInt("DETRITUS_TO_CO2_DIVISOR",DETRITUS_TO_CO2_DIVISOR); //$NON-NLS-1$
 			prefs.putDouble("RUBBING",RUBBING); //$NON-NLS-1$
 			prefs.putInt("META_MUTATION_RATE",META_MUTATION_RATE); //$NON-NLS-1$
 			prefs.putInt("MAX_MUTATION_RATE",MAX_MUTATION_RATE); //$NON-NLS-1$
@@ -1896,6 +1937,7 @@ public final class Utils {
 			prefs.putDouble("JADE_ENERGY_CONSUMPTION",JADE_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			prefs.putDouble("GRASS_ENERGY_CONSUMPTION",GRASS_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			prefs.putDouble("PURPLE_ENERGY_CONSUMPTION",PURPLE_ENERGY_CONSUMPTION); //$NON-NLS-1$
+			prefs.putDouble("PLANKTON_ENERGY_CONSUMPTION",PLANKTON_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			prefs.putDouble("C4_ENERGY_CONSUMPTION",C4_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			prefs.putDouble("VIOLET_ENERGY_CONSUMPTION",VIOLET_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			prefs.putDouble("TEAL_ENERGY_CONSUMPTION",TEAL_ENERGY_CONSUMPTION); //$NON-NLS-1$
@@ -1943,6 +1985,7 @@ public final class Utils {
 			prefs.putInt("JADE_PROB",JADE_PROB); //$NON-NLS-1$
 			prefs.putInt("GRASS_PROB",GRASS_PROB); //$NON-NLS-1$
 			prefs.putInt("PURPLE_PROB",PURPLE_PROB); //$NON-NLS-1$
+			prefs.putInt("PLANKTON_PROB",PLANKTON_PROB); //$NON-NLS-1$
 			prefs.putInt("C4_PROB",C4_PROB); //$NON-NLS-1$
 			prefs.putInt("VIOLET_PROB",VIOLET_PROB); //$NON-NLS-1$
 			prefs.putInt("TEAL_PROB",TEAL_PROB); //$NON-NLS-1$
@@ -2026,6 +2069,7 @@ public final class Utils {
 			INITIAL_O2 = prefs.getDouble("INITIAL_O2",DEF_INITIAL_O2); //$NON-NLS-1$
 			INITIAL_CO2 = prefs.getDouble("INITIAL_CO2",DEF_INITIAL_CO2); //$NON-NLS-1$
 			INITIAL_CH4 = prefs.getDouble("INITIAL_CH4",DEF_INITIAL_CH4); //$NON-NLS-1$
+			INITIAL_DETRITUS = prefs.getDouble("INITIAL_DETRITUS",DEF_INITIAL_DETRITUS); //$NON-NLS-1$
 			ORGANISMS_VECTOR_SIZE = prefs.getInt("ORGANISMS_VECTOR_SIZE",DEF_ORGANISMS_VECTOR_SIZE); //$NON-NLS-1$
 			WORLD_WIDTH = prefs.getInt("WORLD_WIDTH",DEF_WORLD_WIDTH); //$NON-NLS-1$
 			WORLD_HEIGHT = prefs.getInt("WORLD_HEIGHT",DEF_WORLD_HEIGHT); //$NON-NLS-1$
@@ -2033,6 +2077,7 @@ public final class Utils {
 			AGE_DIVISOR = prefs.getInt("AGE_DIVISOR",DEF_AGE_DIVISOR); //$NON-NLS-1$
 			CO2_TO_CH4_DIVISOR = prefs.getInt("CO2_TO_CH4_DIVISOR",DEF_CO2_TO_CH4_DIVISOR); //$NON-NLS-1$
 			CH4_TO_CO2_DIVISOR = prefs.getInt("CH4_TO_CO2_DIVISOR",DEF_CH4_TO_CO2_DIVISOR); //$NON-NLS-1$
+			DETRITUS_TO_CO2_DIVISOR = prefs.getInt("DETRITUS_TO_CO2_DIVISOR",DEF_DETRITUS_TO_CO2_DIVISOR); //$NON-NLS-1$
 			RUBBING = prefs.getDouble("RUBBING",DEF_RUBBING); //$NON-NLS-1$
 			META_MUTATION_RATE = prefs.getInt("META_MUTATION_RATE",DEF_META_MUTATION_RATE); //$NON-NLS-1$
 			MAX_MUTATION_RATE = prefs.getInt("MAX_MUTATION_RATE",DEF_MAX_MUTATION_RATE); //$NON-NLS-1$
@@ -2079,6 +2124,7 @@ public final class Utils {
 			JADE_ENERGY_CONSUMPTION = prefs.getDouble("JADE_ENERGY_CONSUMPTION",DEF_JADE_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			GRASS_ENERGY_CONSUMPTION = prefs.getDouble("GRASS_ENERGY_CONSUMPTION",DEF_GRASS_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			PURPLE_ENERGY_CONSUMPTION = prefs.getDouble("PURPLE_ENERGY_CONSUMPTION",DEF_PURPLE_ENERGY_CONSUMPTION); //$NON-NLS-1$
+			PLANKTON_ENERGY_CONSUMPTION = prefs.getDouble("PLANKTON_ENERGY_CONSUMPTION",DEF_PLANKTON_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			C4_ENERGY_CONSUMPTION = prefs.getDouble("C4_ENERGY_CONSUMPTION",DEF_C4_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			VIOLET_ENERGY_CONSUMPTION = prefs.getDouble("VIOLET_ENERGY_CONSUMPTION",DEF_VIOLET_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			TEAL_ENERGY_CONSUMPTION = prefs.getDouble("TEAL_ENERGY_CONSUMPTION",DEF_TEAL_ENERGY_CONSUMPTION); //$NON-NLS-1$
@@ -2126,6 +2172,7 @@ public final class Utils {
 			JADE_PROB = prefs.getInt("JADE_PROB",DEF_JADE_PROB); //$NON-NLS-1$
 			GRASS_PROB = prefs.getInt("GRASS_PROB",DEF_GRASS_PROB); //$NON-NLS-1$
 			PURPLE_PROB = prefs.getInt("PURPLE_PROB",DEF_PURPLE_PROB); //$NON-NLS-1$
+			PLANKTON_PROB = prefs.getInt("PLANKTON_PROB",DEF_PLANKTON_PROB); //$NON-NLS-1$
 			C4_PROB = prefs.getInt("C4_PROB",DEF_C4_PROB); //$NON-NLS-1$
 			VIOLET_PROB = prefs.getInt("VIOLET_PROB",DEF_VIOLET_PROB); //$NON-NLS-1$
 			TEAL_PROB = prefs.getInt("TEAL_PROB",DEF_TEAL_PROB); //$NON-NLS-1$

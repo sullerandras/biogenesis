@@ -13,6 +13,7 @@ public enum GeneColor {
   GRASS("grass"),
   BARK("bark"),
   PURPLE("purple"),
+  PLANKTON("plankton"),
   RED("red"),
   FIRE("fire"),
   ORANGE("orange"),
