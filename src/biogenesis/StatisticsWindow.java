@@ -282,15 +282,12 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 		worldStatistics.findBestAliveBeings(organisms);
 		JPanel notableBeingsPanel = new JPanel();
 		notableBeingsPanel.setLayout(new GridBagLayout());
-		gbc.gridx = 1;
-		gbc.gridy = 1;
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		notableBeingsPanel.add(new JLabel(Messages.getString("T_ALIVE_BEING_HAVING_THE_MOST_CHILDREN")), gbc); //$NON-NLS-1$
-		gbc.gridx = 2;
-		notableBeingsPanel.add(new JLabel(Messages.getString("T_BEING_HAVING_THE_MOST_CHILDREN")), gbc); //$NON-NLS-1$
-		gbc.gridx = 1;
-		gbc.gridy = 2;
-		gbc.fill = GridBagConstraints.NONE;
+
+		// Being having the most children
+		notableBeingsPanel.add(new JLabel(Messages.getString("T_ALIVE_BEING_HAVING_THE_MOST_CHILDREN")),
+			new SimpleGridBagConstraints(1, 1, 1, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL)); //$NON-NLS-1$
+		notableBeingsPanel.add(new JLabel(Messages.getString("T_BEING_HAVING_THE_MOST_CHILDREN")),
+			new SimpleGridBagConstraints(2, 1, 1, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL)); //$NON-NLS-1$
 		GeneticCodePanel aliveMostChildrenPanel = new GeneticCodePanel(worldStatistics.getAliveBeingMostChildren(),
 				visibleWorld);
 		aliveMostChildrenPanel.addMouseListener(new MouseAdapter() {
@@ -299,30 +296,27 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 				showOrganism(worldStatistics.getAliveOrganismMostChildren());
 			}
 		});
-		notableBeingsPanel.add(aliveMostChildrenPanel, gbc);
-		gbc.gridx = 2;
+		notableBeingsPanel.add(aliveMostChildrenPanel,
+			new SimpleGridBagConstraints(1, 2, 1, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
 		GeneticCodePanel mostChildrenPanel = new GeneticCodePanel(worldStatistics.getBeingMostChildren(),
 				visibleWorld);
-		notableBeingsPanel.add(mostChildrenPanel, gbc);
-		gbc.gridx = 1;
-		gbc.gridy = 3;
-		gbc.fill = GridBagConstraints.HORIZONTAL;
+		notableBeingsPanel.add(mostChildrenPanel,
+			new SimpleGridBagConstraints(2, 2, 1, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
 		notableBeingsPanel.add(new JLabel(Messages.getString("T_NUMBER_OF_CHILDREN")
-				+ worldStatistics.getAliveBeingMostChildrenNumber()), gbc); //$NON-NLS-1$
-		gbc.gridx = 2;
+				+ worldStatistics.getAliveBeingMostChildrenNumber()),
+				new SimpleGridBagConstraints(1, 3, 1, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL)); //$NON-NLS-1$
 		notableBeingsPanel.add(new JLabel(Messages.getString("T_NUMBER_OF_CHILDREN")
-				+ worldStatistics.getBeingMostChildrenNumber()), gbc); //$NON-NLS-1$
-		gbc.gridy = 4;
+				+ worldStatistics.getBeingMostChildrenNumber()),
+				new SimpleGridBagConstraints(2, 3, 1, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL)); //$NON-NLS-1$
 		notableBeingsPanel.add(new JLabel(Messages.getString("T_TIME")
-				+ worldStatistics.getBeingMostChildrenTime()), gbc); //$NON-NLS-1$
-		gbc.gridx = 1;
-		gbc.gridy = 5;
-		notableBeingsPanel.add(new JLabel(Messages.getString("T_ALIVE_BEING_HAVING_THE_MOST_VICTIMS")), gbc); //$NON-NLS-1$
-		gbc.gridx = 2;
-		notableBeingsPanel.add(new JLabel(Messages.getString("T_BEING_HAVING_THE_MOST_VICTIMS")), gbc); //$NON-NLS-1$
-		gbc.gridx = 1;
-		gbc.gridy = 6;
-		gbc.fill = GridBagConstraints.NONE;
+				+ worldStatistics.getBeingMostChildrenTime()),
+				new SimpleGridBagConstraints(2, 4, 1, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL)); //$NON-NLS-1$
+
+		// Being having the most victims
+		notableBeingsPanel.add(new JLabel(Messages.getString("T_ALIVE_BEING_HAVING_THE_MOST_VICTIMS")),
+			new SimpleGridBagConstraints(1, 5, 1, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL)); //$NON-NLS-1$
+		notableBeingsPanel.add(new JLabel(Messages.getString("T_BEING_HAVING_THE_MOST_VICTIMS")),
+			new SimpleGridBagConstraints(2, 5, 1, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL)); //$NON-NLS-1$
 		GeneticCodePanel aliveMostKillsPanel = new GeneticCodePanel(worldStatistics.getAliveBeingMostKills(),
 				visibleWorld);
 		aliveMostKillsPanel.addMouseListener(new MouseAdapter() {
@@ -331,30 +325,27 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 				showOrganism(worldStatistics.getAliveOrganismMostKills());
 			}
 		});
-		notableBeingsPanel.add(aliveMostKillsPanel, gbc);
-		gbc.gridx = 2;
+		notableBeingsPanel.add(aliveMostKillsPanel,
+			new SimpleGridBagConstraints(1, 6, 1, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
 		GeneticCodePanel mostKillsPanel = new GeneticCodePanel(worldStatistics.getBeingMostKills(),
 				visibleWorld);
-		notableBeingsPanel.add(mostKillsPanel, gbc);
-		gbc.gridx = 1;
-		gbc.gridy = 7;
-		gbc.fill = GridBagConstraints.HORIZONTAL;
+		notableBeingsPanel.add(mostKillsPanel,
+			new SimpleGridBagConstraints(2, 6, 1, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
 		notableBeingsPanel.add(new JLabel(Messages.getString("T_NUMBER_OF_VICTIMS")
-				+ worldStatistics.getAliveBeingMostKillsNumber()), gbc); //$NON-NLS-1$
-		gbc.gridx = 2;
+				+ worldStatistics.getAliveBeingMostKillsNumber()),
+			new SimpleGridBagConstraints(1, 7, 1, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL)); //$NON-NLS-1$
 		notableBeingsPanel.add(new JLabel(Messages.getString("T_NUMBER_OF_VICTIMS")
-				+ worldStatistics.getBeingMostKillsNumber()), gbc); //$NON-NLS-1$
-		gbc.gridy = 8;
+				+ worldStatistics.getBeingMostKillsNumber()),
+			new SimpleGridBagConstraints(2, 7, 1, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL)); //$NON-NLS-1$
 		notableBeingsPanel.add(new JLabel(Messages.getString("T_TIME")
-				+ worldStatistics.getBeingMostKillsTime()), gbc); //$NON-NLS-1$
-		gbc.gridx = 1;
-		gbc.gridy = 9;
-		notableBeingsPanel.add(new JLabel(Messages.getString("T_ALIVE_BEING_HAVING_THE_MOST_INFECTED")), gbc); //$NON-NLS-1$
-		gbc.gridx = 2;
-		notableBeingsPanel.add(new JLabel(Messages.getString("T_BEING_HAVING_THE_MOST_INFECTED")), gbc); //$NON-NLS-1$
-		gbc.gridx = 1;
-		gbc.gridy = 10;
-		gbc.fill = GridBagConstraints.NONE;
+				+ worldStatistics.getBeingMostKillsTime()),
+			new SimpleGridBagConstraints(2, 8, 1, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL)); //$NON-NLS-1$
+
+		// Being having the most infections
+		notableBeingsPanel.add(new JLabel(Messages.getString("T_ALIVE_BEING_HAVING_THE_MOST_INFECTED")),
+			new SimpleGridBagConstraints(1, 9, 1, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL)); //$NON-NLS-1$
+		notableBeingsPanel.add(new JLabel(Messages.getString("T_BEING_HAVING_THE_MOST_INFECTED")),
+			new SimpleGridBagConstraints(2, 9, 1, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL)); //$NON-NLS-1$
 		GeneticCodePanel aliveMostInfectionsPanel = new GeneticCodePanel(worldStatistics.getAliveBeingMostInfections(),
 				visibleWorld);
 		aliveMostInfectionsPanel.addMouseListener(new MouseAdapter() {
@@ -363,25 +354,59 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 				showOrganism(worldStatistics.getAliveOrganismMostInfections());
 			}
 		});
-		notableBeingsPanel.add(aliveMostInfectionsPanel, gbc);
-		gbc.gridx = 2;
+		notableBeingsPanel.add(aliveMostInfectionsPanel,
+			new SimpleGridBagConstraints(1, 10, 1, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.NONE)
+		);
 		GeneticCodePanel mostInfectionsPanel = new GeneticCodePanel(worldStatistics.getBeingMostInfections(),
 				visibleWorld);
-		notableBeingsPanel.add(mostInfectionsPanel, gbc);
-		gbc.gridx = 1;
-		gbc.gridy = 11;
-		gbc.fill = GridBagConstraints.HORIZONTAL;
+		notableBeingsPanel.add(mostInfectionsPanel,
+			new SimpleGridBagConstraints(2, 10, 1, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
 		notableBeingsPanel.add(new JLabel(Messages.getString("T_NUMBER_OF_INFECTED")
-				+ worldStatistics.getAliveBeingMostInfectionsNumber()), gbc); //$NON-NLS-1$
-		gbc.gridx = 2;
+				+ worldStatistics.getAliveBeingMostInfectionsNumber()),
+			new SimpleGridBagConstraints(1, 11, 1, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL)); //$NON-NLS-1$
 		notableBeingsPanel.add(new JLabel(Messages.getString("T_NUMBER_OF_INFECTED")
-				+ worldStatistics.getBeingMostInfectionsNumber()), gbc); //$NON-NLS-1$
-		gbc.gridy = 12;
+				+ worldStatistics.getBeingMostInfectionsNumber()),
+			new SimpleGridBagConstraints(2, 11, 1, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL)); //$NON-NLS-1$
 		notableBeingsPanel.add(new JLabel(Messages.getString("T_TIME")
-				+ worldStatistics.getBeingMostInfectionsTime()), gbc); //$NON-NLS-1$
+				+ worldStatistics.getBeingMostInfectionsTime()),
+			new SimpleGridBagConstraints(2, 12, 1, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL)); //$NON-NLS-1$
 		title = BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED),
 				Messages.getString("T_REMARKABLE_ORGANISMS"), TitledBorder.LEFT, TitledBorder.TOP); //$NON-NLS-1$
 		notableBeingsPanel.setBorder(title);
+
+		// Being having the most mass
+		notableBeingsPanel.add(new JLabel(Messages.getString("T_ALIVE_BEING_HAVING_THE_MOST_MASS")),
+			new SimpleGridBagConstraints(1, 13, 1, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL)); //$NON-NLS-1$
+		GeneticCodePanel aliveMostMassPanel = new GeneticCodePanel(worldStatistics.getAliveBeingMostMass(),
+				visibleWorld);
+		aliveMostMassPanel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				showOrganism(worldStatistics.getAliveOrganismMostMass());
+			}
+		});
+		notableBeingsPanel.add(aliveMostMassPanel,
+			new SimpleGridBagConstraints(1, 14, 1, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+		notableBeingsPanel.add(new JLabel(Messages.getString("T_MASS")
+				+ nf.format(worldStatistics.getAliveBeingMostMassNumber())),
+			new SimpleGridBagConstraints(1, 15, 1, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL)); //$NON-NLS-1$
+
+		// Being having the most energy
+		notableBeingsPanel.add(new JLabel(Messages.getString("T_ALIVE_BEING_HAVING_THE_MOST_ENERGY")),
+			new SimpleGridBagConstraints(1, 16, 1, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL)); //$NON-NLS-1$
+		GeneticCodePanel aliveMostEnergyPanel = new GeneticCodePanel(worldStatistics.getAliveBeingMostEnergy(),
+				visibleWorld);
+		aliveMostEnergyPanel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				showOrganism(worldStatistics.getAliveOrganismMostEnergy());
+			}
+		});
+		notableBeingsPanel.add(aliveMostEnergyPanel,
+			new SimpleGridBagConstraints(1, 17, 1, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+		notableBeingsPanel.add(new JLabel(Messages.getString("T_ENERGY")
+				+ nf.format(worldStatistics.getAliveBeingMostEnergyNumber())),
+			new SimpleGridBagConstraints(1, 18, 1, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL)); //$NON-NLS-1$
 
 		// Close button
 		JPanel buttonsPanel = new JPanel();
