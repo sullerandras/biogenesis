@@ -18,6 +18,7 @@
  */
 package biogenesis.gui.stats;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -435,7 +436,7 @@ public class StatisticsWindow extends JDialog {
 		leftPanel.add(currentStatePanel,
 				new SimpleGridBagConstraints(0, 0, 1, 0, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL));
 		notableBeingsPanel.setMinimumSize(new Dimension(100, 100));
-		leftPanel.add(new BetterJScrollPane(notableBeingsPanel),
+		leftPanel.add(notableBeingsPanel,
 				new SimpleGridBagConstraints(0, 1, 1, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH));
 		leftPanel.add(buttonsPanel,
 				new SimpleGridBagConstraints(0, 2, 1, 0, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL));
@@ -444,11 +445,11 @@ public class StatisticsWindow extends JDialog {
 		rightPanel.add(worldHistoryPanel,
 				new SimpleGridBagConstraints(0, 0, 1, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL));
 
-		getContentPane().setLayout(new GridBagLayout());
-		getContentPane().add(leftPanel,
-				new SimpleGridBagConstraints(0, 0, 1, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH));
-		getContentPane().add(rightPanel,
-				new SimpleGridBagConstraints(1, 0, 0, 0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE));
+				JPanel wrapper = new JPanel(new BorderLayout());
+		wrapper.add(leftPanel, BorderLayout.CENTER);
+		wrapper.add(rightPanel, BorderLayout.EAST);
+		getContentPane().setLayout(new BorderLayout());
+		getContentPane().add(new BetterJScrollPane(wrapper), BorderLayout.CENTER);
 	}
 
 	private void updateColorPanel(ColorPanel colorPanel) {
