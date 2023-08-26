@@ -19,8 +19,12 @@
  */
 package biogenesis;
 
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,10 +32,6 @@ import java.util.stream.Collectors;
 import javax.swing.SwingUtilities;
 
 import com.google.gson.annotations.Expose;
-
-import java.util.Collections;
-import java.io.*;
-import java.awt.*;
 /**
  * This class contains all the information needed to run a world:
  * the organisms, the substances and the biological corridors. It
@@ -140,14 +140,6 @@ public class World implements Serializable{
 		in.defaultReadObject();
 		inCorridors = Collections.synchronizedList(new ArrayList<InCorridor>());
 		outCorridors = Collections.synchronizedList(new ArrayList<OutCorridor>());
-	}
-	/**
-	 * Returns a new StatisticsWindow refering to this world.
-	 *
-	 * @return  A newly created StatisticsWindow.
-	 */
-	public StatisticsWindow createStatisticsWindow() {
-		return new StatisticsWindow(_visibleWorld.getMainWindow(), worldStatistics, _organisms);
 	}
 	/**
 	 * Finds an organism that has the given coordinates inside its bounding box and

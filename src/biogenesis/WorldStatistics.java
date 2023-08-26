@@ -638,6 +638,10 @@ public class WorldStatistics implements Serializable {
 		}
 	}
 
+	/**
+	 * Finds the remarkable beings in the world. Also calculates totalMass and totalEnergy.
+	 * @param organisms
+	 */
 	public void findBestAliveBeings(List<Organism> organisms) {
 		aliveBeingMostChildren = null;
 		aliveOrganismMostChildren = null;

@@ -2,8 +2,6 @@ package biogenesis;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Stores a 2D array of buckets, and stores Organisms in one or more buckets that the organism touches.

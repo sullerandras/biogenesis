@@ -20,7 +20,6 @@
 package biogenesis;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.EventQueue;
@@ -67,10 +66,11 @@ import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.JViewport;
 import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.border.EtchedBorder;
+
+import biogenesis.gui.stats.StatisticsWindow;
 
 public class MainWindow extends JFrame implements MainWindowInterface {
 	private static final long serialVersionUID = Utils.FILE_VERSION;
@@ -618,7 +618,7 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 			_world.decreaseCH4(1000);
 		}
 	}
-	
+
 	class IncreaseDetritusAction extends StdAction {
 		private static final long serialVersionUID = 1L;
 
@@ -828,7 +828,7 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 		public void actionPerformed(ActionEvent e) {
 			if (_statisticsWindow != null)
 				_statisticsWindow.dispose();
-			_statisticsWindow = _world.createStatisticsWindow();
+			_statisticsWindow = new StatisticsWindow(MainWindow.this, _world, _visibleWorld, _world.worldStatistics, _world._organisms);
 		}
 	}
 

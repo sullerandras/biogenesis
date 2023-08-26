@@ -42,7 +42,7 @@ public final class Utils {
 	 *
 	 * All serializable classes use this value as their serialVersionUID.
 	 */
-	static final int FILE_VERSION = 700;
+	public static final int FILE_VERSION = 700;
 	static final int VERSION = 900; //two digits for version, subversion and revision
 
 	// Default values for parameters
@@ -1367,7 +1367,7 @@ public final class Utils {
 	/**
 	 * How many times per second we want to update the statistics window, if it's open.
 	 */
-	static int STATISTICS_REFRESH_FPS = DEF_STATISTICS_REFRESH_FPS;
+	public static int STATISTICS_REFRESH_FPS = DEF_STATISTICS_REFRESH_FPS;
 	/**
 	 * This is the value for having or not having automatic backups.
 	 */
