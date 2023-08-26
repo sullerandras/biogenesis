@@ -83,7 +83,7 @@ public class GraphPanel extends JPanel {
 				}
 
 				final int elementCount = graphList.get(0).getPointsSize();
-				final int index = e.getX() * elementCount / centralPanel.getWidth();
+				final int index = (int) Math.round(e.getX() * elementCount / (double) centralPanel.getWidth());
 				if (index < 0 || index >= elementCount) {
 					return;
 				}
@@ -169,8 +169,7 @@ public class GraphPanel extends JPanel {
 		Graphics2D g2 = (Graphics2D) g;
 		for (GraphInfo graph : graphList) {
 			AffineTransform saveAT = g2.getTransform();
-			g2.scale(centralPanel.getWidth() / (double) graph.getActualCapacity(), centralPanel.getHeight() / (double) height);
-			graph.draw(g, hoveredIndex);
+			graph.draw(g, hoveredIndex, centralPanel.getWidth(), centralPanel.getHeight());
 			g2.setTransform(saveAT);
 		}
 	}

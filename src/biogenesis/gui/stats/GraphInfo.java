@@ -42,12 +42,14 @@ public class GraphInfo {
   /**
    * Draws the graph on the given Graphics object. There might be other graphs drawn to the same Graphics object.
    */
-  public void draw(Graphics g, int hoveredIndex) {
+  public void draw(Graphics g, int hoveredIndex, int panelWidth, int panelHeight) {
     if (values.size() == 0) {
       return;
     }
 
     g.setColor(color);
+    double scaleX = panelWidth / (double) getActualCapacity();
+    double scaleY = panelHeight / (double) height;
 
     int capacity = getActualCapacity();
     int x = 0;
@@ -55,14 +57,14 @@ public class GraphInfo {
     for (Iterator<Double> it = values.iterator(); it.hasNext() && x < capacity; x++) {
       double y = height - (it.next().doubleValue() - min) * height / (max - min);
       if (x > 0) {
-        g.drawLine(x - 1, (int) prevY, x, (int) y);
+        g.drawLine((int) ((x - 1) * scaleX), (int) (prevY * scaleY), (int) (x * scaleX), (int) (y * scaleY));
       }
       prevY = y;
     }
 
     if (hoveredIndex >= 0 && hoveredIndex < capacity) {
       g.setColor(Color.WHITE);
-      g.drawLine(hoveredIndex, 0, hoveredIndex, height);
+      g.drawLine((int) (hoveredIndex * scaleX), 0, (int) (hoveredIndex * scaleX), (int) (height * scaleY));
     }
   }
 
