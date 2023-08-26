@@ -113,6 +113,10 @@ public class StatisticsWindow extends JDialog {
 	private RemarkableOrganismPanel aliveMostMassPanel;
 	private RemarkableOrganismPanel aliveMostEnergyPanel;
 
+	private RemarkableOrganismPanel aliveLowestGenerationPanel;
+
+	private RemarkableOrganismPanel aliveHighestGenerationPanel;
+
 	public StatisticsWindow(JFrame owner, World world, VisibleWorld visibleWorld, WorldStatistics ws, List<Organism> os) {
 		super(owner, false);
 		this.world = world;
@@ -345,6 +349,32 @@ public class StatisticsWindow extends JDialog {
 			}
 		});
 
+		// Being having the lowest generation
+		aliveLowestGenerationPanel = new RemarkableOrganismPanel(
+				visibleWorld,
+				Messages.getString("T_ALIVE_BEING_HAVING_THE_LOWEST_GENERATION"), //$NON-NLS-1$
+				worldStatistics.getAliveBeingLowestGeneration(),
+				Messages.getString("T_GENERATION"), null, nf); //$NON-NLS-1$
+		aliveLowestGenerationPanel.addMouseListenerToGeneticCodePanel(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				showOrganism(worldStatistics.getAliveOrganismLowestGeneration());
+			}
+		});
+
+		// Being having the highest generation
+		aliveHighestGenerationPanel = new RemarkableOrganismPanel(
+				visibleWorld,
+				Messages.getString("T_ALIVE_BEING_HAVING_THE_HIGHEST_GENERATION"), //$NON-NLS-1$
+				worldStatistics.getAliveBeingHighestGeneration(),
+				Messages.getString("T_GENERATION"), null, nf); //$NON-NLS-1$
+		aliveHighestGenerationPanel.addMouseListenerToGeneticCodePanel(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				showOrganism(worldStatistics.getAliveOrganismHighestGeneration());
+			}
+		});
+
 		// Notable beings panel
 		JPanel notableBeingsPanel = new JPanel();
 		notableBeingsPanel.setLayout(new GridBagLayout());
@@ -361,13 +391,14 @@ public class StatisticsWindow extends JDialog {
 				new SimpleGridBagConstraints(0, 3, 2, 1, 1, 0, GridBagConstraints.NORTHWEST,
 						GridBagConstraints.HORIZONTAL));
 
+		notableBeingsPanel.add(aliveMostMassPanel, sgbc.withGridXY(0, 4));
 		notableBeingsPanel.add(aliveMostEnergyPanel, sgbc.withGridXY(1, 4));
+		notableBeingsPanel.add(aliveLowestGenerationPanel, sgbc.withGridXY(0, 5));
+		notableBeingsPanel.add(aliveHighestGenerationPanel, sgbc.withGridXY(1, 5));
 
 		// Add a filler to the bottom so it pushes up all components
 		notableBeingsPanel.add(new JPanel(),
-				new SimpleGridBagConstraints(0, 5, 1, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.VERTICAL));
-
-		notableBeingsPanel.add(aliveMostMassPanel, sgbc.withGridXY(0, 4));
+				new SimpleGridBagConstraints(0, 6, 1, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.VERTICAL));
 
 		// Close button
 		JPanel buttonsPanel = new JPanel();
@@ -528,6 +559,10 @@ public class StatisticsWindow extends JDialog {
 				worldStatistics.getAliveBeingMostMassNumber());
 		aliveMostEnergyPanel.update(worldStatistics.getAliveBeingMostEnergy(),
 				worldStatistics.getAliveBeingMostEnergyNumber());
+		aliveLowestGenerationPanel.update(worldStatistics.getAliveBeingLowestGeneration(),
+				worldStatistics.getAliveBeingLowestGenerationNumber());
+		aliveHighestGenerationPanel.update(worldStatistics.getAliveBeingHighestGeneration(),
+				worldStatistics.getAliveBeingHighestGenerationNumber());
 
 		repaint();
 	}

@@ -123,6 +123,14 @@ public class WorldStatistics implements Serializable {
 	private Organism aliveOrganismMostEnergy;
 	private double aliveBeingMostEnergyNumber;
 
+	private GeneticCode aliveBeingLowestGeneration;
+	private Organism aliveOrganismLowestGeneration;
+	private int aliveBeingLowestGenerationNumber;
+
+	private GeneticCode aliveBeingHighestGeneration;
+	private Organism aliveOrganismHighestGeneration;
+	private int aliveBeingHighestGenerationNumber;
+
 	private double totalMass;
 	private double totalEnergy;
 
@@ -388,6 +396,30 @@ public class WorldStatistics implements Serializable {
 
 	public double getAliveBeingMostEnergyNumber() {
 		return aliveBeingMostEnergyNumber;
+	}
+
+	public GeneticCode getAliveBeingLowestGeneration() {
+		return aliveBeingLowestGeneration;
+	}
+
+	public Organism getAliveOrganismLowestGeneration() {
+		return aliveOrganismLowestGeneration;
+	}
+
+	public int getAliveBeingLowestGenerationNumber() {
+		return aliveBeingLowestGenerationNumber;
+	}
+
+	public GeneticCode getAliveBeingHighestGeneration() {
+		return aliveBeingHighestGeneration;
+	}
+
+	public Organism getAliveOrganismHighestGeneration() {
+		return aliveOrganismHighestGeneration;
+	}
+
+	public int getAliveBeingHighestGenerationNumber() {
+		return aliveBeingHighestGenerationNumber;
 	}
 
 	public double getTotalMass() {
@@ -663,6 +695,14 @@ public class WorldStatistics implements Serializable {
 		aliveOrganismMostEnergy = null;
 		aliveBeingMostEnergyNumber = 0;
 
+		aliveBeingLowestGeneration = null;
+		aliveOrganismLowestGeneration = null;
+		aliveBeingLowestGenerationNumber = Integer.MAX_VALUE;
+
+		aliveBeingHighestGeneration = null;
+		aliveOrganismHighestGeneration = null;
+		aliveBeingHighestGenerationNumber = 0;
+
 		totalMass = 0;
 		totalEnergy = 0;
 
@@ -694,6 +734,16 @@ public class WorldStatistics implements Serializable {
 						aliveBeingMostEnergyNumber = org.getEnergy();
 						aliveBeingMostEnergy = org.getGeneticCode();
 						aliveOrganismMostEnergy = org;
+					}
+					if (org.getGeneticCode().getGeneration() < aliveBeingLowestGenerationNumber) {
+						aliveBeingLowestGenerationNumber = org.getGeneticCode().getGeneration();
+						aliveBeingLowestGeneration = org.getGeneticCode();
+						aliveOrganismLowestGeneration = org;
+					}
+					if (org.getGeneticCode().getGeneration() > aliveBeingHighestGenerationNumber) {
+						aliveBeingHighestGenerationNumber = org.getGeneticCode().getGeneration();
+						aliveBeingHighestGeneration = org.getGeneticCode();
+						aliveOrganismHighestGeneration = org;
 					}
 					totalMass += org.getMass();
 					totalEnergy += org.getEnergy();
