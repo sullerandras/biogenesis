@@ -72,4 +72,15 @@ public class GraphInfo {
   public Color getColor() {
     return color;
   }
+
+  public double getPointAt(int index) {
+    if (index < 0 || index >= points.size()) {
+      return 0;
+    }
+    return points.get(index);
+  }
+
+  public int getPointsSize() {
+    return points.size();
+  }
 }

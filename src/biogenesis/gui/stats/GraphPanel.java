@@ -6,6 +6,9 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
+import java.awt.Point;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -13,6 +16,8 @@ import java.util.List;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.Popup;
+import javax.swing.PopupFactory;
 import javax.swing.SwingConstants;
 
 import biogenesis.Utils;
@@ -62,6 +67,61 @@ public class GraphPanel extends JPanel {
 		southPanel.add(fromLabel);
 		southPanel.add(toLabel);
 		add(southPanel, BorderLayout.SOUTH);
+
+		MouseAdapter mouseAdapter = new MouseAdapter() {
+			private Popup popup = null;
+			private final GraphTooltipPanel tooltip = new GraphTooltipPanel(nf);
+			private final Object monitor = new Object();
+
+			@Override
+			public void mouseMoved(MouseEvent e) {
+				if (graphList.isEmpty()) {
+					return;
+				}
+
+				final int elementCount = graphList.get(0).getPointsSize();
+				final int index = e.getX() * elementCount / centralPanel.getWidth();
+				if (index < 0 || index >= elementCount) {
+					return;
+				}
+
+				for (GraphInfo graph : graphList) {
+					tooltip.addValue(graph.getName(), graph.getPointAt(index));
+				}
+
+				// Show popup on the screen and ensure it's always visible
+				final Point p = e.getLocationOnScreen();
+				int x = p.x + 20;
+				int y = p.y + 5;
+				if (x + 20 + tooltip.getWidth() > getToolkit().getScreenSize().width) {
+					x = p.x - 20 - tooltip.getWidth();
+				}
+				if (y + 20 + tooltip.getHeight() > getToolkit().getScreenSize().height) {
+					y = p.y - 20 - tooltip.getHeight();
+				}
+				synchronized (monitor) {
+					final Popup oldPopup = popup;
+					popup = PopupFactory.getSharedInstance().getPopup(centralPanel, tooltip, x, y);
+					popup.show();
+					if (oldPopup != null) {
+						oldPopup.hide();
+					}
+				}
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				if (popup != null) {
+					synchronized (monitor) {
+						popup.hide();
+						popup = null;
+					}
+				}
+			}
+		};
+
+		centralPanel.addMouseMotionListener(mouseAdapter);
+		centralPanel.addMouseListener(mouseAdapter);
 	}
 
 	/**
