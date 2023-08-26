@@ -123,6 +123,9 @@ public class WorldStatistics implements Serializable {
 	private Organism aliveOrganismMostEnergy;
 	private double aliveBeingMostEnergyNumber;
 
+	private double totalMass;
+	private double totalEnergy;
+
 	private GeneticCode beingMostChildren;
 
 	private int beingMostChildrenNumber;
@@ -387,6 +390,14 @@ public class WorldStatistics implements Serializable {
 		return aliveBeingMostEnergyNumber;
 	}
 
+	public double getTotalMass() {
+		return totalMass;
+	}
+
+	public double getTotalEnergy() {
+		return totalEnergy;
+	}
+
 	public GeneticCode getBeingMostChildren() {
 		return beingMostChildren;
 	}
@@ -648,6 +659,9 @@ public class WorldStatistics implements Serializable {
 		aliveOrganismMostEnergy = null;
 		aliveBeingMostEnergyNumber = 0;
 
+		totalMass = 0;
+		totalEnergy = 0;
+
 		synchronized(organisms) {
 			for (Iterator<Organism> it = organisms.iterator(); it.hasNext();) {
 				Organism org = it.next();
@@ -677,6 +691,8 @@ public class WorldStatistics implements Serializable {
 						aliveBeingMostEnergy = org.getGeneticCode();
 						aliveOrganismMostEnergy = org;
 					}
+					totalMass += org.getMass();
+					totalEnergy += org.getEnergy();
 				}
 			}
 		}

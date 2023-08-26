@@ -251,6 +251,11 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 		gbc.gridx = 1;
 		gbc.gridy = 4;
 		currentStatePanel.add(new JLabel(Messages.getString("T_REMAINS_OF_BEINGS") + world.getNCorpses()), gbc); //$NON-NLS-1$
+		gbc.gridx = 1;
+		gbc.gridy = 5;
+		currentStatePanel.add(new JLabel(Messages.getString("T_TOTAL_MASS") + nf.format(worldStatistics.getTotalMass())), gbc); //$NON-NLS-1$
+		gbc.gridx = 2;
+		currentStatePanel.add(new JLabel(Messages.getString("T_TOTAL_ENERGY") + nf.format(worldStatistics.getTotalEnergy())), gbc); //$NON-NLS-1$
 
 		JPanel colorPanelWrapper = new JPanel(new GridBagLayout());
 		GridBagConstraints gbc2 = new GridBagConstraints();
@@ -265,7 +270,7 @@ public class StatisticsWindow extends JDialog implements ActionListener {
 		colorPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		colorPanelWrapper.add(colorPanel, gbc2);
 		gbc.gridx = 1;
-		gbc.gridy = 5;
+		gbc.gridy = 6;
 		gbc.weightx = 1;
 		gbc.gridwidth = 2;
 		gbc.anchor = GridBagConstraints.WEST;

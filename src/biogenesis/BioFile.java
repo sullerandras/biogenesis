@@ -94,17 +94,25 @@ public class BioFile {
     row.add("co2", CO2, 2);
     row.add("ch4", CH4, 2);
     row.add("detritus", detritus, 2);
+    row.add("totalmass", 0, 2);
+    row.add("totalenergy", 0, 2);
 
-    Map<String, Integer> organismStats = prepareOrganismStats(organisms);
+    Map<String, Integer> organismStats = prepareOrganismStats(organisms, row);
     organismStats.entrySet().stream().forEach(e -> row.add(e.getKey(), e.getValue()));
 
     new CSV(csvFile).append(row);
   }
 
-  private Map<String, Integer> prepareOrganismStats(List<Organism> organisms) {
+  private Map<String, Integer> prepareOrganismStats(List<Organism> organisms, Row row) {
     Map<String, Integer> stats = new LinkedHashMap<>(); // using LinkedHashMap to ensure the order of the columns
 
-    organisms.stream().forEach(o -> {
+    double totalMass = 0;
+    double totalEnergy = 0;
+
+    for (Organism o : organisms) {
+      totalMass += o.getMass();
+      totalEnergy += o.getEnergy();
+
       stats.put("active", stats.getOrDefault("active", 0) + (o.active ? 1 : 0));
       stats.put("alive", stats.getOrDefault("alive", 0) + (o.alive ? 1 : 0));
       stats.put("all frozen", stats.getOrDefault("all frozen", 0) + (o._allfrozen ? 1 : 0));
@@ -151,7 +159,10 @@ public class BioFile {
       stats.put("methanotrophs", stats.getOrDefault("methanotrophs", 0) + (o._methanotrophy > 0 ? 1 : 0));
       stats.put("filter feeders", stats.getOrDefault("filter feeders", 0) + (o._filterfeeding > 0 ? 1 : 0));
       stats.put("true plant", stats.getOrDefault("true plant", 0) + (o._photosynthesis > 0 ? 1 : 0));
-    });
+    }
+
+    row.add("totalmass", totalMass, 2);
+    row.add("totalenergy", totalEnergy, 2);
 
     return stats;
   }
