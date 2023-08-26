@@ -21,8 +21,10 @@ package biogenesis;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gson.annotations.Expose;
 
@@ -173,6 +175,10 @@ public class WorldStatistics implements Serializable {
 	private List<Double> methaneList = new ArrayList<Double>(100);
 
 	private List<Double> detritusList = new ArrayList<Double>(100);
+
+	private List<Double> generationHistogramList = new ArrayList<>(0);
+	private int minGeneration;
+	private int maxGeneration;
 
 	private transient MainWindowInterface mainWindowInterface;
 
@@ -510,6 +516,18 @@ public class WorldStatistics implements Serializable {
 		return detritusList;
 	}
 
+	public List<Double> getGenerationHistogramList() {
+		return generationHistogramList;
+	}
+
+	public int getMinGeneration() {
+		return minGeneration;
+	}
+
+	public int getMaxGeneration() {
+		return maxGeneration;
+	}
+
 	public void eventPopulationIncrease(int newPopulation) {
 		if ((newPopulation > maxPopulation) && (time >= 10)) {
 			maxPopulation = newPopulation;
@@ -671,7 +689,7 @@ public class WorldStatistics implements Serializable {
 	}
 
 	/**
-	 * Finds the remarkable beings in the world. Also calculates totalMass and totalEnergy.
+	 * Finds the remarkable beings in the world. Also calculates totalMass, totalEnergy and generationHistogramList.
 	 * @param organisms
 	 */
 	public void findBestAliveBeings(List<Organism> organisms) {
@@ -706,6 +724,12 @@ public class WorldStatistics implements Serializable {
 		totalMass = 0;
 		totalEnergy = 0;
 
+		generationHistogramList = new ArrayList<>(0);
+		minGeneration = Integer.MAX_VALUE;
+		maxGeneration = 0;
+
+		Map<Integer, Integer> generationCounter = new HashMap<Integer, Integer>();
+
 		synchronized(organisms) {
 			for (Iterator<Organism> it = organisms.iterator(); it.hasNext();) {
 				Organism org = it.next();
@@ -735,20 +759,28 @@ public class WorldStatistics implements Serializable {
 						aliveBeingMostEnergy = org.getGeneticCode();
 						aliveOrganismMostEnergy = org;
 					}
-					if (org.getGeneticCode().getGeneration() < aliveBeingLowestGenerationNumber) {
-						aliveBeingLowestGenerationNumber = org.getGeneticCode().getGeneration();
+					final int generation = org.getGeneticCode().getGeneration();
+					if (generation < aliveBeingLowestGenerationNumber) {
+						aliveBeingLowestGenerationNumber = generation;
 						aliveBeingLowestGeneration = org.getGeneticCode();
 						aliveOrganismLowestGeneration = org;
 					}
-					if (org.getGeneticCode().getGeneration() > aliveBeingHighestGenerationNumber) {
-						aliveBeingHighestGenerationNumber = org.getGeneticCode().getGeneration();
+					if (generation > aliveBeingHighestGenerationNumber) {
+						aliveBeingHighestGenerationNumber = generation;
 						aliveBeingHighestGeneration = org.getGeneticCode();
 						aliveOrganismHighestGeneration = org;
 					}
 					totalMass += org.getMass();
 					totalEnergy += org.getEnergy();
+					generationCounter.put(generation, generationCounter.getOrDefault(generation, 0) + 1);
+					minGeneration = Math.min(minGeneration, generation);
+					maxGeneration = Math.max(maxGeneration, generation);
 				}
 			}
+		}
+
+		for (int i = minGeneration; i <= maxGeneration; i++) {
+			generationHistogramList.add(Double.valueOf(generationCounter.getOrDefault(i, 0)));
 		}
 	}
 }

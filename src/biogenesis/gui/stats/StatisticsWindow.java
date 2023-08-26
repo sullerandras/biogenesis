@@ -18,12 +18,12 @@
  */
 package biogenesis.gui.stats;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -112,10 +112,12 @@ public class StatisticsWindow extends JDialog {
 	private RemarkableOrganismPanel mostInfectionsPanel;
 	private RemarkableOrganismPanel aliveMostMassPanel;
 	private RemarkableOrganismPanel aliveMostEnergyPanel;
-
 	private RemarkableOrganismPanel aliveLowestGenerationPanel;
-
 	private RemarkableOrganismPanel aliveHighestGenerationPanel;
+
+	private GraphPanel generationHistogramPanel;
+
+	private GraphInfo generationHistogram;
 
 	public StatisticsWindow(JFrame owner, World world, VisibleWorld visibleWorld, WorldStatistics ws, List<Organism> os) {
 		super(owner, false);
@@ -129,7 +131,6 @@ public class StatisticsWindow extends JDialog {
 		nf.setMaximumFractionDigits(1);
 
 		initComponents();
-		pack();
 		setResizable(true);
 		Dimension minSize = getSize();
 		setPreferredSize(new Dimension(minSize.width + 50, minSize.height));
@@ -163,61 +164,69 @@ public class StatisticsWindow extends JDialog {
 
 	private void initComponents() {
 		// Population graphic
+		deathsGraph = new GraphInfo(0, 0, 100, 104, Color.RED, Messages.getString("T_DEATHS")); //$NON-NLS-1$
+		birthsGraph = new GraphInfo(0, 0, 100, 104, Color.GREEN, Messages.getString("T_BIRTHS")); //$NON-NLS-1$
+		populationGraph = new GraphInfo(0, 0, 100, 104, Color.WHITE, Messages.getString("T_POPULATION")); //$NON-NLS-1$
+		cladesGraph = new GraphInfo(0, 0, 100, 104, Color.ORANGE, Messages.getString("T_CLADES")); //$NON-NLS-1$
 		populationGraphPanel = new GraphPanel(100, 104, nf);
-		deathsGraph = populationGraphPanel.addGraph(new ArrayList<>(), 0, 0, Color.RED, Messages.getString("T_DEATHS")); //$NON-NLS-1$
-		birthsGraph = populationGraphPanel.addGraph(new ArrayList<>(), 0, 0, Color.GREEN, Messages.getString("T_BIRTHS")); //$NON-NLS-1$
-		populationGraph = populationGraphPanel.addGraph(new ArrayList<>(), 0, 0, Color.WHITE,
-				Messages.getString("T_POPULATION")); //$NON-NLS-1$
-		cladesGraph = populationGraphPanel.addGraph(new ArrayList<>(), 0, 0, Color.ORANGE, Messages.getString("T_CLADES")); //$NON-NLS-1$
+		populationGraphPanel.addGraph(deathsGraph);
+		populationGraphPanel.addGraph(birthsGraph);
+		populationGraphPanel.addGraph(populationGraph);
+		populationGraphPanel.addGraph(cladesGraph);
 
 		// Clades graphic
+		cladesGraph2 = new GraphInfo(0, 0, 100, 104, Color.ORANGE, Messages.getString("T_CLADES")); //$NON-NLS-1$
 		cladesGraphPanel = new GraphPanel(100, 52, nf);
-		cladesGraph2 = cladesGraphPanel.addGraph(new ArrayList<>(), 0, 0, Color.ORANGE, Messages.getString("T_CLADES")); //$NON-NLS-1$
+		cladesGraphPanel.addGraph(cladesGraph2);
 
 		// Population statistics
 		populationStatsPanel = new PopulationStatsPanel(worldStatistics, nf);
 		populationStatsPanel.update();
 
 		// Population = population graph + population stats
+		SimpleGridBagConstraints sgbc = new SimpleGridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.NORTHWEST,
+				GridBagConstraints.HORIZONTAL);
 		JPanel populationPanel = new JPanel();
-		populationPanel.setLayout(new BorderLayout());
-		populationPanel.add(cladesGraphPanel, BorderLayout.NORTH);
-		populationPanel.add(populationGraphPanel, BorderLayout.CENTER);
-		populationPanel.add(populationStatsPanel, BorderLayout.SOUTH);
+		populationPanel.setLayout(new GridBagLayout());
+		populationPanel.add(cladesGraphPanel, sgbc.withGridXY(0, 0));
+		populationPanel.add(populationGraphPanel, sgbc.withGridXY(0, 1));
+		populationPanel.add(populationStatsPanel, sgbc.withGridXY(0, 2));
 		Border title = BorderFactory.createTitledBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED),
 				Messages.getString("T_POPULATION"), TitledBorder.LEFT, TitledBorder.TOP); //$NON-NLS-1$
 		populationPanel.setBorder(title);
 
 		// Atmosphere graphic
+		oxygenGraph = new GraphInfo(0, 0, 100, 104, Color.BLUE, Messages.getString("T_OXYGEN")); //$NON-NLS-1$
+		carbonDioxideGraph = new GraphInfo(0, 0, 100, 104, Color.WHITE, Messages.getString("T_CARBON_DIOXIDE")); //$NON-NLS-1$
+		methaneGraph = new GraphInfo(0, 0, 100, 104, Color.MAGENTA, Messages.getString("T_METHANE")); //$NON-NLS-1$
+		detritusGraph = new GraphInfo(0, 0, 100, 104, Color.YELLOW, Messages.getString("T_DETRITUS")); //$NON-NLS-1$
 		atmosphereGraphPanel = new GraphPanel(100, 104, nf);
-		oxygenGraph = atmosphereGraphPanel.addGraph(new ArrayList<>(), 0, 0, Color.BLUE, Messages.getString("T_OXYGEN")); //$NON-NLS-1$
-		carbonDioxideGraph = atmosphereGraphPanel.addGraph(new ArrayList<>(), 0, 0, Color.WHITE,
-				Messages.getString("T_CARBON_DIOXIDE")); //$NON-NLS-1$
-		methaneGraph = atmosphereGraphPanel.addGraph(new ArrayList<>(), 0, 0, Color.MAGENTA,
-				Messages.getString("T_METHANE")); //$NON-NLS-1$
-		detritusGraph = atmosphereGraphPanel.addGraph(new ArrayList<>(), 0, 0, Color.YELLOW,
-				Messages.getString("T_DETRITUS")); //$NON-NLS-1$
+		atmosphereGraphPanel.addGraph(oxygenGraph);
+		atmosphereGraphPanel.addGraph(carbonDioxideGraph);
+		atmosphereGraphPanel.addGraph(methaneGraph);
+		atmosphereGraphPanel.addGraph(detritusGraph);
 
 		// Atmosphere statistics
 		atmosphereStatsPanel = new AtmosphereStatsPanel(worldStatistics, nf);
 		atmosphereStatsPanel.update();
 
 		// Population = population graph + population stats
+		sgbc = new SimpleGridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL);
 		JPanel atmospherePanel = new JPanel();
-		atmospherePanel.setLayout(new BorderLayout());
-		atmospherePanel.add(atmosphereGraphPanel, BorderLayout.CENTER);
-		atmospherePanel.add(atmosphereStatsPanel, BorderLayout.SOUTH);
+		atmospherePanel.setLayout(new GridBagLayout());
+		atmospherePanel.add(atmosphereGraphPanel, sgbc.withGridXY(0, 0));
+		atmospherePanel.add(atmosphereStatsPanel, sgbc.withGridXY(0, 1));
 		title = BorderFactory.createTitledBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED),
 				Messages.getString("T_ATMOSPHERE"), TitledBorder.LEFT, TitledBorder.TOP); //$NON-NLS-1$
 		atmospherePanel.setBorder(title);
 
-		// World history: population + atmosphere
+		// World history: population + atmosphere + other graps
 		JPanel worldHistoryPanel = new JPanel();
 		worldHistoryPanel.setLayout(new GridBagLayout());
 		worldHistoryPanel.add(populationPanel,
 				new SimpleGridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL));
 		worldHistoryPanel.add(atmospherePanel,
-				new SimpleGridBagConstraints(0, 1, 1, 1, 1, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL));
+				new SimpleGridBagConstraints(0, 1, 1, 1, 1, 0, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL));
 		title = BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED),
 				Messages.getString("T_WORLD_HISTORY"), TitledBorder.LEFT, TitledBorder.TOP); //$NON-NLS-1$
 		worldHistoryPanel.setBorder(title);
@@ -237,8 +246,7 @@ public class StatisticsWindow extends JDialog {
 		currentStateTotalMassLabel = new ValueAndTimeLabel(Messages.getString("T_TOTAL_MASS"), null, nf); //$NON-NLS-1$
 		currentStateTotalEnergyLabel = new ValueAndTimeLabel(Messages.getString("T_TOTAL_ENERGY"), null, nf); //$NON-NLS-1$
 
-		SimpleGridBagConstraints sgbc = new SimpleGridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.CENTER,
-				GridBagConstraints.HORIZONTAL);
+		sgbc = new SimpleGridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL);
 		currentStatePanel.add(currentStateTimeLabel, sgbc.withGridXY(0, 0));
 		currentStatePanel.add(currentStateOxygenLabel, sgbc.withGridXY(1, 0));
 		currentStatePanel.add(currentStateCladesLabel, sgbc.withGridXY(0, 1));
@@ -396,9 +404,23 @@ public class StatisticsWindow extends JDialog {
 		notableBeingsPanel.add(aliveLowestGenerationPanel, sgbc.withGridXY(0, 5));
 		notableBeingsPanel.add(aliveHighestGenerationPanel, sgbc.withGridXY(1, 5));
 
+		// Generation histogram
+		generationHistogram = new GraphInfo(0, 0, 0, 104, Color.WHITE, Messages.getString("T_GENERATION2")); //$NON-NLS-1$
+		generationHistogramPanel = new GraphPanel(100, 104, nf);
+		generationHistogramPanel.addGraph(generationHistogram);
+		JPanel generationHistogramWrapper = new JPanel(new GridLayout(1, 1));
+		generationHistogramWrapper.add(generationHistogramPanel);
+		generationHistogramWrapper
+				.setBorder(BorderFactory.createTitledBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED),
+						Messages.getString("T_GENERATION_HISTOGRAM"), TitledBorder.LEFT, TitledBorder.TOP)); //$NON-NLS-1$
+
+		notableBeingsPanel.add(generationHistogramWrapper,
+				new SimpleGridBagConstraints(0, 6, 2, 1, 1, 0, GridBagConstraints.NORTHWEST,
+						GridBagConstraints.HORIZONTAL));
+
 		// Add a filler to the bottom so it pushes up all components
 		notableBeingsPanel.add(new JPanel(),
-				new SimpleGridBagConstraints(0, 6, 1, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.VERTICAL));
+				new SimpleGridBagConstraints(0, 7, 1, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.VERTICAL));
 
 		// Close button
 		JPanel buttonsPanel = new JPanel();
@@ -528,6 +550,13 @@ public class StatisticsWindow extends JDialog {
 		detritusGraph.setMaxAndPoints(max, worldStatistics.getDetritusList());
 
 		atmosphereStatsPanel.update();
+
+		generationHistogramPanel.setMinTime(worldStatistics.getMinGeneration());
+		generationHistogramPanel.setMaxTime(worldStatistics.getMaxGeneration());
+		max = worldStatistics.getGenerationHistogramList().stream().max(Double::compare).get();
+		generationHistogram.setMaxAndPoints(
+				max,
+				worldStatistics.getGenerationHistogramList());
 
 		// Update current state panel
 		currentStateTimeLabel.update(world.getTime());

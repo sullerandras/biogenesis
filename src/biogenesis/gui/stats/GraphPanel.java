@@ -37,6 +37,7 @@ public class GraphPanel extends JPanel {
 	private JPanel legendPanel;
 	private JLabel fromLabel;
 	private JLabel toLabel;
+	private int hoveredIndex = -1;
 
 	/**
 	 * Creates a new instance of GraphPanel.
@@ -51,6 +52,7 @@ public class GraphPanel extends JPanel {
 		setLayout(new BorderLayout());
 		centralPanel = new JPanel();
 		centralPanel.setPreferredSize(new Dimension(width, height));
+		centralPanel.setMinimumSize(centralPanel.getPreferredSize());
 		centralPanel.setBackground(Color.BLACK);
 		centralPanel.setOpaque(false);
 		add(centralPanel, BorderLayout.CENTER);
@@ -62,6 +64,7 @@ public class GraphPanel extends JPanel {
 		JPanel southPanel = new JPanel();
 		southPanel.setLayout(new GridLayout(1, 2));
 		southPanel.setPreferredSize(new Dimension(width, 20));
+		southPanel.setMinimumSize(southPanel.getPreferredSize());
 		fromLabel = new JLabel(nf.format(0), SwingConstants.LEFT);
 		toLabel = new JLabel(nf.format(100), SwingConstants.RIGHT);
 		southPanel.add(fromLabel);
@@ -84,6 +87,7 @@ public class GraphPanel extends JPanel {
 				if (index < 0 || index >= elementCount) {
 					return;
 				}
+				hoveredIndex = index;
 
 				for (GraphInfo graph : graphList) {
 					tooltip.addValue(graph.getName(), graph.getPointAt(index));
@@ -107,10 +111,13 @@ public class GraphPanel extends JPanel {
 						oldPopup.hide();
 					}
 				}
+
+				GraphPanel.this.repaint();
 			}
 
 			@Override
 			public void mouseExited(MouseEvent e) {
+				hoveredIndex = -1;
 				if (popup != null) {
 					synchronized (monitor) {
 						popup.hide();
@@ -126,18 +133,10 @@ public class GraphPanel extends JPanel {
 
 	/**
 	 * Add a new line to this graph.
-	 * @param info List of initial values to draw.
-	 * @param max Maximum value of the graph. Used to scale the values across all the graphs.
-	 * @param min Minimum value of the graph. Used to scale the values across all the graphs.
-	 * @param color Color of the line to draw.
-	 * @param name Name of the graph, used for the legend.
-	 * @return The GraphInfo object that holds the information of the new graph.
 	 */
-	public GraphInfo addGraph(List<Double> info, double max, double min, Color color, String name) {
-		GraphInfo g = new GraphInfo(info, max, min, width, height, color, name);
-		graphList.add(g);
+	public void addGraph(GraphInfo graphInfo) {
+		graphList.add(graphInfo);
 		updateLegend();
-		return g;
 	}
 
 	/**
@@ -168,11 +167,11 @@ public class GraphPanel extends JPanel {
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D) g;
-		AffineTransform saveAT = g2.getTransform();
-		g2.scale(centralPanel.getWidth() / (double) width, centralPanel.getHeight() / (double) height);
 		for (GraphInfo graph : graphList) {
-			graph.draw(g);
+			AffineTransform saveAT = g2.getTransform();
+			g2.scale(centralPanel.getWidth() / (double) graph.getActualCapacity(), centralPanel.getHeight() / (double) height);
+			graph.draw(g, hoveredIndex);
+			g2.setTransform(saveAT);
 		}
-		g2.setTransform(saveAT);
 	}
 }
