@@ -799,16 +799,15 @@ public class World implements Serializable{
 	 * rectangle of {@code b1} or null if there is no such organism.
 	 */
 	public Organism fastCheckHit(Organism b1) {
-		Collection<Organism> collidingOrgs = colDetTree.query(b1);
-
-		for (Organism org : collidingOrgs) {
+		return colDetTree.findFirst(b1, org -> {
 			if (b1 != org) {
 				if (b1.intersects(org)) {
-					return org;
+					return true;
 				}
 			}
-		}
-		return null;
+
+			return false;
+		});
 	}
 	/**
 	 * Used for transformations.
@@ -822,17 +821,14 @@ public class World implements Serializable{
 	 */
 
 	public Organism transformCheckHit(Organism b1) {
-
-		Collection<Organism> collidingOrgs = colDetTree.query(b1);
-
-		for (Organism org : collidingOrgs) {
+		return colDetTree.findFirst(b1, org -> {
 			if ((b1 != org) && (b1._ID != org._parentID) && (b1._parentID != org._ID)) {
 				if (b1.intersects(org)) {
-					return b1;
+					return true;
 				}
 			}
-		}
-		return null;
+			return false;
+		});
 	}
 	/**
 	 * Checks if an organism hits another organism.
@@ -842,22 +838,21 @@ public class World implements Serializable{
 	 * organism exists.
 	 */
 	public Organism checkHit(Organism org1) {
-		Collection<Organism> collidingOrgs = colDetTree.query(org1);
-
-		for (Organism collidingOrganism : collidingOrgs) {
+		return colDetTree.findFirst(org1, collidingOrganism -> {
 			if (collidingOrganism != org1) {
 				// First check if the bounding boxes intersect
 				if (org1.intersects(collidingOrganism)) {
 					if (collidingOrganism.getEnergy() >= Utils.tol && org1.getEnergy() >= Utils.tol) {
 						// Check if they are touching
 						if (org1.contact(collidingOrganism)) {
-							return org1;
+							return true;
 						}
 					}
 				}
 			}
-		}
-		return null;
+
+			return false;
+		});
 	}
 	/**
 	 * Adds an organism to the world. Once added, the new organism will move at every

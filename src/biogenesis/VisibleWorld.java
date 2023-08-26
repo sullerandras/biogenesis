@@ -21,6 +21,8 @@ package biogenesis;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -36,6 +38,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JToolBar;
+import javax.swing.JViewport;
+import javax.swing.SwingUtilities;
 
 import org.xml.sax.SAXException;
 
@@ -268,7 +272,7 @@ public class VisibleWorld extends JPanel implements VisibleWorldInterface {
 					// Ask for file name
 					JFileChooser chooser = new JFileChooser();
 					chooser.setFileFilter(new BioFileFilter("png")); //$NON-NLS-1$
-					int returnVal = chooser.showSaveDialog(null);
+					int returnVal = chooser.showSaveDialog(VisibleWorld.this.getMainWindow());
 					if(returnVal == JFileChooser.APPROVE_OPTION) {
 						int canWrite = JOptionPane.YES_OPTION;
 						File f = chooser.getSelectedFile();
@@ -403,7 +407,7 @@ public class VisibleWorld extends JPanel implements VisibleWorldInterface {
 		public void actionPerformed(ActionEvent e) {
 			Organism b = getSelectedOrganism();
 			if (b != null && b.isAlive()) {
-				_mainWindow.saveObjectAs(b.getGeneticCode());
+				_mainWindow.saveObjectAs(VisibleWorld.this.getMainWindow(), b.getGeneticCode());
 			}
 		}
 	}
@@ -453,7 +457,7 @@ public class VisibleWorld extends JPanel implements VisibleWorldInterface {
     		_mainWindow._isProcessActive = false;
     		try {
     			JFileChooser chooser = _mainWindow.getGeneticCodeChooser();
-    			int returnVal = chooser.showOpenDialog(null);
+    			int returnVal = chooser.showOpenDialog(VisibleWorld.this.getMainWindow());
     			if (returnVal == JFileChooser.APPROVE_OPTION) {
     				try {
     					// Read XML code from file
@@ -547,22 +551,66 @@ public class VisibleWorld extends JPanel implements VisibleWorldInterface {
 		createActions();
 		createPopupMenu();
 		addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (e.getButton() == MouseEvent.BUTTON1) {
-					setSelectedOrganism(findOrganismFromPosition(e.getX(),e.getY()));
-				}
-			}
+			private boolean isPopupTrigger = false;
+			private Point mousePressedAt = new Point(0, 0);
+
 			@Override
 			public void mousePressed(MouseEvent e) {
-				maybeShowPopupMenu(e);
+				isPopupTrigger = e.isPopupTrigger();
+				mousePressedAt = e.getLocationOnScreen();
 			}
 			@Override
 			public void mouseReleased(MouseEvent e) {
-				maybeShowPopupMenu(e);
+				// If the mouse is released at the same position where it was pressed
+				// and it is a popup trigger, show the popup menu.
+				// On macOS the popup is triggered in the `mousePressed` but we can't show
+				// the popup there because that interfered with the panning.
+				if (Math.abs(mousePressedAt.x - e.getLocationOnScreen().x) <= 3 &&
+						Math.abs(mousePressedAt.y - e.getLocationOnScreen().y) <= 3) {
+					if (isPopupTrigger || e.isPopupTrigger()) {
+						showPopupMenu(e);
+					} else if (e.getButton() == MouseEvent.BUTTON1) {
+						setSelectedOrganism(findOrganismFromPosition(e.getX(), e.getY()));
+					}
+				}
 			}
 		});
+
+		// From https://stackoverflow.com/questions/31171502/scroll-jscrollpane-by-dragging-mouse-java-swing
+		MouseAdapter mousePanHandler = new MouseAdapter() {
+			private Point origin;
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				if (e.getButton() == MouseEvent.BUTTON1) {
+					origin = null;
+				} else {
+					origin = new Point(e.getPoint());
+				}
+			}
+
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				if (origin != null) {
+					JViewport viewPort = (JViewport) SwingUtilities.getAncestorOfClass(JViewport.class, VisibleWorld.this);
+					if (viewPort != null) {
+						int deltaX = origin.x - e.getX();
+						int deltaY = origin.y - e.getY();
+
+						Rectangle view = viewPort.getViewRect();
+						view.x += deltaX;
+						view.y += deltaY;
+
+						scrollRectToVisible(view);
+					}
+				}
+			}
+		};
+
+		addMouseListener(mousePanHandler);
+		addMouseMotionListener(mousePanHandler);
 	}
+
 	/**
 	 * Finds an organism that has the given coordinates inside its bounding box and
 	 * returns a reference to it. If more than on organism satisfies this condition,
@@ -751,21 +799,19 @@ public class VisibleWorld extends JPanel implements VisibleWorldInterface {
 	 *
 	 * @param e
 	 */
-	void maybeShowPopupMenu(MouseEvent e) {
-		if (e.isPopupTrigger()) {
-			mouseX = e.getX();
-			mouseY = e.getY();
-			Organism b = findOrganismFromPosition(mouseX,mouseY);
-			if (b != null) {
-				setSelectedOrganism(b);
-				if (b.isAlive()) {
-					trackAction.setTracking(_mainWindow._trackedOrganism == b);
-					popupAlive.show(e.getComponent(), mouseX, mouseY);
-				}
-				else
-					popupDead.show(e.getComponent(), mouseX, mouseY);
-			} else
-				popupVoid.show(e.getComponent(), mouseX, mouseY);
-		}
+	void showPopupMenu(MouseEvent e) {
+		mouseX = e.getX();
+		mouseY = e.getY();
+		Organism b = findOrganismFromPosition(mouseX,mouseY);
+		if (b != null) {
+			setSelectedOrganism(b);
+			if (b.isAlive()) {
+				trackAction.setTracking(_mainWindow._trackedOrganism == b);
+				popupAlive.show(e.getComponent(), mouseX, mouseY);
+			}
+			else
+				popupDead.show(e.getComponent(), mouseX, mouseY);
+		} else
+			popupVoid.show(e.getComponent(), mouseX, mouseY);
 	}
 }
