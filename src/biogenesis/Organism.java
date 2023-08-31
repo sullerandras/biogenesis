@@ -1996,22 +1996,18 @@ public class Organism extends Rectangle {
 				}
 			}
 			if ((_isaplant) || (_isaconsumer) || (_methanotrophy > 0)) {
-				if (_age == 0) {
-					int q;
-					for (q=_segments-1; q>=0; q--) {
-				         if (_segColor[q].equals(Utils.ColorPLANKTON)) {
-				             _mphoto[q] = 0.55 * Utils.PLANKTON_ENERGY_CONSUMPTION * photomultiplier * _geneticCode.getGene(q%_geneticCode.getNGenes()).getLength();
-						}
+				int q;
+				for (q=_segments-1; q>=0; q--) {
+			         if (_segColor[q].equals(Utils.ColorPLANKTON)) {
+			             _mphoto[q] = 0.55 * Utils.PLANKTON_ENERGY_CONSUMPTION * photomultiplier * _geneticCode.getGene(q%_geneticCode.getNGenes()).getLength();
 					}
 				}
 			} else {
 				if ((_isinfectious) || (_plagueversion > 0) || (_isakiller) || (isprotective >= 2)) {
-					if (_age == 0) {
-						int q;
-						for (q=_segments-1; q>=0; q--) {
-					         if (_segColor[q].equals(Utils.ColorPLANKTON)) {
-					             _mphoto[q] = 0.8 * Utils.PLANKTON_ENERGY_CONSUMPTION * photomultiplier * _geneticCode.getGene(q%_geneticCode.getNGenes()).getLength();
-							}
+					int q;
+					for (q=_segments-1; q>=0; q--) {
+				         if (_segColor[q].equals(Utils.ColorPLANKTON)) {
+				             _mphoto[q] = 0.825 * Utils.PLANKTON_ENERGY_CONSUMPTION * photomultiplier * _geneticCode.getGene(q%_geneticCode.getNGenes()).getLength();
 						}
 					}
 				}
@@ -13359,7 +13355,7 @@ public class Organism extends Rectangle {
 						    org.setColor(Utils.ColorGREENBROWN);
 						    if (_infectedGeneticCode != org._geneticCode) {
 								// Infectious fruit
-								infectedByFruit(org);
+								infectedByFruitWeak(org);
 								setColor(Utils.ColorBLOND);
 							} else {
 								// This organism will be shown in gold
