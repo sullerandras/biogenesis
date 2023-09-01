@@ -5,6 +5,8 @@ import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.util.List;
 
+import javax.swing.JTextArea;
+
 public class Clade {
   /**
    * The size of the border around the clade.
@@ -63,10 +65,10 @@ public class Clade {
   }
 
   public void print(int indentation) {
-	for (int i = 0; i < indentation; i++) {
-	     System.out.print("  ");
-	}
-	System.out.println(id + ": " + population);
+    for (int i = 0; i < indentation; i++) {
+      System.out.print("  ");
+    }
+    System.out.println(id + ": " + population);
     for (Clade clade : children) {
       clade.print(indentation + 1);
     }
@@ -79,7 +81,7 @@ public class Clade {
    * @param y
    * @return the total height that was used to draw this clade and its children
    */
-  public int draw(Graphics2D g, int x, int y) {
+  public int draw(Graphics2D g, int x, int y, int imageWidth) {
     final int originalY = y;
 
     g.setColor(Color.WHITE);
@@ -91,8 +93,19 @@ public class Clade {
     g.setTransform(orginalAffineTransform);
 
     g.setColor(Color.WHITE);
-    g.drawString(id.toString(), x + CLADE_SIZE + 5, y + 15);
-    g.drawString(Integer.toString(population), x + CLADE_SIZE + 5, y + 30);
+
+    // draw clade id and population as multiline text, so the clade id will be wrapped into multiple lines if needed
+    JTextArea textArea = new JTextArea(id.toString() + "\n" + population);
+    textArea.setLineWrap(true);
+    textArea.setWrapStyleWord(true);
+    textArea.setBounds(0, 0, imageWidth - x - CLADE_SIZE - 5, CLADE_SIZE - 15);
+    textArea.setBackground(Color.BLACK);
+    textArea.setForeground(Color.WHITE);
+    AffineTransform origTransform = g.getTransform();
+    g.translate(x + CLADE_SIZE + 5, y + 15);
+    textArea.print(g);
+    g.setTransform(origTransform);
+
     if (children.size() == 0) {
       return CLADE_SIZE;
     }
@@ -101,7 +114,7 @@ public class Clade {
     int prevY = y;
 
     for (int i = 0; i < children.size(); i++) {
-      int childHeight = children.get(i).draw(g, x + CLADE_SIZE, y);
+      int childHeight = children.get(i).draw(g, x + CLADE_SIZE, y, imageWidth);
 
       g.setColor(Color.WHITE);
       g.drawLine(x + CLADE_SIZE / 2, prevY - PADDING_SIZE, x + CLADE_SIZE / 2, y + CLADE_SIZE / 2);
