@@ -21,14 +21,17 @@ package biogenesis;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
 
 import com.google.gson.annotations.Expose;
@@ -577,7 +580,7 @@ public class World implements Serializable{
 	 *
 	 * @param g  The graphic context to draw to.
 	 */
-	public void draw(Graphics g) {
+	public void draw(Graphics g, boolean fullRedraw) {
 		Organism b;
 		if (_corridorexists) {
 			Corridor c;
@@ -595,9 +598,29 @@ public class World implements Serializable{
 			}
 		}
 		synchronized (_organisms) {
-			for (Iterator<Organism> it = _organisms.iterator(); it.hasNext();) {
-				b = it.next();
-				b.draw(g);
+			if (colDetTree != null && !fullRedraw) {
+				final JViewport viewPort = (JViewport) SwingUtilities.getAncestorOfClass(JViewport.class, (VisibleWorld) _visibleWorld);
+				final Rectangle view = viewPort.getViewRect();
+				final int bucketSize = colDetTree.getBucketSize();
+
+				final int minx = Math.max(0, (int) (view.x / (double) bucketSize));
+				final int miny = Math.max(0, (int) (view.y / (double) bucketSize));
+				final int maxx = Math.min(colDetTree.getMaxWidth(), (int) ((view.x + view.width) / (double) bucketSize));
+				final int maxy = Math.min(colDetTree.getMaxHeight(), (int) ((view.y + view.height) / (double) bucketSize));
+
+				for (int y = miny; y <= maxy; y++) {
+					for (int x = minx; x <= maxx; x++) {
+						Collection<Organism> bucket = colDetTree.getBucket(x, y);
+						for (Organism o : bucket) {
+							o.draw(g);
+						}
+					}
+				}
+			} else {
+				for (Iterator<Organism> it = _organisms.iterator(); it.hasNext();) {
+					b = it.next();
+					b.draw(g);
+				}
 			}
 		}
 	}

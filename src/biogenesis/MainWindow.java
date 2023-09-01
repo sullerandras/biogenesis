@@ -20,10 +20,12 @@
 package biogenesis;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Frame;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -1098,7 +1100,10 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 
 	public void saveWorldImage(File f) {
 		final BufferedImage worldimage = new BufferedImage(_world._width, _world._height, BufferedImage.TYPE_INT_ARGB);
-		_visibleWorld.paint(worldimage.getGraphics());
+		Graphics g = worldimage.getGraphics();
+		g.setColor(Color.BLACK);
+		g.fillRect(0, 0, _world.getWidth(), _world.getHeight());
+		_world.draw(g, true);
 		try {
 			ImageIO.write(worldimage, "PNG", f); //$NON-NLS-1$
 		} catch (FileNotFoundException ex) {

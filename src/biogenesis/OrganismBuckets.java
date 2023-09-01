@@ -110,4 +110,23 @@ public class OrganismBuckets {
 
     return null;
   }
+
+  public Collection<Organism> getBucket(int x, int y) {
+    // if (x < 0 || x > maxWidth || y < 0 || y > maxHeight) {
+    //   return new ArrayList<>();
+    // }
+    return buckets[y][x];
+  }
+
+  public int getMaxWidth() {
+    return maxWidth;
+  }
+
+  public int getMaxHeight() {
+    return maxHeight;
+  }
+
+  public int getBucketSize() {
+    return bucketSize;
+  }
 }
