@@ -80,6 +80,10 @@ public class CladeNameGenerator {
           isPlant = true;
           primaryColors.add(type);
           break;
+        case PLANKTON:
+          isConsumer = true;
+          primaryColors.add(type);
+          break;
         case RED:
           isConsumer = true;
           primaryColors.add(type);
