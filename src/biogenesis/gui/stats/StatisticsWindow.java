@@ -37,7 +37,6 @@ import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
-import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -481,15 +480,19 @@ public class StatisticsWindow extends JDialog {
 				.setBorder(BorderFactory.createTitledBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED),
 						Messages.getString("T_GENERATION_HISTOGRAM"), TitledBorder.LEFT, TitledBorder.TOP)); //$NON-NLS-1$
 
-		// Close button
-		JPanel buttonsPanel = new JPanel();
-		JButton closeButton = new JButton(Messages.getString("T_CLOSE")); //$NON-NLS-1$
-		buttonsPanel.add(closeButton);
-		closeButton.addActionListener((ActionEvent e) -> {
-			dispose();
-		});
+		JPanel leftInsidePanel = new JPanel();
+		GroupLayout leftInsidePanelLayout = new GroupLayout(leftInsidePanel);
+		leftInsidePanel.setLayout(leftInsidePanelLayout);
+		leftInsidePanelLayout.setHorizontalGroup(
+				leftInsidePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+						.addComponent(notableBeingsPanel, 0, 0, Short.MAX_VALUE)
+						.addComponent(generationHistogramWrapper, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
+		leftInsidePanelLayout.setVerticalGroup(
+				leftInsidePanelLayout.createSequentialGroup()
+						.addComponent(notableBeingsPanel, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+						.addComponent(generationHistogramWrapper));
 
-		JScrollPane notableBeingsScrollPane = new BetterJScrollPane(notableBeingsPanel);
+		JScrollPane leftInsidePanelScrollPane = new BetterJScrollPane(leftInsidePanel);
 		// Add all components to the content pane
 		JPanel leftPanel = new JPanel();
 		GroupLayout leftPanelLayout = new GroupLayout(leftPanel);
@@ -497,15 +500,11 @@ public class StatisticsWindow extends JDialog {
 		leftPanelLayout.setHorizontalGroup(
 				leftPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
 						.addComponent(currentStatePanel)
-						.addComponent(notableBeingsScrollPane, 0, 0, Short.MAX_VALUE)
-						.addComponent(generationHistogramWrapper, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-						.addComponent(buttonsPanel));
+						.addComponent(leftInsidePanelScrollPane, 0, 0, Short.MAX_VALUE));
 		leftPanelLayout.setVerticalGroup(
 				leftPanelLayout.createSequentialGroup()
 						.addComponent(currentStatePanel)
-						.addComponent(notableBeingsScrollPane, 0, Short.MAX_VALUE, Short.MAX_VALUE)
-						.addComponent(generationHistogramWrapper)
-						.addComponent(buttonsPanel));
+						.addComponent(leftInsidePanelScrollPane, 0, Short.MAX_VALUE, Short.MAX_VALUE));
 
 		JScrollPane rightPanelWrapper = new BetterJScrollPane(worldHistoryPanel);
 		rightPanelWrapper.setBorder(null);
