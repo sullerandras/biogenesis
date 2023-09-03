@@ -17,6 +17,7 @@ import biogenesis.clade_analyzer.CladeChartManager;
 import biogenesis.clade_analyzer.CladeDetails;
 import biogenesis.clade_analyzer.CladeNameGenerator;
 import biogenesis.clade_analyzer.db.DB;
+import biogenesis.gui.MultilineLabel;
 
 public class CladeDetailsPanel extends javax.swing.JPanel {
   private CladeDetails cladeSummary;

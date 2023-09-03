@@ -2,12 +2,12 @@ package biogenesis.gui.stats;
 
 import java.text.NumberFormat;
 
-import javax.swing.JLabel;
+import biogenesis.gui.MultilineLabel;
 
 /**
  * Label that shows a value and a time. Makes it easier to update the value and time since it stores the labels.
  */
-public class ValueAndTimeLabel extends JLabel {
+public class ValueAndTimeLabel extends MultilineLabel {
   private final String valueLabel;
   private final String timeLabel;
   private final NumberFormat nf;
@@ -20,6 +20,7 @@ public class ValueAndTimeLabel extends JLabel {
    * @param nf The number format to use.
    */
   public ValueAndTimeLabel(String valueLabel, String timeLabel, NumberFormat nf) {
+    super("");
     this.valueLabel = valueLabel;
     this.timeLabel = timeLabel;
     this.nf = nf;

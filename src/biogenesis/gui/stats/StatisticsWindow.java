@@ -22,8 +22,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -38,12 +36,14 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.BorderFactory;
+import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSeparator;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.Timer;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
@@ -54,7 +54,6 @@ import biogenesis.AppFocusWindowAdapter;
 import biogenesis.GeneticCode;
 import biogenesis.Messages;
 import biogenesis.Organism;
-import biogenesis.SimpleGridBagConstraints;
 import biogenesis.Utils;
 import biogenesis.VisibleWorld;
 import biogenesis.WindowManager;
@@ -157,6 +156,7 @@ public class StatisticsWindow extends JDialog {
 		addWindowListener(new AppFocusWindowAdapter());
 
 		setVisible(true);
+		repaintStats(); // need this to resize labels correctly, without this the labels in populationStatsPanel are 200-300 pixels tall
 	}
 
 	public void repaintStats() {
@@ -185,13 +185,21 @@ public class StatisticsWindow extends JDialog {
 		populationStatsPanel.update();
 
 		// Population = population graph + population stats
-		SimpleGridBagConstraints sgbc = new SimpleGridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.NORTHWEST,
-				GridBagConstraints.HORIZONTAL);
 		JPanel populationPanel = new JPanel();
-		populationPanel.setLayout(new GridBagLayout());
-		populationPanel.add(cladesGraphPanel, sgbc.withGridXY(0, 0));
-		populationPanel.add(populationGraphPanel, sgbc.withGridXY(0, 1));
-		populationPanel.add(populationStatsPanel, sgbc.withGridXY(0, 2));
+		GroupLayout populationPanelLayout = new GroupLayout(populationPanel);
+		populationPanel.setLayout(populationPanelLayout);
+		populationPanelLayout.setAutoCreateGaps(true);
+		populationPanelLayout.setAutoCreateContainerGaps(true);
+		populationPanelLayout.setHorizontalGroup(
+				populationPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+						.addComponent(populationGraphPanel)
+						.addComponent(cladesGraphPanel)
+						.addComponent(populationStatsPanel));
+		populationPanelLayout.setVerticalGroup(
+				populationPanelLayout.createSequentialGroup()
+						.addComponent(populationGraphPanel)
+						.addComponent(cladesGraphPanel)
+						.addComponent(populationStatsPanel));
 		Border title = BorderFactory.createTitledBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED),
 				Messages.getString("T_POPULATION"), TitledBorder.LEFT, TitledBorder.TOP); //$NON-NLS-1$
 		populationPanel.setBorder(title);
@@ -212,30 +220,39 @@ public class StatisticsWindow extends JDialog {
 		atmosphereStatsPanel.update();
 
 		// Population = population graph + population stats
-		sgbc = new SimpleGridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL);
 		JPanel atmospherePanel = new JPanel();
-		atmospherePanel.setLayout(new GridBagLayout());
-		atmospherePanel.add(atmosphereGraphPanel, sgbc.withGridXY(0, 0));
-		atmospherePanel.add(atmosphereStatsPanel, sgbc.withGridXY(0, 1));
+		GroupLayout atmospherePanelLayout = new GroupLayout(atmospherePanel);
+		atmospherePanel.setLayout(atmospherePanelLayout);
+		atmospherePanelLayout.setHorizontalGroup(
+				atmospherePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+						.addComponent(atmosphereGraphPanel)
+						.addComponent(atmosphereStatsPanel));
+		atmospherePanelLayout.setVerticalGroup(
+				atmospherePanelLayout.createSequentialGroup()
+						.addComponent(atmosphereGraphPanel)
+						.addComponent(atmosphereStatsPanel));
 		title = BorderFactory.createTitledBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED),
 				Messages.getString("T_ATMOSPHERE"), TitledBorder.LEFT, TitledBorder.TOP); //$NON-NLS-1$
 		atmospherePanel.setBorder(title);
 
 		// World history: population + atmosphere + other graps
 		JPanel worldHistoryPanel = new JPanel();
-		worldHistoryPanel.setLayout(new GridBagLayout());
-		worldHistoryPanel.add(populationPanel,
-				new SimpleGridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL));
-		worldHistoryPanel.add(atmospherePanel,
-				new SimpleGridBagConstraints(0, 1, 1, 1, 1, 0, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL));
+		GroupLayout worldHistoryPanelLayout = new GroupLayout(worldHistoryPanel);
+		worldHistoryPanel.setLayout(worldHistoryPanelLayout);
+		worldHistoryPanelLayout.setHorizontalGroup(
+				worldHistoryPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+						.addComponent(populationPanel)
+						.addComponent(atmospherePanel));
+		worldHistoryPanelLayout.setVerticalGroup(
+				worldHistoryPanelLayout.createSequentialGroup()
+						.addComponent(populationPanel)
+						.addComponent(atmospherePanel)
+						.addGap(0, 0, Short.MAX_VALUE));
 		title = BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED),
 				Messages.getString("T_WORLD_HISTORY"), TitledBorder.LEFT, TitledBorder.TOP); //$NON-NLS-1$
 		worldHistoryPanel.setBorder(title);
 
 		// Current state
-		JPanel currentStatePanel = new JPanel();
-		currentStatePanel.setLayout(new GridBagLayout());
-
 		currentStateTimeLabel = new ValueAndTimeLabel(Messages.getString("T_TIME"), null, nf); //$NON-NLS-1$
 		currentStateOxygenLabel = new ValueAndTimeLabel(Messages.getString("T_OXYGEN2"), null, nf); //$NON-NLS-1$
 		currentStateCladesLabel = new ValueAndTimeLabel(Messages.getString("T_CLADES2"), null, nf); //$NON-NLS-1$
@@ -247,28 +264,61 @@ public class StatisticsWindow extends JDialog {
 		currentStateTotalMassLabel = new ValueAndTimeLabel(Messages.getString("T_TOTAL_MASS"), null, nf); //$NON-NLS-1$
 		currentStateTotalEnergyLabel = new ValueAndTimeLabel(Messages.getString("T_TOTAL_ENERGY"), null, nf); //$NON-NLS-1$
 
-		sgbc = new SimpleGridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL);
-		currentStatePanel.add(currentStateTimeLabel, sgbc.withGridXY(0, 0));
-		currentStatePanel.add(currentStateOxygenLabel, sgbc.withGridXY(1, 0));
-		currentStatePanel.add(currentStateCladesLabel, sgbc.withGridXY(0, 1));
-		currentStatePanel.add(currentStateCarbonDioxideLabel, sgbc.withGridXY(1, 1));
-		currentStatePanel.add(currentStatePopulationLabel, sgbc.withGridXY(0, 2));
-		currentStatePanel.add(currentStateCh4Label, sgbc.withGridXY(1, 2));
-		currentStatePanel.add(currentStateRemainsOfBeingsLabel, sgbc.withGridXY(0, 3));
-		currentStatePanel.add(currentStateDetritusLabel, sgbc.withGridXY(1, 3));
-		currentStatePanel.add(currentStateTotalMassLabel, sgbc.withGridXY(0, 4));
-		currentStatePanel.add(currentStateTotalEnergyLabel, sgbc.withGridXY(1, 4));
-
-		JPanel colorPanelWrapper = new JPanel(new GridBagLayout());
-		colorPanelWrapper.add(new JLabel(Messages.getString("T_COLOR_PROPORTION")), //$NON-NLS-1$
-				new SimpleGridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE));
 		colorPanel = new ColorPanel();
 		updateColorPanel(colorPanel);
 		colorPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		colorPanelWrapper.add(colorPanel,
-				new SimpleGridBagConstraints(1, 0, 1, 1, 1, 0, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL));
-		currentStatePanel.add(colorPanelWrapper,
-				new SimpleGridBagConstraints(0, 5, 2, 1, 1, 0, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL));
+		JPanel colorPanelWrapper = new JPanel();
+		JLabel colorProportionLabel = new JLabel(Messages.getString("T_COLOR_PROPORTION")); //$NON-NLS-1$
+		GroupLayout colorPanelWrapperLayout = new GroupLayout(colorPanelWrapper);
+		colorPanelWrapper.setLayout(colorPanelWrapperLayout);
+		colorPanelWrapperLayout.setHorizontalGroup(
+				colorPanelWrapperLayout.createSequentialGroup()
+						.addComponent(colorProportionLabel)
+						.addComponent(colorPanel));
+		colorPanelWrapperLayout.setVerticalGroup(
+				colorPanelWrapperLayout.createParallelGroup(GroupLayout.Alignment.CENTER)
+						.addComponent(colorProportionLabel)
+						.addComponent(colorPanel));
+
+		JPanel currentStatePanel = new JPanel();
+		GroupLayout currentStatePanelLayout = new GroupLayout(currentStatePanel);
+		currentStatePanel.setLayout(currentStatePanelLayout);
+		currentStatePanelLayout.setHorizontalGroup(
+				currentStatePanelLayout.createParallelGroup()
+						.addGroup(
+								currentStatePanelLayout.createSequentialGroup()
+										.addGroup(currentStatePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+												.addComponent(currentStateTimeLabel)
+												.addComponent(currentStateCladesLabel)
+												.addComponent(currentStatePopulationLabel)
+												.addComponent(currentStateRemainsOfBeingsLabel)
+												.addComponent(currentStateTotalMassLabel))
+										.addGroup(currentStatePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+												.addComponent(currentStateOxygenLabel)
+												.addComponent(currentStateCarbonDioxideLabel)
+												.addComponent(currentStateCh4Label)
+												.addComponent(currentStateDetritusLabel)
+												.addComponent(currentStateTotalEnergyLabel)))
+						.addComponent(colorPanelWrapper));
+		currentStatePanelLayout.setVerticalGroup(
+				currentStatePanelLayout.createSequentialGroup()
+						.addGroup(currentStatePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+								.addComponent(currentStateTimeLabel)
+								.addComponent(currentStateOxygenLabel))
+						.addGroup(currentStatePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+								.addComponent(currentStateCladesLabel)
+								.addComponent(currentStateCarbonDioxideLabel))
+						.addGroup(currentStatePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+								.addComponent(currentStatePopulationLabel)
+								.addComponent(currentStateCh4Label))
+						.addGroup(currentStatePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+								.addComponent(currentStateRemainsOfBeingsLabel)
+								.addComponent(currentStateDetritusLabel))
+						.addGroup(currentStatePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+								.addComponent(currentStateTotalMassLabel)
+								.addComponent(currentStateTotalEnergyLabel))
+						.addComponent(colorPanelWrapper));
+
 		title = BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED),
 				Messages.getString("T_CURRENT_STATE"), TitledBorder.LEFT, TitledBorder.TOP); //$NON-NLS-1$
 		currentStatePanel.setBorder(title);
@@ -386,24 +436,40 @@ public class StatisticsWindow extends JDialog {
 
 		// Notable beings panel
 		JPanel notableBeingsPanel = new JPanel();
-		notableBeingsPanel.setLayout(new GridBagLayout());
-		sgbc = new SimpleGridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL);
-		notableBeingsPanel.add(aliveMostChildrenPanel, sgbc.withGridXY(0, 0));
-		notableBeingsPanel.add(mostChildrenPanel, sgbc.withGridXY(1, 0));
-		notableBeingsPanel.add(aliveMostKillsPanel, sgbc.withGridXY(0, 1));
-		notableBeingsPanel.add(mostKillsPanel, sgbc.withGridXY(1, 1));
-		notableBeingsPanel.add(aliveMostInfectionsPanel, sgbc.withGridXY(0, 2));
-		notableBeingsPanel.add(mostInfectionsPanel, sgbc.withGridXY(1, 2));
-
-		// Add a separator line
-		notableBeingsPanel.add(new JSeparator(),
-				new SimpleGridBagConstraints(0, 3, 2, 1, 1, 0, GridBagConstraints.NORTHWEST,
-						GridBagConstraints.HORIZONTAL));
-
-		notableBeingsPanel.add(aliveMostMassPanel, sgbc.withGridXY(0, 4));
-		notableBeingsPanel.add(aliveMostEnergyPanel, sgbc.withGridXY(1, 4));
-		notableBeingsPanel.add(aliveLowestGenerationPanel, sgbc.withGridXY(0, 5));
-		notableBeingsPanel.add(aliveHighestGenerationPanel, sgbc.withGridXY(1, 5));
+		GroupLayout notableBeingsPanelLayout = new GroupLayout(notableBeingsPanel);
+		notableBeingsPanel.setLayout(notableBeingsPanelLayout);
+		notableBeingsPanelLayout.setAutoCreateGaps(true);
+		notableBeingsPanelLayout.setHorizontalGroup(
+				notableBeingsPanelLayout.createSequentialGroup()
+						.addGroup(notableBeingsPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+								.addComponent(aliveMostChildrenPanel)
+								.addComponent(aliveMostKillsPanel)
+								.addComponent(aliveMostInfectionsPanel)
+								.addComponent(aliveMostMassPanel)
+								.addComponent(aliveLowestGenerationPanel))
+						.addGroup(notableBeingsPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+								.addComponent(mostChildrenPanel)
+								.addComponent(mostKillsPanel)
+								.addComponent(mostInfectionsPanel)
+								.addComponent(aliveMostEnergyPanel)
+								.addComponent(aliveHighestGenerationPanel)));
+		notableBeingsPanelLayout.setVerticalGroup(
+				notableBeingsPanelLayout.createSequentialGroup()
+						.addGroup(notableBeingsPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+								.addComponent(aliveMostChildrenPanel)
+								.addComponent(mostChildrenPanel))
+						.addGroup(notableBeingsPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+								.addComponent(aliveMostKillsPanel)
+								.addComponent(mostKillsPanel))
+						.addGroup(notableBeingsPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+								.addComponent(aliveMostInfectionsPanel)
+								.addComponent(mostInfectionsPanel))
+						.addGroup(notableBeingsPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+								.addComponent(aliveMostMassPanel)
+								.addComponent(aliveMostEnergyPanel))
+						.addGroup(notableBeingsPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+								.addComponent(aliveLowestGenerationPanel)
+								.addComponent(aliveHighestGenerationPanel)));
 
 		// Generation histogram
 		generationHistogram = new GraphInfo(0, 0, 0, 104, Color.WHITE, Messages.getString("T_GENERATION2")); //$NON-NLS-1$
@@ -415,14 +481,6 @@ public class StatisticsWindow extends JDialog {
 				.setBorder(BorderFactory.createTitledBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED),
 						Messages.getString("T_GENERATION_HISTOGRAM"), TitledBorder.LEFT, TitledBorder.TOP)); //$NON-NLS-1$
 
-		notableBeingsPanel.add(generationHistogramWrapper,
-				new SimpleGridBagConstraints(0, 6, 2, 1, 1, 0, GridBagConstraints.NORTHWEST,
-						GridBagConstraints.HORIZONTAL));
-
-		// Add a filler to the bottom so it pushes up all components
-		notableBeingsPanel.add(new JPanel(),
-				new SimpleGridBagConstraints(0, 7, 1, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.VERTICAL));
-
 		// Close button
 		JPanel buttonsPanel = new JPanel();
 		JButton closeButton = new JButton(Messages.getString("T_CLOSE")); //$NON-NLS-1$
@@ -431,25 +489,34 @@ public class StatisticsWindow extends JDialog {
 			dispose();
 		});
 
+		JScrollPane notableBeingsScrollPane = new BetterJScrollPane(notableBeingsPanel);
 		// Add all components to the content pane
-		JPanel leftPanel = new JPanel(new GridBagLayout());
-		leftPanel.add(currentStatePanel,
-				new SimpleGridBagConstraints(0, 0, 1, 0, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL));
-		notableBeingsPanel.setMinimumSize(new Dimension(100, 100));
-		leftPanel.add(notableBeingsPanel,
-				new SimpleGridBagConstraints(0, 1, 1, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH));
-		leftPanel.add(buttonsPanel,
-				new SimpleGridBagConstraints(0, 2, 1, 0, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL));
+		JPanel leftPanel = new JPanel();
+		GroupLayout leftPanelLayout = new GroupLayout(leftPanel);
+		leftPanel.setLayout(leftPanelLayout);
+		leftPanelLayout.setHorizontalGroup(
+				leftPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+						.addComponent(currentStatePanel)
+						.addComponent(notableBeingsScrollPane, 0, 0, Short.MAX_VALUE)
+						.addComponent(generationHistogramWrapper, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+						.addComponent(buttonsPanel));
+		leftPanelLayout.setVerticalGroup(
+				leftPanelLayout.createSequentialGroup()
+						.addComponent(currentStatePanel)
+						.addComponent(notableBeingsScrollPane, 0, Short.MAX_VALUE, Short.MAX_VALUE)
+						.addComponent(generationHistogramWrapper)
+						.addComponent(buttonsPanel));
 
-		JPanel rightPanel = new JPanel(new GridBagLayout());
-		rightPanel.add(worldHistoryPanel,
-				new SimpleGridBagConstraints(0, 0, 1, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL));
+		JScrollPane rightPanelWrapper = new BetterJScrollPane(worldHistoryPanel);
+		rightPanelWrapper.setBorder(null);
 
-				JPanel wrapper = new JPanel(new BorderLayout());
-		wrapper.add(leftPanel, BorderLayout.CENTER);
-		wrapper.add(rightPanel, BorderLayout.EAST);
+		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPanel, rightPanelWrapper);
+		splitPane.setResizeWeight(0.5);
+		splitPane.setOneTouchExpandable(true);
+		splitPane.setContinuousLayout(true);
+
 		getContentPane().setLayout(new BorderLayout());
-		getContentPane().add(new BetterJScrollPane(wrapper), BorderLayout.CENTER);
+		getContentPane().add(splitPane, BorderLayout.CENTER);
 	}
 
 	private void updateColorPanel(ColorPanel colorPanel) {

@@ -1,15 +1,14 @@
 package biogenesis.gui.stats;
 
-import java.awt.GridBagLayout;
 import java.text.NumberFormat;
 
-import javax.swing.JLabel;
+import javax.swing.GroupLayout;
 import javax.swing.JPanel;
 
 import biogenesis.GeneticCode;
 import biogenesis.GeneticCodePanel;
-import biogenesis.SimpleGridBagConstraints;
 import biogenesis.VisibleWorld;
+import biogenesis.gui.MultilineLabel;
 
 /**
  * Panel that shows a remarkable organism:
@@ -35,15 +34,24 @@ public class RemarkableOrganismPanel extends JPanel {
    */
   public RemarkableOrganismPanel(VisibleWorld visibleWorld, String title, GeneticCode geneticCode, String valueLabel,
       String timeLabel, NumberFormat nf) {
+    MultilineLabel titleLabel = new MultilineLabel(title);
     geneticCodePanel = new GeneticCodePanel(geneticCode, visibleWorld);
     valueAndTimeLabel = new ValueAndTimeLabel(valueLabel, timeLabel, nf);
 
-    setLayout(new GridBagLayout());
-    SimpleGridBagConstraints sgbc = new SimpleGridBagConstraints(0, 0, 1, 1, 1, 0,
-        java.awt.GridBagConstraints.NORTHWEST, java.awt.GridBagConstraints.NONE);
-    add(new JLabel(title), sgbc.withGridXY(0, 0));
-    add(geneticCodePanel, sgbc.withGridXY(0, 1));
-    add(valueAndTimeLabel, sgbc.withGridXY(0, 2));
+    GroupLayout layout = new GroupLayout(this);
+    setLayout(layout);
+    layout.setAutoCreateGaps(true);
+    layout.setAutoCreateContainerGaps(true);
+    layout.setHorizontalGroup(
+        layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addComponent(titleLabel)
+            .addComponent(geneticCodePanel, 100, 100, 100)
+            .addComponent(valueAndTimeLabel));
+    layout.setVerticalGroup(
+        layout.createSequentialGroup()
+            .addComponent(titleLabel)
+            .addComponent(geneticCodePanel, 100, 100, 100)
+            .addComponent(valueAndTimeLabel));
   }
 
   /**
