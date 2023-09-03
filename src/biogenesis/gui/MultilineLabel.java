@@ -14,6 +14,7 @@ import javax.swing.UIManager;
 public class MultilineLabel extends JPanel {
   private static final long serialVersionUID = 1L;
   private final JTextArea renderer;
+  private int lastHeight;
 
   public MultilineLabel(String text) {
     renderer = new JTextArea(text);
@@ -55,9 +56,12 @@ public class MultilineLabel extends JPanel {
   private void setPreferredHeight() {
     renderer.setSize(MultilineLabel.this.getWidth(), 1000);
     final int preferredHeight = renderer.getPreferredSize().height;
-    setMinimumSize(new Dimension(1, preferredHeight));
-    setPreferredSize(new Dimension(1, preferredHeight));
-    invalidate();
+    if (lastHeight != preferredHeight) {
+      setMinimumSize(new Dimension(1, preferredHeight));
+      setPreferredSize(new Dimension(1, preferredHeight));
+      invalidate();
+    }
+    lastHeight = preferredHeight;
   }
 
   @Override
