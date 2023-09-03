@@ -40,8 +40,6 @@ public class RemarkableOrganismPanel extends JPanel {
 
     GroupLayout layout = new GroupLayout(this);
     setLayout(layout);
-    layout.setAutoCreateGaps(true);
-    layout.setAutoCreateContainerGaps(true);
     layout.setHorizontalGroup(
         layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addComponent(titleLabel)

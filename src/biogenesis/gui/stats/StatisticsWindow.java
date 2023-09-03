@@ -437,7 +437,6 @@ public class StatisticsWindow extends JDialog {
 		JPanel notableBeingsPanel = new JPanel();
 		GroupLayout notableBeingsPanelLayout = new GroupLayout(notableBeingsPanel);
 		notableBeingsPanel.setLayout(notableBeingsPanelLayout);
-		notableBeingsPanelLayout.setAutoCreateGaps(true);
 		notableBeingsPanelLayout.setHorizontalGroup(
 				notableBeingsPanelLayout.createSequentialGroup()
 						.addGroup(notableBeingsPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
