@@ -5,7 +5,7 @@ Originally hosted on https://biogenesis.sourceforge.net/
 
 There's an active community on discord: https://discord.com/channels/815435382094168076/815435382564978690
 
-MarcoDBAA from discord actively works on adding new colors and other features to Biogenesis.
+MarcoDBAA from discord actively works on adding new colors and other features to Biogenesis, he also has a website for it with documentation and screenshots: https://marcodbaa.itch.io/biogenesis
 
 I made some performance improvements so the simulation runs a bit faster. Most of my changes have been merged into MarcoDBAA's version, so part of the "official" release.
 
