@@ -539,30 +539,32 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			if (_gameFile != null) {
-				saveObject(_world, _gameFile.getFileForTime(_world.getTime(), BioFile.Type.REGULAR));
-				if (Utils.AUTO_BACKUP_WORLD_PNG) {
-					_isProcessActive = false;
-					java.awt.EventQueue.invokeLater(() -> saveWorldImage(_gameFile.getFileForTime(_world.getTime(), BioFile.Type.WORLD)));
-					java.awt.EventQueue.invokeLater(() -> saveCladeImage(_gameFile.getFileForTime(_world.getTime(), BioFile.Type.CLADES)));
-					_isProcessActive = true;
-				}
-				GsonFileSaver.saveWorldJson(_world, _gameFile.getFileForTime(_world.getTime(), BioFile.Type.JSON));
-				if (Utils.AUTO_BACKUP_STATISTICS_PNG && _statisticsWindow != null) {
-					// Apparently we have to wait for the statisticsWindow to repaint, it seems like
-					// `repaintStats()` just enqueus an AWT job to repaint the dialog and the method
-					// returns before it has been repainted. So we need to save the image in an AWT
-					// job to make sure the repaint has been done before the saving.
-					_statisticsWindow.repaintStats();
-					java.awt.EventQueue.invokeLater(() -> saveStatisticsImage(_gameFile.getFileForTime(_world.getTime(), BioFile.Type.STATS)));
-				}
-			} else {
-				try {
+			try {
+				if (_gameFile != null) {
+					saveObject(_world, _gameFile.getFileForTime(_world.getTime(), BioFile.Type.REGULAR));
+					if (Utils.AUTO_BACKUP_WORLD_PNG) {
+						_isProcessActive = false;
+						java.awt.EventQueue.invokeAndWait(() -> saveWorldImage(_gameFile.getFileForTime(_world.getTime(), BioFile.Type.WORLD)));
+						_isProcessActive = true;
+					}
+					if (Utils.AUTO_BACKUP_CLADES_PNG) {
+						java.awt.EventQueue.invokeAndWait(() -> saveCladeImage(_gameFile.getFileForTime(_world.getTime(), BioFile.Type.CLADES)));
+					}
+					GsonFileSaver.saveWorldJson(_world, _gameFile.getFileForTime(_world.getTime(), BioFile.Type.JSON));
+					if (Utils.AUTO_BACKUP_STATISTICS_PNG && _statisticsWindow != null) {
+						// Apparently we have to wait for the statisticsWindow to repaint, it seems like
+						// `repaintStats()` just enqueus an AWT job to repaint the dialog and the method
+						// returns before it has been repainted. So we need to save the image in an AWT
+						// job to make sure the repaint has been done before the saving.
+						_statisticsWindow.repaintStats();
+						java.awt.EventQueue.invokeAndWait(() -> saveStatisticsImage(_gameFile.getFileForTime(_world.getTime(), BioFile.Type.STATS)));
+					}
+				} else {
 					java.awt.EventQueue.invokeAndWait(() -> saveGameAs());
-				} catch (InvocationTargetException | InterruptedException e1) {
-					System.out.println("Error saving game: "+e);
-					e1.printStackTrace();
 				}
+			} catch (InvocationTargetException | InterruptedException e1) {
+				System.out.println("Error saving game: " + e);
+				e1.printStackTrace();
 			}
 		}
 
