@@ -42,7 +42,7 @@ public final class Utils {
 	 *
 	 * All serializable classes use this value as their serialVersionUID.
 	 */
-	static final int FILE_VERSION = 700;
+	public static final int FILE_VERSION = 700;
 	static final int VERSION = 900; //two digits for version, subversion and revision
 
 	// Default values for parameters
@@ -86,11 +86,11 @@ public final class Utils {
 	/**
 	 * This is the default world's width.
 	 */
-	final static int DEF_WORLD_WIDTH = 7200;
+	final static int DEF_WORLD_WIDTH = 7100;
 	/**
 	 * This is the default world's height.
 	 */
-	final static int DEF_WORLD_HEIGHT = 7200;
+	final static int DEF_WORLD_HEIGHT = 7100;
 	/**
 	 * This is the default maximum age that an organism can achieve,
 	 * without counting the number of segments.
@@ -115,7 +115,7 @@ public final class Utils {
 	 * This is the default detritus to CO2 divisor,
 	 * which turns detritus into CO2, divided by this value.
 	 */
-	final static int DEF_DETRITUS_TO_CO2_DIVISOR = 450;
+	final static int DEF_DETRITUS_TO_CO2_DIVISOR = 500;
 	/**
 	 * This is the default rubbing coefficient that is applied to movements. This value is
 	 * multiplied by the speed at every frame.
@@ -684,6 +684,11 @@ public final class Utils {
 	 * will be saved.
 	 */
 	final static boolean DEF_AUTO_BACKUP_STATISTICS_PNG = false;
+	/**
+	 * This is the default value for saving or not saving the clades tree as a PNG image
+	 * when saving automatic backups.
+	 */
+	final static boolean DEF_AUTO_BACKUP_CLADES_PNG = false;
 	/**
 	 * This is the default number of game time units that pass between backups.
 	 */
@@ -1367,7 +1372,7 @@ public final class Utils {
 	/**
 	 * How many times per second we want to update the statistics window, if it's open.
 	 */
-	static int STATISTICS_REFRESH_FPS = DEF_STATISTICS_REFRESH_FPS;
+	public static int STATISTICS_REFRESH_FPS = DEF_STATISTICS_REFRESH_FPS;
 	/**
 	 * This is the value for having or not having automatic backups.
 	 */
@@ -1394,6 +1399,11 @@ public final class Utils {
 	 * will be saved.
 	 */
 	static boolean AUTO_BACKUP_STATISTICS_PNG = DEF_AUTO_BACKUP_STATISTICS_PNG;
+	/**
+	 * This is the value for saving or not saving the clades tree as a PNG image
+	 * when saving automatic backups.
+	 */
+	static boolean AUTO_BACKUP_CLADES_PNG = DEF_AUTO_BACKUP_CLADES_PNG;
 	/**
 	 * This is the number of game time units that pass between backups.
 	 */
@@ -2029,6 +2039,7 @@ public final class Utils {
 			prefs.putBoolean("AUTO_BACKUP_CSV",AUTO_BACKUP_CSV);
 			prefs.putBoolean("AUTO_BACKUP_WORLD_PNG",AUTO_BACKUP_WORLD_PNG);
 			prefs.putBoolean("AUTO_BACKUP_STATISTICS_PNG",AUTO_BACKUP_STATISTICS_PNG);
+			prefs.putBoolean("AUTO_BACKUP_CLADES_PNG",AUTO_BACKUP_CLADES_PNG);
 			prefs.putInt("BACKUP_DELAY",BACKUP_DELAY);
 			prefs.putInt("LOCAL_PORT",LOCAL_PORT); //$NON-NLS-1$
 			prefs.put("USER_NAME", USER_NAME); //$NON-NLS-1$
@@ -2216,6 +2227,7 @@ public final class Utils {
 			AUTO_BACKUP_CSV = prefs.getBoolean("AUTO_BACKUP_CSV",DEF_AUTO_BACKUP_CSV);
 			AUTO_BACKUP_WORLD_PNG = prefs.getBoolean("AUTO_BACKUP_WORLD_PNG",DEF_AUTO_BACKUP_WORLD_PNG);
 			AUTO_BACKUP_STATISTICS_PNG = prefs.getBoolean("AUTO_BACKUP_STATISTICS_PNG",DEF_AUTO_BACKUP_STATISTICS_PNG);
+			AUTO_BACKUP_CLADES_PNG = prefs.getBoolean("AUTO_BACKUP_CLADES_PNG",DEF_AUTO_BACKUP_CLADES_PNG);
 			BACKUP_DELAY = prefs.getInt("BACKUP_DELAY",DEF_BACKUP_DELAY);
 			LOCAL_PORT = prefs.getInt("LOCAL_PORT",DEF_LOCAL_PORT); //$NON-NLS-1$
 			USER_NAME = prefs.get("USER_NAME",DEF_USER_NAME);

@@ -59,6 +59,7 @@ public class ParamDialog extends JDialog {
 	private JCheckBox autoBackupsCSVCheck = null;
 	private JCheckBox autoBackupsWorldPngCheck = null;
 	private JCheckBox autoBackupsStatisticsPngCheck = null;
+	private JCheckBox autoBackupsCladesPngCheck = null;
 	private JTextField backupDelayText = null;
 	protected JRadioButton hardwareNoneRadio = null;
 	protected JRadioButton hardwareOpenGLRadio = null;
@@ -253,6 +254,7 @@ public class ParamDialog extends JDialog {
 		autoBackupsCSVCheck.setSelected(Utils.DEF_AUTO_BACKUP_CSV);
 		autoBackupsWorldPngCheck.setSelected(Utils.DEF_AUTO_BACKUP_WORLD_PNG);
 		autoBackupsStatisticsPngCheck.setSelected(Utils.DEF_AUTO_BACKUP_STATISTICS_PNG);
+		autoBackupsCladesPngCheck.setSelected(Utils.DEF_AUTO_BACKUP_CLADES_PNG);
 		backupDelayText.setText(String.valueOf(Utils.DEF_BACKUP_DELAY));
 		rubbingText.setText(String.valueOf(Utils.DEF_RUBBING));
 		elasticityText.setText(String.valueOf(Utils.DEF_ELASTICITY));
@@ -485,7 +487,7 @@ public class ParamDialog extends JDialog {
 		generalPanel.add(panel);
 		//Backups
 		panel = new JPanel();
-		panel.setLayout(new GridLayout(6,1));
+		panel.setLayout(new GridLayout(7,1));
 		autoBackupsCheck = new JCheckBox(Messages.getString("T_AUTOMATIC_BACKUPS"));
 		label = new JLabel(Messages.getString("T_TIME_BETWEEN_BACKUPS")); //$NON-NLS-1$
 		backupDelayText = new JTextField(Integer.toString(Utils.BACKUP_DELAY),10);
@@ -513,6 +515,10 @@ public class ParamDialog extends JDialog {
 		autoBackupsStatisticsPngCheck = new JCheckBox(Messages.getString("T_AUTOMATIC_BACKUPS_STATISTICS_PNG"));
 		autoBackupsStatisticsPngCheck.setSelected(Utils.AUTO_BACKUP_STATISTICS_PNG);
 		panel.add(autoBackupsStatisticsPngCheck);
+
+		autoBackupsCladesPngCheck = new JCheckBox(Messages.getString("T_AUTOMATIC_BACKUPS_CLADES_PNG"));
+		autoBackupsCladesPngCheck.setSelected(Utils.AUTO_BACKUP_CLADES_PNG);
+		panel.add(autoBackupsCladesPngCheck);
 
 		JPanel backupDelayPanel = new JPanel();
 		backupDelayPanel.add(label);
@@ -957,7 +963,7 @@ public class ParamDialog extends JDialog {
 		genesPanel.add(purpleprobText);
 		purplecostText = new JTextField(Double.toString(Utils.PURPLE_ENERGY_CONSUMPTION));
 		genesPanel.add(purplecostText);
-		
+
 		label = new JLabel(Messages.getString("T_PLANKTON"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
 		planktonprobText = new JTextField(Integer.toString(Utils.PLANKTON_PROB));
@@ -1269,6 +1275,7 @@ public class ParamDialog extends JDialog {
 		Utils.AUTO_BACKUP_CSV = autoBackupsCSVCheck.isSelected();
 		Utils.AUTO_BACKUP_WORLD_PNG = autoBackupsWorldPngCheck.isSelected();
 		Utils.AUTO_BACKUP_STATISTICS_PNG = autoBackupsStatisticsPngCheck.isSelected();
+		Utils.AUTO_BACKUP_CLADES_PNG = autoBackupsCladesPngCheck.isSelected();
 		try {
 			i = Integer.parseInt(backupDelayText.getText());
 			if (i > 0) {

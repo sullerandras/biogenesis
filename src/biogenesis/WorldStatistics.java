@@ -21,8 +21,10 @@ package biogenesis;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gson.annotations.Expose;
 
@@ -82,41 +84,57 @@ public class WorldStatistics implements Serializable {
 	private double maxCarbonDioxide = 0;
 
 	private double maxMethane = 0;
-	
+
 	private double maxDetritus = 0;
 
 	private long maxCarbonDioxideTime;
 
 	private long maxMethaneTime;
-	
+
 	private long maxDetritusTime;
 
 	private double minCarbonDioxide = Utils.INITIAL_CO2 +  Utils.INITIAL_CH4 +  Utils.INITIAL_DETRITUS + Utils.INITIAL_O2;
 
 	private double minMethane = Utils.INITIAL_CO2 +  Utils.INITIAL_CH4 +  Utils.INITIAL_DETRITUS + Utils.INITIAL_O2;
-	
+
 	private double minDetritus = Utils.INITIAL_CO2 +  Utils.INITIAL_CH4 +  Utils.INITIAL_DETRITUS + Utils.INITIAL_O2;
 
 	private long minCarbonDioxideTime;
 
 	private long minMethaneTime;
-	
+
 	private long minDetritusTime;
 
 	private GeneticCode aliveBeingMostChildren;
 	private Organism aliveOrganismMostChildren;
-
 	private int aliveBeingMostChildrenNumber;
 
 	private GeneticCode aliveBeingMostKills;
 	private Organism aliveOrganismMostKills;
-
 	private int aliveBeingMostKillsNumber;
 
 	private GeneticCode aliveBeingMostInfections;
 	private Organism aliveOrganismMostInfections;
-
 	private int aliveBeingMostInfectionsNumber;
+
+	private GeneticCode aliveBeingMostMass;
+	private Organism aliveOrganismMostMass;
+	private double aliveBeingMostMassNumber;
+
+	private GeneticCode aliveBeingOldest;
+	private Organism aliveOrganismOldest;
+	private int aliveBeingOldestNumber;
+
+	private GeneticCode aliveBeingLowestGeneration;
+	private Organism aliveOrganismLowestGeneration;
+	private int aliveBeingLowestGenerationNumber;
+
+	private GeneticCode aliveBeingHighestGeneration;
+	private Organism aliveOrganismHighestGeneration;
+	private int aliveBeingHighestGenerationNumber;
+
+	private double totalMass;
+	private double totalEnergy;
 
 	private GeneticCode beingMostChildren;
 
@@ -155,8 +173,12 @@ public class WorldStatistics implements Serializable {
 	private List<Double> carbonDioxideList = new ArrayList<Double>(100);
 
 	private List<Double> methaneList = new ArrayList<Double>(100);
-	
+
 	private List<Double> detritusList = new ArrayList<Double>(100);
+
+	private List<Double> generationHistogramList = new ArrayList<>(0);
+	private int minGeneration;
+	private int maxGeneration;
 
 	private transient MainWindowInterface mainWindowInterface;
 
@@ -305,7 +327,7 @@ public class WorldStatistics implements Serializable {
 	public long getMinMethaneTime() {
 		return minMethaneTime;
 	}
-	
+
 	public double getMaxDetritus() {
 		return maxDetritus;
 	}
@@ -356,6 +378,62 @@ public class WorldStatistics implements Serializable {
 
 	public int getAliveBeingMostInfectionsNumber() {
 		return aliveBeingMostInfectionsNumber;
+	}
+
+	public GeneticCode getAliveBeingMostMass() {
+		return aliveBeingMostMass;
+	}
+
+	public Organism getAliveOrganismMostMass() {
+		return aliveOrganismMostMass;
+	}
+
+	public double getAliveBeingMostMassNumber() {
+		return aliveBeingMostMassNumber;
+	}
+
+	public GeneticCode getAliveBeingOldest() {
+		return aliveBeingOldest;
+	}
+
+	public Organism getAliveOrganismOldest() {
+		return aliveOrganismOldest;
+	}
+
+	public int getAliveBeingOldestNumber() {
+		return aliveBeingOldestNumber>>8;
+	}
+
+	public GeneticCode getAliveBeingLowestGeneration() {
+		return aliveBeingLowestGeneration;
+	}
+
+	public Organism getAliveOrganismLowestGeneration() {
+		return aliveOrganismLowestGeneration;
+	}
+
+	public int getAliveBeingLowestGenerationNumber() {
+		return aliveBeingLowestGenerationNumber;
+	}
+
+	public GeneticCode getAliveBeingHighestGeneration() {
+		return aliveBeingHighestGeneration;
+	}
+
+	public Organism getAliveOrganismHighestGeneration() {
+		return aliveOrganismHighestGeneration;
+	}
+
+	public int getAliveBeingHighestGenerationNumber() {
+		return aliveBeingHighestGenerationNumber;
+	}
+
+	public double getTotalMass() {
+		return totalMass;
+	}
+
+	public double getTotalEnergy() {
+		return totalEnergy;
 	}
 
 	public GeneticCode getBeingMostChildren() {
@@ -433,9 +511,21 @@ public class WorldStatistics implements Serializable {
 	public List<Double> getMethaneList() {
 		return methaneList;
 	}
-	
+
 	public List<Double> getDetritusList() {
 		return detritusList;
+	}
+
+	public List<Double> getGenerationHistogramList() {
+		return generationHistogramList;
+	}
+
+	public int getMinGeneration() {
+		return minGeneration;
+	}
+
+	public int getMaxGeneration() {
+		return maxGeneration;
 	}
 
 	public void eventPopulationIncrease(int newPopulation) {
@@ -598,20 +688,51 @@ public class WorldStatistics implements Serializable {
 		}
 	}
 
+	/**
+	 * Finds the remarkable beings in the world. Also calculates totalMass, totalEnergy and generationHistogramList.
+	 * @param organisms
+	 */
 	public void findBestAliveBeings(List<Organism> organisms) {
-		Organism org;
 		aliveBeingMostChildren = null;
 		aliveOrganismMostChildren = null;
 		aliveBeingMostChildrenNumber = 0;
+
 		aliveBeingMostKills = null;
 		aliveOrganismMostKills = null;
 		aliveBeingMostKillsNumber = 0;
+
 		aliveBeingMostInfections = null;
 		aliveOrganismMostInfections = null;
 		aliveBeingMostInfectionsNumber = 0;
+
+		aliveBeingMostMass = null;
+		aliveOrganismMostMass = null;
+		aliveBeingMostMassNumber = 0;
+
+		aliveBeingOldest = null;
+		aliveOrganismOldest = null;
+		aliveBeingOldestNumber = 0;
+
+		aliveBeingLowestGeneration = null;
+		aliveOrganismLowestGeneration = null;
+		aliveBeingLowestGenerationNumber = Integer.MAX_VALUE;
+
+		aliveBeingHighestGeneration = null;
+		aliveOrganismHighestGeneration = null;
+		aliveBeingHighestGenerationNumber = 0;
+
+		totalMass = 0;
+		totalEnergy = 0;
+
+		generationHistogramList = new ArrayList<>(0);
+		minGeneration = Integer.MAX_VALUE;
+		maxGeneration = 0;
+
+		Map<Integer, Integer> generationCounter = new HashMap<Integer, Integer>();
+
 		synchronized(organisms) {
 			for (Iterator<Organism> it = organisms.iterator(); it.hasNext();) {
-				org = it.next();
+				Organism org = it.next();
 				if (org.isAlive()) {
 					if (org.getTotalChildren() > aliveBeingMostChildrenNumber) {
 						aliveBeingMostChildrenNumber = org.getTotalChildren();
@@ -628,8 +749,38 @@ public class WorldStatistics implements Serializable {
 						aliveBeingMostInfections = org.getGeneticCode();
 						aliveOrganismMostInfections = org;
 					}
+					if (org.getMass() > aliveBeingMostMassNumber) {
+						aliveBeingMostMassNumber = org.getMass();
+						aliveBeingMostMass = org.getGeneticCode();
+						aliveOrganismMostMass = org;
+					}
+					if (org.getAge() > aliveBeingOldestNumber) {
+						aliveBeingOldestNumber = org.getAge();
+						aliveBeingOldest = org.getGeneticCode();
+						aliveOrganismOldest = org;
+					}
+					final int generation = org.getGeneticCode().getGeneration();
+					if (generation < aliveBeingLowestGenerationNumber) {
+						aliveBeingLowestGenerationNumber = generation;
+						aliveBeingLowestGeneration = org.getGeneticCode();
+						aliveOrganismLowestGeneration = org;
+					}
+					if (generation > aliveBeingHighestGenerationNumber) {
+						aliveBeingHighestGenerationNumber = generation;
+						aliveBeingHighestGeneration = org.getGeneticCode();
+						aliveOrganismHighestGeneration = org;
+					}
+					totalMass += org.getMass();
+					totalEnergy += org.getEnergy();
+					generationCounter.put(generation, generationCounter.getOrDefault(generation, 0) + 1);
+					minGeneration = Math.min(minGeneration, generation);
+					maxGeneration = Math.max(maxGeneration, generation);
 				}
 			}
+		}
+
+		for (int i = minGeneration; i <= maxGeneration; i++) {
+			generationHistogramList.add(Double.valueOf(generationCounter.getOrDefault(i, 0)));
 		}
 	}
 }

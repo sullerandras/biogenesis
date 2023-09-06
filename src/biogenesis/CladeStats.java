@@ -60,6 +60,6 @@ public class CladeStats {
     Rectangle bounds = getBounds();
     g.setColor(Color.BLACK);
     g.fillRect(0, 0, bounds.width, bounds.height);
-    cladeStore.draw(g);
+    cladeStore.draw(g, bounds.width);
   }
 }

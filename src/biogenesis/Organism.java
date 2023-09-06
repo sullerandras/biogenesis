@@ -2478,7 +2478,7 @@ public class Organism extends Rectangle {
     		}
             if (inheritReproduceEnergy <= 4) {
             	// Virus created by this noninfectious plague organism, or child of an organism affected by modified fallow will die at birth
-            	_age = ((_max_age + 1) * 512);
+            	_max_age = -1;
             	for (int i=0; i<_segments; i++) {
         			if (_segColor[i].equals(Utils.ColorEYE)) {
         				_segColor[i] = Utils.ColorEYE;
@@ -11066,7 +11066,7 @@ public class Organism extends Rectangle {
 						}
 				    } else {
 				    	if (useEnergy(Utils.PINK_ENERGY_CONSUMPTION)) {
-				    		if ((_fallowversion > 0) && ((org._age >> 8) >= org._max_age * 2)) {
+				    		if ((_fallowversion > 0) && (org._max_age < 0)) {
 								// Get the total energy of the still born child
 								takenEnergyPink = org._energy;
 							} else {
@@ -21137,7 +21137,7 @@ public class Organism extends Rectangle {
 						break;
 					case PLANKTON:
 						_filterfeeding += _mphoto[i];
-						addmaintenance -= 0.875 * _m[i];
+						addmaintenance -= 0.8 * _m[i];
 						break;
 					case PURPLE:
 						_methanotrophy += _mphoto[i];
@@ -21433,7 +21433,7 @@ public class Organism extends Rectangle {
 						break;
 					case PLANKTON:
 						_filterfeeding += _mphoto[i];
-						addmaintenance -= 0.875 * _m[i];
+						addmaintenance -= 0.8 * _m[i];
 						break;
 					case PURPLE:
 						_methanotrophy += _mphoto[i];

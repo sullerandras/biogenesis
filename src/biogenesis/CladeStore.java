@@ -40,10 +40,10 @@ public class CladeStore {
     }
   }
 
-  public void draw(Graphics2D graphics) {
+  public void draw(Graphics2D graphics, int imageWidth) {
     int y = 0;
     for (Clade clade : rootClades.values()) {
-      int heightUsed = clade.draw(graphics, 0, y);
+      int heightUsed = clade.draw(graphics, 0, y, imageWidth);
       y += heightUsed;
     }
   }

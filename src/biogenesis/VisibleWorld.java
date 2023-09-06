@@ -634,7 +634,11 @@ public class VisibleWorld extends JPanel implements VisibleWorldInterface {
 	@Override
 	public void paintComponent (Graphics g) {
 		super.paintComponent(g);
-		_mainWindow.getWorld().draw(g);
+		if (_mainWindow._isProcessActive) {
+			_mainWindow.getWorld().draw(g, false);
+		} else {
+			_mainWindow.getWorld().draw(g, true);
+		}
 		if (getSelectedOrganism() != null) {
 			if (getSelectedOrganism()._infectedGeneticCode != null) {
 				if (((getSelectedOrganism()._timeToReproduce > getSelectedOrganism()._timeToReproduceMax) && ((getSelectedOrganism().active) || (getSelectedOrganism()._sporeversion >= 5)))

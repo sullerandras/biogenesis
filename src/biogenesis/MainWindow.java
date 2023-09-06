@@ -25,6 +25,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Frame;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -67,10 +68,11 @@ import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.JViewport;
 import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.border.EtchedBorder;
+
+import biogenesis.gui.stats.StatisticsWindow;
 
 public class MainWindow extends JFrame implements MainWindowInterface {
 	private static final long serialVersionUID = Utils.FILE_VERSION;
@@ -537,30 +539,36 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			if (_gameFile != null) {
-				saveObject(_world, _gameFile.getFileForTime(_world.getTime(), BioFile.Type.REGULAR));
-				if (Utils.AUTO_BACKUP_WORLD_PNG) {
-					_isProcessActive = false;
-					java.awt.EventQueue.invokeLater(() -> saveWorldImage(_gameFile.getFileForTime(_world.getTime(), BioFile.Type.WORLD)));
-					java.awt.EventQueue.invokeLater(() -> saveCladeImage(_gameFile.getFileForTime(_world.getTime(), BioFile.Type.CLADES)));
-					_isProcessActive = true;
-				}
-				GsonFileSaver.saveWorldJson(_world, _gameFile.getFileForTime(_world.getTime(), BioFile.Type.JSON));
-				if (Utils.AUTO_BACKUP_STATISTICS_PNG && _statisticsWindow != null) {
-					// Apparently we have to wait for the statisticsWindow to repaint, it seems like
-					// `repaintStats()` just enqueus an AWT job to repaint the dialog and the method
-					// returns before it has been repainted. So we need to save the image in an AWT
-					// job to make sure the repaint has been done before the saving.
-					_statisticsWindow.repaintStats();
-					java.awt.EventQueue.invokeLater(() -> saveStatisticsImage(_gameFile.getFileForTime(_world.getTime(), BioFile.Type.STATS)));
-				}
-			} else {
-				try {
+			try {
+				if (_gameFile != null) {
+					saveObject(_world, _gameFile.getFileForTime(_world.getTime(), BioFile.Type.REGULAR));
+					if (Utils.AUTO_BACKUP_WORLD_PNG) {
+						_isProcessActive = false;
+						java.awt.EventQueue.invokeAndWait(() -> saveWorldImage(_gameFile.getFileForTime(_world.getTime(), BioFile.Type.WORLD)));
+						_isProcessActive = true;
+					}
+					if (Utils.AUTO_BACKUP_CLADES_PNG) {
+						_isProcessActive = false;
+						java.awt.EventQueue.invokeAndWait(() -> saveCladeImage(_gameFile.getFileForTime(_world.getTime(), BioFile.Type.CLADES)));
+						_isProcessActive = true;
+					}
+					GsonFileSaver.saveWorldJson(_world, _gameFile.getFileForTime(_world.getTime(), BioFile.Type.JSON));
+					if (Utils.AUTO_BACKUP_STATISTICS_PNG && _statisticsWindow != null) {
+						// Apparently we have to wait for the statisticsWindow to repaint, it seems like
+						// `repaintStats()` just enqueus an AWT job to repaint the dialog and the method
+						// returns before it has been repainted. So we need to save the image in an AWT
+						// job to make sure the repaint has been done before the saving.
+						_statisticsWindow.repaintStats();
+						_isProcessActive = false;
+						java.awt.EventQueue.invokeAndWait(() -> saveStatisticsImage(_gameFile.getFileForTime(_world.getTime(), BioFile.Type.STATS)));
+						_isProcessActive = true;
+					}
+				} else {
 					java.awt.EventQueue.invokeAndWait(() -> saveGameAs());
-				} catch (InvocationTargetException | InterruptedException e1) {
-					System.out.println("Error saving game: "+e);
-					e1.printStackTrace();
 				}
+			} catch (InvocationTargetException | InterruptedException e1) {
+				System.out.println("Error saving game: " + e);
+				e1.printStackTrace();
 			}
 		}
 
@@ -618,7 +626,7 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 			_world.decreaseCH4(1000);
 		}
 	}
-	
+
 	class IncreaseDetritusAction extends StdAction {
 		private static final long serialVersionUID = 1L;
 
@@ -828,7 +836,7 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 		public void actionPerformed(ActionEvent e) {
 			if (_statisticsWindow != null)
 				_statisticsWindow.dispose();
-			_statisticsWindow = _world.createStatisticsWindow();
+			_statisticsWindow = new StatisticsWindow(MainWindow.this, _world, _visibleWorld, _world.worldStatistics, _world._organisms);
 		}
 	}
 
@@ -1098,7 +1106,10 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 
 	public void saveWorldImage(File f) {
 		final BufferedImage worldimage = new BufferedImage(_world._width, _world._height, BufferedImage.TYPE_INT_ARGB);
-		_visibleWorld.paint(worldimage.getGraphics());
+		Graphics g = worldimage.getGraphics();
+		g.setColor(Color.BLACK);
+		g.fillRect(0, 0, _world.getWidth(), _world.getHeight());
+		_world.draw(g, true);
 		try {
 			ImageIO.write(worldimage, "PNG", f); //$NON-NLS-1$
 		} catch (FileNotFoundException ex) {
