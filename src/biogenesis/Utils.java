@@ -86,11 +86,11 @@ public final class Utils {
 	/**
 	 * This is the default world's width.
 	 */
-	final static int DEF_WORLD_WIDTH = 7200;
+	final static int DEF_WORLD_WIDTH = 7100;
 	/**
 	 * This is the default world's height.
 	 */
-	final static int DEF_WORLD_HEIGHT = 7200;
+	final static int DEF_WORLD_HEIGHT = 7100;
 	/**
 	 * This is the default maximum age that an organism can achieve,
 	 * without counting the number of segments.
@@ -115,7 +115,7 @@ public final class Utils {
 	 * This is the default detritus to CO2 divisor,
 	 * which turns detritus into CO2, divided by this value.
 	 */
-	final static int DEF_DETRITUS_TO_CO2_DIVISOR = 450;
+	final static int DEF_DETRITUS_TO_CO2_DIVISOR = 500;
 	/**
 	 * This is the default rubbing coefficient that is applied to movements. This value is
 	 * multiplied by the speed at every frame.

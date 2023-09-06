@@ -121,9 +121,9 @@ public class WorldStatistics implements Serializable {
 	private Organism aliveOrganismMostMass;
 	private double aliveBeingMostMassNumber;
 
-	private GeneticCode aliveBeingMostEnergy;
-	private Organism aliveOrganismMostEnergy;
-	private double aliveBeingMostEnergyNumber;
+	private GeneticCode aliveBeingOldest;
+	private Organism aliveOrganismOldest;
+	private int aliveBeingOldestNumber;
 
 	private GeneticCode aliveBeingLowestGeneration;
 	private Organism aliveOrganismLowestGeneration;
@@ -392,16 +392,16 @@ public class WorldStatistics implements Serializable {
 		return aliveBeingMostMassNumber;
 	}
 
-	public GeneticCode getAliveBeingMostEnergy() {
-		return aliveBeingMostEnergy;
+	public GeneticCode getAliveBeingOldest() {
+		return aliveBeingOldest;
 	}
 
-	public Organism getAliveOrganismMostEnergy() {
-		return aliveOrganismMostEnergy;
+	public Organism getAliveOrganismOldest() {
+		return aliveOrganismOldest;
 	}
 
-	public double getAliveBeingMostEnergyNumber() {
-		return aliveBeingMostEnergyNumber;
+	public int getAliveBeingOldestNumber() {
+		return aliveBeingOldestNumber>>8;
 	}
 
 	public GeneticCode getAliveBeingLowestGeneration() {
@@ -709,9 +709,9 @@ public class WorldStatistics implements Serializable {
 		aliveOrganismMostMass = null;
 		aliveBeingMostMassNumber = 0;
 
-		aliveBeingMostEnergy = null;
-		aliveOrganismMostEnergy = null;
-		aliveBeingMostEnergyNumber = 0;
+		aliveBeingOldest = null;
+		aliveOrganismOldest = null;
+		aliveBeingOldestNumber = 0;
 
 		aliveBeingLowestGeneration = null;
 		aliveOrganismLowestGeneration = null;
@@ -754,10 +754,10 @@ public class WorldStatistics implements Serializable {
 						aliveBeingMostMass = org.getGeneticCode();
 						aliveOrganismMostMass = org;
 					}
-					if (org.getEnergy() > aliveBeingMostEnergyNumber) {
-						aliveBeingMostEnergyNumber = org.getEnergy();
-						aliveBeingMostEnergy = org.getGeneticCode();
-						aliveOrganismMostEnergy = org;
+					if (org.getAge() > aliveBeingOldestNumber) {
+						aliveBeingOldestNumber = org.getAge();
+						aliveBeingOldest = org.getGeneticCode();
+						aliveOrganismOldest = org;
 					}
 					final int generation = org.getGeneticCode().getGeneration();
 					if (generation < aliveBeingLowestGenerationNumber) {

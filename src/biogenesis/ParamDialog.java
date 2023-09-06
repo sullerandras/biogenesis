@@ -487,7 +487,7 @@ public class ParamDialog extends JDialog {
 		generalPanel.add(panel);
 		//Backups
 		panel = new JPanel();
-		panel.setLayout(new GridLayout(6,1));
+		panel.setLayout(new GridLayout(7,1));
 		autoBackupsCheck = new JCheckBox(Messages.getString("T_AUTOMATIC_BACKUPS"));
 		label = new JLabel(Messages.getString("T_TIME_BETWEEN_BACKUPS")); //$NON-NLS-1$
 		backupDelayText = new JTextField(Integer.toString(Utils.BACKUP_DELAY),10);

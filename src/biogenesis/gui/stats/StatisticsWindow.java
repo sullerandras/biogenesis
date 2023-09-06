@@ -80,6 +80,7 @@ public class StatisticsWindow extends JDialog {
 
 	private GraphPanel cladesGraphPanel;
 	private GraphInfo cladesGraph2;
+	private GraphInfo populationGraph2;
 
 	private PopulationStatsPanel populationStatsPanel;
 
@@ -110,7 +111,7 @@ public class StatisticsWindow extends JDialog {
 	private RemarkableOrganismPanel aliveMostInfectionsPanel;
 	private RemarkableOrganismPanel mostInfectionsPanel;
 	private RemarkableOrganismPanel aliveMostMassPanel;
-	private RemarkableOrganismPanel aliveMostEnergyPanel;
+	private RemarkableOrganismPanel aliveOldestPanel;
 	private RemarkableOrganismPanel aliveLowestGenerationPanel;
 	private RemarkableOrganismPanel aliveHighestGenerationPanel;
 
@@ -175,8 +176,11 @@ public class StatisticsWindow extends JDialog {
 		populationGraphPanel.addGraph(cladesGraph);
 
 		// Clades graphic
+		// Population graph is added here too to make both clade graphs align
+		populationGraph2 = new GraphInfo(0, 0, 100, 104, Color.BLACK, Messages.getString("T_POPULATION")); //$NON-NLS-1$
 		cladesGraph2 = new GraphInfo(0, 0, 100, 104, Color.ORANGE, Messages.getString("T_CLADES")); //$NON-NLS-1$
 		cladesGraphPanel = new GraphPanel(100, 52, nf);
+		cladesGraphPanel.addGraph(populationGraph2);
 		cladesGraphPanel.addGraph(cladesGraph2);
 
 		// Population statistics
@@ -191,13 +195,13 @@ public class StatisticsWindow extends JDialog {
 		populationPanelLayout.setAutoCreateContainerGaps(true);
 		populationPanelLayout.setHorizontalGroup(
 				populationPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-						.addComponent(populationGraphPanel)
 						.addComponent(cladesGraphPanel)
+						.addComponent(populationGraphPanel)
 						.addComponent(populationStatsPanel));
 		populationPanelLayout.setVerticalGroup(
 				populationPanelLayout.createSequentialGroup()
-						.addComponent(populationGraphPanel)
 						.addComponent(cladesGraphPanel)
+						.addComponent(populationGraphPanel)
 						.addComponent(populationStatsPanel));
 		Border title = BorderFactory.createTitledBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED),
 				Messages.getString("T_POPULATION"), TitledBorder.LEFT, TitledBorder.TOP); //$NON-NLS-1$
@@ -394,16 +398,16 @@ public class StatisticsWindow extends JDialog {
 			}
 		});
 
-		// Being having the most energy
-		aliveMostEnergyPanel = new RemarkableOrganismPanel(
+		// The oldest being
+		aliveOldestPanel = new RemarkableOrganismPanel(
 				visibleWorld,
-				Messages.getString("T_ALIVE_BEING_HAVING_THE_MOST_ENERGY"), //$NON-NLS-1$
-				worldStatistics.getAliveBeingMostEnergy(),
-				Messages.getString("T_ENERGY"), null, nf); //$NON-NLS-1$
-		aliveMostEnergyPanel.addMouseListenerToGeneticCodePanel(new MouseAdapter() {
+				Messages.getString("T_ALIVE_BEING_THE_OLDEST"), //$NON-NLS-1$
+				worldStatistics.getAliveBeingOldest(),
+				Messages.getString("T_AGE"), null, nf); //$NON-NLS-1$
+		aliveOldestPanel.addMouseListenerToGeneticCodePanel(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				showOrganism(worldStatistics.getAliveOrganismMostEnergy());
+				showOrganism(worldStatistics.getAliveOrganismOldest());
 			}
 		});
 
@@ -449,7 +453,7 @@ public class StatisticsWindow extends JDialog {
 								.addComponent(mostChildrenPanel)
 								.addComponent(mostKillsPanel)
 								.addComponent(mostInfectionsPanel)
-								.addComponent(aliveMostEnergyPanel)
+								.addComponent(aliveOldestPanel)
 								.addComponent(aliveHighestGenerationPanel)));
 		notableBeingsPanelLayout.setVerticalGroup(
 				notableBeingsPanelLayout.createSequentialGroup()
@@ -464,7 +468,7 @@ public class StatisticsWindow extends JDialog {
 								.addComponent(mostInfectionsPanel))
 						.addGroup(notableBeingsPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
 								.addComponent(aliveMostMassPanel)
-								.addComponent(aliveMostEnergyPanel))
+								.addComponent(aliveOldestPanel))
 						.addGroup(notableBeingsPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
 								.addComponent(aliveLowestGenerationPanel)
 								.addComponent(aliveHighestGenerationPanel)));
@@ -604,6 +608,7 @@ public class StatisticsWindow extends JDialog {
 		cladesGraphPanel.setMinTime(minTime);
 		cladesGraphPanel.setMaxTime(maxTime);
 		cladesGraph2.setMaxAndPoints(worldStatistics.getMaxDistinctClades(), worldStatistics.getDistinctCladesList());
+		populationGraph2.setMaxAndPoints(worldStatistics.getMaxDistinctClades(), worldStatistics.getPopulationList());
 
 		populationStatsPanel.update();
 
@@ -652,8 +657,8 @@ public class StatisticsWindow extends JDialog {
 				worldStatistics.getBeingMostInfectionsNumber());
 		aliveMostMassPanel.update(worldStatistics.getAliveBeingMostMass(),
 				worldStatistics.getAliveBeingMostMassNumber());
-		aliveMostEnergyPanel.update(worldStatistics.getAliveBeingMostEnergy(),
-				worldStatistics.getAliveBeingMostEnergyNumber());
+		aliveOldestPanel.update(worldStatistics.getAliveBeingOldest(),
+				worldStatistics.getAliveBeingOldestNumber());
 		aliveLowestGenerationPanel.update(worldStatistics.getAliveBeingLowestGeneration(),
 				worldStatistics.getAliveBeingLowestGenerationNumber());
 		aliveHighestGenerationPanel.update(worldStatistics.getAliveBeingHighestGeneration(),
