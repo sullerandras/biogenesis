@@ -690,6 +690,11 @@ public final class Utils {
 	 */
 	final static boolean DEF_AUTO_BACKUP_CLADES_PNG = false;
 	/**
+	 * This is the default value for saving or not saving PNG images into separate folders
+	 * when saving automatic backups.
+	 */
+	final static boolean DEF_AUTO_BACKUP_IMAGES_AS_FOLDERS = false;
+	/**
 	 * This is the default number of game time units that pass between backups.
 	 */
 	final static int DEF_BACKUP_DELAY = 100;
@@ -1405,6 +1410,11 @@ public final class Utils {
 	 */
 	static boolean AUTO_BACKUP_CLADES_PNG = DEF_AUTO_BACKUP_CLADES_PNG;
 	/**
+	 * This is the value for saving or not saving the PNG images into folders
+	 * when saving automatic backups.
+	 */
+	public static boolean AUTO_BACKUP_IMAGES_AS_FOLDERS = DEF_AUTO_BACKUP_IMAGES_AS_FOLDERS;
+	/**
 	 * This is the number of game time units that pass between backups.
 	 */
 	static int BACKUP_DELAY = DEF_BACKUP_DELAY;
@@ -2040,6 +2050,7 @@ public final class Utils {
 			prefs.putBoolean("AUTO_BACKUP_WORLD_PNG",AUTO_BACKUP_WORLD_PNG);
 			prefs.putBoolean("AUTO_BACKUP_STATISTICS_PNG",AUTO_BACKUP_STATISTICS_PNG);
 			prefs.putBoolean("AUTO_BACKUP_CLADES_PNG",AUTO_BACKUP_CLADES_PNG);
+			prefs.putBoolean("AUTO_BACKUP_IMAGES_AS_FOLDERS",AUTO_BACKUP_IMAGES_AS_FOLDERS);
 			prefs.putInt("BACKUP_DELAY",BACKUP_DELAY);
 			prefs.putInt("LOCAL_PORT",LOCAL_PORT); //$NON-NLS-1$
 			prefs.put("USER_NAME", USER_NAME); //$NON-NLS-1$
@@ -2228,6 +2239,7 @@ public final class Utils {
 			AUTO_BACKUP_WORLD_PNG = prefs.getBoolean("AUTO_BACKUP_WORLD_PNG",DEF_AUTO_BACKUP_WORLD_PNG);
 			AUTO_BACKUP_STATISTICS_PNG = prefs.getBoolean("AUTO_BACKUP_STATISTICS_PNG",DEF_AUTO_BACKUP_STATISTICS_PNG);
 			AUTO_BACKUP_CLADES_PNG = prefs.getBoolean("AUTO_BACKUP_CLADES_PNG",DEF_AUTO_BACKUP_CLADES_PNG);
+			AUTO_BACKUP_IMAGES_AS_FOLDERS = prefs.getBoolean("AUTO_BACKUP_IMAGES_AS_FOLDERS",DEF_AUTO_BACKUP_IMAGES_AS_FOLDERS);
 			BACKUP_DELAY = prefs.getInt("BACKUP_DELAY",DEF_BACKUP_DELAY);
 			LOCAL_PORT = prefs.getInt("LOCAL_PORT",DEF_LOCAL_PORT); //$NON-NLS-1$
 			USER_NAME = prefs.get("USER_NAME",DEF_USER_NAME);

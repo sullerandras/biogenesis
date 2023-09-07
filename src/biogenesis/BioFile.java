@@ -49,7 +49,8 @@ public class BioFile {
   }
 
   public File getFileForTime(final long time, final Type type) {
-    final String baseFilename = baseFilename(getFile().getPath(), time);
+    String folderName = getFile().getParent();
+    final String baseFilename = baseFilename(getFile().getName(), time);
     final String suffix;
     switch (type) {
       case REGULAR:
@@ -60,29 +61,47 @@ public class BioFile {
         }
         break;
       case WORLD:
-        suffix = "world.png";
+        if (Utils.AUTO_BACKUP_IMAGES_AS_FOLDERS) {
+          folderName = folderName + File.separator + "worlds";
+          suffix = "png";
+        } else {
+          suffix = "world.png";
+        }
         break;
       case STATS:
-        suffix = "stats.png";
+        if (Utils.AUTO_BACKUP_IMAGES_AS_FOLDERS) {
+          folderName = folderName + File.separator + "stats";
+          suffix = "png";
+        } else {
+          suffix = "stats.png";
+        }
         break;
       case JSON:
         suffix = "json";
         break;
       case CLADES:
-        suffix = "clades.png";
+        if (Utils.AUTO_BACKUP_IMAGES_AS_FOLDERS) {
+          folderName = folderName + File.separator + "clades";
+          suffix = "png";
+        } else {
+          suffix = "clades.png";
+        }
         break;
       default:
         throw new IllegalArgumentException("Type " + type + " is not supported");
     }
 
-    return new File(baseFilename + "." + suffix);
+    new File(folderName).mkdirs();
+
+    return new File(folderName, baseFilename + "." + suffix);
   }
 
   public boolean fileNameContainsTime() {
     return getFile().getName().matches(".*?@[0-9]*\\." + BioFileFilter.WORLD_EXTENSION + "(\\.gz)?$");
   }
 
-  public void appendToCsv(long time, int population, int distinctClades, int distinctCladesWith10Orgs, int distinctCladesWith100Orgs, double O2, double CO2, double CH4, double detritus, List<Organism> organisms) {
+  public void appendToCsv(long time, int population, int distinctClades, int distinctCladesWith10Orgs,
+      int distinctCladesWith100Orgs, double O2, double CO2, double CH4, double detritus, List<Organism> organisms) {
     File csvFile = getCsvFile();
     Row row = new Row();
     row.add("time", time);

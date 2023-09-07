@@ -60,6 +60,7 @@ public class ParamDialog extends JDialog {
 	private JCheckBox autoBackupsWorldPngCheck = null;
 	private JCheckBox autoBackupsStatisticsPngCheck = null;
 	private JCheckBox autoBackupsCladesPngCheck = null;
+	private JCheckBox autoBackupsImagesAsFoldersCheck = null;
 	private JTextField backupDelayText = null;
 	protected JRadioButton hardwareNoneRadio = null;
 	protected JRadioButton hardwareOpenGLRadio = null;
@@ -255,6 +256,7 @@ public class ParamDialog extends JDialog {
 		autoBackupsWorldPngCheck.setSelected(Utils.DEF_AUTO_BACKUP_WORLD_PNG);
 		autoBackupsStatisticsPngCheck.setSelected(Utils.DEF_AUTO_BACKUP_STATISTICS_PNG);
 		autoBackupsCladesPngCheck.setSelected(Utils.DEF_AUTO_BACKUP_CLADES_PNG);
+		autoBackupsImagesAsFoldersCheck.setSelected(Utils.DEF_AUTO_BACKUP_IMAGES_AS_FOLDERS);
 		backupDelayText.setText(String.valueOf(Utils.DEF_BACKUP_DELAY));
 		rubbingText.setText(String.valueOf(Utils.DEF_RUBBING));
 		elasticityText.setText(String.valueOf(Utils.DEF_ELASTICITY));
@@ -519,6 +521,10 @@ public class ParamDialog extends JDialog {
 		autoBackupsCladesPngCheck = new JCheckBox(Messages.getString("T_AUTOMATIC_BACKUPS_CLADES_PNG"));
 		autoBackupsCladesPngCheck.setSelected(Utils.AUTO_BACKUP_CLADES_PNG);
 		panel.add(autoBackupsCladesPngCheck);
+
+		autoBackupsImagesAsFoldersCheck = new JCheckBox(Messages.getString("T_AUTOMATIC_BACKUPS_IMAGES_AS_FOLDERS"));
+		autoBackupsImagesAsFoldersCheck.setSelected(Utils.AUTO_BACKUP_IMAGES_AS_FOLDERS);
+		panel.add(autoBackupsImagesAsFoldersCheck);
 
 		JPanel backupDelayPanel = new JPanel();
 		backupDelayPanel.add(label);
@@ -1276,6 +1282,7 @@ public class ParamDialog extends JDialog {
 		Utils.AUTO_BACKUP_WORLD_PNG = autoBackupsWorldPngCheck.isSelected();
 		Utils.AUTO_BACKUP_STATISTICS_PNG = autoBackupsStatisticsPngCheck.isSelected();
 		Utils.AUTO_BACKUP_CLADES_PNG = autoBackupsCladesPngCheck.isSelected();
+		Utils.AUTO_BACKUP_IMAGES_AS_FOLDERS = autoBackupsImagesAsFoldersCheck.isSelected();
 		try {
 			i = Integer.parseInt(backupDelayText.getText());
 			if (i > 0) {
