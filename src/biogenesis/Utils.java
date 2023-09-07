@@ -659,6 +659,10 @@ public final class Utils {
 	final static int DEF_STATUS_BAR_REFRESH_FPS = 4;
 	final static int DEF_STATISTICS_REFRESH_FPS = 2;
 	/**
+	 * This is the default value for the number of threads that will be used for the simulation.
+	 */
+	final static int DEF_THREAD_COUNT = 1;
+	/**
 	 * This is the default value for having or not having automatic backups.
 	 */
 	final static boolean DEF_AUTO_BACKUP = false;
@@ -1379,6 +1383,12 @@ public final class Utils {
 	 */
 	public static int STATISTICS_REFRESH_FPS = DEF_STATISTICS_REFRESH_FPS;
 	/**
+	 * The number of threads to use to calculate the next frame. More threads can
+	 * potentially make simulation faster if there are multiple CPU cores available,
+	 * but synchronization between threads can slow down the overall speed.
+	 */
+	public static int THREAD_COUNT = DEF_THREAD_COUNT;
+	/**
 	 * This is the value for having or not having automatic backups.
 	 */
 	static boolean AUTO_BACKUP = DEF_AUTO_BACKUP;
@@ -2044,6 +2054,7 @@ public final class Utils {
 			prefs.put("repaintWorldStrategy",repaintWorldStrategy.toString()); //$NON-NLS-1$
 			prefs.putInt("STATUS_BAR_REFRESH_FPS",STATUS_BAR_REFRESH_FPS); //$NON-NLS-1$
 			prefs.putInt("STATISTICS_REFRESH_FPS",STATISTICS_REFRESH_FPS); //$NON-NLS-1$
+			prefs.putInt("THREAD_COUNT",THREAD_COUNT); //$NON-NLS-1$
 			prefs.putBoolean("AUTO_BACKUP",AUTO_BACKUP);
 			prefs.putBoolean("COMPRESS_BACKUPS",COMPRESS_BACKUPS);
 			prefs.putBoolean("AUTO_BACKUP_CSV",AUTO_BACKUP_CSV);
@@ -2233,6 +2244,7 @@ public final class Utils {
 			repaintWorldStrategy = RepaintWorldStrategy.valueOf(prefs.get("repaintWorldStrategy", DEF_repaintWorldStrategy)); //$NON-NLS-1$
 			STATUS_BAR_REFRESH_FPS = prefs.getInt("STATUS_BAR_REFRESH_FPS",DEF_STATUS_BAR_REFRESH_FPS); //$NON-NLS-1$
 			STATISTICS_REFRESH_FPS = prefs.getInt("STATISTICS_REFRESH_FPS",DEF_STATISTICS_REFRESH_FPS); //$NON-NLS-1$
+			THREAD_COUNT = prefs.getInt("THREAD_COUNT",DEF_THREAD_COUNT); //$NON-NLS-1$
 			AUTO_BACKUP = prefs.getBoolean("AUTO_BACKUP",DEF_AUTO_BACKUP);
 			COMPRESS_BACKUPS = prefs.getBoolean("COMPRESS_BACKUPS",DEF_COMPRESS_BACKUPS);
 			AUTO_BACKUP_CSV = prefs.getBoolean("AUTO_BACKUP_CSV",DEF_AUTO_BACKUP_CSV);

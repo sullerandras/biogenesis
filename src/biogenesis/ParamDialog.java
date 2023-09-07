@@ -51,6 +51,7 @@ public class ParamDialog extends JDialog {
 	private JTextField widthText = null;
 	private JTextField heightText = null;
 	private JTextField delayText = null;
+	private JTextField threadCountText = null;
 	private JRadioButton repaintWorldStrategyRadio1 = null;
 	private JRadioButton repaintWorldStrategyRadio2 = null;
 	private JRadioButton repaintWorldStrategyRadio3 = null;
@@ -247,6 +248,7 @@ public class ParamDialog extends JDialog {
 		widthText.setText(String.valueOf(Utils.DEF_WORLD_WIDTH));
 		heightText.setText(String.valueOf(Utils.DEF_WORLD_HEIGHT));
 		delayText.setText(String.valueOf(Utils.DEF_DELAY));
+		threadCountText.setText(String.valueOf(Utils.DEF_THREAD_COUNT));
 		repaintWorldStrategyRadio1.setSelected(Utils.DEF_repaintWorldStrategy.equals(RepaintWorldStrategy.ALWAYS.toString()));
 		repaintWorldStrategyRadio2.setSelected(Utils.DEF_repaintWorldStrategy.equals(RepaintWorldStrategy.ONLY_WHEN_MAIN_WINDOW_IS_IN_FOCUS.toString()));
 		repaintWorldStrategyRadio3.setSelected(Utils.DEF_repaintWorldStrategy.equals(RepaintWorldStrategy.WHEN_ANY_APP_WINDOW_IS_IN_FOCUS.toString()));
@@ -465,6 +467,10 @@ public class ParamDialog extends JDialog {
 		panel.add(delayText);
 		label = new JLabel(Messages.getString("T_MILLISECONDS")); //$NON-NLS-1$
 		panel.add(label);
+		label = new JLabel(Messages.getString("T_THREAD_COUNT")); //$NON-NLS-1$
+		panel.add(label);
+		threadCountText = new JTextField(Integer.toString(Utils.THREAD_COUNT),6);
+		panel.add(threadCountText);
 		generalPanel.add(panel);
 		//World repaint
 		panel = new JPanel();
@@ -1272,6 +1278,14 @@ public class ParamDialog extends JDialog {
 			i = Integer.parseInt(delayText.getText());
 			if (i > 0) {
 				Utils.DELAY = i;
+			}
+		} catch (NumberFormatException ex) {
+			// Keep old value if there is a problem
+		}
+		try {
+			i = Integer.parseInt(threadCountText.getText());
+			if (i > 0) {
+				Utils.THREAD_COUNT = i;
 			}
 		} catch (NumberFormatException ex) {
 			// Keep old value if there is a problem

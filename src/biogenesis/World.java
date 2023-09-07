@@ -105,19 +105,23 @@ public class World implements Serializable{
 	/**
 	 * The amount of O2 in the atmosphere of this world.
 	 */
-	protected double _O2;
+	protected volatile double _O2;
+	private final transient Object _O2_monitor = new Object();
 	/**
 	 * The amount of CO2 in the atmosphere of this world.
 	 */
-	protected double _CO2;
+	protected volatile double _CO2;
+	private final transient Object _CO2_monitor = new Object();
 	/**
 	 * The amount of CH4 in the atmosphere of this world.
 	 */
-	protected double _CH4;
+	protected volatile double _CH4;
+	private final transient Object _CH4_monitor = new Object();
 	/**
 	 * The amount of detritus in the atmosphere of this world.
 	 */
-	protected double _detritus;
+	protected volatile double _detritus;
+	private final transient Object _detritus_monitor = new Object();
 	/**
 	 * Do we need to check for corridors?
 	 */
@@ -246,14 +250,16 @@ public class World implements Serializable{
 	 * @param minPopulation only count clades with at least minPopulation organisms
 	 */
 	public int getDistinctCladeIDCount(int minPopulation) {
-		return (int) _organisms
-				.stream()
-				.filter(o -> o.isAlive())
-				.collect(Collectors.groupingBy(o -> o.getGeneticCode().getcladeID(), Collectors.counting()))
-				.entrySet()
-				.stream()
-				.filter(e -> e.getValue() >= minPopulation) // only show clades with at least minPopulation organisms
-				.count();
+		synchronized (_organisms) {
+			return (int) _organisms
+					.stream()
+					.filter(o -> o.isAlive())
+					.collect(Collectors.groupingBy(o -> o.getGeneticCode().getcladeID(), Collectors.counting()))
+					.entrySet()
+					.stream()
+					.filter(e -> e.getValue() >= minPopulation) // only show clades with at least minPopulation organisms
+					.count();
+		}
 	}
 	/**
 	 * Increase the population counter by one.
@@ -315,7 +321,9 @@ public class World implements Serializable{
 	 * @param q  The amount of O2 to add.
 	 */
 	public void addO2(double q) {
-		_O2 += q;
+		synchronized (_O2_monitor) {
+			_O2 += q;
+		}
 	}
 	/**
 	 * Add CO2 to the atmosphere.
@@ -323,7 +331,9 @@ public class World implements Serializable{
 	 * @param q  The amount of CO2 to add.
 	 */
 	public void addCO2(double q) {
-		_CO2 += q;
+		synchronized (_CO2_monitor) {
+			_CO2 += q;
+		}
 	}
 	/**
 	 * Add CH4 to the atmosphere.
@@ -331,7 +341,9 @@ public class World implements Serializable{
 	 * @param q  The amount of CH4 to add.
 	 */
 	public void addCH4(double q) {
-		_CH4 += q;
+		synchronized (_CH4_monitor) {
+			_CH4 += q;
+		}
 	}
 	/**
 	 * Add detritus to the atmosphere.
@@ -339,7 +351,9 @@ public class World implements Serializable{
 	 * @param q  The amount of detritus to add.
 	 */
 	public void addDetritus(double q) {
-		_detritus += q;
+		synchronized (_detritus_monitor) {
+			_detritus += q;
+		}
 	}
 	/**
 	 * Substracts O2 from the atmosphere.
@@ -347,7 +361,9 @@ public class World implements Serializable{
 	 * @param q  The amount of O2 to substract.
 	 */
 	public void decreaseO2(double q) {
-		_O2 -= Math.min(q, _O2);
+		synchronized (_O2_monitor) {
+			_O2 -= Math.min(q, _O2);
+		}
 	}
 	/**
 	 * Substract CO2 from the atmosphere.
@@ -355,7 +371,9 @@ public class World implements Serializable{
 	 * @param q  The amount of CO2 to substract.
 	 */
 	public void decreaseCO2(double q) {
-		_CO2 -= Math.min(q, _CO2);
+		synchronized (_CO2_monitor) {
+			_CO2 -= Math.min(q, _CO2);
+		}
 	}
 	/**
 	 * Substract CH4 from the atmosphere.
@@ -363,7 +381,9 @@ public class World implements Serializable{
 	 * @param q  The amount of CH4 to substract.
 	 */
 	public void decreaseCH4(double q) {
-		_CH4 -= Math.min(q, _CH4);
+		synchronized (_CH4_monitor) {
+			_CH4 -= Math.min(q, _CH4);
+		}
 	}
 	/**
 	 * Substract detritus from the atmosphere.
@@ -371,7 +391,9 @@ public class World implements Serializable{
 	 * @param q  The amount of detritus to substract.
 	 */
 	public void decreaseDetritus(double q) {
-		_detritus -= Math.min(q, _detritus);
+		synchronized (_detritus_monitor) {
+			_detritus -= Math.min(q, _detritus);
+		}
 	}
 	/**
 	 * Consume O2 from the atmosphere to realize the respiration process
@@ -383,10 +405,14 @@ public class World implements Serializable{
 	 * unless there weren't enough O2 in the atmosphere.
 	 */
 	public double respiration(double q) {
-		double d = Math.min(q,_O2);
-		_O2 -= d;
-		_CO2 += d;
-		return d;
+		synchronized (_CO2_monitor) {
+			synchronized (_O2_monitor) {
+				double d = Math.min(q,_O2);
+				_O2 -= d;
+				_CO2 += d;
+				return d;
+			}
+		}
 	}
 	/**
 	 * Decaying organisms and pink, while consuming another organism, release
@@ -397,10 +423,14 @@ public class World implements Serializable{
 	 * unless there weren't enough O2 in the atmosphere.
 	 */
 	public double decomposition(double q) {
-		double d = Math.min(q,_O2);
-		_O2 -= d;
-		_CH4 += d;
-		return d;
+		synchronized (_CH4_monitor) {
+			synchronized (_O2_monitor) {
+				double d = Math.min(q,_O2);
+				_O2 -= d;
+				_CH4 += d;
+				return d;
+			}
+		}
 	}
 	/**
 	 * Feeding organisms except pink (but also produced in some other cases) release
@@ -411,10 +441,14 @@ public class World implements Serializable{
 	 * unless there weren't enough O2 in the atmosphere.
 	 */
 	public double detritusproduction(double q) {
-		double d = Math.min(q,_O2);
-		_O2 -= d;
-		_detritus += d;
-		return d;
+		synchronized (_detritus_monitor) {
+			synchronized (_O2_monitor) {
+				double d = Math.min(q,_O2);
+				_O2 -= d;
+				_detritus += d;
+				return d;
+			}
+		}
 	}
 	/**
 	 * Consume CO2 from the atmosphere to realize the photosynthesis process
@@ -434,10 +468,14 @@ public class World implements Serializable{
 	 * @return  The amount of CO2 obtained.
 	 */
 	public double photosynthesis(double q) {
-		q = Utils.min(q,q*_CO2/Utils.DRAIN_SUBS_DIVISOR,_CO2);
-		_CO2 -= q;
-		_O2 += q;
-		return q;
+		synchronized (_CO2_monitor) {
+			synchronized (_O2_monitor) {
+				q = Utils.min(q,q*_CO2/Utils.DRAIN_SUBS_DIVISOR,_CO2);
+				_CO2 -= q;
+				_O2 += q;
+				return q;
+			}
+		}
 	}
 	/**
 	 * Consume CH4 from the atmosphere to realize the methanotrophic process
@@ -457,10 +495,14 @@ public class World implements Serializable{
 	 * @return  The amount of CH4 obtained.
 	 */
 	public double methanotrophy(double q) {
-		q = Utils.min(q,q*_CH4/Utils.DRAIN_SUBS_DIVISOR,_CH4);
-		_CH4 -= q;
-		_O2 += q;
-		return q;
+		synchronized (_CH4_monitor) {
+			synchronized (_O2_monitor) {
+				q = Utils.min(q,q*_CH4/Utils.DRAIN_SUBS_DIVISOR,_CH4);
+				_CH4 -= q;
+				_O2 += q;
+				return q;
+			}
+		}
 	}
 	/**
 	 * Consume detritus from the atmosphere to realize the filter feeder
@@ -480,10 +522,14 @@ public class World implements Serializable{
 	 * @return  The amount of detritus obtained.
 	 */
 	public double filterfeeding(double q) {
-		q = Utils.min(q,q*_detritus/Utils.DRAIN_SUBS_DIVISOR,_detritus);
-		_detritus -= q;
-		_O2 += q;
-		return q;
+		synchronized (_detritus_monitor) {
+			synchronized (_O2_monitor) {
+				q = Utils.min(q,q*_detritus/Utils.DRAIN_SUBS_DIVISOR,_detritus);
+				_detritus -= q;
+				_O2 += q;
+				return q;
+			}
+		}
 	}
 	/**
 	 * Constructor of the World class. All internal structures are initialized and
@@ -682,31 +728,11 @@ public class World implements Serializable{
 				}
 			}
 		}
-		synchronized (_organisms) {
-			/* We can't use an Iterator here because this list has to be changed
-			 * inside Organism.move (when new organisms are born) and we need to
-			 * remove organisms with no energy, so a ConcurrentModificationException
-			 * will be thrown.
-			 */
-			for (Organism o: _organisms) {
-			     colDetTree.insert(o);
-		    }
-			int l = _organisms.size();
-			for (int i=0; i<l; i++) {
-				Organism b = _organisms.get(i);
-				if (!b.move()) {
-					// Organism has no energy -> remove from the list
-					if (Utils.repaintWorld()) {
-						_visibleWorld.repaint(b);
-					}
-					_organisms.remove(i);
-					if (_visibleWorld.getSelectedOrganism() == b)
-						_visibleWorld.setSelectedOrganism(null);
-					l--;
-					i--;
-				}
-			}
+		for (Organism o: _organisms) {
+			colDetTree.insert(o);
 		}
+		progressAllOrganisms();
+
 		// Reactions turning CO2 and CH4 into each other and detritus into CO2
 		double x = Math.min(getCO2()/Utils.CO2_TO_CH4_DIVISOR,getCO2());
 		_CO2 -= x;
@@ -725,6 +751,75 @@ public class World implements Serializable{
 			_isbackuped = false;
 		}
 	}
+
+	private Collection<Organism> organismsToRemove = Collections.synchronizedList(new ArrayList<>());
+
+	private void progressAllOrganisms() {
+		organismsToRemove.clear();
+
+		final int organismCount = _organisms.size();
+		final int threadCount = Utils.between(Utils.THREAD_COUNT, 1, 100);
+
+		if (threadCount > 1) {
+			progressAllOrganismsInParallel(organismCount, threadCount);
+		} else {
+			progressAllOrganismsInSerial(organismCount);
+		}
+
+		// remove all dead organisms
+		_organisms.removeAll(organismsToRemove);
+	}
+
+	private void progressAllOrganismsInSerial(int organismCount) {
+		for (int i = 0; i < organismCount; i++) {
+			Organism b = _organisms.get(i);
+			if (!b.move()) {
+				organismsToRemove.add(b);
+				if (_visibleWorld.getSelectedOrganism() == b) {
+					_visibleWorld.setSelectedOrganism(null);
+				}
+			}
+		}
+	}
+
+	private void progressAllOrganismsInParallel(int organismCount, int threadCount) {
+		Thread[] threads = new Thread[threadCount-1];
+		for (int i = 0; i < threadCount - 1; i++) { // create all but the last thread
+			final int start = organismCount * i / threadCount;
+			final int end = organismCount * (i + 1) / threadCount;
+			threads[i] = new Thread() {
+				@Override
+				public void run() {
+					progressBatchOfOrganisms(start, end);
+				}
+			};
+			threads[i].start();
+		}
+		// process the last batch in this thread to save creating a thread and waiting for it to finish
+		progressBatchOfOrganisms(organismCount * (threadCount - 1) / threadCount, organismCount);
+
+		// wait for all threads to finish
+		try {
+			for (Thread thread : threads) {
+				thread.join();
+			}
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private void progressBatchOfOrganisms(int startIndex, int endIndex) {
+		for (int i = startIndex; i < endIndex; i++) {
+			Organism b = _organisms.get(i);
+			if (!b.move()) {
+				organismsToRemove.add(b);
+				if (_visibleWorld.getSelectedOrganism() == b) {
+					_visibleWorld.setSelectedOrganism(null);
+				}
+			}
+		}
+	}
+
 	/**
 	 * Add a pair of biological corridors to the world.
 	 * This method is called by {@link biogenesis.Connection.setState} when
