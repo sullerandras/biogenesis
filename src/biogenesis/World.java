@@ -28,7 +28,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import javax.swing.JViewport;
@@ -106,22 +110,22 @@ public class World implements Serializable{
 	 * The amount of O2 in the atmosphere of this world.
 	 */
 	protected volatile double _O2;
-	private final transient Object _O2_monitor = new Object();
+	private static final Object _O2_monitor = new Object();
 	/**
 	 * The amount of CO2 in the atmosphere of this world.
 	 */
 	protected volatile double _CO2;
-	private final transient Object _CO2_monitor = new Object();
+	private static final Object _CO2_monitor = new Object();
 	/**
 	 * The amount of CH4 in the atmosphere of this world.
 	 */
 	protected volatile double _CH4;
-	private final transient Object _CH4_monitor = new Object();
+	private static final Object _CH4_monitor = new Object();
 	/**
 	 * The amount of detritus in the atmosphere of this world.
 	 */
 	protected volatile double _detritus;
-	private final transient Object _detritus_monitor = new Object();
+	private static final Object _detritus_monitor = new Object();
 	/**
 	 * Do we need to check for corridors?
 	 */
@@ -782,29 +786,217 @@ public class World implements Serializable{
 		}
 	}
 
-	private void progressAllOrganismsInParallel(int organismCount, int threadCount) {
-		Thread[] threads = new Thread[threadCount-1];
-		for (int i = 0; i < threadCount - 1; i++) { // create all but the last thread
-			final int start = organismCount * i / threadCount;
-			final int end = organismCount * (i + 1) / threadCount;
-			threads[i] = new Thread() {
-				@Override
-				public void run() {
-					progressBatchOfOrganisms(start, end);
-				}
-			};
-			threads[i].start();
-		}
-		// process the last batch in this thread to save creating a thread and waiting for it to finish
-		progressBatchOfOrganisms(organismCount * (threadCount - 1) / threadCount, organismCount);
+	transient List<WorkerThread> workerThreads = new ArrayList<>();
+	transient LinesLocker linesLocker;
 
-		// wait for all threads to finish
-		try {
-			for (Thread thread : threads) {
-				thread.join();
+	private void progressAllOrganismsInParallel(int organismCount, int threadCount) {
+		// System.out.println("========================================================================================== in thread "+Thread.currentThread().getName());
+
+		int lineCount = colDetTree.getMaxWidth() + 1;
+		if (threadCount * 5 > lineCount) { // not enough gap between threads
+			progressAllOrganismsInSerial(organismCount);
+			return;
+		}
+
+		if (workerThreads == null) {
+			workerThreads = new ArrayList<>();
+		}
+		if (workerThreads.size() != threadCount) {
+			// stop all worker threads
+			for (WorkerThread workerThread : workerThreads) {
+				workerThread.interrupt();
 			}
-		} catch (InterruptedException e) {
-			throw new RuntimeException(e);
+
+			// create new worker threads
+			workerThreads.clear();
+			for (int i = 0; i < threadCount; i++) {
+				WorkerThread workerThread = new WorkerThread();
+				workerThread.start();
+				workerThreads.add(workerThread);
+			}
+		}
+		if (linesLocker == null || linesLocker.semaphores.length != lineCount) {
+			linesLocker = new LinesLocker(lineCount);
+		}
+
+		// Split the buckets into vertical lines.
+		// Do one line per thread.
+		// Do it until all lines are done.
+		int[] startIndexes = new int[threadCount]; // index where the thead starts
+		int[] endIndexes = new int[threadCount]; // index where the thead ends, inclusive
+		for (int i = 0; i < threadCount; i++) {
+			startIndexes[i] = lineCount * i / threadCount;
+			if (i > 0) {
+				endIndexes[i - 1] = startIndexes[i] - 1;
+			}
+		}
+		endIndexes[threadCount - 1] = lineCount - 1;
+
+		// do one line per thread
+		for (int i = 0; i < threadCount; i++) {
+			workerThreads.get(i).addJob(new WorkerJob(startIndexes[i], endIndexes[i]));
+		}
+
+		// wait till all jobs finish
+		for (int i = 0; i < threadCount; i++) {
+			// System.out.println("======> waiting for thread " + workerThreads.get(i).getName() + " to finish");
+			workerThreads.get(i).waitTillDone();
+			// System.out.println("======> waiting for thread " + workerThreads.get(i).getName() + " to finish done");
+		}
+
+		// Thread[] threads = new Thread[threadCount-1];
+		// for (int i = 0; i < threadCount - 1; i++) { // create all but the last thread
+		// 	final int start = organismCount * i / threadCount;
+		// 	final int end = organismCount * (i + 1) / threadCount;
+		// 	threads[i] = new Thread() {
+		// 		@Override
+		// 		public void run() {
+		// 			progressBatchOfOrganisms(start, end);
+		// 		}
+		// 	};
+		// 	threads[i].start();
+		// }
+		// // process the last batch in this thread to save creating a thread and waiting for it to finish
+		// progressBatchOfOrganisms(organismCount * (threadCount - 1) / threadCount, organismCount);
+
+		// // wait for all threads to finish
+		// try {
+		// 	for (Thread thread : threads) {
+		// 		thread.join();
+		// 	}
+		// } catch (InterruptedException e) {
+		// 	throw new RuntimeException(e);
+		// }
+	}
+
+	class LinesLocker {
+		Semaphore[] semaphores;
+
+		LinesLocker(int lineCount) {
+			// System.out.println("======> create LinesLocker with " + lineCount + " lines");
+			semaphores = new Semaphore[lineCount];
+			for (int i = 0; i < lineCount; i++) {
+				semaphores[i] = new Semaphore(1);
+			}
+		}
+
+		void lock(int index) {
+			if (index >= 0 && index < semaphores.length) {
+				// System.out.println("======> lock line " + index + " by thread " + Thread.currentThread().getName());
+				semaphores[index].acquireUninterruptibly();
+				// System.out.println("======> lock line " + index + " by thread " + Thread.currentThread().getName() + " done");
+			}
+		}
+
+		void unlock(int index) {
+			if (index >= 0 && index < semaphores.length) {
+				// System.out.println("======> unlock line " + index + " by thread " + Thread.currentThread().getName());
+				semaphores[index].release();
+				// System.out.println("======> unlock line " + index + " by thread " + Thread.currentThread().getName() + " done");
+			}
+		}
+
+		void lockRange(int from, int to) {
+			for (int i = from; i <= to; i++) {
+				lock(i);
+			}
+		}
+
+		void unlockRange(int from, int to) {
+			for (int i = from; i <= to; i++) {
+				unlock(i);
+			}
+		}
+	}
+
+	private static int nextWorkerThreadId = 0;
+	class WorkerThread extends Thread {
+		Queue<WorkerJob> jobs = new LinkedList<>();
+		Semaphore doneSemaphore = new Semaphore(1);
+
+		WorkerThread() {
+			super("WorkerThread-" + nextWorkerThreadId++);
+			doneSemaphore.acquireUninterruptibly();
+		}
+
+		public void run() {
+			while (!isInterrupted()) {
+				WorkerJob job = null;
+				synchronized (jobs) {
+					if (jobs.size() > 0) {
+						job = jobs.remove();
+					}
+				}
+				if (job != null) {
+					job.run();
+				} else {
+					// wait for a job
+					// System.out.println("=====> gonna wait for a job in thread " + Thread.currentThread().getName() + "");
+					try {
+						synchronized (jobs) {
+							// System.out.println("=======> notifying thread " + Thread.currentThread().getName() + " done");
+							doneSemaphore.release();
+							jobs.wait();
+						}
+					} catch (InterruptedException e) {
+						// System.out.println("=====> thread " + Thread.currentThread().getName() + " interrupted");
+						break;
+					}
+				}
+			}
+		}
+
+		public void addJob(WorkerJob job) {
+			// System.out.println("======> adding a job in thread " + Thread.currentThread().getName() + " to process lines " + job.startIndex + " to " + job.endIndex + "");
+			synchronized (jobs) {
+				jobs.add(job);
+			}
+			doneSemaphore.acquireUninterruptibly();
+			synchronized (jobs) {
+				jobs.notify();
+			}
+		}
+
+		public void waitTillDone() {
+			doneSemaphore.acquireUninterruptibly();
+			doneSemaphore.release();
+		}
+	}
+
+	class WorkerJob {
+		final int startIndex;
+		final int endIndex;
+
+		public WorkerJob(int startIndex, int endIndex) {
+			this.startIndex = startIndex;
+			this.endIndex = endIndex;
+		}
+
+		public void run() {
+			linesLocker.lockRange(startIndex - 4, startIndex + 4);
+			int index = startIndex;
+			while (index <= endIndex) {
+				progressLineInBucket(index);
+				linesLocker.unlock(index - 4);
+				index++;
+				linesLocker.lock(index + 4);
+			}
+			linesLocker.unlockRange(index - 4, index + 4);
+			// System.out.println("=====> job done in thread " + Thread.currentThread().getName());
+		}
+	}
+
+	private void progressLineInBucket(final int index) {
+		for (int y = 0; y <= colDetTree.getMaxHeight(); y++) {
+			Collection<Organism> bucket = colDetTree.getBucket(index, y);
+			for (Organism o : bucket) {
+				if (!o.move()) {
+					organismsToRemove.add(o);
+					if (_visibleWorld.getSelectedOrganism() == o) {
+						_visibleWorld.setSelectedOrganism(null);
+					}
+				}
+			}
 		}
 	}
 

@@ -705,7 +705,7 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 					}
 				}
 			} catch (SecurityException ex) {
-				System.err.println(ex.getMessage());
+				ex.printStackTrace();
 				JOptionPane.showMessageDialog(null, Messages.getString("T_PERMISSION_DENIED"), //$NON-NLS-1$
 						Messages.getString("T_PERMISSION_DENIED"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
 			}
@@ -747,15 +747,15 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 						_world._isbackuped = true;
 						setStatusMessage(Messages.getString("T_WORLD_LOADED_SUCCESSFULLY")); //$NON-NLS-1$
 					} catch (IOException ex) {
-						System.err.println(ex.getMessage());
+						ex.printStackTrace();
 						JOptionPane.showMessageDialog(null, Messages.getString("T_CANT_READ_FILE"), //$NON-NLS-1$
 								Messages.getString("T_READ_ERROR"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
 					} catch (ClassNotFoundException ex) {
-						System.err.println(ex.getMessage());
+						ex.printStackTrace();
 						JOptionPane.showMessageDialog(null, Messages.getString("T_WRONG_FILE_TYPE"), //$NON-NLS-1$
 								Messages.getString("T_READ_ERROR"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
 					} catch (ClassCastException ex) {
-						System.err.println(ex.getMessage());
+						ex.printStackTrace();
 						JOptionPane.showMessageDialog(null, Messages.getString("T_WRONG_FILE_VERSION"), //$NON-NLS-1$
 								Messages.getString("T_READ_ERROR"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
 					}
@@ -770,7 +770,7 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 					_visibleWorld.repaint();
 				}
 			} catch (SecurityException ex) {
-				System.err.println(ex.getMessage());
+				ex.printStackTrace();
 				JOptionPane.showMessageDialog(null, Messages.getString("T_PERMISSION_DENIED"), //$NON-NLS-1$
 						Messages.getString("T_PERMISSION_DENIED"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
 			}
@@ -1072,7 +1072,7 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 				}
 			}
 		} catch (SecurityException ex) {
-			System.err.println(ex.getMessage());
+			ex.printStackTrace();
 			JOptionPane.showMessageDialog(null, Messages.getString("T_PERMISSION_DENIED"), //$NON-NLS-1$
 					Messages.getString("T_PERMISSION_DENIED"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
 		}
@@ -1092,12 +1092,12 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 			outputStream.close();
 			setStatusMessage(Messages.getString("T_WRITING_COMPLETED")); //$NON-NLS-1$
 			return true;
-		} catch (FileNotFoundException e) {
-			System.err.println(e.getMessage());
-		} catch (IOException e) {
-			System.err.println(e.getMessage());
+		} catch (FileNotFoundException ex) {
+			ex.printStackTrace();
+		} catch (IOException ex) {
+			ex.printStackTrace();
 		} catch (SecurityException ex) {
-			System.err.println(ex.getMessage());
+			ex.printStackTrace();
 			JOptionPane.showMessageDialog(null, Messages.getString("T_PERMISSION_DENIED"), //$NON-NLS-1$
 					Messages.getString("T_PERMISSION_DENIED"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
 		}
@@ -1113,9 +1113,9 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 		try {
 			ImageIO.write(worldimage, "PNG", f); //$NON-NLS-1$
 		} catch (FileNotFoundException ex) {
-			System.err.println(ex.getMessage());
+			ex.printStackTrace();
 		} catch (IOException ex) {
-			System.err.println(ex.getMessage());
+			ex.printStackTrace();
 		}
 	}
 
@@ -1131,9 +1131,9 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 		try {
 			ImageIO.write(img, "PNG", f); //$NON-NLS-1$
 		} catch (FileNotFoundException ex) {
-			System.err.println(ex.getMessage());
+			ex.printStackTrace();
 		} catch (IOException ex) {
-			System.err.println(ex.getMessage());
+			ex.printStackTrace();
 		}
 	}
 
@@ -1144,9 +1144,9 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 		try {
 			ImageIO.write(worldimage, "PNG", f); //$NON-NLS-1$
 		} catch (FileNotFoundException ex) {
-			System.err.println(ex.getMessage());
+			ex.printStackTrace();
 		} catch (IOException ex) {
-			System.err.println(ex.getMessage());
+			ex.printStackTrace();
 		}
 	}
 
@@ -1280,7 +1280,7 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 	}
 
 	public void startWorkerThread() {
-		workerThread = new Thread() {
+		workerThread = new Thread("Main Worker Thread") {
 			@Override
 			public void run() {
 				long prevNanos = System.nanoTime();

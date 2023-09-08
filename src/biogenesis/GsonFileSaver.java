@@ -68,7 +68,7 @@ public class GsonFileSaver {
         w.close();
       }
     } catch (IOException ex) {
-      System.err.println(ex.getMessage());
+      ex.printStackTrace();
     }
   }
 }

@@ -756,15 +756,15 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 							passiveCombo.setSelectedIndex(passive==false?0:1);
 							clockwiseCombo.setSelectedIndex(clockwise==false?0:1);
 	    				} catch (SAXException ex) {
-	    					System.err.println(ex.getMessage());
+	    					ex.printStackTrace();
 	    					JOptionPane.showMessageDialog(null,Messages.getString("T_WRONG_FILE_VERSION"),Messages.getString("T_READ_ERROR"),JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$ //$NON-NLS-2$
 	    				} catch (IOException ex) {
-	    					System.err.println(ex.getMessage());
+	    					ex.printStackTrace();
 	    					JOptionPane.showMessageDialog(null,Messages.getString("T_CANT_READ_FILE"),Messages.getString("T_READ_ERROR"),JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$ //$NON-NLS-2$
 						}
 	    			}
 	    		} catch (SecurityException ex) {
-	    			System.err.println(ex.getMessage());
+	    			ex.printStackTrace();
 	    			JOptionPane.showMessageDialog(null,Messages.getString("T_PERMISSION_DENIED"),Messages.getString("T_PERMISSION_DENIED"),JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$ //$NON-NLS-2$
 	    		}
 			}
