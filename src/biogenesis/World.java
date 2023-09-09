@@ -704,15 +704,21 @@ public class World implements Serializable{
 		progressAllOrganisms();
 
 		// Reactions turning CO2 and CH4 into each other and detritus into CO2
-		double x = Math.min(getCO2()/Utils.CO2_TO_CH4_DIVISOR,getCO2());
-		_CO2 -= x;
-		_CH4 += x;
-		double y = Math.min(getCH4()/Utils.CH4_TO_CO2_DIVISOR,getCH4());
-		_CH4 -= y;
-		_CO2 += y;
-		double z = Math.min(getDetritus()/Utils.DETRITUS_TO_CO2_DIVISOR,getDetritus());
-		_detritus -= z;
-		_CO2 += z;
+		synchronized (_CH4_monitor) {
+			synchronized (_CO2_monitor) {
+				synchronized (_detritus_monitor) {
+					double x = Math.min(getCO2()/Utils.CO2_TO_CH4_DIVISOR,getCO2());
+					_CO2 -= x;
+					_CH4 += x;
+					double y = Math.min(getCH4()/Utils.CH4_TO_CO2_DIVISOR,getCH4());
+					_CH4 -= y;
+					_CO2 += y;
+					double z = Math.min(getDetritus()/Utils.DETRITUS_TO_CO2_DIVISOR,getDetritus());
+					_detritus -= z;
+					_CO2 += z;
+				}
+			}
+		}
 		if (nFrames++ % 20 == 0)
 			_visibleWorld.getMainWindow().getInfoPanel().recalculate();
 		if (nFrames % 256 == 0) {
