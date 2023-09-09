@@ -33,7 +33,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.Semaphore;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import javax.swing.JViewport;
@@ -56,10 +55,12 @@ public class World implements Serializable{
 	/**
 	 * World width
 	 */
+	@Expose
 	protected int _width;
 	/**
 	 * World height
 	 */
+	@Expose
 	protected int _height;
 	/**
 	 * A list of the organisms in the world, even dead ones.
@@ -110,21 +111,25 @@ public class World implements Serializable{
 	/**
 	 * The amount of O2 in the atmosphere of this world.
 	 */
+	@Expose
 	protected volatile double _O2;
 	private static final Object _O2_monitor = new Object();
 	/**
 	 * The amount of CO2 in the atmosphere of this world.
 	 */
+	@Expose
 	protected volatile double _CO2;
 	private static final Object _CO2_monitor = new Object();
 	/**
 	 * The amount of CH4 in the atmosphere of this world.
 	 */
+	@Expose
 	protected volatile double _CH4;
 	private static final Object _CH4_monitor = new Object();
 	/**
 	 * The amount of detritus in the atmosphere of this world.
 	 */
+	@Expose
 	protected volatile double _detritus;
 	private static final Object _detritus_monitor = new Object();
 	/**
