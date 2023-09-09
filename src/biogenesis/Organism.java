@@ -1840,7 +1840,7 @@ public class Organism extends Rectangle {
 								}
 							}
 						}
-					}					
+					}
 				}
 				break;
 		    }
@@ -22006,7 +22006,7 @@ public class Organism extends Rectangle {
 							case SILVER:
 								if (_isonlyc4 == 2) {
 									addmaintenance -= _m[i];
-								} 
+								}
 								break;
 							}
 						} else {
@@ -22696,5 +22696,18 @@ public class Organism extends Rectangle {
 				g.drawLine(x1[i] -x + _centerX, y1[i] - y + _centerY, x2[i] - x + _centerX, y2[i] - y+_centerY);
 		}
 		return image;
+	}
+
+	@Override
+	public int hashCode() {
+		return _ID; // i assume ID is unique
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Organism) {
+			return _ID == ((Organism)obj)._ID;
+		}
+		return false;
 	}
 }

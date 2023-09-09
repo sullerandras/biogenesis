@@ -27,6 +27,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -66,7 +67,7 @@ public class World implements Serializable{
 	 * manually synchronize when iterating over it.
 	 */
 	@Expose
-	protected List<Organism> _organisms;
+	protected Collection<Organism> _organisms;
 	/**
 	 * A list of all input biological corridors from where organisms
 	 * of other hosts will arrive.
@@ -545,7 +546,7 @@ public class World implements Serializable{
 		_visibleWorld = visibleWorld;
 		_width = Utils.WORLD_WIDTH;
 		_height = Utils.WORLD_HEIGHT;
-		_organisms = Collections.synchronizedList(new ArrayList<Organism>(Utils.ORGANISMS_VECTOR_SIZE));
+		_organisms = Collections.synchronizedSet(new HashSet<>());
 		inCorridors = Collections.synchronizedList(new ArrayList<InCorridor>());
 		outCorridors = Collections.synchronizedList(new ArrayList<OutCorridor>());
 		worldStatistics = new WorldStatistics(_visibleWorld.getMainWindow());
@@ -596,6 +597,7 @@ public class World implements Serializable{
 			if (b.randomCreate())
 				addOrganism(b,null);
 		}
+		_organisms.addAll(organismsToAdd);
 	}
 	/**
 	 * Remove all corpses from the world and return their organic matter to
@@ -694,8 +696,10 @@ public class World implements Serializable{
 				}
 			}
 		}
-		for (Organism o: _organisms) {
-			colDetTree.insert(o);
+		synchronized (_organisms) {
+			for (Organism o: _organisms) {
+				colDetTree.insert(o);
+			}
 		}
 		progressAllOrganisms();
 
@@ -718,9 +722,11 @@ public class World implements Serializable{
 		}
 	}
 
-	private Collection<Organism> organismsToRemove = Collections.synchronizedList(new ArrayList<>());
+	private Collection<Organism> organismsToAdd = Collections.synchronizedSet(new HashSet<>());
+	private Collection<Organism> organismsToRemove = Collections.synchronizedSet(new HashSet<>());
 
 	private void progressAllOrganisms() {
+		organismsToAdd.clear();
 		organismsToRemove.clear();
 
 		final int organismCount = _organisms.size();
@@ -732,13 +738,15 @@ public class World implements Serializable{
 			progressAllOrganismsInSerial(organismCount);
 		}
 
-		// remove all dead organisms
-		_organisms.removeAll(organismsToRemove);
+		// add new organisms and remove dead organisms
+		synchronized (_organisms) {
+			_organisms.addAll(organismsToAdd);
+			_organisms.removeAll(organismsToRemove);
+		}
 	}
 
 	private void progressAllOrganismsInSerial(int organismCount) {
-		for (int i = 0; i < organismCount; i++) {
-			Organism b = _organisms.get(i);
+		for (Organism b : _organisms) {
 			if (!b.move()) {
 				organismsToRemove.add(b);
 				if (_visibleWorld.getSelectedOrganism() == b) {
@@ -962,18 +970,6 @@ public class World implements Serializable{
 		}
 	}
 
-	private void progressBatchOfOrganisms(int startIndex, int endIndex) {
-		for (int i = startIndex; i < endIndex; i++) {
-			Organism b = _organisms.get(i);
-			if (!b.move()) {
-				organismsToRemove.add(b);
-				if (_visibleWorld.getSelectedOrganism() == b) {
-					_visibleWorld.setSelectedOrganism(null);
-				}
-			}
-		}
-	}
-
 	/**
 	 * Add a pair of biological corridors to the world.
 	 * This method is called by {@link biogenesis.Connection.setState} when
@@ -1128,7 +1124,7 @@ public class World implements Serializable{
 	 * @param parent  The parent of the added organism, or null if there is no parent.
 	 */
 	public void addOrganism(Organism child, Organism parent) {
-		_organisms.add(child);
+		organismsToAdd.add(child);
 		if (parent == _visibleWorld.getSelectedOrganism())
 			_visibleWorld.getMainWindow().getInfoPanel().changeNChildren();
 		if (parent != null) {

@@ -32,6 +32,7 @@ import java.awt.event.WindowEvent;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -70,7 +71,7 @@ public class StatisticsWindow extends JDialog {
 	private final World world;
 	private final VisibleWorld visibleWorld;
 	private final WorldStatistics worldStatistics;
-	private final List<Organism> organisms;
+	private final Collection<Organism> organisms;
 
 	private GraphPanel populationGraphPanel;
 	private GraphInfo deathsGraph;
@@ -119,7 +120,7 @@ public class StatisticsWindow extends JDialog {
 
 	private GraphInfo generationHistogram;
 
-	public StatisticsWindow(JFrame owner, World world, VisibleWorld visibleWorld, WorldStatistics ws, List<Organism> os) {
+	public StatisticsWindow(JFrame owner, World world, VisibleWorld visibleWorld, WorldStatistics ws, Collection<Organism> os) {
 		super(owner, false);
 		this.world = world;
 		this.visibleWorld = visibleWorld;
@@ -624,7 +625,7 @@ public class StatisticsWindow extends JDialog {
 
 		generationHistogramPanel.setMinTime(worldStatistics.getMinGeneration());
 		generationHistogramPanel.setMaxTime(worldStatistics.getMaxGeneration());
-		max = worldStatistics.getGenerationHistogramList().stream().max(Double::compare).get();
+		max = worldStatistics.getGenerationHistogramList().stream().max(Double::compare).orElse(1.0);
 		generationHistogram.setMaxAndPoints(
 				max,
 				worldStatistics.getGenerationHistogramList());

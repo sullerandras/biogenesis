@@ -1,8 +1,8 @@
 package biogenesis;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import biogenesis.csv.CSV;
@@ -101,7 +101,7 @@ public class BioFile {
   }
 
   public void appendToCsv(long time, int population, int distinctClades, int distinctCladesWith10Orgs,
-      int distinctCladesWith100Orgs, double O2, double CO2, double CH4, double detritus, List<Organism> organisms) {
+      int distinctCladesWith100Orgs, double O2, double CO2, double CH4, double detritus, Collection<Organism> organisms) {
     File csvFile = getCsvFile();
     Row row = new Row();
     row.add("time", time);
@@ -122,7 +122,7 @@ public class BioFile {
     new CSV(csvFile).append(row);
   }
 
-  private Map<String, Integer> prepareOrganismStats(List<Organism> organisms, Row row) {
+  private Map<String, Integer> prepareOrganismStats(Collection<Organism> organisms, Row row) {
     Map<String, Integer> stats = new LinkedHashMap<>(); // using LinkedHashMap to ensure the order of the columns
 
     double totalMass = 0;

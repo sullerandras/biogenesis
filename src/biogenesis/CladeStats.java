@@ -3,6 +3,7 @@ package biogenesis;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +13,7 @@ import java.util.stream.Collectors;
 public class CladeStats {
   private final CladeStore cladeStore = new CladeStore();
 
-  public CladeStats(List<Organism> organisms) {
+  public CladeStats(Collection<Organism> organisms) {
     synchronized (organisms) {
       Map<CladeId, GeneticCode> cladeIdToGeneticCode = new HashMap<>();
       for (Organism o : organisms) {

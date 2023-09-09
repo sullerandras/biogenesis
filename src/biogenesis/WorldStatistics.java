@@ -20,6 +20,7 @@ package biogenesis;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -582,7 +583,7 @@ public class WorldStatistics implements Serializable {
 		infectionsSum++;
 	}
 
-	public void eventTime(int population, int distinctClades, int distinctCladesWith10Orgs, int distinctCladesWith100Orgs, double O2, double CO2, double CH4, double detritus, List<Organism> organisms) {
+	public void eventTime(int population, int distinctClades, int distinctCladesWith10Orgs, int distinctCladesWith100Orgs, double O2, double CO2, double CH4, double detritus, Collection<Organism> organisms) {
 		time++;
 		if (deathLastTime > 1.5 * getAverageDeaths()) {
 			if (deathLastTime > 3 * getAverageDeaths()) {
@@ -692,7 +693,7 @@ public class WorldStatistics implements Serializable {
 	 * Finds the remarkable beings in the world. Also calculates totalMass, totalEnergy and generationHistogramList.
 	 * @param organisms
 	 */
-	public void findBestAliveBeings(List<Organism> organisms) {
+	public void findBestAliveBeings(Collection<Organism> organisms) {
 		aliveBeingMostChildren = null;
 		aliveOrganismMostChildren = null;
 		aliveBeingMostChildrenNumber = 0;
