@@ -722,10 +722,17 @@ public class World implements Serializable{
 		}
 	}
 
-	private Collection<Organism> organismsToAdd = Collections.synchronizedSet(new HashSet<>());
-	private Collection<Organism> organismsToRemove = Collections.synchronizedSet(new HashSet<>());
+	private transient Collection<Organism> organismsToAdd = Collections.synchronizedSet(new HashSet<>());
+	private transient Collection<Organism> organismsToRemove = Collections.synchronizedSet(new HashSet<>());
+	private transient Collection<Organism> checkedOrganisms = Collections.synchronizedSet(new HashSet<>());
 
 	private void progressAllOrganisms() {
+		if (organismsToAdd == null) {
+			organismsToAdd = Collections.synchronizedSet(new HashSet<>());
+		}
+		if (organismsToRemove == null) {
+			organismsToRemove = Collections.synchronizedSet(new HashSet<>());
+		}
 		organismsToAdd.clear();
 		organismsToRemove.clear();
 
@@ -761,6 +768,10 @@ public class World implements Serializable{
 
 	private void progressAllOrganismsInParallel(int organismCount, int threadCount) {
 		// System.out.println("========================================================================================== in thread "+Thread.currentThread().getName());
+		if (checkedOrganisms == null) {
+			checkedOrganisms = new HashSet<>();
+		}
+		checkedOrganisms.clear();
 
 		int lineCount = colDetTree.getMaxWidth() + 1;
 		if (threadCount * 5 > lineCount) { // not enough gap between threads
@@ -813,30 +824,6 @@ public class World implements Serializable{
 			workerThreads.get(i).waitTillDone();
 			// System.out.println("======> waiting for thread " + workerThreads.get(i).getName() + " to finish done");
 		}
-
-		// Thread[] threads = new Thread[threadCount-1];
-		// for (int i = 0; i < threadCount - 1; i++) { // create all but the last thread
-		// 	final int start = organismCount * i / threadCount;
-		// 	final int end = organismCount * (i + 1) / threadCount;
-		// 	threads[i] = new Thread() {
-		// 		@Override
-		// 		public void run() {
-		// 			progressBatchOfOrganisms(start, end);
-		// 		}
-		// 	};
-		// 	threads[i].start();
-		// }
-		// // process the last batch in this thread to save creating a thread and waiting for it to finish
-		// progressBatchOfOrganisms(organismCount * (threadCount - 1) / threadCount, organismCount);
-
-		// // wait for all threads to finish
-		// try {
-		// 	for (Thread thread : threads) {
-		// 		thread.join();
-		// 	}
-		// } catch (InterruptedException e) {
-		// 	throw new RuntimeException(e);
-		// }
 	}
 
 	class LinesLocker {
@@ -960,6 +947,11 @@ public class World implements Serializable{
 		for (int y = 0; y <= colDetTree.getMaxHeight(); y++) {
 			Collection<Organism> bucket = colDetTree.getBucket(index, y);
 			for (Organism o : bucket) {
+				synchronized (checkedOrganisms) {
+					if (!checkedOrganisms.add(o)) {
+						continue;
+					}
+				}
 				if (!o.move()) {
 					organismsToRemove.add(o);
 					if (_visibleWorld.getSelectedOrganism() == o) {
