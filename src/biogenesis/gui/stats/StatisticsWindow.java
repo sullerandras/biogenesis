@@ -655,7 +655,7 @@ public class StatisticsWindow extends JDialog {
 		aliveMostInfectionsPanel.update(worldStatistics.getAliveBeingMostInfections(),
 				worldStatistics.getAliveBeingMostInfectionsNumber());
 		mostInfectionsPanel.update(worldStatistics.getBeingMostInfections(),
-				worldStatistics.getBeingMostInfectionsNumber());
+				worldStatistics.getBeingMostInfectionsNumber(), worldStatistics.getBeingMostInfectionsTime());
 		aliveMostMassPanel.update(worldStatistics.getAliveBeingMostMass(),
 				worldStatistics.getAliveBeingMostMassNumber());
 		aliveOldestPanel.update(worldStatistics.getAliveBeingOldest(),
