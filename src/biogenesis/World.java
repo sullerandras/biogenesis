@@ -326,16 +326,6 @@ public class World implements Serializable{
 		return _detritus;
 	}
 	/**
-	 * Add O2 to the atmosphere.
-	 *
-	 * @param q  The amount of O2 to add.
-	 */
-	public void addO2(double q) {
-		synchronized (_O2_monitor) {
-			_O2 += q;
-		}
-	}
-	/**
 	 * Add CO2 to the atmosphere.
 	 *
 	 * @param q  The amount of CO2 to add.
@@ -366,16 +356,6 @@ public class World implements Serializable{
 		}
 	}
 	/**
-	 * Substracts O2 from the atmosphere.
-	 *
-	 * @param q  The amount of O2 to substract.
-	 */
-	public void decreaseO2(double q) {
-		synchronized (_O2_monitor) {
-			_O2 -= Math.min(q, _O2);
-		}
-	}
-	/**
 	 * Substract CO2 from the atmosphere.
 	 *
 	 * @param q  The amount of CO2 to substract.
@@ -403,6 +383,25 @@ public class World implements Serializable{
 	public void decreaseDetritus(double q) {
 		synchronized (_detritus_monitor) {
 			_detritus -= Math.min(q, _detritus);
+		}
+	}
+	/**
+	 * Takes the given amount of CO2 from the atmosphere and converts it to O2.
+	 * If the atmosphere doesn't have enough CO2, only the available amount is
+	 * converted.
+	 *
+	 * @param q  The amount of CO2 to convert.
+	 * @return  The amount of CO2 converted. This is always <code>q</code>
+	 * unless there weren't enough CO2 in the atmosphere.
+	 */
+	public double convertCO2ToO2(double q) {
+		synchronized (_CO2_monitor) {
+			synchronized (_O2_monitor) {
+				double d = Math.min(q,_CO2);
+				_CO2 -= d;
+				_O2 += d;
+				return d;
+			}
 		}
 	}
 	/**

@@ -2207,9 +2207,7 @@ public class Organism extends Rectangle {
 		_geneticCode._generation = 1;
 		_growthRatio = 16;
 		// initial energy
-		_energy = Math.min(Utils.INITIAL_ENERGY,_world._CO2);
-		_world.decreaseCO2(_energy);
-		_world.addO2(_energy);
+		_energy = _world.convertCO2ToO2(Utils.INITIAL_ENERGY);
 		// initialize
 		create();
 		symmetric();
@@ -3542,9 +3540,7 @@ public class Organism extends Rectangle {
 						_geneticCode._cladeID = Integer.toString(_ID);
 					}
 				}
-				_energy = Math.min(Utils.INITIAL_ENERGY,_world._CO2);
-				_world.decreaseCO2(_energy);
-				_world.addO2(_energy);
+				_energy = _world.convertCO2ToO2(Utils.INITIAL_ENERGY);
 				// Maximum age that an organism can reach
 				_max_age = Utils.MAX_AGE + (_segments/Utils.AGE_DIVISOR);
 				// Calculates the energy required to reproduce this genetic code.

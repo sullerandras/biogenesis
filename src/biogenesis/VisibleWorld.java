@@ -204,10 +204,7 @@ public class VisibleWorld extends JPanel implements VisibleWorldInterface {
 		public void actionPerformed(ActionEvent e) {
 			Organism b = getSelectedOrganism();
 			if (b != null && b.isAlive()) {
-				double q = Math.min(10, _mainWindow.getWorld()._CO2);
-				_mainWindow.getWorld().addCO2(q);
-				b._energy += q;
-				_mainWindow.getWorld().addO2(q);
+				b._energy += _mainWindow.getWorld().convertCO2ToO2(10);
 			}
 		}
 	}
