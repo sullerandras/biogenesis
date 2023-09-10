@@ -334,7 +334,7 @@ public class StatisticsWindow extends JDialog {
 		aliveMostChildrenPanel = new RemarkableOrganismPanel(
 				visibleWorld,
 				Messages.getString("T_ALIVE_BEING_HAVING_THE_MOST_CHILDREN"), //$NON-NLS-1$
-				worldStatistics.getAliveBeingMostChildren(),
+				worldStatistics.getAliveOrganismMostChildren(),
 				Messages.getString("T_NUMBER_OF_CHILDREN"), null, nf); //$NON-NLS-1$
 		aliveMostChildrenPanel.addMouseListenerToGeneticCodePanel(new MouseAdapter() {
 			@Override
@@ -353,7 +353,7 @@ public class StatisticsWindow extends JDialog {
 		aliveMostKillsPanel = new RemarkableOrganismPanel(
 				visibleWorld,
 				Messages.getString("T_ALIVE_BEING_HAVING_THE_MOST_VICTIMS"), //$NON-NLS-1$
-				worldStatistics.getAliveBeingMostKills(),
+				worldStatistics.getAliveOrganismMostKills(),
 				Messages.getString("T_NUMBER_OF_VICTIMS"), null, nf); //$NON-NLS-1$
 		aliveMostKillsPanel.addMouseListenerToGeneticCodePanel(new MouseAdapter() {
 			@Override
@@ -372,7 +372,7 @@ public class StatisticsWindow extends JDialog {
 		aliveMostInfectionsPanel = new RemarkableOrganismPanel(
 				visibleWorld,
 				Messages.getString("T_ALIVE_BEING_HAVING_THE_MOST_INFECTED"), //$NON-NLS-1$
-				worldStatistics.getAliveBeingMostInfections(),
+				worldStatistics.getAliveOrganismMostInfections(),
 				Messages.getString("T_NUMBER_OF_INFECTED"), null, nf); //$NON-NLS-1$
 		aliveMostInfectionsPanel.addMouseListenerToGeneticCodePanel(new MouseAdapter() {
 			@Override
@@ -391,7 +391,7 @@ public class StatisticsWindow extends JDialog {
 		aliveMostMassPanel = new RemarkableOrganismPanel(
 				visibleWorld,
 				Messages.getString("T_ALIVE_BEING_HAVING_THE_MOST_MASS"), //$NON-NLS-1$
-				worldStatistics.getAliveBeingMostMass(),
+				worldStatistics.getAliveOrganismMostMass(),
 				Messages.getString("T_MASS"), null, nf); //$NON-NLS-1$
 		aliveMostMassPanel.addMouseListenerToGeneticCodePanel(new MouseAdapter() {
 			@Override
@@ -404,7 +404,7 @@ public class StatisticsWindow extends JDialog {
 		aliveOldestPanel = new RemarkableOrganismPanel(
 				visibleWorld,
 				Messages.getString("T_ALIVE_BEING_THE_OLDEST"), //$NON-NLS-1$
-				worldStatistics.getAliveBeingOldest(),
+				worldStatistics.getAliveOrganismOldest(),
 				Messages.getString("T_AGE"), null, nf); //$NON-NLS-1$
 		aliveOldestPanel.addMouseListenerToGeneticCodePanel(new MouseAdapter() {
 			@Override
@@ -417,7 +417,7 @@ public class StatisticsWindow extends JDialog {
 		aliveLowestGenerationPanel = new RemarkableOrganismPanel(
 				visibleWorld,
 				Messages.getString("T_ALIVE_BEING_HAVING_THE_LOWEST_GENERATION"), //$NON-NLS-1$
-				worldStatistics.getAliveBeingLowestGeneration(),
+				worldStatistics.getAliveOrganismLowestGeneration(),
 				Messages.getString("T_GENERATION"), null, nf); //$NON-NLS-1$
 		aliveLowestGenerationPanel.addMouseListenerToGeneticCodePanel(new MouseAdapter() {
 			@Override
@@ -430,7 +430,7 @@ public class StatisticsWindow extends JDialog {
 		aliveHighestGenerationPanel = new RemarkableOrganismPanel(
 				visibleWorld,
 				Messages.getString("T_ALIVE_BEING_HAVING_THE_HIGHEST_GENERATION"), //$NON-NLS-1$
-				worldStatistics.getAliveBeingHighestGeneration(),
+				worldStatistics.getAliveOrganismHighestGeneration(),
 				Messages.getString("T_GENERATION"), null, nf); //$NON-NLS-1$
 		aliveHighestGenerationPanel.addMouseListenerToGeneticCodePanel(new MouseAdapter() {
 			@Override
@@ -661,27 +661,28 @@ public class StatisticsWindow extends JDialog {
 		updateColorPanel(colorPanel);
 
 		// Update notable beings panel
-		aliveMostChildrenPanel.update(worldStatistics.getAliveBeingMostChildren(),
-				worldStatistics.getAliveBeingMostChildrenNumber());
+		aliveMostChildrenPanel.update(worldStatistics.getAliveOrganismMostChildren(),
+				worldStatistics.getAliveOrganismMostChildrenNumber());
 		mostChildrenPanel.update(worldStatistics.getBeingMostChildren(), worldStatistics.getBeingMostChildrenNumber(),
 				worldStatistics.getBeingMostChildrenTime());
-		aliveMostKillsPanel.update(worldStatistics.getAliveBeingMostKills(),
-				worldStatistics.getAliveBeingMostKillsNumber());
+		aliveMostKillsPanel.update(worldStatistics.getAliveOrganismMostKills(),
+				worldStatistics.getAliveOrganismMostKillsNumber());
 		mostKillsPanel.update(worldStatistics.getBeingMostKills(), worldStatistics.getBeingMostKillsNumber(),
 				worldStatistics.getBeingMostKillsTime());
-		aliveMostInfectionsPanel.update(worldStatistics.getAliveBeingMostInfections(),
-				worldStatistics.getAliveBeingMostInfectionsNumber());
+		aliveMostInfectionsPanel.update(worldStatistics.getAliveOrganismMostInfections(),
+				worldStatistics.getAliveOrganismMostInfectionsNumber());
 		mostInfectionsPanel.update(worldStatistics.getBeingMostInfections(),
 				worldStatistics.getBeingMostInfectionsNumber(), worldStatistics.getBeingMostInfectionsTime());
-		aliveMostMassPanel.update(worldStatistics.getAliveBeingMostMass(),
-				worldStatistics.getAliveBeingMostMassNumber());
-		aliveOldestPanel.update(worldStatistics.getAliveBeingOldest(),
-				worldStatistics.getAliveBeingOldestNumber());
-		aliveLowestGenerationPanel.update(worldStatistics.getAliveBeingLowestGeneration(),
-				worldStatistics.getAliveBeingLowestGenerationNumber());
-		aliveHighestGenerationPanel.update(worldStatistics.getAliveBeingHighestGeneration(),
-				worldStatistics.getAliveBeingHighestGenerationNumber());
-		aliveBiggestPanel.update(worldStatistics.getAliveOrganismBiggest(), worldStatistics.getAliveOrganismBiggestNumber());
+		aliveMostMassPanel.update(worldStatistics.getAliveOrganismMostMass(),
+				worldStatistics.getAliveOrganismMostMassNumber());
+		aliveOldestPanel.update(worldStatistics.getAliveOrganismOldest(),
+				worldStatistics.getAliveOrganismOldestNumber());
+		aliveLowestGenerationPanel.update(worldStatistics.getAliveOrganismLowestGeneration(),
+				worldStatistics.getAliveOrganismLowestGenerationNumber());
+		aliveHighestGenerationPanel.update(worldStatistics.getAliveOrganismHighestGeneration(),
+				worldStatistics.getAliveOrganismHighestGenerationNumber());
+		aliveBiggestPanel.update(worldStatistics.getAliveOrganismBiggest(),
+				worldStatistics.getAliveOrganismBiggestNumber());
 
 		repaint();
 	}
