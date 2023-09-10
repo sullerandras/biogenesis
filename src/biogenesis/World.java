@@ -92,11 +92,13 @@ public class World implements Serializable{
 	 * in this world
 	 */
 	protected int NEXT_ID;
+	private static final Object NEXT_ID_monitor = new Object();
 	/**
 	 * The next identification part of the string that will be assigned to an organisms clade
 	 * in this world
 	 */
 	protected int NEXT_CLADE_PART;
+	private static final Object NEXT_CLADE_PART_monitor = new Object();
 	/**
 	 * A reference to the visible world part of this world used basically
 	 * to indicate which parts of the world should be repainted due to
@@ -206,7 +208,9 @@ public class World implements Serializable{
 	 * @return  A unique number used to identify an organism.
 	 */
 	public int getNewId() {
-		return NEXT_ID++;
+		synchronized (NEXT_ID_monitor) {
+			return NEXT_ID++;
+		}
 	}
 	/**
 	 * Returns the next available clade part identification number.
@@ -214,7 +218,9 @@ public class World implements Serializable{
 	 * @return  A unique number used to identify part of the clade string
 	 */
 	public int getNewCladePart() {
-		return NEXT_CLADE_PART++;
+		synchronized (NEXT_CLADE_PART_monitor) {
+			return NEXT_CLADE_PART++;
+		}
 	}
 	/**
 	 * Returns the actual time.
