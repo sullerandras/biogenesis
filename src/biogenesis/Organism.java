@@ -1900,7 +1900,7 @@ public class Organism extends Rectangle {
 							case SPORE:
 								if ((_geneticCode.getModifiesspore() >= 3) && (_geneticCode.getModifiesspore() <= 6)) {
 									if ((_reproducelate == 0) && (_age == 0)) {
-										_reproduceEnergy -= 3;
+										_reproduceEnergy -= 2;
 									}
 								}
 								break;
@@ -18219,20 +18219,20 @@ public class Organism extends Rectangle {
 				if (_isinfectious) {
 					if (_isaplant) {
 						if ((_plagueversion == 2) || (_sporeversion == 6)) {
-							useEnergy(Utils.PLAGUE_ENERGY_CONSUMPTION);
+							useDetritus(Utils.PLAGUE_ENERGY_CONSUMPTION);
 						} else {
-							useEnergy(0.5 * Utils.PLAGUE_ENERGY_CONSUMPTION);
+							useDetritus(0.5 * Utils.PLAGUE_ENERGY_CONSUMPTION);
 						}
 			            org.setColor(Utils.ColorDARKLILAC);
 					} else {
-			            useEnergy(Utils.SCOURGE_ENERGY_CONSUMPTION);
+			            useDetritus(Utils.SCOURGE_ENERGY_CONSUMPTION);
 			            org.setColor(Utils.ColorDARKLILAC);
 					}
 					if (org._antiviral > 0) {
 						virusneutralized();
 					}
 				} else {
-		            useEnergy(Utils.SCOURGE_ENERGY_CONSUMPTION);
+		            useDetritus(Utils.SCOURGE_ENERGY_CONSUMPTION);
 		            org.setColor(Utils.ColorDARKLILAC);
 				}
 				org._nVirusChildren = 0;
@@ -21137,7 +21137,7 @@ public class Organism extends Rectangle {
 						break;
 					case PLANKTON:
 						_filterfeeding += _mphoto[i];
-						addmaintenance -= 0.75 * _m[i];
+						addmaintenance -= 0.5 * _m[i];
 						break;
 					case PURPLE:
 						_methanotrophy += _mphoto[i];
@@ -21433,7 +21433,7 @@ public class Organism extends Rectangle {
 						break;
 					case PLANKTON:
 						_filterfeeding += _mphoto[i];
-						addmaintenance -= 0.75 * _m[i];
+						addmaintenance -= 0.5 * _m[i];
 						break;
 					case PURPLE:
 						_methanotrophy += _mphoto[i];

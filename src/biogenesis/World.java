@@ -624,45 +624,7 @@ public class World implements Serializable{
 			}
 		}
 	}
-	/**
-	 * Determines the world's region that needs to be repainted in the associated
-	 * {@link biogenesis.VisualWorld} and instructs it to do it.
-	 *
-	 * For optimization, only paints organisms that has moved in the last frame.
-	 */
-	public void setPaintingRegion() {
-		if (!Utils.repaintWorld()) {
-			return;
-		}
 
-		Organism b;
-		if (_corridorexists) {
-			Corridor c;
-			synchronized (inCorridors) {
-				for (Iterator<InCorridor> it = inCorridors.iterator(); it.hasNext();) {
-					c = it.next();
-					_visibleWorld.repaint(c);
-				}
-			}
-			synchronized (outCorridors) {
-				for (Iterator<OutCorridor> it = outCorridors.iterator(); it.hasNext();) {
-					c = it.next();
-					_visibleWorld.repaint(c);
-					if (c.getTravellingOrganism() != null)
-						_visibleWorld.repaint(c.getTravellingOrganism());
-				}
-			}
-		}
-		synchronized (_organisms) {
-			for (Iterator<Organism> it = _organisms.iterator(); it.hasNext();) {
-				b = it.next();
-				if (b.hasMoved) {
-					_visibleWorld.repaint(b.lastFrame);
-					_visibleWorld.repaint(b);
-				}
-			}
-		}
-	}
 	/**
 	 * Executes a frame. This method iterates through all objects in the world
 	 * and make them to execute a movement. Here is the place where all action

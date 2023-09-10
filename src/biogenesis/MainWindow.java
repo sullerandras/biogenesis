@@ -1194,31 +1194,31 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 		_statusLabel.setText(statusLabelText.toString());
 	}
 
-	final transient Runnable lifeProcess = new Runnable() {
-		public void run() {
-			if (_isProcessActive) {
-				// executa un torn
-				_world.time();
-				nFrames++;
-				// dibuixa de nou si cal
-				_world.setPaintingRegion();
-				// tracking
-				if (_trackedOrganism != null) {
-					if (!_trackedOrganism.isAlive()) {
-						_trackedOrganism = null;
-						abortTrackingAction.setEnabled(false);
-					} else {
-						JScrollBar bar = scrollPane.getHorizontalScrollBar();
-						bar.setValue(Utils.between(_trackedOrganism._centerX - scrollPane.getWidth() / 2,
-								bar.getValue() - 2 * (int) Utils.MAX_VEL, bar.getValue() + 2 * (int) Utils.MAX_VEL));
-						bar = scrollPane.getVerticalScrollBar();
-						bar.setValue(Utils.between(_trackedOrganism._centerY - scrollPane.getHeight() / 2,
-								bar.getValue() - 2 * (int) Utils.MAX_VEL, bar.getValue() + 2 * (int) Utils.MAX_VEL));
-					}
+	public void executeOneFrame() throws InterruptedException, InvocationTargetException {
+		// executa un torn
+		_world.time();
+		nFrames++;
+		java.awt.EventQueue.invokeAndWait(() -> {
+			// dibuixa de nou si cal
+			if (Utils.repaintWorld()) {
+				_visibleWorld.repaint();
+			}
+			// tracking
+			if (_trackedOrganism != null) {
+				if (!_trackedOrganism.isAlive()) {
+					_trackedOrganism = null;
+					abortTrackingAction.setEnabled(false);
+				} else {
+					JScrollBar bar = scrollPane.getHorizontalScrollBar();
+					bar.setValue(Utils.between(_trackedOrganism._centerX - scrollPane.getWidth() / 2,
+							bar.getValue() - 2 * (int) Utils.MAX_VEL, bar.getValue() + 2 * (int) Utils.MAX_VEL));
+					bar = scrollPane.getVerticalScrollBar();
+					bar.setValue(Utils.between(_trackedOrganism._centerY - scrollPane.getHeight() / 2,
+							bar.getValue() - 2 * (int) Utils.MAX_VEL, bar.getValue() + 2 * (int) Utils.MAX_VEL));
 				}
 			}
-		}
-	};
+		});
+	}
 
 	/**
 	 * Scrolls the world so that the given organism is at the center of the view.
@@ -1287,7 +1287,14 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 				long accumulatedNanosForFpsAdjust = 0L;
 				try {
 					while (true) {
-						EventQueue.invokeAndWait(lifeProcess);
+						if (_isProcessActive) {
+							executeOneFrame();
+						} else {
+							Thread.sleep(10);
+						}
+						java.awt.EventQueue.invokeAndWait(() -> {
+							// do nothing, just process events, so ui is responsive
+						});
 						// Add a little delay if we were faster than the target fps.
 						// But only if we need to repaint the world, so avoid unnecessary slowdowns when
 						// not looking at the world.

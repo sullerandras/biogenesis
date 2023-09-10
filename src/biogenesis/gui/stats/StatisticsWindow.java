@@ -136,7 +136,6 @@ public class StatisticsWindow extends JDialog {
 		setPreferredSize(new Dimension(minSize.width + 50, minSize.height));
 		setSize(new Dimension(minSize.width + 50, minSize.height));
 		setMinimumSize(new Dimension(minSize.width, 600));
-		WindowManager.registerWindow(this, getWidth(), getHeight(), 0, 0);
 
 		Timer timer = new Timer(1000 / Utils.STATISTICS_REFRESH_FPS, new ActionListener() {
 			@Override
@@ -156,7 +155,7 @@ public class StatisticsWindow extends JDialog {
 		addWindowListener(new AppFocusWindowAdapter());
 
 		setVisible(true);
-		repaintStats(); // need this to resize labels correctly, without this the labels in populationStatsPanel are 200-300 pixels tall
+		WindowManager.registerWindow(this, getWidth(), getHeight(), 0, 0);
 	}
 
 	public void repaintStats() {
