@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 
 import biogenesis.GeneticCode;
 import biogenesis.GeneticCodePanel;
+import biogenesis.Organism;
 import biogenesis.VisibleWorld;
 import biogenesis.gui.MultilineLabel;
 
@@ -53,6 +54,20 @@ public class RemarkableOrganismPanel extends JPanel {
   }
 
   /**
+   * Creates a new instance of RemarkableOrganismPanel.
+   * @param visibleWorld The visible world, needed to draw the genetic code.
+   * @param title The title of the remarkable organism.
+   * @param organism The remarkable organism.
+   * @param valueLabel The label of the record value.
+   * @param timeLabel The label of the time the record was reached. If this is null, the time is not shown.
+   * @param nf The number format to use.
+   */
+  public RemarkableOrganismPanel(VisibleWorld visibleWorld, String title, Organism organism, String valueLabel,
+      String timeLabel, NumberFormat nf) {
+    this(visibleWorld, title, organism != null ? organism.getGeneticCode() : null, valueLabel, timeLabel, nf);
+  }
+
+  /**
    * Adds a mouse listener to the genetic code panel. Used for exporting the genetic code with right click.
    */
   public void addMouseListenerToGeneticCodePanel(java.awt.event.MouseListener mouseListener) {
@@ -67,10 +82,25 @@ public class RemarkableOrganismPanel extends JPanel {
   }
 
   /**
+   * Updates the genetic code and the record value. This method should only be used when the time is not shown.
+   */
+  public void update(Organism organism, double value) {
+    update(organism, value, 0);
+  }
+
+  /**
    * Updates the genetic code, the record value and the time. This method should only be used when the time is shown.
    */
   public void update(GeneticCode geneticCode, double value, double time) {
     geneticCodePanel.setGeneticCode(geneticCode);
+    valueAndTimeLabel.update(value, time);
+  }
+
+  /**
+   * Updates the genetic code, the record value and the time. This method should only be used when the time is shown.
+   */
+  public void update(Organism organism, double value, double time) {
+    geneticCodePanel.setGeneticCode(organism != null ? organism.getGeneticCode() : null);
     valueAndTimeLabel.update(value, time);
   }
 }

@@ -115,12 +115,14 @@ public class StatisticsWindow extends JDialog {
 	private RemarkableOrganismPanel aliveOldestPanel;
 	private RemarkableOrganismPanel aliveLowestGenerationPanel;
 	private RemarkableOrganismPanel aliveHighestGenerationPanel;
+	private RemarkableOrganismPanel aliveBiggestPanel;
 
 	private GraphPanel generationHistogramPanel;
 
 	private GraphInfo generationHistogram;
 
-	public StatisticsWindow(JFrame owner, World world, VisibleWorld visibleWorld, WorldStatistics ws, Collection<Organism> os) {
+	public StatisticsWindow(JFrame owner, World world, VisibleWorld visibleWorld, WorldStatistics ws,
+			Collection<Organism> os) {
 		super(owner, false);
 		this.world = world;
 		this.visibleWorld = visibleWorld;
@@ -437,6 +439,19 @@ public class StatisticsWindow extends JDialog {
 			}
 		});
 
+		// Being Biggest
+		aliveBiggestPanel = new RemarkableOrganismPanel(
+				visibleWorld,
+				Messages.getString("T_ALIVE_BEING_BIGGEST"), //$NON-NLS-1$
+				worldStatistics.getAliveOrganismBiggest(),
+				Messages.getString("T_PIXELS"), null, nf); //$NON-NLS-1$
+		aliveBiggestPanel.addMouseListenerToGeneticCodePanel(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				showOrganism(worldStatistics.getAliveOrganismBiggest());
+			}
+		});
+
 		// Notable beings panel
 		JPanel notableBeingsPanel = new JPanel();
 		GroupLayout notableBeingsPanelLayout = new GroupLayout(notableBeingsPanel);
@@ -448,7 +463,8 @@ public class StatisticsWindow extends JDialog {
 								.addComponent(aliveMostKillsPanel)
 								.addComponent(aliveMostInfectionsPanel)
 								.addComponent(aliveMostMassPanel)
-								.addComponent(aliveLowestGenerationPanel))
+								.addComponent(aliveLowestGenerationPanel)
+								.addComponent(aliveBiggestPanel))
 						.addGroup(notableBeingsPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
 								.addComponent(mostChildrenPanel)
 								.addComponent(mostKillsPanel)
@@ -471,7 +487,9 @@ public class StatisticsWindow extends JDialog {
 								.addComponent(aliveOldestPanel))
 						.addGroup(notableBeingsPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
 								.addComponent(aliveLowestGenerationPanel)
-								.addComponent(aliveHighestGenerationPanel)));
+								.addComponent(aliveHighestGenerationPanel))
+						.addGroup(notableBeingsPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+								.addComponent(aliveBiggestPanel)));
 
 		// Generation histogram
 		generationHistogram = new GraphInfo(0, 0, 0, 104, Color.WHITE, Messages.getString("T_GENERATION2")); //$NON-NLS-1$
@@ -663,6 +681,7 @@ public class StatisticsWindow extends JDialog {
 				worldStatistics.getAliveBeingLowestGenerationNumber());
 		aliveHighestGenerationPanel.update(worldStatistics.getAliveBeingHighestGeneration(),
 				worldStatistics.getAliveBeingHighestGenerationNumber());
+		aliveBiggestPanel.update(worldStatistics.getAliveOrganismBiggest(), worldStatistics.getAliveOrganismBiggestNumber());
 
 		repaint();
 	}

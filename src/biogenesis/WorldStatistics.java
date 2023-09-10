@@ -134,6 +134,9 @@ public class WorldStatistics implements Serializable {
 	private Organism aliveOrganismHighestGeneration;
 	private int aliveBeingHighestGenerationNumber;
 
+	private Organism aliveOrganismBiggest;
+	private int aliveOrganismBiggestNumber;
+
 	private double totalMass;
 	private double totalEnergy;
 
@@ -429,6 +432,14 @@ public class WorldStatistics implements Serializable {
 		return aliveBeingHighestGenerationNumber;
 	}
 
+	public Organism getAliveOrganismBiggest() {
+		return aliveOrganismBiggest;
+	}
+
+	public int getAliveOrganismBiggestNumber() {
+		return aliveOrganismBiggestNumber;
+	}
+
 	public double getTotalMass() {
 		return totalMass;
 	}
@@ -722,6 +733,9 @@ public class WorldStatistics implements Serializable {
 		aliveOrganismHighestGeneration = null;
 		aliveBeingHighestGenerationNumber = 0;
 
+		aliveOrganismBiggest = null;
+		aliveOrganismBiggestNumber = 0;
+
 		totalMass = 0;
 		totalEnergy = 0;
 
@@ -770,6 +784,11 @@ public class WorldStatistics implements Serializable {
 						aliveBeingHighestGenerationNumber = generation;
 						aliveBeingHighestGeneration = org.getGeneticCode();
 						aliveOrganismHighestGeneration = org;
+					}
+					final int size = (int) Math.max(org.getWidth(), org.getHeight());
+					if (size > aliveOrganismBiggestNumber) {
+						aliveOrganismBiggestNumber = size;
+						aliveOrganismBiggest = org;
 					}
 					totalMass += org.getMass();
 					totalEnergy += org.getEnergy();
