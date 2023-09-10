@@ -4080,11 +4080,6 @@ public class Organism extends Rectangle {
 	 * its rotation. It also calculates the bounding rectangle of the organism.
 	 * This method must be called from outside this class only when doing
 	 * manual drawing.
-	 *
-	 * @param force  To avoid calculations, segments position are only calculated
-	 * if the organism's rotation has changed in the last frame. If it is necessary
-	 * to calculate them even when the rotation hasn't changed, assign true to this
-	 * parameter.
 	 */
 	public void calculateBounds() {
 		double left=java.lang.Double.MAX_VALUE, right=java.lang.Double.MIN_VALUE,
