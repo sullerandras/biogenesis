@@ -1888,7 +1888,7 @@ public class Organism extends Rectangle {
 							switch (getTypeColor(_segColor[j])) {
 							case C4:
 								if ((_sporetime == 0) || (_geneticCode.getModifiesspore() <= 6)) {
-									_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * (11.24 + (1.075*_geneticCode.getGene(j%_geneticCode.getNGenes()).getLength()));
+									_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * (11.25 + (1.075*_geneticCode.getGene(j%_geneticCode.getNGenes()).getLength()));
 								}
 								break;
 							case LAVENDER:
@@ -1900,7 +1900,7 @@ public class Organism extends Rectangle {
 							case SPORE:
 								if ((_geneticCode.getModifiesspore() >= 3) && (_geneticCode.getModifiesspore() <= 6)) {
 									if ((_reproducelate == 0) && (_age == 0)) {
-										_reproduceEnergy -= 3;
+										_reproduceEnergy -= 2;
 									}
 								}
 								break;
@@ -1930,7 +1930,7 @@ public class Organism extends Rectangle {
 							switch (getTypeColor(_segColor[j])) {
 							case C4:
 								if ((_sporetime == 0) || (_geneticCode.getModifiesspore() <= 6)) {
-									_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * (10.62 + (1.0375*_geneticCode.getGene(j%_geneticCode.getNGenes()).getLength()));
+									_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * (10.625 + (1.0375*_geneticCode.getGene(j%_geneticCode.getNGenes()).getLength()));
 								}
 								break;
 							}
@@ -1942,7 +1942,7 @@ public class Organism extends Rectangle {
 							switch (getTypeColor(_segColor[j])) {
 							case C4:
 								if ((_sporetime == 0) || (_geneticCode.getModifiesspore() <= 6)) {
-									_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * (11.24 + (1.075*_geneticCode.getGene(j%_geneticCode.getNGenes()).getLength()));
+									_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * (11.25 + (1.075*_geneticCode.getGene(j%_geneticCode.getNGenes()).getLength()));
 								}
 								break;
 							}
@@ -2007,7 +2007,7 @@ public class Organism extends Rectangle {
 					int q;
 					for (q=_segments-1; q>=0; q--) {
 				         if (_segColor[q].equals(Utils.ColorPLANKTON)) {
-				             _mphoto[q] = 0.825 * Utils.PLANKTON_ENERGY_CONSUMPTION * photomultiplier * _geneticCode.getGene(q%_geneticCode.getNGenes()).getLength();
+				             _mphoto[q] = 0.82 * Utils.PLANKTON_ENERGY_CONSUMPTION * photomultiplier * _geneticCode.getGene(q%_geneticCode.getNGenes()).getLength();
 						}
 					}
 				}
@@ -18215,20 +18215,20 @@ public class Organism extends Rectangle {
 				if (_isinfectious) {
 					if (_isaplant) {
 						if ((_plagueversion == 2) || (_sporeversion == 6)) {
-							useEnergy(Utils.PLAGUE_ENERGY_CONSUMPTION);
+							useDetritus(Utils.PLAGUE_ENERGY_CONSUMPTION);
 						} else {
-							useEnergy(0.5 * Utils.PLAGUE_ENERGY_CONSUMPTION);
+							useDetritus(0.5 * Utils.PLAGUE_ENERGY_CONSUMPTION);
 						}
 			            org.setColor(Utils.ColorDARKLILAC);
 					} else {
-			            useEnergy(Utils.SCOURGE_ENERGY_CONSUMPTION);
+			            useDetritus(Utils.SCOURGE_ENERGY_CONSUMPTION);
 			            org.setColor(Utils.ColorDARKLILAC);
 					}
 					if (org._antiviral > 0) {
 						virusneutralized();
 					}
 				} else {
-		            useEnergy(Utils.SCOURGE_ENERGY_CONSUMPTION);
+		            useDetritus(Utils.SCOURGE_ENERGY_CONSUMPTION);
 		            org.setColor(Utils.ColorDARKLILAC);
 				}
 				org._nVirusChildren = 0;
@@ -21133,7 +21133,7 @@ public class Organism extends Rectangle {
 						break;
 					case PLANKTON:
 						_filterfeeding += _mphoto[i];
-						addmaintenance -= 0.8 * _m[i];
+						addmaintenance -= 0.5 * _m[i];
 						break;
 					case PURPLE:
 						_methanotrophy += _mphoto[i];
@@ -21429,7 +21429,7 @@ public class Organism extends Rectangle {
 						break;
 					case PLANKTON:
 						_filterfeeding += _mphoto[i];
-						addmaintenance -= 0.8 * _m[i];
+						addmaintenance -= 0.5 * _m[i];
 						break;
 					case PURPLE:
 						_methanotrophy += _mphoto[i];
