@@ -21128,7 +21128,7 @@ public class Organism extends Rectangle {
 						break;
 					case PLANKTON:
 						_filterfeeding += _mphoto[i];
-						addmaintenance -= 0.5 * _m[i];
+						addmaintenance -= 0.4 * _m[i];
 						break;
 					case PURPLE:
 						_methanotrophy += _mphoto[i];
@@ -21424,7 +21424,7 @@ public class Organism extends Rectangle {
 						break;
 					case PLANKTON:
 						_filterfeeding += _mphoto[i];
-						addmaintenance -= 0.5 * _m[i];
+						addmaintenance -= 0.4 * _m[i];
 						break;
 					case PURPLE:
 						_methanotrophy += _mphoto[i];

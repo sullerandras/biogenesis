@@ -86,11 +86,11 @@ public final class Utils {
 	/**
 	 * This is the default world's width.
 	 */
-	final static int DEF_WORLD_WIDTH = 7100;
+	final static int DEF_WORLD_WIDTH = 7200;
 	/**
 	 * This is the default world's height.
 	 */
-	final static int DEF_WORLD_HEIGHT = 7100;
+	final static int DEF_WORLD_HEIGHT = 7200;
 	/**
 	 * This is the default maximum age that an organism can achieve,
 	 * without counting the number of segments.
