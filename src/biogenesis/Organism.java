@@ -700,7 +700,6 @@ public class Organism extends Rectangle {
 	 * Indicates if the organism is active.
 	 */
 	protected boolean active = true;
-	private static transient Vector2D v = new Vector2D();
 	/**
 	 * Returns true if this organism is alive, false otherwise.
 	 *
@@ -3584,6 +3583,7 @@ public class Organism extends Rectangle {
 		int left=0, right=0, top=0, bottom=0;
 		int centerX, centerY;
 		double cx, cy;
+		Vector2D v = new Vector2D();
 		if (_updateEffects == 0) {
 			_updateEffects = 1;
 		}
