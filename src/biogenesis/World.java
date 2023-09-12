@@ -612,7 +612,6 @@ public class World implements Serializable{
 			if (b.randomCreate())
 				addOrganism(b,null);
 		}
-		_organisms.addAll(organismsToAdd);
 	}
 	/**
 	 * Remove all corpses from the world and return their organic matter to
@@ -743,20 +742,9 @@ public class World implements Serializable{
 		}
 	}
 
-	private transient Collection<Organism> organismsToAdd = Collections.synchronizedSet(new HashSet<>());
-	private transient Collection<Organism> organismsToRemove = Collections.synchronizedSet(new HashSet<>());
 	private transient Collection<Organism> checkedOrganisms = Collections.synchronizedSet(new HashSet<>());
 
 	private void progressAllOrganisms() {
-		if (organismsToAdd == null) {
-			organismsToAdd = Collections.synchronizedSet(new HashSet<>());
-		}
-		if (organismsToRemove == null) {
-			organismsToRemove = Collections.synchronizedSet(new HashSet<>());
-		}
-		organismsToAdd.clear();
-		organismsToRemove.clear();
-
 		final int organismCount = _organisms.size();
 		final int threadCount = Utils.between(Utils.THREAD_COUNT, 1, 100);
 
@@ -765,18 +753,12 @@ public class World implements Serializable{
 		} else {
 			progressAllOrganismsInSerial(organismCount);
 		}
-
-		// add new organisms and remove dead organisms
-		synchronized (_organisms) {
-			_organisms.addAll(organismsToAdd);
-			_organisms.removeAll(organismsToRemove);
-		}
 	}
 
 	private void progressAllOrganismsInSerial(int organismCount) {
-		for (Organism b : _organisms) {
+		for (Organism b : _organisms.toArray(new Organism[0])) {
 			if (!b.move()) {
-				organismsToRemove.add(b);
+				_organisms.remove(b);
 				if (_visibleWorld.getSelectedOrganism() == b) {
 					_visibleWorld.setSelectedOrganism(null);
 				}
@@ -974,7 +956,7 @@ public class World implements Serializable{
 					}
 				}
 				if (!o.move()) {
-					organismsToRemove.add(o);
+					_organisms.remove(o);
 					if (_visibleWorld.getSelectedOrganism() == o) {
 						_visibleWorld.setSelectedOrganism(null);
 					}
@@ -1137,7 +1119,7 @@ public class World implements Serializable{
 	 * @param parent  The parent of the added organism, or null if there is no parent.
 	 */
 	public void addOrganism(Organism child, Organism parent) {
-		organismsToAdd.add(child);
+		_organisms.add(child);
 		if (parent == _visibleWorld.getSelectedOrganism())
 			_visibleWorld.getMainWindow().getInfoPanel().changeNChildren();
 		if (parent != null) {
