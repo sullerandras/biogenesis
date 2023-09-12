@@ -86,7 +86,8 @@ public class World implements Serializable{
 	/**
 	 * Number of living organisms in the world
 	 */
-	protected int _population = 0;
+	protected volatile int _population = 0;
+	private static final Object _population_monitor = new Object();
 	/**
 	 * The next identification number that will be assigned to an organism
 	 * in this world
@@ -285,8 +286,10 @@ public class World implements Serializable{
 	 * cases it may be used directly.
 	 */
 	public void increasePopulation() {
-		_population++;
-		worldStatistics.eventPopulationIncrease(_population);
+		synchronized (_population_monitor) {
+			_population++;
+			worldStatistics.eventPopulationIncrease(_population);
+		}
 	}
 	/**
 	 * Decrease the population counter by one.
@@ -296,8 +299,10 @@ public class World implements Serializable{
 	 * but in some cases it may be used directly.
 	 */
 	public void decreasePopulation() {
-		_population--;
-		worldStatistics.eventPopulationDecrease(_population);
+		synchronized (_population_monitor) {
+			_population--;
+			worldStatistics.eventPopulationDecrease(_population);
+		}
 	}
 	/**
 	 * Returns the amount of O2 that exist in the atmosphere.
