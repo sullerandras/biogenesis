@@ -123,7 +123,7 @@ public class StatisticsWindow extends JDialog {
 
 	public StatisticsWindow(JFrame owner, World world, VisibleWorld visibleWorld, WorldStatistics ws,
 			Collection<Organism> os) {
-		super(owner, false);
+		super((JDialog) null, false);
 		this.world = world;
 		this.visibleWorld = visibleWorld;
 		worldStatistics = ws;
