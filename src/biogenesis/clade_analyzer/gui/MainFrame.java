@@ -22,6 +22,7 @@ import biogenesis.clade_analyzer.CladeChartManager;
 import biogenesis.clade_analyzer.CladeDetails;
 import biogenesis.clade_analyzer.db.DB;
 import biogenesis.clade_analyzer.db.models.DBSummaryFile;
+import biogenesis.gui.LogsDialog;
 
 public class MainFrame extends javax.swing.JFrame {
   private DB db = null;

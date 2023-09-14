@@ -1,16 +1,17 @@
-package biogenesis.clade_analyzer.gui;
+package biogenesis.gui;
 
+import javax.swing.JDialog;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import biogenesis.LogCollector;
 import biogenesis.WindowManager;
-import biogenesis.clade_analyzer.LogCollector;
 
 public class LogsDialog extends javax.swing.JDialog implements LogCollector.TextAppendListener {
   private JTextArea textArea;
 
   public LogsDialog(java.awt.Frame parent) {
-    super(parent, false);
+    super((JDialog) null, false); // pass in null parent so the logs window can go behind the other windows
 
     WindowManager.registerWindow(this, 800, 600, 0, 0);
 

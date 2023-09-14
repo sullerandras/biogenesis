@@ -1,4 +1,4 @@
-package biogenesis.clade_analyzer;
+package biogenesis;
 
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ public class LogCollector extends OutputStream {
   }
 
   @Override
-  public void write(int b) throws java.io.IOException {
+  public synchronized void write(int b) throws java.io.IOException {
     partialLine.append((char) b);
     out.write(b);
     if (b == '\n') {

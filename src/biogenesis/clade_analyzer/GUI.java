@@ -5,6 +5,7 @@ import java.net.URL;
 import javax.swing.ImageIcon;
 
 import biogenesis.Clade;
+import biogenesis.LogCollector;
 import biogenesis.clade_analyzer.gui.MainFrame;
 
 public class GUI {

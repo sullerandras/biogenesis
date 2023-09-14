@@ -72,6 +72,8 @@ import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.border.EtchedBorder;
 
+import biogenesis.clade_analyzer.gui.MainFrame;
+import biogenesis.gui.LogsDialog;
 import biogenesis.gui.stats.StatisticsWindow;
 
 public class MainWindow extends JFrame implements MainWindowInterface {
@@ -107,6 +109,7 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 	protected StdAction killAllAction;
 	protected StdAction disperseAllAction;
 	protected StdAction parametersAction;
+	protected StdAction logsAction;
 	protected StdAction aboutAction;
 	protected StdAction manualAction;
 	protected StdAction checkLastVersionAction;
@@ -213,6 +216,8 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		System.setOut(new java.io.PrintStream(LogCollector.getInstance()));
+		System.setErr(new java.io.PrintStream(LogCollector.getInstance()));
 		if (args.length > 1) {
 			System.err.println("java -jar biogenesis.jar [random seed]");
 		} else if (args.length == 1) {
@@ -258,6 +263,7 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 		killAllAction = new KillAllAction("T_KILL_ALL", null, "T_KILL_ALL_ORGANISMS"); //$NON-NLS-1$ //$NON-NLS-2$
 		disperseAllAction = new DisperseAllAction("T_DISPERSE_ALL", null, "T_DISPERSE_ALL_DEAD_ORGANISMS"); //$NON-NLS-1$ //$NON-NLS-2$
 		parametersAction = new ParametersAction("T_PARAMETERS", null, "T_EDIT_PARAMETERS"); //$NON-NLS-1$ //$NON-NLS-2$
+		logsAction = new LogsAction("T_LOGS", null, "T_SHOW_HIDE_LOGS"); //$NON-NLS-1$ //$NON-NLS-2$
 		aboutAction = new AboutAction("T_ABOUT", null, "T_ABOUT"); //$NON-NLS-1$//$NON-NLS-2$
 		manualAction = new ManualAction("T_USER_MANUAL", null, "T_USER_MANUAL"); //$NON-NLS-1$//$NON-NLS-2$
 		checkLastVersionAction = new CheckLastVersionAction("T_CHECK_LAST_VERSION", null, "T_CHECK_LAST_VERSION"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -336,6 +342,7 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 		_menuWorld.add(new JMenuItem(statisticsAction));
 		_menuWorld.add(new JMenuItem(labAction));
 		_menuWorld.add(new JMenuItem(parametersAction));
+		_menuWorld.add(new JMenuItem(logsAction));
 		_menuHelp = new JMenu(Messages.getString("T_HELP")); //$NON-NLS-1$
 		_menuHelp.setMnemonic(Messages.getMnemonic("T_HELP").intValue()); //$NON-NLS-1$
 		menuBar.add(_menuHelp);
@@ -888,6 +895,29 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 		}
 	}
 
+	class LogsAction extends StdAction {
+		private static final long serialVersionUID = 1L;
+
+		private transient LogsDialog logsDialog = null;
+
+		public LogsAction(String text, String icon_path, String desc) {
+			super(text, icon_path, desc);
+		}
+
+		public void actionPerformed(ActionEvent e) {
+			if (logsDialog != null && !logsDialog.isShowing()) {
+				logsDialog.dispose();
+				logsDialog = null;
+			}
+			if (logsDialog != null) {
+				logsDialog.toFront();
+			} else {
+				logsDialog = new LogsDialog(MainWindow.this);
+				logsDialog.setVisible(true);
+			}
+		}
+	}
+
 	class ManualAction extends StdAction {
 		private static final long serialVersionUID = 1L;
 
@@ -1367,6 +1397,7 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 		increaseDetritusAction.changeLocale();
 		decreaseDetritusAction.changeLocale();
 		parametersAction.changeLocale();
+		logsAction.changeLocale();
 		labAction.changeLocale();
 		killAllAction.changeLocale();
 		disperseAllAction.changeLocale();
