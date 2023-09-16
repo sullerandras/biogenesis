@@ -32,6 +32,8 @@ public class HeatMapPanel extends JPanel {
   public HeatMapPanel(Frame owner) {
     this.owner = owner;
     initComponents();
+
+    new SliderChangedThread().start();
   }
 
   public void setDB(DB db) {
@@ -50,33 +52,52 @@ public class HeatMapPanel extends JPanel {
     });
   }
 
-  private void sliderChanged() {
-    if (times == null) {
-      return;
+  private long lastSliderChangedMillis = 0;
+  private int lastSliderIndex = 0;
+
+  private class SliderChangedThread extends Thread {
+    public SliderChangedThread() {
+      super("SliderChangedThread");
+      setDaemon(true);
     }
 
-    final int index = slider.getValue();
-    final int time = times.get(index);
-    selectedTimeLabel.setText("Time: " + time);
-
-    new Thread() {
-      @Override
-      public void run() {
+    @Override
+    public void run() {
+      while (true) {
         try {
           Thread.sleep(100);
         } catch (InterruptedException e) {
         }
-        java.awt.EventQueue.invokeLater(() -> {
-          if (slider.getValue() != index) {
-            return;
+        synchronized (HeatMapPanel.this) {
+          if (System.currentTimeMillis() - lastSliderChangedMillis < 100) {
+            continue;
           }
+        }
+        java.awt.EventQueue.invokeLater(() -> {
+          synchronized (HeatMapPanel.this) {
+            if (slider.getValue() != lastSliderIndex) {
+              return;
+            }
+          }
+
           sliderReallyChanged();
         });
       }
-    }.start();
+    }
+  }
+
+  private void sliderChanged() {
+    synchronized (this) {
+      lastSliderChangedMillis = System.currentTimeMillis();
+      lastSliderIndex = slider.getValue();
+    }
   }
 
   private void sliderReallyChanged() {
+    if (times == null) {
+      return;
+    }
+
     final int index = slider.getValue();
     final int time = times.get(index);
     selectedTimeLabel.setText("Time: " + time);
