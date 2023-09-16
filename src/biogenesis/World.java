@@ -617,7 +617,7 @@ public class World implements Serializable{
 	 * Remove all corpses from the world and return their organic matter to
 	 * the atmosphere in the form of CO2.
 	 */
-	public void disperseAll() {
+	public synchronized void disperseAll() {
 		Organism b;
 		synchronized (_organisms) {
 			for (Iterator<Organism> it = _organisms.iterator(); it.hasNext();) {
@@ -630,7 +630,7 @@ public class World implements Serializable{
 	/**
 	 * Kill all organisms in the world.
 	 */
-	public void killAll() {
+	public synchronized void killAll() {
 		Organism org;
 		synchronized (_organisms) {
 			for (Iterator<Organism> it = _organisms.iterator(); it.hasNext();) {
@@ -699,7 +699,7 @@ public class World implements Serializable{
 	 * Additionally, every 20 frames the {@link InfoWindow} is updated, if showed,
 	 * and every 256 frames the time counter is increased by 1.
 	 */
-	public void time() {
+	public synchronized void time() {
 		colDetTree = new OrganismBuckets(_width, _height, 70);
 		if (_corridorexists) {
 			InCorridor c;
