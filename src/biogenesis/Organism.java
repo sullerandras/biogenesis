@@ -1364,6 +1364,8 @@ public class Organism extends Rectangle {
 		if (_geneticCode.getAltruist()) {
 			_altruist =true;
 		}
+		_methanotrophy = 0;
+		_filterfeeding = 0;
 		double photofactor = 0;
 		if (_symmetry == 8) {
 			if (_geneticCode.getNGenes() != 1) {
@@ -1466,12 +1468,13 @@ public class Organism extends Rectangle {
 				if (_age == 0) {
 					_mphoto[i] = Utils.PURPLE_ENERGY_CONSUMPTION * photomultiplier * _geneticCode.getGene(i%_geneticCode.getNGenes()).getLength();
 				}
-				_methanotrophy = 1;
+				_methanotrophy += 1;
 				break;
 			case PLANKTON:
 				if (_age == 0) {
 					_mphoto[i] = Utils.PLANKTON_ENERGY_CONSUMPTION * photomultiplier * _geneticCode.getGene(i%_geneticCode.getNGenes()).getLength();
 				}
+				_filterfeeding += 1;
 				_isplankton =true;
 				break;
 			case TEAL:
@@ -1996,9 +1999,15 @@ public class Organism extends Rectangle {
 			}
 			if ((_isaplant) || (_isaconsumer) || (_methanotrophy > 0)) {
 				int q;
+				double filterfactor = 0;
+				if (_geneticCode.getNGenes() > 1) {
+					filterfactor = (0.5 + ((_filterfeeding / _symmetry) / (10 * (_geneticCode.getNGenes() - 1))));
+				} else {
+					filterfactor = (0.5 + ((_filterfeeding / _symmetry) / (10 * _geneticCode.getNGenes())));
+				}
 				for (q=_segments-1; q>=0; q--) {
 			         if (_segColor[q].equals(Utils.ColorPLANKTON)) {
-			             _mphoto[q] = 0.55 * Utils.PLANKTON_ENERGY_CONSUMPTION * photomultiplier * _geneticCode.getGene(q%_geneticCode.getNGenes()).getLength();
+			             _mphoto[q] = filterfactor * Utils.PLANKTON_ENERGY_CONSUMPTION * photomultiplier * _geneticCode.getGene(q%_geneticCode.getNGenes()).getLength();
 					}
 				}
 			} else {
@@ -2006,12 +2015,13 @@ public class Organism extends Rectangle {
 					int q;
 					for (q=_segments-1; q>=0; q--) {
 				         if (_segColor[q].equals(Utils.ColorPLANKTON)) {
-				             _mphoto[q] = 0.82 * Utils.PLANKTON_ENERGY_CONSUMPTION * photomultiplier * _geneticCode.getGene(q%_geneticCode.getNGenes()).getLength();
+				             _mphoto[q] = 0.825 * Utils.PLANKTON_ENERGY_CONSUMPTION * photomultiplier * _geneticCode.getGene(q%_geneticCode.getNGenes()).getLength();
 						}
 					}
 				}
 			}
 			_isaplant =true;
+			_filterfeeding = 0;
 		}
 		// Give non green methanotrophs the ability of jade during virus hatching, then make them count as plants and lower effectivity for mixed organisms
 		if (_methanotrophy > 0) {
@@ -2027,9 +2037,15 @@ public class Organism extends Rectangle {
 			if ((_isaplant) || (_isplankton)) {
 				if (_age == 0) {
 					int p;
+					double methanefactor = 0;
+					if (_geneticCode.getNGenes() > 1) {
+						methanefactor = (0.5 + ((_methanotrophy / _symmetry) / (10 * (_geneticCode.getNGenes() - 1))));
+					} else {
+						methanefactor = (0.5 + ((_methanotrophy / _symmetry) / (10 * _geneticCode.getNGenes())));
+					}
 					for (p=_segments-1; p>=0; p--) {
 			            if (_segColor[p].equals(Utils.ColorPURPLE)) {
-			            	_mphoto[p] = 0.55 * Utils.PURPLE_ENERGY_CONSUMPTION * photomultiplier * _geneticCode.getGene(p%_geneticCode.getNGenes()).getLength();
+			            	_mphoto[p] = methanefactor * Utils.PURPLE_ENERGY_CONSUMPTION * photomultiplier * _geneticCode.getGene(p%_geneticCode.getNGenes()).getLength();
 						}
 					}
 				}
@@ -8483,7 +8499,7 @@ public class Organism extends Rectangle {
 			                }}
 	                	    break;
 	                  case FRUIT:
-	                	  if (org._sporeversion == 2) {
+	                	  if ((org._sporeversion == 2) && (!_hasgoodvision)) {
 	                		if (_segwhiteReaction[seg] == 1) {
 	    	                  	stopmoving();
 	    	  				} else
@@ -9278,7 +9294,7 @@ public class Organism extends Rectangle {
 				    }
                     break;
               case FRUIT:
-            	  if (org._sporeversion == 2) {
+            	  if ((org._sporeversion == 2) && (!_hasgoodvision)) {
             		if (_segwhiteReaction[seg] == 1) {
 	                	standstill();
 	  				}
@@ -9816,7 +9832,7 @@ public class Organism extends Rectangle {
 				}
 				break;
 			case FRUIT:
-				if (org._sporeversion == 2) {
+				if ((org._sporeversion == 2) && (!_hasgoodvision)) {
 					if (useEnergy(Utils.ORANGE_ENERGY_CONSUMPTION)) {
 						if (org._isenhanced) {
 							// Get energy depending on segment length
@@ -11244,7 +11260,7 @@ public class Organism extends Rectangle {
 				}
 				break;
 			case C4:
-				if ((org._dodge) && ((org._canreact) || (!_hasgoodvision)) && (org.useEnergy(Utils.DODGE_ENERGY_CONSUMPTION))) {
+				if ((org._dodge) && (org.useEnergy(Utils.DODGE_ENERGY_CONSUMPTION))) {
 					org.setColor(Utils.ColorTEAL);
 					setColor(Utils.ColorMAROON);
 				} else {
@@ -11323,7 +11339,7 @@ public class Organism extends Rectangle {
 				}
 				break;
 			case FRUIT:
-				if (org._sporeversion == 2) {
+				if ((org._sporeversion == 2) && (!_hasgoodvision)) {
 					// Get energy depending on segment length
 					takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
 					// The other organism will be shown in yellow
@@ -11418,7 +11434,7 @@ public class Organism extends Rectangle {
 			case GOLD:
 			case SPORE:
 				if ((_isenhanced) && (org._isaplant)) {
-					if ((org._dodge) && ((org._canreact) || (!_hasgoodvision)) && (org.useEnergy(Utils.DODGE_ENERGY_CONSUMPTION))) {
+					if ((org._dodge) && (org.useEnergy(Utils.DODGE_ENERGY_CONSUMPTION))) {
 						org.setColor(Utils.ColorTEAL);
 						setColor(Utils.ColorMAROON);
 					} else {
@@ -11460,7 +11476,7 @@ public class Organism extends Rectangle {
 			    break;
 				} else {
 					if ((_isenhanced) && (org._isaplant)) {
-						if ((org._dodge) && (org._framesColor <= 0) && ((org._canreact) || (!_hasgoodvision)) && (org.useEnergy(Utils.DODGE_ENERGY_CONSUMPTION))) {
+						if ((org._dodge) && (org._framesColor <= 0) && (org.useEnergy(Utils.DODGE_ENERGY_CONSUMPTION))) {
 							org.setColor(Utils.ColorTEAL);
 							setColor(Utils.ColorMAROON);
 						} else {
@@ -11488,7 +11504,7 @@ public class Organism extends Rectangle {
 				break;
 				} else {
 					if ((_isenhanced) && (org._isaplant)) {
-						if ((org._dodge) && ((org._canreact) || (!_hasgoodvision)) && (org.useEnergy(Utils.DODGE_ENERGY_CONSUMPTION))) {
+						if ((org._dodge) && (org.useEnergy(Utils.DODGE_ENERGY_CONSUMPTION))) {
 							org.setColor(Utils.ColorTEAL);
 							setColor(Utils.ColorMAROON);
 						} else {
@@ -12830,7 +12846,7 @@ public class Organism extends Rectangle {
 				break;
 		    case FRUIT:
 		    	if (_isenhanced) {
-		    		if (org._sporeversion == 2) {
+		    		if ((org._sporeversion == 2) && (!_hasgoodvision)) {
 		    		    if (useEnergy(Utils.MOSQUITO_ENERGY_CONSUMPTION)) {
 		    		    	// Get energy depending on segment length
 		    		    	takenEnergySpike = Utils.between((0.8 * Math.sqrt(_m[seg])) * Utils.ORGANIC_OBTAINED_ENERGY, 0, org._energy);
@@ -13338,7 +13354,7 @@ public class Organism extends Rectangle {
 				}
 				break;
 			case FRUIT:
-				if (org._sporeversion == 2) {
+				if ((org._sporeversion == 2) && (!_hasgoodvision)) {
 					if (((_nTotalKills > 0) && ((_isaconsumer) || ((_isafungus) && (_isaconsumer = true)))) || (_isenhanced)) {
 						if (useEnergy(Utils.EXPERIENCE_ENERGY_CONSUMPTION)) {
 						    // Get energy depending on segment length and relation between kills of both organisms
@@ -13347,7 +13363,7 @@ public class Organism extends Rectangle {
 						    org.setColor(Utils.ColorGREENBROWN);
 						    if (_infectedGeneticCode != org._geneticCode) {
 								// Infectious fruit
-								infectedByFruitWeak(org);
+								infectedByFruit(org);
 								setColor(Utils.ColorBLOND);
 							} else {
 								// This organism will be shown in gold
@@ -21129,7 +21145,7 @@ public class Organism extends Rectangle {
 						break;
 					case PLANKTON:
 						_filterfeeding += _mphoto[i];
-						addmaintenance -= 0.4 * _m[i];
+						addmaintenance -= 0.33 * _m[i];
 						break;
 					case PURPLE:
 						_methanotrophy += _mphoto[i];
@@ -21425,7 +21441,7 @@ public class Organism extends Rectangle {
 						break;
 					case PLANKTON:
 						_filterfeeding += _mphoto[i];
-						addmaintenance -= 0.4 * _m[i];
+						addmaintenance -= 0.33 * _m[i];
 						break;
 					case PURPLE:
 						_methanotrophy += _mphoto[i];

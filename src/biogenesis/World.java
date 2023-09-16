@@ -268,14 +268,14 @@ public class World implements Serializable{
 	 */
 	public int getDistinctCladeIDCount(int minPopulation) {
 		synchronized (_organisms) {
-			return (int) _organisms
-					.stream()
-					.filter(o -> o.isAlive())
-					.collect(Collectors.groupingBy(o -> o.getGeneticCode().getcladeID(), Collectors.counting()))
-					.entrySet()
-					.stream()
-					.filter(e -> e.getValue() >= minPopulation) // only show clades with at least minPopulation organisms
-					.count();
+		return (int) _organisms
+				.stream()
+				.filter(o -> o.isAlive())
+				.collect(Collectors.groupingBy(o -> o.getGeneticCode().getcladeID(), Collectors.counting()))
+				.entrySet()
+				.stream()
+				.filter(e -> e.getValue() >= minPopulation) // only show clades with at least minPopulation organisms
+				.count();
 		}
 	}
 	/**
