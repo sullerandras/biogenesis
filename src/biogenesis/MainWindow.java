@@ -1125,6 +1125,10 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 			cladeStats = new CladeStats(_world._organisms);
 		}
 		Rectangle bounds = cladeStats.getBounds();
+		if (bounds.width == 0 || bounds.height == 0) {
+			return;
+		}
+		
 		final BufferedImage img = new BufferedImage(bounds.width, bounds.height, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = (Graphics2D) img.getGraphics();
 		cladeStats.draw(g);

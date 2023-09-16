@@ -473,7 +473,7 @@ public class StatisticsWindow extends JDialog {
 								.addComponent(aliveHighestGenerationPanel)));
 
 		// Generation histogram
-		generationHistogram = new GraphInfo(0, 0, 0, 104, Color.WHITE, Messages.getString("T_GENERATION2")); //$NON-NLS-1$
+		generationHistogram = new GraphInfo(0, 0, 0, 104, Color.WHITE, Messages.getString("T_POPULATION")); //$NON-NLS-1$
 		generationHistogramPanel = new GraphPanel(100, 104, nf);
 		generationHistogramPanel.addGraph(generationHistogram);
 		JPanel generationHistogramWrapper = new JPanel(new GridLayout(1, 1));
