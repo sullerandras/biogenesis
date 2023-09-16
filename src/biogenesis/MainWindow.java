@@ -545,7 +545,7 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 			putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(Messages.getString("T_BACKUP_ACCELERATOR")));
 		}
 
-		public void actionPerformed(ActionEvent e) {
+		public void actionPerformed(ActionEvent ev) {
 			try {
 				if (_gameFile != null) {
 					saveObject(_world, _gameFile.getFileForTime(_world.getTime(), BioFile.Type.REGULAR));
@@ -573,9 +573,9 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 				} else {
 					java.awt.EventQueue.invokeAndWait(() -> saveGameAs());
 				}
-			} catch (InvocationTargetException | InterruptedException e1) {
+			} catch (InvocationTargetException | InterruptedException e) {
 				System.out.println("Error saving game: " + e);
-				e1.printStackTrace();
+				e.printStackTrace();
 			}
 		}
 
