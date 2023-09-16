@@ -107,10 +107,10 @@ public class MainFrame extends javax.swing.JFrame {
     // tabs
     JTabbedPane tabbedPane = new JTabbedPane();
 
-    longestSurvivorsPanel = new CladeListPanel(this, new CladeChartManager());
+    longestSurvivorsPanel = new CladeListPanel(this, new CladeChartManager(), true);
     tabbedPane.add("Longest survivors", longestSurvivorsPanel);
 
-    mostPopulousCladesPanel = new CladeListPanel(this, new CladeChartManager());
+    mostPopulousCladesPanel = new CladeListPanel(this, new CladeChartManager(), true);
     tabbedPane.add("Most populous clades", mostPopulousCladesPanel);
 
     heatMapPanel = new HeatMapPanel(this);
@@ -121,11 +121,11 @@ public class MainFrame extends javax.swing.JFrame {
             java.awt.GridBagConstraints.BOTH, new java.awt.Insets(0, 0, 0, 0), 0, 0));
 
     // action listeners
-    ActionListener clickListener = new ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
-        CladeDetails cladeSummary = (CladeDetails) evt.getSource();
-        System.out.println("Selected clade: " + cladeSummary);
-        CladeDetailsDialog cladeDetailsDialog = new CladeDetailsDialog(MainFrame.this, db, cladeSummary.getCladeId(),
+    ClickCladeListener clickListener = new ClickCladeListener() {
+      @Override
+      public void clickClade(CladeDetails cladeDetails) {
+        System.out.println("Selected clade: " + cladeDetails);
+        CladeDetailsDialog cladeDetailsDialog = new CladeDetailsDialog(MainFrame.this, db, cladeDetails.getCladeId(),
             maxTime);
         cladeDetailsDialog.setVisible(true);
       }

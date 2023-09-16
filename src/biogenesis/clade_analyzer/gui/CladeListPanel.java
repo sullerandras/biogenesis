@@ -19,10 +19,11 @@ import biogenesis.clade_analyzer.db.DB;
 import biogenesis.clade_analyzer.db.JobManager;
 
 public class CladeListPanel extends javax.swing.JPanel {
-  private final List<ActionListener> clickCladeListeners = new ArrayList<ActionListener>();
+  private final ClickCladeListenerList clickCladeListeners = new ClickCladeListenerList();
   private final List<ActionListener> limitChangeListeners = new ArrayList<ActionListener>();
   private final Window owner;
   private final CladeChartManager cladeChartManager;
+  private final boolean shouldAddClickCladeListeners;
   private final NumberFormat cladeCountFormatter = NumberFormat.getInstance();
 
   private JComboBox<Limit> limitsComboBox;
@@ -30,9 +31,10 @@ public class CladeListPanel extends javax.swing.JPanel {
   private JPanel cladeListPanel;
   private javax.swing.JLabel cladesCountLabel;
 
-  public CladeListPanel(Window owner, CladeChartManager cladeChartManager) {
+  public CladeListPanel(Window owner, CladeChartManager cladeChartManager, boolean shouldAddClickCladeListeners) {
     this.owner = owner;
     this.cladeChartManager = cladeChartManager;
+    this.shouldAddClickCladeListeners = shouldAddClickCladeListeners;
 
     ActionListener tasksDoneListener = new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -133,19 +135,22 @@ public class CladeListPanel extends javax.swing.JPanel {
     for (CladeDetails cladeSummary : cladeList) {
       CladeDetailsPanel cladePanel = new CladeDetailsPanel(owner, cladeChartManager, cladeSummary, db, maxTime);
       cladeListPanel.add(cladePanel);
-      ActionListener clickCladeListener = new java.awt.event.ActionListener() {
-        public void actionPerformed(java.awt.event.ActionEvent evt) {
-          clickCladeListeners.forEach(l -> l.actionPerformed(evt));
-        }
-      };
-      cladePanel.addClickCladeListener(clickCladeListener);
-      owner.addWindowListener(new java.awt.event.WindowAdapter() {
-        @Override
-        public void windowClosed(java.awt.event.WindowEvent evt) {
-          owner.removeWindowListener(this);
-          cladePanel.removeClickCladeListener(clickCladeListener);
-        }
-      });
+      if (shouldAddClickCladeListeners) {
+        ClickCladeListener clickCladeListener = new ClickCladeListener() {
+          @Override
+          public void clickClade(CladeDetails cladeDetails) {
+            clickCladeListeners.notifyAll(cladeDetails);
+          }
+        };
+        cladePanel.addClickCladeListener(clickCladeListener);
+        owner.addWindowListener(new java.awt.event.WindowAdapter() {
+          @Override
+          public void windowClosed(java.awt.event.WindowEvent evt) {
+            owner.removeWindowListener(this);
+            cladePanel.removeClickCladeListener(clickCladeListener);
+          }
+        });
+      }
     }
 
     revalidate();
@@ -158,11 +163,11 @@ public class CladeListPanel extends javax.swing.JPanel {
     });
   }
 
-  public void addClickCladeListener(ActionListener l) {
+  public void addClickCladeListener(ClickCladeListener l) {
     clickCladeListeners.add(l);
   }
 
-  public void removeClickCladeListener(ActionListener l) {
+  public void removeClickCladeListener(ClickCladeListener l) {
     clickCladeListeners.remove(l);
   }
 

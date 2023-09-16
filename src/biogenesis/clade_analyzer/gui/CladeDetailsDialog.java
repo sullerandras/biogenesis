@@ -55,7 +55,7 @@ public class CladeDetailsDialog extends javax.swing.JDialog {
             java.awt.GridBagConstraints.BOTH, new java.awt.Insets(0, 0, 0, 0), 0, 0));
 
     // ancestor clades
-    cladeListPanel = new CladeListPanel(this, new CladeChartManager());
+    cladeListPanel = new CladeListPanel(this, new CladeChartManager(), false);
     mainPanel.add(cladeListPanel,
         new java.awt.GridBagConstraints(0, 1, 1, 1, 1, 1, java.awt.GridBagConstraints.NORTHWEST,
             java.awt.GridBagConstraints.BOTH, new java.awt.Insets(0, 0, 0, 0), 0, 0));

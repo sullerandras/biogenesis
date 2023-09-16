@@ -2,15 +2,10 @@ package biogenesis.clade_analyzer.gui;
 
 import java.awt.Dimension;
 import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
-import javax.swing.UIManager;
 
 import biogenesis.Clade;
 import biogenesis.clade_analyzer.CladeChartManager;
@@ -22,7 +17,7 @@ import biogenesis.gui.MultilineLabel;
 public class CladeDetailsPanel extends javax.swing.JPanel {
   private CladeDetails cladeSummary;
   private CladePopulationOverTime populationOverTimeChart;
-  private List<ActionListener> clickCladeListeners = new ArrayList<ActionListener>();
+  private final ClickCladeListenerList clickCladeListeners = new ClickCladeListenerList();
 
   public CladeDetailsPanel(Window owner, CladeChartManager cladeChartManager, CladeDetails cladeSummary, DB db,
       int maxTime) {
@@ -123,12 +118,14 @@ public class CladeDetailsPanel extends javax.swing.JPanel {
 
       @Override
       public void mouseEntered(MouseEvent e) {
-        infoPanel.setBackground(java.awt.Color.LIGHT_GRAY);
+        if (!clickCladeListeners.isEmpty()) {
+          CladeDetailsPanel.this.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
+        }
       }
 
       @Override
       public void mouseExited(MouseEvent e) {
-        infoPanel.setBackground(UIManager.getColor("Label.background"));
+        CladeDetailsPanel.this.setCursor(java.awt.Cursor.getDefaultCursor());
       }
     };
     addMouseListener(mouseAdapter);
@@ -137,16 +134,16 @@ public class CladeDetailsPanel extends javax.swing.JPanel {
     invalidate();
   }
 
-  public void addClickCladeListener(ActionListener l) {
+  public void addClickCladeListener(ClickCladeListener l) {
     clickCladeListeners.add(l);
   }
 
-  public void removeClickCladeListener(ActionListener l) {
+  public void removeClickCladeListener(ClickCladeListener l) {
     clickCladeListeners.remove(l);
   }
 
   private void openDetails() {
     // System.out.println("===> mouse clicked " + cladeSummary);
-    clickCladeListeners.forEach(l -> l.actionPerformed(new ActionEvent(cladeSummary, 0, "click")));
+    clickCladeListeners.notifyAll(cladeSummary);
   }
 }
