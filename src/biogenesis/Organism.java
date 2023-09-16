@@ -3951,8 +3951,9 @@ public class Organism extends Rectangle {
 				// Check that it doesn't overlap with other organisms.
 				if (_world.fastCheckHit(this) == null) {
 					if (parent._geneticCode.getDisperseChildren()) {
-						dx = Utils.side[nPos][0];
-						dy = Utils.side[nPos][1];
+						double scale = Utils.random.nextDouble() * 0.5 + 0.5; // randomize dispersion speed a bit so children will not be on a checkerboard pattern
+						dx = Utils.side[nPos][0] * scale;
+						dy = Utils.side[nPos][1] * scale;
 					} else {
 						dx = parent.dx;
 						dy = parent.dy;
