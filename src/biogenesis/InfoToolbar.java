@@ -133,7 +133,7 @@ public class InfoToolbar extends JToolBar {
 	    _lT_ID = new JLabel(Messages.getString("T_ID"), JLabel.CENTER); //$NON-NLS-1$
 		add(_lT_ID, gridBagConstraints);
 		_lID = new JLabel(_selOrganism!=null?_nf.format(_selOrganism.getID()):"-1",JLabel.CENTER); //$NON-NLS-1$
-		_lID.setPreferredSize(dimension);
+		// _lID.setPreferredSize(dimension);
 		gridBagConstraints.gridx = 2;
 		gridBagConstraints.gridy = 0;
 		add(_lID, gridBagConstraints);
