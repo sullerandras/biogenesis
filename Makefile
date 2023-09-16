@@ -11,7 +11,7 @@ build: compile
 	rm -rf build
 	rm -rf biogenesis.jar
 	mkdir build
-	unzip -o lib/gson-2.10.1.jar -d build
+	unzip -q -o lib/gson-2.10.1.jar -d build
 	cp -r classes/* build
 	cp changes.md build
 	jar -cfe biogenesis.jar biogenesis.MainWindow -C build .
@@ -20,9 +20,9 @@ build-analyzer: compile-analyzer
 	rm -rf build
 	rm -rf biogenesis-analyzer.jar
 	mkdir build
-	unzip -o lib/gson-2.10.1.jar -d build
-	unzip -o lib/sqlite-jdbc-3.42.0.0.jar -d build
-	unzip -o lib/xchart-3.8.5.jar -d build
+	unzip -q -o lib/gson-2.10.1.jar -d build
+	unzip -q -o lib/sqlite-jdbc-3.42.0.0.jar -d build
+	unzip -q -o lib/xchart-3.8.5.jar -d build
 	cp -r classes/* build
 	cp -r src/biogenesis/clade_analyzer/db/migrations build/biogenesis/clade_analyzer/db
 	cp changes.md build
