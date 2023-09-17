@@ -52,8 +52,8 @@ public class HeatMapPanel extends JPanel {
     });
   }
 
-  private long lastSliderChangedMillis = 0;
   private int lastSliderIndex = 0;
+  private int lastShownSliderIndex = 0;
 
   private class SliderChangedThread extends Thread {
     public SliderChangedThread() {
@@ -68,16 +68,17 @@ public class HeatMapPanel extends JPanel {
           Thread.sleep(100);
         } catch (InterruptedException e) {
         }
-        synchronized (HeatMapPanel.this) {
-          if (System.currentTimeMillis() - lastSliderChangedMillis < 100) {
-            continue;
-          }
-        }
         java.awt.EventQueue.invokeLater(() -> {
           synchronized (HeatMapPanel.this) {
             if (slider.getValue() != lastSliderIndex) {
+              lastSliderIndex = slider.getValue();
               return;
             }
+
+            if (lastSliderIndex == lastShownSliderIndex) {
+              return;
+            }
+            lastShownSliderIndex = lastSliderIndex;
           }
 
           sliderReallyChanged();
@@ -88,7 +89,6 @@ public class HeatMapPanel extends JPanel {
 
   private void sliderChanged() {
     synchronized (this) {
-      lastSliderChangedMillis = System.currentTimeMillis();
       lastSliderIndex = slider.getValue();
     }
   }
