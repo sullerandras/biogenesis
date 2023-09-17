@@ -666,19 +666,19 @@ public class World implements Serializable{
 			}
 		}
 		synchronized (_organisms) {
-			if (colDetTree != null && !fullRedraw) {
+			if (organismBuckets != null && !fullRedraw) {
 				final JViewport viewPort = (JViewport) SwingUtilities.getAncestorOfClass(JViewport.class, (VisibleWorld) _visibleWorld);
 				final Rectangle view = viewPort.getViewRect();
-				final int bucketSize = colDetTree.getBucketSize();
+				final int bucketSize = organismBuckets.getBucketSize();
 
 				final int minx = Math.max(0, (int) (view.x / (double) bucketSize));
 				final int miny = Math.max(0, (int) (view.y / (double) bucketSize));
-				final int maxx = Math.min(colDetTree.getMaxWidth(), (int) ((view.x + view.width) / (double) bucketSize));
-				final int maxy = Math.min(colDetTree.getMaxHeight(), (int) ((view.y + view.height) / (double) bucketSize));
+				final int maxx = Math.min(organismBuckets.getMaxWidth(), (int) ((view.x + view.width) / (double) bucketSize));
+				final int maxy = Math.min(organismBuckets.getMaxHeight(), (int) ((view.y + view.height) / (double) bucketSize));
 
 				for (int y = miny; y <= maxy; y++) {
 					for (int x = minx; x <= maxx; x++) {
-						Collection<Organism> bucket = colDetTree.getBucket(x, y);
+						Collection<Organism> bucket = organismBuckets.getBucket(x, y);
 						for (Organism o : bucket) {
 							o.draw(g);
 						}
@@ -702,7 +702,7 @@ public class World implements Serializable{
 	 * and every 256 frames the time counter is increased by 1.
 	 */
 	public synchronized void time() {
-		colDetTree = new OrganismBuckets(_width, _height, 70);
+		organismBuckets = new OrganismBuckets(_width, _height, 70);
 		if (_corridorexists) {
 			InCorridor c;
 			synchronized (inCorridors) {
@@ -714,10 +714,10 @@ public class World implements Serializable{
 		}
 		synchronized (_organisms) {
 			for (Organism o: _organisms) {
-				colDetTree.insert(o);
+				organismBuckets.insert(o);
 			}
 		}
-		ParallelExecutor.progressAllOrganisms(_organisms, colDetTree, _visibleWorld);
+		ParallelExecutor.progressAllOrganisms(_organisms, organismBuckets, _visibleWorld);
 
 		// Reactions turning CO2 and CH4 into each other and detritus into CO2
 		synchronized (_CH4_monitor) {
@@ -821,7 +821,7 @@ public class World implements Serializable{
 		return null;
 	}
 
-	public transient OrganismBuckets colDetTree = new OrganismBuckets(_width, _height, 70);
+	public transient OrganismBuckets organismBuckets = new OrganismBuckets(_width, _height, 70);
 
 	/**
 	 * Checks if an organism has a high probability of being in touch with
@@ -833,7 +833,7 @@ public class World implements Serializable{
 	 * rectangle of {@code b1} or null if there is no such organism.
 	 */
 	public Organism fastCheckHit(Organism b1) {
-		return colDetTree.findFirst(b1, org -> {
+		return organismBuckets.findFirst(b1, org -> {
 			if (b1 != org) {
 				if (b1.intersects(org)) {
 					return true;
@@ -855,7 +855,7 @@ public class World implements Serializable{
 	 */
 
 	public Organism transformCheckHit(Organism b1) {
-		return colDetTree.findFirst(b1, org -> {
+		return organismBuckets.findFirst(b1, org -> {
 			if ((b1 != org) && (b1._ID != org._parentID) && (b1._parentID != org._ID)) {
 				if (b1.intersects(org)) {
 					return true;
@@ -872,7 +872,7 @@ public class World implements Serializable{
 	 * organism exists.
 	 */
 	public Organism checkHit(Organism org1) {
-		return colDetTree.findFirst(org1, collidingOrganism -> {
+		return organismBuckets.findFirst(org1, collidingOrganism -> {
 			if (collidingOrganism != org1) {
 				// First check if the bounding boxes intersect
 				if (org1.intersects(collidingOrganism)) {
