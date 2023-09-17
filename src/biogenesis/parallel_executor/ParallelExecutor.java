@@ -1,6 +1,7 @@
 package biogenesis.parallel_executor;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -17,6 +18,7 @@ import biogenesis.VisibleWorldInterface;
 public class ParallelExecutor {
   private static Collection<Organism> checkedOrganisms = Collections.synchronizedSet(new HashSet<>());
   private static List<WorkerThread> workerThreads = new ArrayList<>();
+
   private static Collection<Organism> organisms;
   private static OrganismBuckets organismBuckets;
   private static VisibleWorldInterface visibleWorld;
@@ -82,33 +84,44 @@ public class ParallelExecutor {
         workerThread.start();
         workerThreads.add(workerThread);
       }
+
+      ThreadStartIndexes.initialize(threadCount, lineCount);
     }
     LinesLocker.initialize(lineCount);
 
     // Split the buckets into vertical lines.
     // Do one line per thread.
     // Do it until all lines are done.
-    int[] startIndexes = new int[threadCount]; // index where the thead starts
-    int[] endIndexes = new int[threadCount]; // index where the thead ends, inclusive
-    for (int i = 0; i < threadCount; i++) {
-      startIndexes[i] = lineCount * i / threadCount;
-      if (i > 0) {
-        endIndexes[i - 1] = startIndexes[i] - 1;
-      }
-    }
-    endIndexes[threadCount - 1] = lineCount - 1;
+
+    WorkerJob[] jobs = new WorkerJob[threadCount];
 
     // do one line per thread
     for (int i = 0; i < threadCount; i++) {
-      workerThreads.get(i).addJob(new WorkerJob(startIndexes[i], endIndexes[i]));
+      jobs[i] = new WorkerJob(ThreadStartIndexes.getStartIndex(i), ThreadStartIndexes.getEndIndex(i));
+      workerThreads.get(i).addJob(jobs[i]);
     }
+
+    long shortestNanos = Long.MAX_VALUE;
+    int shortestIndex = -1;
+    long longestNanos = Long.MIN_VALUE;
+    int longestIndex = -1;
 
     // wait till all jobs finish
     for (int i = 0; i < threadCount; i++) {
       // System.out.println("======> waiting for thread " + workerThreads.get(i).getName() + " to finish");
       workerThreads.get(i).waitTillDone();
       // System.out.println("======> waiting for thread " + workerThreads.get(i).getName() + " to finish done");
+      if (jobs[i].nanos < shortestNanos) {
+        shortestNanos = jobs[i].nanos;
+        shortestIndex = i;
+      }
+      if (jobs[i].nanos > longestNanos) {
+        longestNanos = jobs[i].nanos;
+        longestIndex = i;
+      }
     }
+
+    ThreadStartIndexes.adjust(shortestIndex, shortestNanos, longestIndex, longestNanos);
   }
 
   /**

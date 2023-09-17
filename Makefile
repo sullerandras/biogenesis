@@ -5,7 +5,7 @@ run-analyzer: build-analyzer
 	SKIP_OPENGL=true java -Dsun.java2d.opengl=True -Dsun.java2d.opengl.fbobject=false -jar biogenesis-analyzer.jar
 
 test: compile-tests
-	java -cp classes:lib/gson-2.10.1.jar:lib/xchart-3.8.5.jar:lib/hamcrest-core-1.3.jar:lib/junit-4.13.2.jar org.junit.runner.JUnitCore biogenesis.test.AllTests
+	java -cp classes:lib/gson-2.10.1.jar:lib/xchart-3.8.5.jar:lib/hamcrest-core-1.3.jar:lib/junit-4.13.2.jar org.junit.runner.JUnitCore biogenesis.test.AllTests biogenesis.parallel_executor.test.AllTests
 
 build: compile
 	rm -rf build
@@ -50,7 +50,7 @@ compile-analyzer: clean
 
 compile-tests: clean
 	mkdir -p classes
-	javac -cp lib/gson-2.10.1.jar:lib/xchart-3.8.5.jar:lib/junit-4.13.2.jar -sourcepath src tests/biogenesis/test/*.java -source 8 -target 8 -d classes
+	javac -cp lib/gson-2.10.1.jar:lib/xchart-3.8.5.jar:lib/junit-4.13.2.jar -sourcepath src tests/biogenesis/test/*.java tests/biogenesis/parallel_executor/test/*.java -source 8 -target 8 -d classes
 	cp -r src/biogenesis/messages classes/biogenesis
 	cp -r src/biogenesis/images classes/biogenesis
 

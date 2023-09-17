@@ -5,8 +5,15 @@ package biogenesis.parallel_executor;
  * lines in the OrganismBuckets.
  */
 class WorkerJob {
+  private static final int RANGE_TO_CLEAR = ThreadStartIndexes.MIN_RANGE_SIZE - 1;
+
   private final int startIndex;
   private final int endIndex;
+
+  /**
+   * How long it took to execute this job, in nanoseconds.
+   */
+  public long nanos;
 
   /**
    * Creates a new WorkerJob that will execute one step of the simulation for the lines from
@@ -23,15 +30,24 @@ class WorkerJob {
    * Executes one step of the simulation for the lines from startIndex to endIndex, inclusive.
    */
   public void run() {
-    LinesLocker.lockRange(startIndex - 4, startIndex + 4);
+    long start = System.nanoTime();
+
+    LinesLocker.lockRange(startIndex - RANGE_TO_CLEAR, startIndex + RANGE_TO_CLEAR);
     int index = startIndex;
     while (index <= endIndex) {
       ParallelExecutor.progressLineInBucket(index);
-      LinesLocker.unlock(index - 4);
+      LinesLocker.unlock(index - RANGE_TO_CLEAR);
       index++;
-      LinesLocker.lock(index + 4);
+      LinesLocker.lock(index + RANGE_TO_CLEAR);
     }
-    LinesLocker.unlockRange(index - 4, index + 4);
+    LinesLocker.unlockRange(index - RANGE_TO_CLEAR, index + RANGE_TO_CLEAR);
     // System.out.println("=====> job done in thread " + Thread.currentThread().getName());
+
+    nanos = System.nanoTime() - start;
+  }
+
+  @Override
+  public String toString() {
+    return String.format("(%6.2fms, %2d range)", nanos / 1_000_000.0, endIndex - startIndex + 1);
   }
 }
