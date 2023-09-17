@@ -72,6 +72,7 @@ import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.border.EtchedBorder;
 
+import biogenesis.gui.LogsDialog;
 import biogenesis.gui.stats.StatisticsWindow;
 
 public class MainWindow extends JFrame implements MainWindowInterface {
@@ -107,6 +108,7 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 	protected StdAction killAllAction;
 	protected StdAction disperseAllAction;
 	protected StdAction parametersAction;
+	protected StdAction logsAction;
 	protected StdAction aboutAction;
 	protected StdAction manualAction;
 	protected StdAction checkLastVersionAction;
@@ -213,6 +215,8 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		System.setOut(new java.io.PrintStream(LogCollector.getInstance()));
+		System.setErr(new java.io.PrintStream(LogCollector.getInstance()));
 		if (args.length > 1) {
 			System.err.println("java -jar biogenesis.jar [random seed]");
 		} else if (args.length == 1) {
@@ -258,6 +262,7 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 		killAllAction = new KillAllAction("T_KILL_ALL", null, "T_KILL_ALL_ORGANISMS"); //$NON-NLS-1$ //$NON-NLS-2$
 		disperseAllAction = new DisperseAllAction("T_DISPERSE_ALL", null, "T_DISPERSE_ALL_DEAD_ORGANISMS"); //$NON-NLS-1$ //$NON-NLS-2$
 		parametersAction = new ParametersAction("T_PARAMETERS", null, "T_EDIT_PARAMETERS"); //$NON-NLS-1$ //$NON-NLS-2$
+		logsAction = new LogsAction("T_LOGS", null, "T_SHOW_HIDE_LOGS"); //$NON-NLS-1$ //$NON-NLS-2$
 		aboutAction = new AboutAction("T_ABOUT", null, "T_ABOUT"); //$NON-NLS-1$//$NON-NLS-2$
 		manualAction = new ManualAction("T_USER_MANUAL", null, "T_USER_MANUAL"); //$NON-NLS-1$//$NON-NLS-2$
 		checkLastVersionAction = new CheckLastVersionAction("T_CHECK_LAST_VERSION", null, "T_CHECK_LAST_VERSION"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -336,6 +341,7 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 		_menuWorld.add(new JMenuItem(statisticsAction));
 		_menuWorld.add(new JMenuItem(labAction));
 		_menuWorld.add(new JMenuItem(parametersAction));
+		_menuWorld.add(new JMenuItem(logsAction));
 		_menuHelp = new JMenu(Messages.getString("T_HELP")); //$NON-NLS-1$
 		_menuHelp.setMnemonic(Messages.getMnemonic("T_HELP").intValue()); //$NON-NLS-1$
 		menuBar.add(_menuHelp);
@@ -705,7 +711,7 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 					}
 				}
 			} catch (SecurityException ex) {
-				System.err.println(ex.getMessage());
+				ex.printStackTrace();
 				JOptionPane.showMessageDialog(null, Messages.getString("T_PERMISSION_DENIED"), //$NON-NLS-1$
 						Messages.getString("T_PERMISSION_DENIED"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
 			}
@@ -747,15 +753,15 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 						_world._isbackuped = true;
 						setStatusMessage(Messages.getString("T_WORLD_LOADED_SUCCESSFULLY")); //$NON-NLS-1$
 					} catch (IOException ex) {
-						System.err.println(ex.getMessage());
+						ex.printStackTrace();
 						JOptionPane.showMessageDialog(null, Messages.getString("T_CANT_READ_FILE"), //$NON-NLS-1$
 								Messages.getString("T_READ_ERROR"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
 					} catch (ClassNotFoundException ex) {
-						System.err.println(ex.getMessage());
+						ex.printStackTrace();
 						JOptionPane.showMessageDialog(null, Messages.getString("T_WRONG_FILE_TYPE"), //$NON-NLS-1$
 								Messages.getString("T_READ_ERROR"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
 					} catch (ClassCastException ex) {
-						System.err.println(ex.getMessage());
+						ex.printStackTrace();
 						JOptionPane.showMessageDialog(null, Messages.getString("T_WRONG_FILE_VERSION"), //$NON-NLS-1$
 								Messages.getString("T_READ_ERROR"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
 					}
@@ -770,7 +776,7 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 					_visibleWorld.repaint();
 				}
 			} catch (SecurityException ex) {
-				System.err.println(ex.getMessage());
+				ex.printStackTrace();
 				JOptionPane.showMessageDialog(null, Messages.getString("T_PERMISSION_DENIED"), //$NON-NLS-1$
 						Messages.getString("T_PERMISSION_DENIED"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
 			}
@@ -885,6 +891,29 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 
 		public void actionPerformed(ActionEvent e) {
 			paramDialog();
+		}
+	}
+
+	class LogsAction extends StdAction {
+		private static final long serialVersionUID = 1L;
+
+		private transient LogsDialog logsDialog = null;
+
+		public LogsAction(String text, String icon_path, String desc) {
+			super(text, icon_path, desc);
+		}
+
+		public void actionPerformed(ActionEvent e) {
+			if (logsDialog != null && !logsDialog.isShowing()) {
+				logsDialog.dispose();
+				logsDialog = null;
+			}
+			if (logsDialog != null) {
+				logsDialog.toFront();
+			} else {
+				logsDialog = new LogsDialog(MainWindow.this);
+				logsDialog.setVisible(true);
+			}
 		}
 	}
 
@@ -1072,7 +1101,7 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 				}
 			}
 		} catch (SecurityException ex) {
-			System.err.println(ex.getMessage());
+			ex.printStackTrace();
 			JOptionPane.showMessageDialog(null, Messages.getString("T_PERMISSION_DENIED"), //$NON-NLS-1$
 					Messages.getString("T_PERMISSION_DENIED"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
 		}
@@ -1092,12 +1121,12 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 			outputStream.close();
 			setStatusMessage(Messages.getString("T_WRITING_COMPLETED")); //$NON-NLS-1$
 			return true;
-		} catch (FileNotFoundException e) {
-			System.err.println(e.getMessage());
-		} catch (IOException e) {
-			System.err.println(e.getMessage());
+		} catch (FileNotFoundException ex) {
+			ex.printStackTrace();
+		} catch (IOException ex) {
+			ex.printStackTrace();
 		} catch (SecurityException ex) {
-			System.err.println(ex.getMessage());
+			ex.printStackTrace();
 			JOptionPane.showMessageDialog(null, Messages.getString("T_PERMISSION_DENIED"), //$NON-NLS-1$
 					Messages.getString("T_PERMISSION_DENIED"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
 		}
@@ -1113,9 +1142,9 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 		try {
 			ImageIO.write(worldimage, "PNG", f); //$NON-NLS-1$
 		} catch (FileNotFoundException ex) {
-			System.err.println(ex.getMessage());
+			ex.printStackTrace();
 		} catch (IOException ex) {
-			System.err.println(ex.getMessage());
+			ex.printStackTrace();
 		}
 	}
 
@@ -1128,16 +1157,15 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 		if (bounds.width == 0 || bounds.height == 0) {
 			return;
 		}
-		
 		final BufferedImage img = new BufferedImage(bounds.width, bounds.height, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = (Graphics2D) img.getGraphics();
 		cladeStats.draw(g);
 		try {
 			ImageIO.write(img, "PNG", f); //$NON-NLS-1$
 		} catch (FileNotFoundException ex) {
-			System.err.println(ex.getMessage());
+			ex.printStackTrace();
 		} catch (IOException ex) {
-			System.err.println(ex.getMessage());
+			ex.printStackTrace();
 		}
 	}
 
@@ -1148,9 +1176,9 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 		try {
 			ImageIO.write(worldimage, "PNG", f); //$NON-NLS-1$
 		} catch (FileNotFoundException ex) {
-			System.err.println(ex.getMessage());
+			ex.printStackTrace();
 		} catch (IOException ex) {
-			System.err.println(ex.getMessage());
+			ex.printStackTrace();
 		}
 	}
 
@@ -1198,31 +1226,31 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 		_statusLabel.setText(statusLabelText.toString());
 	}
 
-	final transient Runnable lifeProcess = new Runnable() {
-		public void run() {
-			if (_isProcessActive) {
-				// executa un torn
-				_world.time();
-				nFrames++;
-				// dibuixa de nou si cal
-				_world.setPaintingRegion();
-				// tracking
-				if (_trackedOrganism != null) {
-					if (!_trackedOrganism.isAlive()) {
-						_trackedOrganism = null;
-						abortTrackingAction.setEnabled(false);
-					} else {
-						JScrollBar bar = scrollPane.getHorizontalScrollBar();
-						bar.setValue(Utils.between(_trackedOrganism._centerX - scrollPane.getWidth() / 2,
-								bar.getValue() - 2 * (int) Utils.MAX_VEL, bar.getValue() + 2 * (int) Utils.MAX_VEL));
-						bar = scrollPane.getVerticalScrollBar();
-						bar.setValue(Utils.between(_trackedOrganism._centerY - scrollPane.getHeight() / 2,
-								bar.getValue() - 2 * (int) Utils.MAX_VEL, bar.getValue() + 2 * (int) Utils.MAX_VEL));
-					}
+	public void executeOneFrame() throws InterruptedException, InvocationTargetException {
+		// executa un torn
+		_world.time();
+		nFrames++;
+		java.awt.EventQueue.invokeAndWait(() -> {
+			// dibuixa de nou si cal
+			if (Utils.repaintWorld()) {
+				_visibleWorld.repaint();
+			}
+			// tracking
+			if (_trackedOrganism != null) {
+				if (!_trackedOrganism.isAlive()) {
+					_trackedOrganism = null;
+					abortTrackingAction.setEnabled(false);
+				} else {
+					JScrollBar bar = scrollPane.getHorizontalScrollBar();
+					bar.setValue(Utils.between(_trackedOrganism._centerX - scrollPane.getWidth() / 2,
+							bar.getValue() - 2 * (int) Utils.MAX_VEL, bar.getValue() + 2 * (int) Utils.MAX_VEL));
+					bar = scrollPane.getVerticalScrollBar();
+					bar.setValue(Utils.between(_trackedOrganism._centerY - scrollPane.getHeight() / 2,
+							bar.getValue() - 2 * (int) Utils.MAX_VEL, bar.getValue() + 2 * (int) Utils.MAX_VEL));
 				}
 			}
-		}
-	};
+		});
+	}
 
 	/**
 	 * Scrolls the world so that the given organism is at the center of the view.
@@ -1284,14 +1312,21 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 	}
 
 	public void startWorkerThread() {
-		workerThread = new Thread() {
+		workerThread = new Thread("Main Worker Thread") {
 			@Override
 			public void run() {
 				long prevNanos = System.nanoTime();
 				long accumulatedNanosForFpsAdjust = 0L;
 				try {
 					while (true) {
-						EventQueue.invokeAndWait(lifeProcess);
+						if (_isProcessActive) {
+							executeOneFrame();
+						} else {
+							Thread.sleep(10);
+						}
+						java.awt.EventQueue.invokeAndWait(() -> {
+							// do nothing, just process events, so ui is responsive
+						});
 						// Add a little delay if we were faster than the target fps.
 						// But only if we need to repaint the world, so avoid unnecessary slowdowns when
 						// not looking at the world.
@@ -1360,6 +1395,7 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 		increaseDetritusAction.changeLocale();
 		decreaseDetritusAction.changeLocale();
 		parametersAction.changeLocale();
+		logsAction.changeLocale();
 		labAction.changeLocale();
 		killAllAction.changeLocale();
 		disperseAllAction.changeLocale();

@@ -51,6 +51,7 @@ public class ParamDialog extends JDialog {
 	private JTextField widthText = null;
 	private JTextField heightText = null;
 	private JTextField delayText = null;
+	private JTextField threadCountText = null;
 	private JRadioButton repaintWorldStrategyRadio1 = null;
 	private JRadioButton repaintWorldStrategyRadio2 = null;
 	private JRadioButton repaintWorldStrategyRadio3 = null;
@@ -60,6 +61,7 @@ public class ParamDialog extends JDialog {
 	private JCheckBox autoBackupsWorldPngCheck = null;
 	private JCheckBox autoBackupsStatisticsPngCheck = null;
 	private JCheckBox autoBackupsCladesPngCheck = null;
+	private JCheckBox autoBackupsImagesAsFoldersCheck = null;
 	private JTextField backupDelayText = null;
 	protected JRadioButton hardwareNoneRadio = null;
 	protected JRadioButton hardwareOpenGLRadio = null;
@@ -246,6 +248,7 @@ public class ParamDialog extends JDialog {
 		widthText.setText(String.valueOf(Utils.DEF_WORLD_WIDTH));
 		heightText.setText(String.valueOf(Utils.DEF_WORLD_HEIGHT));
 		delayText.setText(String.valueOf(Utils.DEF_DELAY));
+		threadCountText.setText(String.valueOf(Utils.DEF_THREAD_COUNT));
 		repaintWorldStrategyRadio1.setSelected(Utils.DEF_repaintWorldStrategy.equals(RepaintWorldStrategy.ALWAYS.toString()));
 		repaintWorldStrategyRadio2.setSelected(Utils.DEF_repaintWorldStrategy.equals(RepaintWorldStrategy.ONLY_WHEN_MAIN_WINDOW_IS_IN_FOCUS.toString()));
 		repaintWorldStrategyRadio3.setSelected(Utils.DEF_repaintWorldStrategy.equals(RepaintWorldStrategy.WHEN_ANY_APP_WINDOW_IS_IN_FOCUS.toString()));
@@ -255,6 +258,7 @@ public class ParamDialog extends JDialog {
 		autoBackupsWorldPngCheck.setSelected(Utils.DEF_AUTO_BACKUP_WORLD_PNG);
 		autoBackupsStatisticsPngCheck.setSelected(Utils.DEF_AUTO_BACKUP_STATISTICS_PNG);
 		autoBackupsCladesPngCheck.setSelected(Utils.DEF_AUTO_BACKUP_CLADES_PNG);
+		autoBackupsImagesAsFoldersCheck.setSelected(Utils.DEF_AUTO_BACKUP_IMAGES_AS_FOLDERS);
 		backupDelayText.setText(String.valueOf(Utils.DEF_BACKUP_DELAY));
 		rubbingText.setText(String.valueOf(Utils.DEF_RUBBING));
 		elasticityText.setText(String.valueOf(Utils.DEF_ELASTICITY));
@@ -463,6 +467,10 @@ public class ParamDialog extends JDialog {
 		panel.add(delayText);
 		label = new JLabel(Messages.getString("T_MILLISECONDS")); //$NON-NLS-1$
 		panel.add(label);
+		label = new JLabel(Messages.getString("T_THREAD_COUNT")); //$NON-NLS-1$
+		panel.add(label);
+		threadCountText = new JTextField(Integer.toString(Utils.THREAD_COUNT),6);
+		panel.add(threadCountText);
 		generalPanel.add(panel);
 		//World repaint
 		panel = new JPanel();
@@ -487,7 +495,7 @@ public class ParamDialog extends JDialog {
 		generalPanel.add(panel);
 		//Backups
 		panel = new JPanel();
-		panel.setLayout(new GridLayout(7,1));
+		panel.setLayout(new GridLayout(8,1));
 		autoBackupsCheck = new JCheckBox(Messages.getString("T_AUTOMATIC_BACKUPS"));
 		label = new JLabel(Messages.getString("T_TIME_BETWEEN_BACKUPS")); //$NON-NLS-1$
 		backupDelayText = new JTextField(Integer.toString(Utils.BACKUP_DELAY),10);
@@ -519,6 +527,10 @@ public class ParamDialog extends JDialog {
 		autoBackupsCladesPngCheck = new JCheckBox(Messages.getString("T_AUTOMATIC_BACKUPS_CLADES_PNG"));
 		autoBackupsCladesPngCheck.setSelected(Utils.AUTO_BACKUP_CLADES_PNG);
 		panel.add(autoBackupsCladesPngCheck);
+
+		autoBackupsImagesAsFoldersCheck = new JCheckBox(Messages.getString("T_AUTOMATIC_BACKUPS_IMAGES_AS_FOLDERS"));
+		autoBackupsImagesAsFoldersCheck.setSelected(Utils.AUTO_BACKUP_IMAGES_AS_FOLDERS);
+		panel.add(autoBackupsImagesAsFoldersCheck);
 
 		JPanel backupDelayPanel = new JPanel();
 		backupDelayPanel.add(label);
@@ -1270,12 +1282,21 @@ public class ParamDialog extends JDialog {
 		} catch (NumberFormatException ex) {
 			// Keep old value if there is a problem
 		}
+		try {
+			i = Integer.parseInt(threadCountText.getText());
+			if (i > 0) {
+				Utils.THREAD_COUNT = i;
+			}
+		} catch (NumberFormatException ex) {
+			// Keep old value if there is a problem
+		}
 		Utils.AUTO_BACKUP = autoBackupsCheck.isSelected();
 		Utils.COMPRESS_BACKUPS = compressBackupsCheck.isSelected();
 		Utils.AUTO_BACKUP_CSV = autoBackupsCSVCheck.isSelected();
 		Utils.AUTO_BACKUP_WORLD_PNG = autoBackupsWorldPngCheck.isSelected();
 		Utils.AUTO_BACKUP_STATISTICS_PNG = autoBackupsStatisticsPngCheck.isSelected();
 		Utils.AUTO_BACKUP_CLADES_PNG = autoBackupsCladesPngCheck.isSelected();
+		Utils.AUTO_BACKUP_IMAGES_AS_FOLDERS = autoBackupsImagesAsFoldersCheck.isSelected();
 		try {
 			i = Integer.parseInt(backupDelayText.getText());
 			if (i > 0) {

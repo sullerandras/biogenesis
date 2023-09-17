@@ -204,10 +204,7 @@ public class VisibleWorld extends JPanel implements VisibleWorldInterface {
 		public void actionPerformed(ActionEvent e) {
 			Organism b = getSelectedOrganism();
 			if (b != null && b.isAlive()) {
-				double q = Math.min(10, _mainWindow.getWorld()._CO2);
-				_mainWindow.getWorld().addCO2(q);
-				b._energy += q;
-				_mainWindow.getWorld().addO2(q);
+				b._energy += _mainWindow.getWorld().convertCO2ToO2(10);
 			}
 		}
 	}
@@ -286,14 +283,14 @@ public class VisibleWorld extends JPanel implements VisibleWorldInterface {
 							try {
 								ImageIO.write(image,"PNG",f); //$NON-NLS-1$
 							} catch (FileNotFoundException ex) {
-								System.err.println(ex.getMessage());
+								ex.printStackTrace();
 							} catch (IOException ex) {
-								System.err.println(ex.getMessage());
+								ex.printStackTrace();
 							}
 						}
 					}
 				} catch (SecurityException ex) {
-					System.err.println(ex.getMessage());
+					ex.printStackTrace();
 					JOptionPane.showMessageDialog(null,Messages.getString("T_PERMISSION_DENIED"),Messages.getString("T_PERMISSION_DENIED"),JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 				_mainWindow._isProcessActive = processState;
@@ -468,15 +465,15 @@ public class VisibleWorld extends JPanel implements VisibleWorldInterface {
     					if (newBiot.pasteOrganism(mouseX, mouseY))
     						_mainWindow.getWorld().addOrganism(newBiot, null);
     				} catch (SAXException ex) {
-    					System.err.println(ex.getMessage());
+    					ex.printStackTrace();
     					JOptionPane.showMessageDialog(null,Messages.getString("T_WRONG_FILE_VERSION"),Messages.getString("T_READ_ERROR"),JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$ //$NON-NLS-2$
     				} catch (IOException ex) {
-    					System.err.println(ex.getMessage());
+    					ex.printStackTrace();
     					JOptionPane.showMessageDialog(null,Messages.getString("T_CANT_READ_FILE"),Messages.getString("T_READ_ERROR"),JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$ //$NON-NLS-2$
 					}
     			}
     		} catch (SecurityException ex) {
-    			System.err.println(ex.getMessage());
+    			ex.printStackTrace();
     			JOptionPane.showMessageDialog(null,Messages.getString("T_PERMISSION_DENIED"),Messages.getString("T_PERMISSION_DENIED"),JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$ //$NON-NLS-2$
     		}
     		_mainWindow._isProcessActive = processState;

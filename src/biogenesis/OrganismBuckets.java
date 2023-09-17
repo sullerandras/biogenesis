@@ -2,6 +2,7 @@ package biogenesis;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 /**
  * Stores a 2D array of buckets, and stores Organisms in one or more buckets that the organism touches.
@@ -35,7 +36,7 @@ public class OrganismBuckets {
     this.buckets = new Collection[maxHeight + 1][maxWidth + 1];
     for (int y = 0; y <= maxHeight; y++) {
       for (int x = 0; x <= maxWidth; x++) {
-        buckets[y][x] = new ArrayList<>();
+        buckets[y][x] = Collections.synchronizedList(new ArrayList<>());
       }
     }
   }
@@ -90,9 +91,11 @@ public class OrganismBuckets {
     final int maxy = Math.min(maxHeight, (int) (o.getMaxY() / (double) bucketSize));
 
     if (minx == maxx && miny == maxy) {
-      for (Organism match : buckets[miny][minx]) {
-        if (matcher.match(match)) {
-          return match;
+      synchronized (buckets[miny][minx]) {
+        for (Organism match : buckets[miny][minx]) {
+          if (matcher.match(match)) {
+            return match;
+          }
         }
       }
       return null;
@@ -100,9 +103,11 @@ public class OrganismBuckets {
 
     for (int y = miny; y <= maxy; y++) {
       for (int x = minx; x <= maxx; x++) {
-        for (Organism match : buckets[y][x]) {
-          if (matcher.match(match)) {
-            return match;
+        synchronized (buckets[y][x]) {
+          for (Organism match : buckets[y][x]) {
+            if (matcher.match(match)) {
+              return match;
+            }
           }
         }
       }
