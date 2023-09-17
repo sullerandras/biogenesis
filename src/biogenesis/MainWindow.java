@@ -72,7 +72,6 @@ import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.border.EtchedBorder;
 
-import biogenesis.clade_analyzer.gui.MainFrame;
 import biogenesis.gui.LogsDialog;
 import biogenesis.gui.stats.StatisticsWindow;
 

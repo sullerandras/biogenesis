@@ -2015,7 +2015,7 @@ public class Organism extends Rectangle {
 					int q;
 					for (q=_segments-1; q>=0; q--) {
 				         if (_segColor[q].equals(Utils.ColorPLANKTON)) {
-				             _mphoto[q] = 0.825 * Utils.PLANKTON_ENERGY_CONSUMPTION * photomultiplier * _geneticCode.getGene(q%_geneticCode.getNGenes()).getLength();
+				             _mphoto[q] = 0.82 * Utils.PLANKTON_ENERGY_CONSUMPTION * photomultiplier * _geneticCode.getGene(q%_geneticCode.getNGenes()).getLength();
 						}
 					}
 				}
@@ -15397,6 +15397,942 @@ public class Organism extends Rectangle {
 				}
 			}
 			break;
+		case PLAGUE:
+			// Force reproduction of infected victims
+			switch (getTypeColor(org._segColor[oseg])) {
+			case WHITE:
+			case PLAGUE:
+				if (((org._infectedGeneticCode == _geneticCode) || ((!_isinfectious) && (org._infectedGeneticCode != null))) && (org._isinfectious)) {
+					if ((((_plagueversion == 2) || (!_isinfectious)) && (org._isaconsumer)) || ((_plagueversion == 1) && (org._isaplant))) {
+						if (org._lavender > 0) {
+							if ((_isenhanced) && (!_isinfectious) && (!_isaconsumer) && (!_isafungus)) {
+								org.weaklavendershield();
+							} else {
+								org.lavendershield();
+							}
+							setColor(Utils.ColorPLAGUE);
+						}
+						if (org._lavender <= 0) {
+							if (_isinfectious) {
+								if (_isaplant) {
+									if (_energy > Utils.PLAGUE_ENERGY_CONSUMPTION) {
+								        org.reproduceVirus();
+								        setColor(Utils.ColorPLAGUE);
+									}
+								} else {
+									if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
+							            org.reproduceVirus();
+							            setColor(Utils.ColorPLAGUE);
+						            }
+								}
+							} else {
+								if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
+									if ((!_isaconsumer) && (!_isafungus)) {
+										org._nVirusChildren = -1;
+									}
+						            org.reproduceforeignVirus();
+						            setColor(Utils.ColorPLAGUE);
+					            }
+							}
+						}
+					}
+				}
+				if ((org._indigo > 0) && (!org._isaplant) && (!org._isaconsumer) && (!org._isafungus) && (!_hasgoodvision)) {
+					if ((_isaplant) && (_isinfectious)) {
+						if (useEnergy((Utils.PLAGUE_ENERGY_CONSUMPTION + 0.01)/Utils.INDIGO_ENERGY_CONSUMPTION)) {
+				    	    org.setColor(Utils.ColorINDIGO);
+				    	    setColor(Utils.ColorPLAGUE);
+						}
+				    } else {
+				    	if ((_indigo == 0) || (_isaplant) || (_isaconsumer) || (_isafungus)) {
+				    		if (useEnergy((Utils.SCOURGE_ENERGY_CONSUMPTION + 0.1)/Utils.INDIGO_ENERGY_CONSUMPTION)) {
+				    			org.setColor(Utils.ColorINDIGO);
+				    			setColor(Utils.ColorPLAGUE);
+				    		}
+				    	}
+				    }
+				}
+				break;
+			case SILVER:
+				if ((org._infectedGeneticCode == _geneticCode) || ((!_isinfectious) && (org._infectedGeneticCode != null))) {
+					if ((org._isenhanced) || (_nTotalInfected >= org._nTotalInfected)) {
+						if ((((_plagueversion == 2) || (!_isinfectious)) && (org._isaconsumer)) || ((_plagueversion == 1) && (org._isaplant))) {
+							if (org._lavender > 0) {
+								if ((_isenhanced) && (!_isinfectious) && (!_isaconsumer) && (!_isafungus)) {
+									org.weaklavendershield();
+								} else {
+									org.lavendershield();
+								}
+								setColor(Utils.ColorPLAGUE);
+							}
+							if (org._lavender <= 0) {
+								if (_isinfectious) {
+									if (_isaplant) {
+										if (_energy > Utils.PLAGUE_ENERGY_CONSUMPTION) {
+									        org.reproduceVirus();
+									        setColor(Utils.ColorPLAGUE);
+										}
+									} else {
+										if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
+								            org.reproduceVirus();
+								            setColor(Utils.ColorPLAGUE);
+							            }
+									}
+								} else {
+									if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
+										if ((!_isaconsumer) && (!_isafungus)) {
+											org._nVirusChildren = -1;
+										}
+							            org.reproduceforeignVirus();
+							            setColor(Utils.ColorPLAGUE);
+						            }
+								}
+							}
+						}
+					}
+				}
+				if ((org._indigo > 0) && (!org._isaplant) && (!org._isaconsumer) && (!org._isafungus) && (!_hasgoodvision)) {
+					if ((_isaplant) && (_isinfectious)) {
+						if (useEnergy((Utils.PLAGUE_ENERGY_CONSUMPTION + 0.01)/Utils.INDIGO_ENERGY_CONSUMPTION)) {
+				    	    org.setColor(Utils.ColorINDIGO);
+				    	    setColor(Utils.ColorPLAGUE);
+						}
+				    } else {
+				    	if ((_indigo == 0) || (_isaplant) || (_isaconsumer) || (_isafungus)) {
+				    		if (useEnergy((Utils.SCOURGE_ENERGY_CONSUMPTION + 0.1)/Utils.INDIGO_ENERGY_CONSUMPTION)) {
+				    			org.setColor(Utils.ColorINDIGO);
+				    			setColor(Utils.ColorPLAGUE);
+				    		}
+				    	}
+				    }
+				}
+				break;
+			case INDIGO:
+				if ((((_plagueversion == 2) || (!_isinfectious)) && (org._isaconsumer)) || ((_plagueversion == 1) && (org._isaplant))
+						|| ((!org._isaplant) && (!org._isaconsumer) && (!org._isafungus))) {
+					if (!_hasgoodvision) {
+						if ((_isaplant) && (_isinfectious)) {
+							if (useEnergy((Utils.PLAGUE_ENERGY_CONSUMPTION + 0.01)/Utils.INDIGO_ENERGY_CONSUMPTION)) {
+					    	    org.setColor(Utils.ColorINDIGO);
+					    	    setColor(Utils.ColorPLAGUE);
+							}
+					    } else {
+					    	if ((_indigo == 0) || (_isaplant) || (_isaconsumer) || (_isafungus)) {
+					    		if (useEnergy((Utils.SCOURGE_ENERGY_CONSUMPTION + 0.1)/Utils.INDIGO_ENERGY_CONSUMPTION)) {
+					    			org.setColor(Utils.ColorINDIGO);
+					    			setColor(Utils.ColorPLAGUE);
+					    		}
+					    	}
+					    }
+					}
+					if ((org._antiviral > 0) && (_isinfectious)) {
+		    			virusneutralized();
+					}
+				}
+				break;
+			case LEAF:
+				if ((org._infectedGeneticCode == _geneticCode) || ((!_isinfectious) && (org._infectedGeneticCode != null))) {
+					if (_plagueversion == 1) {
+						if ((org._dodge) && (org.useEnergy(Utils.DODGE_ENERGY_CONSUMPTION))) {
+							org.setColor(Utils.ColorTEAL);
+							setColor(Utils.ColorPLAGUE);
+							org._hasdodged =true;
+						} else {
+							if ((!org._modifiesleaf) || (org._framesColor > 0)) {
+								if (org._lavender > 0) {
+									if ((_isenhanced) && (!_isinfectious) && (!_isaconsumer) && (!_isafungus)) {
+										org.weaklavendershield();
+									} else {
+										org.lavendershield();
+									}
+									setColor(Utils.ColorPLAGUE);
+								}
+								if (org._lavender <= 0) {
+									if (org._jadefactor > 1) {
+										if (org._segColor[oseg].equals(Utils.ColorJADE)) {
+							    			org._segColor[oseg] = Utils.ColorDARKJADE;
+							    		} else {
+							    			org._segColor[oseg] = Utils.ColorDARKGREEN;
+							    		}
+							    		setColor(Utils.ColorPLAGUE);
+										org._hasdodged =true;
+										org._useextraeffects =true;
+										if ((org._antiviral > 0) && (_isinfectious)) {
+							    			virusneutralized();
+										}
+							    	} else {
+							    		if (_isinfectious) {
+											if (_isaplant) {
+												if (_energy > Utils.PLAGUE_ENERGY_CONSUMPTION) {
+											        org.reproduceVirus();
+											        setColor(Utils.ColorPLAGUE);
+												}
+											} else {
+												if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
+										            org.reproduceVirus();
+										            setColor(Utils.ColorPLAGUE);
+									            }
+											}
+										} else {
+											if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
+												if ((!_isaconsumer) && (!_isafungus)) {
+													org._nVirusChildren = -1;
+												}
+									            org.reproduceforeignVirus();
+									            setColor(Utils.ColorPLAGUE);
+								            }
+										}
+							    	}
+								}
+							} else {
+								// The other organism will be shown in light blue
+								org.setColortwoFrames(Utils.ColorLIGHT_BLUE);
+								setColor(Utils.ColorPLAGUE);
+							}
+						}
+					}
+				}
+				break;
+			case GREEN:
+			case GRASS:
+			case FOREST:
+			case SPRING:
+			case SUMMER:
+            case WINTER:
+			case LIME:
+			case C4:
+			case JADE:
+			case DARKJADE:
+				if ((org._infectedGeneticCode == _geneticCode) || ((!_isinfectious) && (org._infectedGeneticCode != null))) {
+					if (_plagueversion == 1) {
+						if ((org._dodge) && (org.useEnergy(Utils.DODGE_ENERGY_CONSUMPTION))) {
+							org.setColor(Utils.ColorTEAL);
+							setColor(Utils.ColorPLAGUE);
+							org._hasdodged =true;
+						} else {
+							if (org._lavender > 0) {
+								if ((_isenhanced) && (!_isinfectious) && (!_isaconsumer) && (!_isafungus)) {
+									org.weaklavendershield();
+								} else {
+									org.lavendershield();
+								}
+								setColor(Utils.ColorPLAGUE);
+							}
+							if (org._lavender <= 0) {
+								if (org._jadefactor > 1) {
+									if (org._segColor[oseg].equals(Utils.ColorJADE)) {
+						    			org._segColor[oseg] = Utils.ColorDARKJADE;
+						    		} else {
+						    			org._segColor[oseg] = Utils.ColorDARKGREEN;
+						    		}
+						    		setColor(Utils.ColorPLAGUE);
+									org._hasdodged =true;
+									org._useextraeffects =true;
+									if ((org._antiviral > 0) && (_isinfectious)) {
+						    			virusneutralized();
+									}
+						    	} else {
+						    		if (_isinfectious) {
+										if (_isaplant) {
+											if (_energy > Utils.PLAGUE_ENERGY_CONSUMPTION) {
+										        org.reproduceVirus();
+										        setColor(Utils.ColorPLAGUE);
+											}
+										} else {
+											if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
+									            org.reproduceVirus();
+									            setColor(Utils.ColorPLAGUE);
+								            }
+										}
+									} else {
+										if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
+											if ((!_isaconsumer) && (!_isafungus)) {
+												org._nVirusChildren = -1;
+											}
+								            org.reproduceforeignVirus();
+								            setColor(Utils.ColorPLAGUE);
+							            }
+									}
+						    	}
+							}
+						}
+					}
+				}
+				break;
+			case DARKGREEN:
+			case PLANKTON:
+			case PURPLE:
+				if ((org._infectedGeneticCode == _geneticCode) || ((!_isinfectious) && (org._infectedGeneticCode != null))) {
+					if (_plagueversion == 1) {
+						if ((org._dodge) && (org.useEnergy(Utils.DODGE_ENERGY_CONSUMPTION))) {
+							org.setColor(Utils.ColorTEAL);
+							setColor(Utils.ColorPLAGUE);
+							org._hasdodged =true;
+						} else {
+							if (org._lavender > 0) {
+								if ((_isenhanced) && (!_isinfectious) && (!_isaconsumer) && (!_isafungus)) {
+									org.weaklavendershield();
+								} else {
+									org.lavendershield();
+								}
+								setColor(Utils.ColorPLAGUE);
+							}
+							if (org._lavender <= 0) {
+								if (_isinfectious) {
+									if (_isaplant) {
+										if (_energy > Utils.PLAGUE_ENERGY_CONSUMPTION) {
+									        org.reproduceVirus();
+									        setColor(Utils.ColorPLAGUE);
+										}
+									} else {
+										if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
+								            org.reproduceVirus();
+								            setColor(Utils.ColorPLAGUE);
+							            }
+									}
+								} else {
+									if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
+										if ((!_isaconsumer) && (!_isafungus)) {
+											org._nVirusChildren = -1;
+										}
+							            org.reproduceforeignVirus();
+							            setColor(Utils.ColorPLAGUE);
+						            }
+								}
+							}
+						}
+					}
+				}
+				break;
+			case BLUE:
+				if ((org._infectedGeneticCode == _geneticCode) || ((!_isinfectious) && (org._infectedGeneticCode != null))) {
+					if ((_plagueversion == 1) && (org._isaplant)) {
+				        if (org.useEnergy(Utils.BLUE_ENERGY_CONSUMPTION)) {
+				        	if (org._isenhanced) {
+							    useDetritus(Utils.between((0.5 * Math.sqrt(org._m[oseg])) * Utils.ORGANIC_OBTAINED_ENERGY, 0, _energy));
+								setColor(Utils.ColorDARKLILAC);
+								if (_energy < Utils.tol) {
+									die(org);
+								}
+							} else {
+								setColor(Utils.ColorPLAGUE);
+							}
+					        org.setColor(Color.BLUE);
+				        } else {
+				        	if (org._lavender > 0) {
+				        		if ((_isenhanced) && (!_isinfectious) && (!_isaconsumer) && (!_isafungus)) {
+									org.weaklavendershield();
+								} else {
+									org.lavendershield();
+								}
+								setColor(Utils.ColorPLAGUE);
+							}
+							if (org._lavender <= 0) {
+								if (_isinfectious) {
+									if (_isaplant) {
+										if (_energy > Utils.PLAGUE_ENERGY_CONSUMPTION) {
+									        org.reproduceVirus();
+									        setColor(Utils.ColorPLAGUE);
+										}
+									} else {
+										if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
+								            org.reproduceVirus();
+								            setColor(Utils.ColorPLAGUE);
+							            }
+									}
+								} else {
+									if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
+										if ((!_isaconsumer) && (!_isafungus)) {
+											org._nVirusChildren = -1;
+										}
+							            org.reproduceforeignVirus();
+							            setColor(Utils.ColorPLAGUE);
+						            }
+								}
+							}
+				        }
+					}
+				}
+				break;
+			case OCHRE:
+			case BARK:
+			case OLDBARK:
+				if ((org._infectedGeneticCode == _geneticCode) || ((!_isinfectious) && (org._infectedGeneticCode != null))) {
+					if ((_plagueversion == 1) && (org._isaplant)) {
+						if (org._lavender > 0) {
+							if ((_isenhanced) && (!_isinfectious) && (!_isaconsumer) && (!_isafungus)) {
+								org.weaklavendershield();
+							} else {
+								org.lavendershield();
+							}
+							setColor(Utils.ColorPLAGUE);
+						}
+						if (org._lavender <= 0) {
+							if (_isinfectious) {
+								if (_isaplant) {
+									if (_energy > Utils.PLAGUE_ENERGY_CONSUMPTION) {
+								        org.reproduceVirus();
+								        setColor(Utils.ColorPLAGUE);
+									}
+								} else {
+									if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
+							            org.reproduceVirus();
+							            setColor(Utils.ColorPLAGUE);
+						            }
+								}
+							} else {
+								if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
+									if ((!_isaconsumer) && (!_isafungus)) {
+										org._nVirusChildren = -1;
+									}
+						            org.reproduceforeignVirus();
+						            setColor(Utils.ColorPLAGUE);
+					            }
+							}
+						}
+					}
+				}
+				break;
+			case SKY:
+			case DEEPSKY:
+			case FALLOW:
+				if (((org._infectedGeneticCode == _geneticCode) && (_isenhanced)) || ((!_isinfectious) && (org._infectedGeneticCode != null))) {
+					if ((_plagueversion == 1) && (org._isaplant) && (org._createlavender == 0)) {
+						if (org._lavender > 0) {
+							if ((_isenhanced) && (!_isinfectious) && (!_isaconsumer) && (!_isafungus)) {
+								org.weaklavendershield();
+							} else {
+								org.lavendershield();
+							}
+							setColor(Utils.ColorPLAGUE);
+						}
+						if (org._lavender <= 0) {
+							if (_isinfectious) {
+								if (_isaplant) {
+									if (_energy > Utils.PLAGUE_ENERGY_CONSUMPTION) {
+								        org.reproduceVirus();
+								        setColor(Utils.ColorPLAGUE);
+									}
+								} else {
+									if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
+							            org.reproduceVirus();
+							            setColor(Utils.ColorPLAGUE);
+						            }
+								}
+							} else {
+								if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
+									if ((!_isaconsumer) && (!_isafungus)) {
+										org._nVirusChildren = -1;
+									}
+						            org.reproduceforeignVirus();
+						            setColor(Utils.ColorPLAGUE);
+					            }
+							}
+						}
+					}
+				}
+				break;
+			case OLIVE:
+				if ((!_isinfectious) && (!_isaconsumer) && (!_isafungus) && (org._infectedGeneticCode != null)) {
+					if ((_plagueversion == 1) && (org._isaplant) && (org._createlavender == 0)) {
+						if (org._lavender > 0) {
+							if ((_isenhanced) && (!_isinfectious) && (!_isaconsumer) && (!_isafungus)) {
+								org.weaklavendershield();
+							} else {
+								org.lavendershield();
+							}
+							setColor(Utils.ColorPLAGUE);
+						}
+						if (org._lavender <= 0) {
+							if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
+								if ((!_isaconsumer) && (!_isafungus)) {
+									org._nVirusChildren = -1;
+								}
+					            org.reproduceforeignVirus();
+					            setColor(Utils.ColorPLAGUE);
+				            }
+						}
+					}
+				}
+				break;
+			case MAROON:
+			case ORANGE:
+			case FIRE:
+				if ((org._infectedGeneticCode == _geneticCode) || ((!_isinfectious) && (org._infectedGeneticCode != null))) {
+					if ((_plagueversion == 2) || (!_isinfectious)) {
+						if (org._lavender > 0) {
+							if ((_isenhanced) && (!_isinfectious) && (!_isaconsumer) && (!_isafungus)) {
+								org.weaklavendershield();
+							} else {
+								org.lavendershield();
+							}
+							setColor(Utils.ColorPLAGUE);
+						}
+						if (org._lavender <= 0) {
+							if (_isinfectious) {
+								if (_isaplant) {
+									if (_energy > Utils.PLAGUE_ENERGY_CONSUMPTION) {
+								        org.reproduceVirus();
+								        setColor(Utils.ColorPLAGUE);
+									}
+								} else {
+									if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
+							            org.reproduceVirus();
+							            setColor(Utils.ColorPLAGUE);
+						            }
+								}
+							} else {
+								if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
+									if ((!_isaconsumer) && (!_isafungus)) {
+										org._nVirusChildren = -1;
+									}
+						            org.reproduceforeignVirus();
+						            setColor(Utils.ColorPLAGUE);
+					            }
+							}
+						}
+					}
+				}
+				break;
+			case RED:
+			case CREAM:
+				if (((org._infectedGeneticCode == _geneticCode) && (_isenhanced)) || ((!_isinfectious) && (org._infectedGeneticCode != null))) {
+					if (((_plagueversion == 2) || (!_isinfectious)) && (org._createlavender == 0)) {
+						if (org._lavender > 0) {
+							if ((_isenhanced) && (!_isinfectious) && (!_isaconsumer) && (!_isafungus)) {
+								org.weaklavendershield();
+							} else {
+								org.lavendershield();
+							}
+							setColor(Utils.ColorPLAGUE);
+						}
+						if (org._lavender <= 0) {
+							if (_isinfectious) {
+								if (_isaplant) {
+									if (_energy > Utils.PLAGUE_ENERGY_CONSUMPTION) {
+								        org.reproduceVirus();
+								        setColor(Utils.ColorPLAGUE);
+									}
+								} else {
+									if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
+							            org.reproduceVirus();
+							            setColor(Utils.ColorPLAGUE);
+						            }
+								}
+							} else {
+								if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
+									if ((!_isaconsumer) && (!_isafungus)) {
+										org._nVirusChildren = -1;
+									}
+						            org.reproduceforeignVirus();
+						            setColor(Utils.ColorPLAGUE);
+					            }
+							}
+						}
+					}
+				}
+				break;
+			case PINK:
+				if (((org._infectedGeneticCode == _geneticCode) && ((org._modifiespink) || ((_isauburn) && (!_isaplant) && (!_isaconsumer) && (!_isafungus))))
+						|| ((!_isinfectious) && (org._infectedGeneticCode != null))) {
+					if ((_plagueversion == 2) || (!_isinfectious)) {
+						if (org._lavender > 0) {
+							if ((_isenhanced) && (!_isinfectious) && (!_isaconsumer) && (!_isafungus)) {
+								org.weaklavendershield();
+							} else {
+								org.lavendershield();
+							}
+							setColor(Utils.ColorPLAGUE);
+						}
+						if (org._lavender <= 0) {
+							if (_isinfectious) {
+								if (_isaplant) {
+									if (_energy > Utils.PLAGUE_ENERGY_CONSUMPTION) {
+								        org.reproduceVirus();
+								        setColor(Utils.ColorPLAGUE);
+									}
+								} else {
+									if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
+							            org.reproduceVirus();
+							            setColor(Utils.ColorPLAGUE);
+						            }
+								}
+							} else {
+								if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
+									if ((!_isaconsumer) && (!_isafungus)) {
+										org._nVirusChildren = -1;
+									}
+						            org.reproduceforeignVirus();
+						            setColor(Utils.ColorPLAGUE);
+					            }
+							}
+						}
+					}
+				}
+				break;
+			case SPIKE:
+				if ((org._isaplant) || (org._isenhanced)) {
+					if ((org._infectedGeneticCode == _geneticCode) || ((!_isinfectious) && (org._infectedGeneticCode != null))) {
+						if ((((_plagueversion == 2) || (!_isinfectious)) && (org._isaconsumer)) || ((_plagueversion == 1) && (org._isaplant))) {
+							if (org._lavender > 0) {
+								if ((_isenhanced) && (!_isinfectious) && (!_isaconsumer) && (!_isafungus)) {
+									org.weaklavendershield();
+								} else {
+									org.lavendershield();
+								}
+								setColor(Utils.ColorPLAGUE);
+							}
+							if (org._lavender <= 0) {
+								if (_isinfectious) {
+									if (_isaplant) {
+										if (_energy > Utils.PLAGUE_ENERGY_CONSUMPTION) {
+									        org.reproduceVirus();
+									        setColor(Utils.ColorPLAGUE);
+										}
+									} else {
+										if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
+								            org.reproduceVirus();
+								            setColor(Utils.ColorPLAGUE);
+							            }
+									}
+								} else {
+									if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
+										if ((!_isaconsumer) && (!_isafungus)) {
+											org._nVirusChildren = -1;
+										}
+							            org.reproduceforeignVirus();
+							            setColor(Utils.ColorPLAGUE);
+						            }
+								}
+							}
+						}
+					}
+				}
+				break;
+			case LAVENDER:
+				if ((org._isaconsumer) || (org._isaplant)) {
+					if (org._isenhanced) {
+						useEnergy(Utils.between((1/Utils.LAVENDER_ENERGY_CONSUMPTION), 0, _energy));
+						if (org._lavender < Utils.LAVENDER_SHIELD) {
+							org._lavender += 1000;
+							if (org._lavender >= Utils.LAVENDER_SHIELD) {
+								org._lavender = Utils.LAVENDER_SHIELD;
+							}
+						}
+					} else {
+						useEnergy(Utils.between((0.2/Utils.LAVENDER_ENERGY_CONSUMPTION), 0, _energy));
+						if (org._lavender < Utils.LAVENDER_SHIELD) {
+							org._lavender += 200;
+							if (org._lavender >= Utils.LAVENDER_SHIELD) {
+								org._lavender = Utils.LAVENDER_SHIELD;
+							}
+						}
+					}
+					if (org._infectedGeneticCode == _geneticCode) {
+						org._infectedGeneticCode = null;
+						org._savedGeneticCode = null;
+					}
+					// The other organism will be shown in lavender
+					org.setColor(Utils.ColorLAVENDER);
+					// This organism will be shown in deadbark
+					setColor(Utils.ColorDEADBARK);
+					org._hasdodged =true;
+					if (_energy < Utils.tol) {
+						die(org);
+					}
+				}
+				break;
+			case SPORE:
+				if ((org._infectedGeneticCode == _geneticCode) || ((!_isinfectious) && (org._infectedGeneticCode != null))) {
+					if ((((_plagueversion == 2) || (!_isinfectious)) && (org._isaconsumer)) || ((_plagueversion == 1) && (org._isaplant))) {
+						if ((org._sporeversion >= 1) && (org._isaconsumer)) {
+							if ((org._dodge) && (org.useEnergy(Utils.DODGE_ENERGY_CONSUMPTION))) {
+								org.setColor(Utils.ColorTEAL);
+								setColor(Utils.ColorPLAGUE);
+								org._hasdodged =true;
+							} else {
+								if (org._lavender > 0) {
+									if ((_isenhanced) && (!_isinfectious) && (!_isaconsumer) && (!_isafungus)) {
+										org.weaklavendershield();
+									} else {
+										org.lavendershield();
+									}
+									setColor(Utils.ColorPLAGUE);
+								}
+								if (org._lavender <= 0) {
+									if (_isinfectious) {
+										if (_isaplant) {
+											if (_energy > Utils.PLAGUE_ENERGY_CONSUMPTION) {
+										        org.reproduceVirus();
+										        setColor(Utils.ColorPLAGUE);
+											}
+										} else {
+											if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
+									            org.reproduceVirus();
+									            setColor(Utils.ColorPLAGUE);
+								            }
+										}
+									} else {
+										if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
+											if ((!_isaconsumer) && (!_isafungus)) {
+												org._nVirusChildren = -1;
+											}
+								            org.reproduceforeignVirus();
+								            setColor(Utils.ColorPLAGUE);
+							            }
+									}
+								}
+							}
+						} else {
+							setColor(Utils.ColorPLAGUE);
+							org.setColor(Utils.ColorSPORE);
+						}
+					}
+				}
+				break;
+			case CYAN:
+			case TEAL:
+			case YELLOW:
+			case AUBURN:
+			case BLOND:
+			case FLOWER:
+			case DARKGRAY:
+			case GOLD:
+				if ((org._infectedGeneticCode == _geneticCode) || ((!_isinfectious) && (org._infectedGeneticCode != null))) {
+					if ((((_plagueversion == 2) || (!_isinfectious)) && (org._isaconsumer)) || ((_plagueversion == 1) && (org._isaplant))) {
+						if ((org._dodge) && (org.useEnergy(Utils.DODGE_ENERGY_CONSUMPTION))) {
+							org.setColor(Utils.ColorTEAL);
+							setColor(Utils.ColorPLAGUE);
+							org._hasdodged =true;
+						} else {
+							if (org._lavender > 0) {
+								if ((_isenhanced) && (!_isinfectious) && (!_isaconsumer) && (!_isafungus)) {
+									org.weaklavendershield();
+								} else {
+									org.lavendershield();
+								}
+								setColor(Utils.ColorPLAGUE);
+							}
+							if (org._lavender <= 0) {
+								if (_isinfectious) {
+									if (_isaplant) {
+										if (_energy > Utils.PLAGUE_ENERGY_CONSUMPTION) {
+									        org.reproduceVirus();
+									        setColor(Utils.ColorPLAGUE);
+										}
+									} else {
+										if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
+								            org.reproduceVirus();
+								            setColor(Utils.ColorPLAGUE);
+							            }
+									}
+								} else {
+									if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
+										if ((!_isaconsumer) && (!_isafungus)) {
+											org._nVirusChildren = -1;
+										}
+							            org.reproduceforeignVirus();
+							            setColor(Utils.ColorPLAGUE);
+						            }
+								}
+							}
+						}
+					}
+				}
+				break;
+			case MAGENTA:
+			case ROSE:
+				if (((org._infectedGeneticCode == _geneticCode) || ((!_isinfectious) && (org._infectedGeneticCode != null))) && (!_altruist)) {
+					if ((((_plagueversion == 2) || (!_isinfectious)) && (org._isaconsumer)) || ((_plagueversion == 1) && (org._isaplant))) {
+						if ((org._dodge) && (org.useEnergy(Utils.DODGE_ENERGY_CONSUMPTION))) {
+							org.setColor(Utils.ColorTEAL);
+							setColor(Utils.ColorPLAGUE);
+							org._hasdodged =true;
+						} else {
+							if (org._lavender > 0) {
+								if ((_isenhanced) && (!_isinfectious) && (!_isaconsumer) && (!_isafungus)) {
+									org.weaklavendershield();
+								} else {
+									org.lavendershield();
+								}
+								setColor(Utils.ColorPLAGUE);
+							}
+							if (org._lavender <= 0) {
+								if (_isinfectious) {
+									if (_isaplant) {
+										if (_energy > Utils.PLAGUE_ENERGY_CONSUMPTION) {
+									        org.reproduceVirus();
+									        setColor(Utils.ColorPLAGUE);
+										}
+									} else {
+										if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
+								            org.reproduceVirus();
+								            setColor(Utils.ColorPLAGUE);
+							            }
+									}
+								} else {
+									if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
+										if ((!_isaconsumer) && (!_isafungus)) {
+											org._nVirusChildren = -1;
+										}
+							            org.reproduceforeignVirus();
+							            setColor(Utils.ColorPLAGUE);
+						            }
+								}
+							}
+						}
+					}
+				}
+				break;
+			case SPIKEPOINT:
+				if (org._isenhanced) {
+					if ((org._infectedGeneticCode == _geneticCode) || ((!_isinfectious) && (org._infectedGeneticCode != null))) {
+						if ((((_plagueversion == 2) || (!_isinfectious)) && (org._isaconsumer)) || ((_plagueversion == 1) && (org._isaplant))) {
+							if (org._lavender > 0) {
+								if ((_isenhanced) && (!_isinfectious) && (!_isaconsumer) && (!_isafungus)) {
+									org.weaklavendershield();
+								} else {
+									org.lavendershield();
+								}
+								setColor(Utils.ColorPLAGUE);
+							}
+							if (org._lavender <= 0) {
+								if (_isinfectious) {
+									if (_isaplant) {
+										if (_energy > Utils.PLAGUE_ENERGY_CONSUMPTION) {
+									        org.reproduceVirus();
+									        setColor(Utils.ColorPLAGUE);
+										}
+									} else {
+										if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
+								            org.reproduceVirus();
+								            setColor(Utils.ColorPLAGUE);
+							            }
+									}
+								} else {
+									if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
+										if ((!_isaconsumer) && (!_isafungus)) {
+											org._nVirusChildren = -1;
+										}
+							            org.reproduceforeignVirus();
+							            setColor(Utils.ColorPLAGUE);
+						            }
+								}
+							}
+						}
+					}
+				}
+				break;
+			case DARK:
+				if (org._blackversion == 0) {
+					break;
+				} else {
+					if ((org._framesColor <= 6) && (org._blackversion > 0)) {
+						// The other organism will be shown in the color it mimicks
+						org.mimicColor();
+					} else {
+						if ((org._infectedGeneticCode == _geneticCode) || ((!_isinfectious) && (org._infectedGeneticCode != null))) {
+							if ((((_plagueversion == 2) || (!_isinfectious)) && (org._isaconsumer)) || ((_plagueversion == 1) && (org._isaplant))) {
+								if (org._lavender > 0) {
+									if ((_isenhanced) && (!_isinfectious) && (!_isaconsumer) && (!_isafungus)) {
+										org.weaklavendershield();
+									} else {
+										org.lavendershield();
+									}
+									setColor(Utils.ColorPLAGUE);
+								}
+								if (org._lavender <= 0) {
+									if (_isinfectious) {
+										if (_isaplant) {
+											if (_energy > Utils.PLAGUE_ENERGY_CONSUMPTION) {
+										        org.reproduceVirus();
+										        setColor(Utils.ColorPLAGUE);
+											}
+										} else {
+											if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
+									            org.reproduceVirus();
+									            setColor(Utils.ColorPLAGUE);
+								            }
+										}
+									} else {
+										if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
+											if ((!_isaconsumer) && (!_isafungus)) {
+												org._nVirusChildren = -1;
+											}
+								            org.reproduceforeignVirus();
+								            setColor(Utils.ColorPLAGUE);
+							            }
+									}
+								}
+							}
+						}
+					}
+				}
+				break;
+			case MINT:
+			case CORAL:
+			case BROWN:
+				break;
+			default:
+				if ((org._infectedGeneticCode == _geneticCode) || ((!_isinfectious) && (org._infectedGeneticCode != null))) {
+					if ((((_plagueversion == 2) || (!_isinfectious)) && (org._isaconsumer)) || ((_plagueversion == 1) && (org._isaplant))) {
+						if (org._lavender > 0) {
+							if ((_isenhanced) && (!_isinfectious) && (!_isaconsumer) && (!_isafungus)) {
+								org.weaklavendershield();
+							} else {
+								org.lavendershield();
+							}
+							setColor(Utils.ColorPLAGUE);
+						}
+						if (org._lavender <= 0) {
+							if (_isinfectious) {
+								if (_isaplant) {
+									if (_energy > Utils.PLAGUE_ENERGY_CONSUMPTION) {
+								        org.reproduceVirus();
+								        setColor(Utils.ColorPLAGUE);
+									}
+								} else {
+									if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
+							            org.reproduceVirus();
+							            setColor(Utils.ColorPLAGUE);
+						            }
+								}
+							} else {
+								if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
+									if ((!_isaconsumer) && (!_isafungus)) {
+										org._nVirusChildren = -1;
+									}
+						            org.reproduceforeignVirus();
+						            setColor(Utils.ColorPLAGUE);
+					            }
+							}
+						}
+					}
+				}
+			}
+			if (org._nVirusChildren != 0) {
+				if (_isinfectious) {
+					if (_isaplant) {
+						if ((_plagueversion == 2) || (_sporeversion == 6)) {
+							useEnergy(Utils.PLAGUE_ENERGY_CONSUMPTION);
+						} else {
+							useEnergy(0.5 * Utils.PLAGUE_ENERGY_CONSUMPTION);
+						}
+			            org.setColor(Utils.ColorDARKLILAC);
+					} else {
+			            useEnergy(Utils.SCOURGE_ENERGY_CONSUMPTION);
+			            org.setColor(Utils.ColorDARKLILAC);
+					}
+					if (org._antiviral > 0) {
+						virusneutralized();
+					}
+				} else {
+		            useEnergy(Utils.SCOURGE_ENERGY_CONSUMPTION);
+		            org.setColor(Utils.ColorDARKLILAC);
+				}
+				org._nVirusChildren = 0;
+			}
+			break;
 		case VIOLET:
 			// Violet segment: Poison another segment and make it useless
 			if (org._hasdodged == false) {
@@ -17310,942 +18246,6 @@ public class Organism extends Rectangle {
 				}
 			}
 			break;
-		case PLAGUE:
-			// Force reproduction of infected victims
-			switch (getTypeColor(org._segColor[oseg])) {
-			case WHITE:
-			case PLAGUE:
-				if (((org._infectedGeneticCode == _geneticCode) || ((!_isinfectious) && (org._infectedGeneticCode != null))) && (org._isinfectious)) {
-					if ((((_plagueversion == 2) || (!_isinfectious)) && (org._isaconsumer)) || ((_plagueversion == 1) && (org._isaplant))) {
-						if (org._lavender > 0) {
-							if ((_isenhanced) && (!_isinfectious) && (!_isaconsumer) && (!_isafungus)) {
-								org.weaklavendershield();
-							} else {
-								org.lavendershield();
-							}
-							setColor(Utils.ColorPLAGUE);
-						}
-						if (org._lavender <= 0) {
-							if (_isinfectious) {
-								if (_isaplant) {
-									if (_energy > Utils.PLAGUE_ENERGY_CONSUMPTION) {
-								        org.reproduceVirus();
-								        setColor(Utils.ColorPLAGUE);
-									}
-								} else {
-									if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
-							            org.reproduceVirus();
-							            setColor(Utils.ColorPLAGUE);
-						            }
-								}
-							} else {
-								if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
-									if ((!_isaconsumer) && (!_isafungus)) {
-										org._nVirusChildren = -1;
-									}
-						            org.reproduceforeignVirus();
-						            setColor(Utils.ColorPLAGUE);
-					            }
-							}
-						}
-					}
-				}
-				if ((org._indigo > 0) && (!org._isaplant) && (!org._isaconsumer) && (!org._isafungus) && (!_hasgoodvision)) {
-					if ((_isaplant) && (_isinfectious)) {
-						if (useEnergy((Utils.PLAGUE_ENERGY_CONSUMPTION + 0.01)/Utils.INDIGO_ENERGY_CONSUMPTION)) {
-				    	    org.setColor(Utils.ColorINDIGO);
-				    	    setColor(Utils.ColorPLAGUE);
-						}
-				    } else {
-				    	if ((_indigo == 0) || (_isaplant) || (_isaconsumer) || (_isafungus)) {
-				    		if (useEnergy((Utils.SCOURGE_ENERGY_CONSUMPTION + 0.1)/Utils.INDIGO_ENERGY_CONSUMPTION)) {
-				    			org.setColor(Utils.ColorINDIGO);
-				    			setColor(Utils.ColorPLAGUE);
-				    		}
-				    	}
-				    }
-				}
-				break;
-			case SILVER:
-				if ((org._infectedGeneticCode == _geneticCode) || ((!_isinfectious) && (org._infectedGeneticCode != null))) {
-					if ((org._isenhanced) || (_nTotalInfected >= org._nTotalInfected)) {
-						if ((((_plagueversion == 2) || (!_isinfectious)) && (org._isaconsumer)) || ((_plagueversion == 1) && (org._isaplant))) {
-							if (org._lavender > 0) {
-								if ((_isenhanced) && (!_isinfectious) && (!_isaconsumer) && (!_isafungus)) {
-									org.weaklavendershield();
-								} else {
-									org.lavendershield();
-								}
-								setColor(Utils.ColorPLAGUE);
-							}
-							if (org._lavender <= 0) {
-								if (_isinfectious) {
-									if (_isaplant) {
-										if (_energy > Utils.PLAGUE_ENERGY_CONSUMPTION) {
-									        org.reproduceVirus();
-									        setColor(Utils.ColorPLAGUE);
-										}
-									} else {
-										if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
-								            org.reproduceVirus();
-								            setColor(Utils.ColorPLAGUE);
-							            }
-									}
-								} else {
-									if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
-										if ((!_isaconsumer) && (!_isafungus)) {
-											org._nVirusChildren = -1;
-										}
-							            org.reproduceforeignVirus();
-							            setColor(Utils.ColorPLAGUE);
-						            }
-								}
-							}
-						}
-					}
-				}
-				if ((org._indigo > 0) && (!org._isaplant) && (!org._isaconsumer) && (!org._isafungus) && (!_hasgoodvision)) {
-					if ((_isaplant) && (_isinfectious)) {
-						if (useEnergy((Utils.PLAGUE_ENERGY_CONSUMPTION + 0.01)/Utils.INDIGO_ENERGY_CONSUMPTION)) {
-				    	    org.setColor(Utils.ColorINDIGO);
-				    	    setColor(Utils.ColorPLAGUE);
-						}
-				    } else {
-				    	if ((_indigo == 0) || (_isaplant) || (_isaconsumer) || (_isafungus)) {
-				    		if (useEnergy((Utils.SCOURGE_ENERGY_CONSUMPTION + 0.1)/Utils.INDIGO_ENERGY_CONSUMPTION)) {
-				    			org.setColor(Utils.ColorINDIGO);
-				    			setColor(Utils.ColorPLAGUE);
-				    		}
-				    	}
-				    }
-				}
-				break;
-			case INDIGO:
-				if ((((_plagueversion == 2) || (!_isinfectious)) && (org._isaconsumer)) || ((_plagueversion == 1) && (org._isaplant))
-						|| ((!org._isaplant) && (!org._isaconsumer) && (!org._isafungus))) {
-					if (!_hasgoodvision) {
-						if ((_isaplant) && (_isinfectious)) {
-							if (useEnergy((Utils.PLAGUE_ENERGY_CONSUMPTION + 0.01)/Utils.INDIGO_ENERGY_CONSUMPTION)) {
-					    	    org.setColor(Utils.ColorINDIGO);
-					    	    setColor(Utils.ColorPLAGUE);
-							}
-					    } else {
-					    	if ((_indigo == 0) || (_isaplant) || (_isaconsumer) || (_isafungus)) {
-					    		if (useEnergy((Utils.SCOURGE_ENERGY_CONSUMPTION + 0.1)/Utils.INDIGO_ENERGY_CONSUMPTION)) {
-					    			org.setColor(Utils.ColorINDIGO);
-					    			setColor(Utils.ColorPLAGUE);
-					    		}
-					    	}
-					    }
-					}
-					if ((org._antiviral > 0) && (_isinfectious)) {
-		    			virusneutralized();
-					}
-				}
-				break;
-			case LEAF:
-				if ((org._infectedGeneticCode == _geneticCode) || ((!_isinfectious) && (org._infectedGeneticCode != null))) {
-					if (_plagueversion == 1) {
-						if ((org._dodge) && (org.useEnergy(Utils.DODGE_ENERGY_CONSUMPTION))) {
-							org.setColor(Utils.ColorTEAL);
-							setColor(Utils.ColorPLAGUE);
-							org._hasdodged =true;
-						} else {
-							if ((!org._modifiesleaf) || (org._framesColor > 0)) {
-								if (org._lavender > 0) {
-									if ((_isenhanced) && (!_isinfectious) && (!_isaconsumer) && (!_isafungus)) {
-										org.weaklavendershield();
-									} else {
-										org.lavendershield();
-									}
-									setColor(Utils.ColorPLAGUE);
-								}
-								if (org._lavender <= 0) {
-									if (org._jadefactor > 1) {
-										if (org._segColor[oseg].equals(Utils.ColorJADE)) {
-							    			org._segColor[oseg] = Utils.ColorDARKJADE;
-							    		} else {
-							    			org._segColor[oseg] = Utils.ColorDARKGREEN;
-							    		}
-							    		setColor(Utils.ColorPLAGUE);
-										org._hasdodged =true;
-										org._useextraeffects =true;
-										if ((org._antiviral > 0) && (_isinfectious)) {
-							    			virusneutralized();
-										}
-							    	} else {
-							    		if (_isinfectious) {
-											if (_isaplant) {
-												if (_energy > Utils.PLAGUE_ENERGY_CONSUMPTION) {
-											        org.reproduceVirus();
-											        setColor(Utils.ColorPLAGUE);
-												}
-											} else {
-												if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
-										            org.reproduceVirus();
-										            setColor(Utils.ColorPLAGUE);
-									            }
-											}
-										} else {
-											if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
-												if ((!_isaconsumer) && (!_isafungus)) {
-													org._nVirusChildren = -1;
-												}
-									            org.reproduceforeignVirus();
-									            setColor(Utils.ColorPLAGUE);
-								            }
-										}
-							    	}
-								}
-							} else {
-								// The other organism will be shown in light blue
-								org.setColortwoFrames(Utils.ColorLIGHT_BLUE);
-								setColor(Utils.ColorPLAGUE);
-							}
-						}
-					}
-				}
-				break;
-			case GREEN:
-			case GRASS:
-			case FOREST:
-			case SPRING:
-			case SUMMER:
-            case WINTER:
-			case LIME:
-			case C4:
-			case JADE:
-			case DARKJADE:
-				if ((org._infectedGeneticCode == _geneticCode) || ((!_isinfectious) && (org._infectedGeneticCode != null))) {
-					if (_plagueversion == 1) {
-						if ((org._dodge) && (org.useEnergy(Utils.DODGE_ENERGY_CONSUMPTION))) {
-							org.setColor(Utils.ColorTEAL);
-							setColor(Utils.ColorPLAGUE);
-							org._hasdodged =true;
-						} else {
-							if (org._lavender > 0) {
-								if ((_isenhanced) && (!_isinfectious) && (!_isaconsumer) && (!_isafungus)) {
-									org.weaklavendershield();
-								} else {
-									org.lavendershield();
-								}
-								setColor(Utils.ColorPLAGUE);
-							}
-							if (org._lavender <= 0) {
-								if (org._jadefactor > 1) {
-									if (org._segColor[oseg].equals(Utils.ColorJADE)) {
-						    			org._segColor[oseg] = Utils.ColorDARKJADE;
-						    		} else {
-						    			org._segColor[oseg] = Utils.ColorDARKGREEN;
-						    		}
-						    		setColor(Utils.ColorPLAGUE);
-									org._hasdodged =true;
-									org._useextraeffects =true;
-									if ((org._antiviral > 0) && (_isinfectious)) {
-						    			virusneutralized();
-									}
-						    	} else {
-						    		if (_isinfectious) {
-										if (_isaplant) {
-											if (_energy > Utils.PLAGUE_ENERGY_CONSUMPTION) {
-										        org.reproduceVirus();
-										        setColor(Utils.ColorPLAGUE);
-											}
-										} else {
-											if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
-									            org.reproduceVirus();
-									            setColor(Utils.ColorPLAGUE);
-								            }
-										}
-									} else {
-										if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
-											if ((!_isaconsumer) && (!_isafungus)) {
-												org._nVirusChildren = -1;
-											}
-								            org.reproduceforeignVirus();
-								            setColor(Utils.ColorPLAGUE);
-							            }
-									}
-						    	}
-							}
-						}
-					}
-				}
-				break;
-			case DARKGREEN:
-			case PLANKTON:
-			case PURPLE:
-				if ((org._infectedGeneticCode == _geneticCode) || ((!_isinfectious) && (org._infectedGeneticCode != null))) {
-					if (_plagueversion == 1) {
-						if ((org._dodge) && (org.useEnergy(Utils.DODGE_ENERGY_CONSUMPTION))) {
-							org.setColor(Utils.ColorTEAL);
-							setColor(Utils.ColorPLAGUE);
-							org._hasdodged =true;
-						} else {
-							if (org._lavender > 0) {
-								if ((_isenhanced) && (!_isinfectious) && (!_isaconsumer) && (!_isafungus)) {
-									org.weaklavendershield();
-								} else {
-									org.lavendershield();
-								}
-								setColor(Utils.ColorPLAGUE);
-							}
-							if (org._lavender <= 0) {
-								if (_isinfectious) {
-									if (_isaplant) {
-										if (_energy > Utils.PLAGUE_ENERGY_CONSUMPTION) {
-									        org.reproduceVirus();
-									        setColor(Utils.ColorPLAGUE);
-										}
-									} else {
-										if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
-								            org.reproduceVirus();
-								            setColor(Utils.ColorPLAGUE);
-							            }
-									}
-								} else {
-									if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
-										if ((!_isaconsumer) && (!_isafungus)) {
-											org._nVirusChildren = -1;
-										}
-							            org.reproduceforeignVirus();
-							            setColor(Utils.ColorPLAGUE);
-						            }
-								}
-							}
-						}
-					}
-				}
-				break;
-			case BLUE:
-				if ((org._infectedGeneticCode == _geneticCode) || ((!_isinfectious) && (org._infectedGeneticCode != null))) {
-					if ((_plagueversion == 1) && (org._isaplant)) {
-				        if (org.useEnergy(Utils.BLUE_ENERGY_CONSUMPTION)) {
-				        	if (org._isenhanced) {
-							    useDetritus(Utils.between((0.5 * Math.sqrt(org._m[oseg])) * Utils.ORGANIC_OBTAINED_ENERGY, 0, _energy));
-								setColor(Utils.ColorDARKLILAC);
-								if (_energy < Utils.tol) {
-									die(org);
-								}
-							} else {
-								setColor(Utils.ColorPLAGUE);
-							}
-					        org.setColor(Color.BLUE);
-				        } else {
-				        	if (org._lavender > 0) {
-				        		if ((_isenhanced) && (!_isinfectious) && (!_isaconsumer) && (!_isafungus)) {
-									org.weaklavendershield();
-								} else {
-									org.lavendershield();
-								}
-								setColor(Utils.ColorPLAGUE);
-							}
-							if (org._lavender <= 0) {
-								if (_isinfectious) {
-									if (_isaplant) {
-										if (_energy > Utils.PLAGUE_ENERGY_CONSUMPTION) {
-									        org.reproduceVirus();
-									        setColor(Utils.ColorPLAGUE);
-										}
-									} else {
-										if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
-								            org.reproduceVirus();
-								            setColor(Utils.ColorPLAGUE);
-							            }
-									}
-								} else {
-									if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
-										if ((!_isaconsumer) && (!_isafungus)) {
-											org._nVirusChildren = -1;
-										}
-							            org.reproduceforeignVirus();
-							            setColor(Utils.ColorPLAGUE);
-						            }
-								}
-							}
-				        }
-					}
-				}
-				break;
-			case OCHRE:
-			case BARK:
-			case OLDBARK:
-				if ((org._infectedGeneticCode == _geneticCode) || ((!_isinfectious) && (org._infectedGeneticCode != null))) {
-					if ((_plagueversion == 1) && (org._isaplant)) {
-						if (org._lavender > 0) {
-							if ((_isenhanced) && (!_isinfectious) && (!_isaconsumer) && (!_isafungus)) {
-								org.weaklavendershield();
-							} else {
-								org.lavendershield();
-							}
-							setColor(Utils.ColorPLAGUE);
-						}
-						if (org._lavender <= 0) {
-							if (_isinfectious) {
-								if (_isaplant) {
-									if (_energy > Utils.PLAGUE_ENERGY_CONSUMPTION) {
-								        org.reproduceVirus();
-								        setColor(Utils.ColorPLAGUE);
-									}
-								} else {
-									if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
-							            org.reproduceVirus();
-							            setColor(Utils.ColorPLAGUE);
-						            }
-								}
-							} else {
-								if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
-									if ((!_isaconsumer) && (!_isafungus)) {
-										org._nVirusChildren = -1;
-									}
-						            org.reproduceforeignVirus();
-						            setColor(Utils.ColorPLAGUE);
-					            }
-							}
-						}
-					}
-				}
-				break;
-			case SKY:
-			case DEEPSKY:
-			case FALLOW:
-				if (((org._infectedGeneticCode == _geneticCode) && (_isenhanced)) || ((!_isinfectious) && (org._infectedGeneticCode != null))) {
-					if ((_plagueversion == 1) && (org._isaplant) && (org._createlavender == 0)) {
-						if (org._lavender > 0) {
-							if ((_isenhanced) && (!_isinfectious) && (!_isaconsumer) && (!_isafungus)) {
-								org.weaklavendershield();
-							} else {
-								org.lavendershield();
-							}
-							setColor(Utils.ColorPLAGUE);
-						}
-						if (org._lavender <= 0) {
-							if (_isinfectious) {
-								if (_isaplant) {
-									if (_energy > Utils.PLAGUE_ENERGY_CONSUMPTION) {
-								        org.reproduceVirus();
-								        setColor(Utils.ColorPLAGUE);
-									}
-								} else {
-									if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
-							            org.reproduceVirus();
-							            setColor(Utils.ColorPLAGUE);
-						            }
-								}
-							} else {
-								if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
-									if ((!_isaconsumer) && (!_isafungus)) {
-										org._nVirusChildren = -1;
-									}
-						            org.reproduceforeignVirus();
-						            setColor(Utils.ColorPLAGUE);
-					            }
-							}
-						}
-					}
-				}
-				break;
-			case OLIVE:
-				if ((!_isinfectious) && (!_isaconsumer) && (!_isafungus) && (org._infectedGeneticCode != null)) {
-					if ((_plagueversion == 1) && (org._isaplant) && (org._createlavender == 0)) {
-						if (org._lavender > 0) {
-							if ((_isenhanced) && (!_isinfectious) && (!_isaconsumer) && (!_isafungus)) {
-								org.weaklavendershield();
-							} else {
-								org.lavendershield();
-							}
-							setColor(Utils.ColorPLAGUE);
-						}
-						if (org._lavender <= 0) {
-							if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
-								if ((!_isaconsumer) && (!_isafungus)) {
-									org._nVirusChildren = -1;
-								}
-					            org.reproduceforeignVirus();
-					            setColor(Utils.ColorPLAGUE);
-				            }
-						}
-					}
-				}
-				break;
-			case MAROON:
-			case ORANGE:
-			case FIRE:
-				if ((org._infectedGeneticCode == _geneticCode) || ((!_isinfectious) && (org._infectedGeneticCode != null))) {
-					if ((_plagueversion == 2) || (!_isinfectious)) {
-						if (org._lavender > 0) {
-							if ((_isenhanced) && (!_isinfectious) && (!_isaconsumer) && (!_isafungus)) {
-								org.weaklavendershield();
-							} else {
-								org.lavendershield();
-							}
-							setColor(Utils.ColorPLAGUE);
-						}
-						if (org._lavender <= 0) {
-							if (_isinfectious) {
-								if (_isaplant) {
-									if (_energy > Utils.PLAGUE_ENERGY_CONSUMPTION) {
-								        org.reproduceVirus();
-								        setColor(Utils.ColorPLAGUE);
-									}
-								} else {
-									if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
-							            org.reproduceVirus();
-							            setColor(Utils.ColorPLAGUE);
-						            }
-								}
-							} else {
-								if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
-									if ((!_isaconsumer) && (!_isafungus)) {
-										org._nVirusChildren = -1;
-									}
-						            org.reproduceforeignVirus();
-						            setColor(Utils.ColorPLAGUE);
-					            }
-							}
-						}
-					}
-				}
-				break;
-			case RED:
-			case CREAM:
-				if (((org._infectedGeneticCode == _geneticCode) && (_isenhanced)) || ((!_isinfectious) && (org._infectedGeneticCode != null))) {
-					if (((_plagueversion == 2) || (!_isinfectious)) && (org._createlavender == 0)) {
-						if (org._lavender > 0) {
-							if ((_isenhanced) && (!_isinfectious) && (!_isaconsumer) && (!_isafungus)) {
-								org.weaklavendershield();
-							} else {
-								org.lavendershield();
-							}
-							setColor(Utils.ColorPLAGUE);
-						}
-						if (org._lavender <= 0) {
-							if (_isinfectious) {
-								if (_isaplant) {
-									if (_energy > Utils.PLAGUE_ENERGY_CONSUMPTION) {
-								        org.reproduceVirus();
-								        setColor(Utils.ColorPLAGUE);
-									}
-								} else {
-									if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
-							            org.reproduceVirus();
-							            setColor(Utils.ColorPLAGUE);
-						            }
-								}
-							} else {
-								if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
-									if ((!_isaconsumer) && (!_isafungus)) {
-										org._nVirusChildren = -1;
-									}
-						            org.reproduceforeignVirus();
-						            setColor(Utils.ColorPLAGUE);
-					            }
-							}
-						}
-					}
-				}
-				break;
-			case PINK:
-				if (((org._infectedGeneticCode == _geneticCode) && ((org._modifiespink) || ((_isauburn) && (!_isaplant) && (!_isaconsumer) && (!_isafungus))))
-						|| ((!_isinfectious) && (org._infectedGeneticCode != null))) {
-					if ((_plagueversion == 2) || (!_isinfectious)) {
-						if (org._lavender > 0) {
-							if ((_isenhanced) && (!_isinfectious) && (!_isaconsumer) && (!_isafungus)) {
-								org.weaklavendershield();
-							} else {
-								org.lavendershield();
-							}
-							setColor(Utils.ColorPLAGUE);
-						}
-						if (org._lavender <= 0) {
-							if (_isinfectious) {
-								if (_isaplant) {
-									if (_energy > Utils.PLAGUE_ENERGY_CONSUMPTION) {
-								        org.reproduceVirus();
-								        setColor(Utils.ColorPLAGUE);
-									}
-								} else {
-									if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
-							            org.reproduceVirus();
-							            setColor(Utils.ColorPLAGUE);
-						            }
-								}
-							} else {
-								if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
-									if ((!_isaconsumer) && (!_isafungus)) {
-										org._nVirusChildren = -1;
-									}
-						            org.reproduceforeignVirus();
-						            setColor(Utils.ColorPLAGUE);
-					            }
-							}
-						}
-					}
-				}
-				break;
-			case SPIKE:
-				if ((org._isaplant) || (org._isenhanced)) {
-					if ((org._infectedGeneticCode == _geneticCode) || ((!_isinfectious) && (org._infectedGeneticCode != null))) {
-						if ((((_plagueversion == 2) || (!_isinfectious)) && (org._isaconsumer)) || ((_plagueversion == 1) && (org._isaplant))) {
-							if (org._lavender > 0) {
-								if ((_isenhanced) && (!_isinfectious) && (!_isaconsumer) && (!_isafungus)) {
-									org.weaklavendershield();
-								} else {
-									org.lavendershield();
-								}
-								setColor(Utils.ColorPLAGUE);
-							}
-							if (org._lavender <= 0) {
-								if (_isinfectious) {
-									if (_isaplant) {
-										if (_energy > Utils.PLAGUE_ENERGY_CONSUMPTION) {
-									        org.reproduceVirus();
-									        setColor(Utils.ColorPLAGUE);
-										}
-									} else {
-										if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
-								            org.reproduceVirus();
-								            setColor(Utils.ColorPLAGUE);
-							            }
-									}
-								} else {
-									if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
-										if ((!_isaconsumer) && (!_isafungus)) {
-											org._nVirusChildren = -1;
-										}
-							            org.reproduceforeignVirus();
-							            setColor(Utils.ColorPLAGUE);
-						            }
-								}
-							}
-						}
-					}
-				}
-				break;
-			case LAVENDER:
-				if ((org._isaconsumer) || (org._isaplant)) {
-					if (org._isenhanced) {
-						useEnergy(Utils.between((1/Utils.LAVENDER_ENERGY_CONSUMPTION), 0, _energy));
-						if (org._lavender < Utils.LAVENDER_SHIELD) {
-							org._lavender += 1000;
-							if (org._lavender >= Utils.LAVENDER_SHIELD) {
-								org._lavender = Utils.LAVENDER_SHIELD;
-							}
-						}
-					} else {
-						useEnergy(Utils.between((0.2/Utils.LAVENDER_ENERGY_CONSUMPTION), 0, _energy));
-						if (org._lavender < Utils.LAVENDER_SHIELD) {
-							org._lavender += 200;
-							if (org._lavender >= Utils.LAVENDER_SHIELD) {
-								org._lavender = Utils.LAVENDER_SHIELD;
-							}
-						}
-					}
-					if (org._infectedGeneticCode == _geneticCode) {
-						org._infectedGeneticCode = null;
-						org._savedGeneticCode = null;
-					}
-					// The other organism will be shown in lavender
-					org.setColor(Utils.ColorLAVENDER);
-					// This organism will be shown in deadbark
-					setColor(Utils.ColorDEADBARK);
-					org._hasdodged =true;
-					if (_energy < Utils.tol) {
-						die(org);
-					}
-				}
-				break;
-			case SPORE:
-				if ((org._infectedGeneticCode == _geneticCode) || ((!_isinfectious) && (org._infectedGeneticCode != null))) {
-					if ((((_plagueversion == 2) || (!_isinfectious)) && (org._isaconsumer)) || ((_plagueversion == 1) && (org._isaplant))) {
-						if ((org._sporeversion >= 1) && (org._isaconsumer)) {
-							if ((org._dodge) && (org.useEnergy(Utils.DODGE_ENERGY_CONSUMPTION))) {
-								org.setColor(Utils.ColorTEAL);
-								setColor(Utils.ColorPLAGUE);
-								org._hasdodged =true;
-							} else {
-								if (org._lavender > 0) {
-									if ((_isenhanced) && (!_isinfectious) && (!_isaconsumer) && (!_isafungus)) {
-										org.weaklavendershield();
-									} else {
-										org.lavendershield();
-									}
-									setColor(Utils.ColorPLAGUE);
-								}
-								if (org._lavender <= 0) {
-									if (_isinfectious) {
-										if (_isaplant) {
-											if (_energy > Utils.PLAGUE_ENERGY_CONSUMPTION) {
-										        org.reproduceVirus();
-										        setColor(Utils.ColorPLAGUE);
-											}
-										} else {
-											if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
-									            org.reproduceVirus();
-									            setColor(Utils.ColorPLAGUE);
-								            }
-										}
-									} else {
-										if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
-											if ((!_isaconsumer) && (!_isafungus)) {
-												org._nVirusChildren = -1;
-											}
-								            org.reproduceforeignVirus();
-								            setColor(Utils.ColorPLAGUE);
-							            }
-									}
-								}
-							}
-						} else {
-							setColor(Utils.ColorPLAGUE);
-							org.setColor(Utils.ColorSPORE);
-						}
-					}
-				}
-				break;
-			case CYAN:
-			case TEAL:
-			case YELLOW:
-			case AUBURN:
-			case BLOND:
-			case FLOWER:
-			case DARKGRAY:
-			case GOLD:
-				if ((org._infectedGeneticCode == _geneticCode) || ((!_isinfectious) && (org._infectedGeneticCode != null))) {
-					if ((((_plagueversion == 2) || (!_isinfectious)) && (org._isaconsumer)) || ((_plagueversion == 1) && (org._isaplant))) {
-						if ((org._dodge) && (org.useEnergy(Utils.DODGE_ENERGY_CONSUMPTION))) {
-							org.setColor(Utils.ColorTEAL);
-							setColor(Utils.ColorPLAGUE);
-							org._hasdodged =true;
-						} else {
-							if (org._lavender > 0) {
-								if ((_isenhanced) && (!_isinfectious) && (!_isaconsumer) && (!_isafungus)) {
-									org.weaklavendershield();
-								} else {
-									org.lavendershield();
-								}
-								setColor(Utils.ColorPLAGUE);
-							}
-							if (org._lavender <= 0) {
-								if (_isinfectious) {
-									if (_isaplant) {
-										if (_energy > Utils.PLAGUE_ENERGY_CONSUMPTION) {
-									        org.reproduceVirus();
-									        setColor(Utils.ColorPLAGUE);
-										}
-									} else {
-										if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
-								            org.reproduceVirus();
-								            setColor(Utils.ColorPLAGUE);
-							            }
-									}
-								} else {
-									if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
-										if ((!_isaconsumer) && (!_isafungus)) {
-											org._nVirusChildren = -1;
-										}
-							            org.reproduceforeignVirus();
-							            setColor(Utils.ColorPLAGUE);
-						            }
-								}
-							}
-						}
-					}
-				}
-				break;
-			case MAGENTA:
-			case ROSE:
-				if (((org._infectedGeneticCode == _geneticCode) || ((!_isinfectious) && (org._infectedGeneticCode != null))) && (!_altruist)) {
-					if ((((_plagueversion == 2) || (!_isinfectious)) && (org._isaconsumer)) || ((_plagueversion == 1) && (org._isaplant))) {
-						if ((org._dodge) && (org.useEnergy(Utils.DODGE_ENERGY_CONSUMPTION))) {
-							org.setColor(Utils.ColorTEAL);
-							setColor(Utils.ColorPLAGUE);
-							org._hasdodged =true;
-						} else {
-							if (org._lavender > 0) {
-								if ((_isenhanced) && (!_isinfectious) && (!_isaconsumer) && (!_isafungus)) {
-									org.weaklavendershield();
-								} else {
-									org.lavendershield();
-								}
-								setColor(Utils.ColorPLAGUE);
-							}
-							if (org._lavender <= 0) {
-								if (_isinfectious) {
-									if (_isaplant) {
-										if (_energy > Utils.PLAGUE_ENERGY_CONSUMPTION) {
-									        org.reproduceVirus();
-									        setColor(Utils.ColorPLAGUE);
-										}
-									} else {
-										if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
-								            org.reproduceVirus();
-								            setColor(Utils.ColorPLAGUE);
-							            }
-									}
-								} else {
-									if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
-										if ((!_isaconsumer) && (!_isafungus)) {
-											org._nVirusChildren = -1;
-										}
-							            org.reproduceforeignVirus();
-							            setColor(Utils.ColorPLAGUE);
-						            }
-								}
-							}
-						}
-					}
-				}
-				break;
-			case SPIKEPOINT:
-				if (org._isenhanced) {
-					if ((org._infectedGeneticCode == _geneticCode) || ((!_isinfectious) && (org._infectedGeneticCode != null))) {
-						if ((((_plagueversion == 2) || (!_isinfectious)) && (org._isaconsumer)) || ((_plagueversion == 1) && (org._isaplant))) {
-							if (org._lavender > 0) {
-								if ((_isenhanced) && (!_isinfectious) && (!_isaconsumer) && (!_isafungus)) {
-									org.weaklavendershield();
-								} else {
-									org.lavendershield();
-								}
-								setColor(Utils.ColorPLAGUE);
-							}
-							if (org._lavender <= 0) {
-								if (_isinfectious) {
-									if (_isaplant) {
-										if (_energy > Utils.PLAGUE_ENERGY_CONSUMPTION) {
-									        org.reproduceVirus();
-									        setColor(Utils.ColorPLAGUE);
-										}
-									} else {
-										if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
-								            org.reproduceVirus();
-								            setColor(Utils.ColorPLAGUE);
-							            }
-									}
-								} else {
-									if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
-										if ((!_isaconsumer) && (!_isafungus)) {
-											org._nVirusChildren = -1;
-										}
-							            org.reproduceforeignVirus();
-							            setColor(Utils.ColorPLAGUE);
-						            }
-								}
-							}
-						}
-					}
-				}
-				break;
-			case DARK:
-				if (org._blackversion == 0) {
-					break;
-				} else {
-					if ((org._framesColor <= 6) && (org._blackversion > 0)) {
-						// The other organism will be shown in the color it mimicks
-						org.mimicColor();
-					} else {
-						if ((org._infectedGeneticCode == _geneticCode) || ((!_isinfectious) && (org._infectedGeneticCode != null))) {
-							if ((((_plagueversion == 2) || (!_isinfectious)) && (org._isaconsumer)) || ((_plagueversion == 1) && (org._isaplant))) {
-								if (org._lavender > 0) {
-									if ((_isenhanced) && (!_isinfectious) && (!_isaconsumer) && (!_isafungus)) {
-										org.weaklavendershield();
-									} else {
-										org.lavendershield();
-									}
-									setColor(Utils.ColorPLAGUE);
-								}
-								if (org._lavender <= 0) {
-									if (_isinfectious) {
-										if (_isaplant) {
-											if (_energy > Utils.PLAGUE_ENERGY_CONSUMPTION) {
-										        org.reproduceVirus();
-										        setColor(Utils.ColorPLAGUE);
-											}
-										} else {
-											if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
-									            org.reproduceVirus();
-									            setColor(Utils.ColorPLAGUE);
-								            }
-										}
-									} else {
-										if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
-											if ((!_isaconsumer) && (!_isafungus)) {
-												org._nVirusChildren = -1;
-											}
-								            org.reproduceforeignVirus();
-								            setColor(Utils.ColorPLAGUE);
-							            }
-									}
-								}
-							}
-						}
-					}
-				}
-				break;
-			case MINT:
-			case CORAL:
-			case BROWN:
-				break;
-			default:
-				if ((org._infectedGeneticCode == _geneticCode) || ((!_isinfectious) && (org._infectedGeneticCode != null))) {
-					if ((((_plagueversion == 2) || (!_isinfectious)) && (org._isaconsumer)) || ((_plagueversion == 1) && (org._isaplant))) {
-						if (org._lavender > 0) {
-							if ((_isenhanced) && (!_isinfectious) && (!_isaconsumer) && (!_isafungus)) {
-								org.weaklavendershield();
-							} else {
-								org.lavendershield();
-							}
-							setColor(Utils.ColorPLAGUE);
-						}
-						if (org._lavender <= 0) {
-							if (_isinfectious) {
-								if (_isaplant) {
-									if (_energy > Utils.PLAGUE_ENERGY_CONSUMPTION) {
-								        org.reproduceVirus();
-								        setColor(Utils.ColorPLAGUE);
-									}
-								} else {
-									if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
-							            org.reproduceVirus();
-							            setColor(Utils.ColorPLAGUE);
-						            }
-								}
-							} else {
-								if (_energy > Utils.SCOURGE_ENERGY_CONSUMPTION) {
-									if ((!_isaconsumer) && (!_isafungus)) {
-										org._nVirusChildren = -1;
-									}
-						            org.reproduceforeignVirus();
-						            setColor(Utils.ColorPLAGUE);
-					            }
-							}
-						}
-					}
-				}
-			}
-			if (org._nVirusChildren != 0) {
-				if (_isinfectious) {
-					if (_isaplant) {
-						if ((_plagueversion == 2) || (_sporeversion == 6)) {
-							useDetritus(Utils.PLAGUE_ENERGY_CONSUMPTION);
-						} else {
-							useDetritus(0.5 * Utils.PLAGUE_ENERGY_CONSUMPTION);
-						}
-			            org.setColor(Utils.ColorDARKLILAC);
-					} else {
-			            useDetritus(Utils.SCOURGE_ENERGY_CONSUMPTION);
-			            org.setColor(Utils.ColorDARKLILAC);
-					}
-					if (org._antiviral > 0) {
-						virusneutralized();
-					}
-				} else {
-		            useDetritus(Utils.SCOURGE_ENERGY_CONSUMPTION);
-		            org.setColor(Utils.ColorDARKLILAC);
-				}
-				org._nVirusChildren = 0;
-			}
-			break;
 		case CORAL:
 			// Transform viruses and particles into children
 			switch (getTypeColor(org._segColor[oseg])) {
@@ -19943,7 +19943,7 @@ public class Organism extends Rectangle {
 			}
 			// energy interchange
 			if (takenEnergyLilac > 0) {
-				org.useDetritus(takenEnergyLilac);
+				org.useEnergy(takenEnergyLilac);
 			}
 			break;
 		case DARK:
