@@ -68,7 +68,7 @@ public class InfoToolbar extends JToolBar {
 
 	private JLabel _lT_MASS;
 
-	public void setSelectedOrganism(Organism selectedOrganism) {
+	public synchronized void setSelectedOrganism(Organism selectedOrganism) {
 		_selOrganism = selectedOrganism;
 		_lID.setText(_selOrganism!=null?_nf.format(_selOrganism.getID()):"-1");
 		_lGeneration.setText(_selOrganism!=null?_nf.format(_selOrganism.getGeneticCode().getGeneration()):"0");
@@ -87,22 +87,22 @@ public class InfoToolbar extends JToolBar {
 	}
 
 	// Recalculate continuously changing parameters
-	public void recalculate() {
+	public synchronized void recalculate() {
 		_lEnergy.setText(_selOrganism!=null?_nf.format(_selOrganism.getEnergy()):"0"); //$NON-NLS-1$
 		_lAge.setText(_selOrganism!=null?_nf.format(_selOrganism.getAge()>>8):"0"); //$NON-NLS-1$
 		_lMass.setText(_selOrganism!=null?_nf.format(_selOrganism.getMass()):"0"); //$NON-NLS-1$
 	}
 
 	// Notify panel of important events
-	public void changeNChildren() {
+	public synchronized void changeNChildren() {
 		_lChildren.setText(_selOrganism!=null?_nf.format(_selOrganism.getTotalChildren()):"0"); //$NON-NLS-1$
 	}
 
-	public void changeNKills() {
+	public synchronized void changeNKills() {
 		_lKills.setText(_selOrganism!=null?_nf.format(_selOrganism.getTotalKills()):"0"); //$NON-NLS-1$
 	}
 
-	public void changeNInfected() {
+	public synchronized void changeNInfected() {
 		_lInfected.setText(_selOrganism!=null?_nf.format(_selOrganism.getTotalInfected()):"0"); //$NON-NLS-1$
 	}
 
