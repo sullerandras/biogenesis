@@ -40,6 +40,7 @@ public enum GeneColor {
   ROSE("rose"),
   CYAN("cyan"),
   TEAL("teal"),
+  SPIN("spin"),
   YELLOW("yellow"),
   AUBURN("auburn"),
   INDIGO("indigo"),

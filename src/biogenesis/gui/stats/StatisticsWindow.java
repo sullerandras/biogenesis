@@ -523,7 +523,7 @@ public class StatisticsWindow extends JDialog {
 	}
 
 	private void updateColorPanel(ColorPanel colorPanel) {
-		InfoAndColor[] colorCounter = new InfoAndColor[47];
+		InfoAndColor[] colorCounter = new InfoAndColor[48];
 		colorCounter[0] = new InfoAndColor(0, Color.GREEN);
 		colorCounter[1] = new InfoAndColor(0, Utils.ColorFOREST);
 		colorCounter[2] = new InfoAndColor(0, Utils.ColorSPRING);
@@ -562,15 +562,16 @@ public class StatisticsWindow extends JDialog {
 		colorCounter[35] = new InfoAndColor(0, Utils.ColorROSE);
 		colorCounter[36] = new InfoAndColor(0, Color.CYAN);
 		colorCounter[37] = new InfoAndColor(0, Utils.ColorTEAL);
-		colorCounter[38] = new InfoAndColor(0, Color.YELLOW);
-		colorCounter[39] = new InfoAndColor(0, Utils.ColorAUBURN);
-		colorCounter[40] = new InfoAndColor(0, Utils.ColorINDIGO);
-		colorCounter[41] = new InfoAndColor(0, Utils.ColorBLOND);
-		colorCounter[42] = new InfoAndColor(0, Utils.ColorFLOWER);
-		colorCounter[43] = new InfoAndColor(0, Color.DARK_GRAY);
-		colorCounter[44] = new InfoAndColor(0, Utils.ColorGOLD);
-		colorCounter[45] = new InfoAndColor(0, Utils.ColorDARK);
-		colorCounter[46] = new InfoAndColor(0, Utils.ColorEYE);
+		colorCounter[38] = new InfoAndColor(0, Utils.ColorSPIN);
+		colorCounter[39] = new InfoAndColor(0, Color.YELLOW);
+		colorCounter[40] = new InfoAndColor(0, Utils.ColorAUBURN);
+		colorCounter[41] = new InfoAndColor(0, Utils.ColorINDIGO);
+		colorCounter[42] = new InfoAndColor(0, Utils.ColorBLOND);
+		colorCounter[43] = new InfoAndColor(0, Utils.ColorFLOWER);
+		colorCounter[44] = new InfoAndColor(0, Color.DARK_GRAY);
+		colorCounter[45] = new InfoAndColor(0, Utils.ColorGOLD);
+		colorCounter[46] = new InfoAndColor(0, Utils.ColorDARK);
+		colorCounter[47] = new InfoAndColor(0, Utils.ColorEYE);
 
 		synchronized (organisms) {
 			for (Iterator<Organism> it = organisms.iterator(); it.hasNext();) {
