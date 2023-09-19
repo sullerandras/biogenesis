@@ -86,7 +86,7 @@ public class GeneticCode implements Cloneable, Serializable {
 	 */
 	protected int _activity;
 	/**
-	 * If the number of genes or the symmetry changed, the clade has to be updated.
+	 * If the number of genes, the symmetry or the mirroring changed, the clade has to be updated.
 	 */
 	protected int _updateClade;
 	/**
@@ -870,10 +870,6 @@ public class GeneticCode implements Cloneable, Serializable {
 				_clonerate = Utils.MIN_CLONE_RATE;
 			}
 		}
-		if (Utils.random.nextInt(10000) < _mutationrate)
-			randomMirror();
-		else
-			_mirror = parentCode.getMirror();
 		if (Utils.random.nextInt(10000) < _mutationrate) {
 			// change symmetry
 			randomSymmetry();
@@ -885,30 +881,41 @@ public class GeneticCode implements Cloneable, Serializable {
 			// keep symmetry
 			_symmetry = parentCode.getSymmetry();
 			if (Utils.random.nextInt(10000) < _mutationrate) {
-			// change number of segments
-				if (Utils.random.nextBoolean()) {
-				// increase segments
-					if (parentCode.getNGenes() >= 100)
-						nGenes = parentCode.getNGenes();
-					else {
-						nGenes = parentCode.getNGenes() + 1;
-						addedGene = Utils.random.nextInt(nGenes);
-						_updateClade = -1;
-					}
-				} else {
-				// decrease segments
-					if (parentCode.getNGenes() <= 1)
-						nGenes = parentCode.getNGenes();
-					else {
-						nGenes = parentCode.getNGenes() - 1;
-						removedGene = Utils.random.nextInt(parentCode.getNGenes());
-						_updateClade = -1;
-						repairBranch = true;
-					}
+				// change mirror
+				randomMirror();
+				nGenes = parentCode.getNGenes();
+				if ((_mirror != parentCode.getMirror()) && (_symmetry != 1)) {
+					_updateClade = -1;
 				}
 			} else {
-			// keep number of segments
-				nGenes = parentCode.getNGenes();
+				// keep mirror
+				_mirror = parentCode.getMirror();
+				if (Utils.random.nextInt(10000) < _mutationrate) {
+					// change number of segments
+					if (Utils.random.nextBoolean()) {
+						// increase segments
+						if (parentCode.getNGenes() >= 100) {
+							nGenes = parentCode.getNGenes();
+						} else {
+							nGenes = parentCode.getNGenes() + 1;
+							addedGene = Utils.random.nextInt(nGenes);
+							_updateClade = -1;
+						}
+					} else {
+					    // decrease segments
+						if (parentCode.getNGenes() <= 1) {
+							nGenes = parentCode.getNGenes();
+						} else {
+							nGenes = parentCode.getNGenes() - 1;
+							removedGene = Utils.random.nextInt(parentCode.getNGenes());
+							_updateClade = -1;
+							repairBranch = true;
+						}
+					}
+				} else {
+				    // keep number of segments
+					nGenes = parentCode.getNGenes();
+				}
 			}
 		}
 		// Create genes

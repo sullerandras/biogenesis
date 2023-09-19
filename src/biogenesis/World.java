@@ -422,15 +422,13 @@ public class World implements Serializable{
 	 *
 	 * @param q  The amount of O2 required.
 	 * @return  The amount of O2 obtained. This is always <code>q</code>
-	 * unless there weren't enough O2 in the atmosphere.
 	 */
 	public double respiration(double q) {
 		synchronized (_CO2_monitor) {
 			synchronized (_O2_monitor) {
-				double d = Math.min(q,_O2);
-				_O2 -= d;
-				_CO2 += d;
-				return d;
+				_O2 -= q;
+				_CO2 += q;
+				return q;
 			}
 		}
 	}
@@ -440,15 +438,13 @@ public class World implements Serializable{
 	 *
 	 * @param q  The amount of O2 required.
 	 * @return  The amount of O2 obtained. This is always <code>q</code>
-	 * unless there weren't enough O2 in the atmosphere.
 	 */
 	public double decomposition(double q) {
 		synchronized (_CH4_monitor) {
 			synchronized (_O2_monitor) {
-				double d = Math.min(q,_O2);
-				_O2 -= d;
-				_CH4 += d;
-				return d;
+				_O2 -= q;
+				_CH4 += q;
+				return q;
 			}
 		}
 	}
@@ -458,15 +454,13 @@ public class World implements Serializable{
 	 *
 	 * @param q  The amount of O2 required.
 	 * @return  The amount of O2 obtained. This is always <code>q</code>
-	 * unless there weren't enough O2 in the atmosphere.
 	 */
 	public double detritusproduction(double q) {
 		synchronized (_detritus_monitor) {
 			synchronized (_O2_monitor) {
-				double d = Math.min(q,_O2);
-				_O2 -= d;
-				_detritus += d;
-				return d;
+				_O2 -= q;
+				_detritus += q;
+				return q;
 			}
 		}
 	}

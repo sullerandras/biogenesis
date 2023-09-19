@@ -1271,9 +1271,15 @@ public class Organism extends Rectangle {
 			if (_isaplant) {
 			    _earlyReproduceEnergy = _reproduceEnergy - _earlyReproduceEnergy;
 			    if ((_isonlyc4 == 2) && (_isblond) && (!_isenhanced)) {
-			    	if (_earlyReproduceEnergy < 30) {
-						_earlyReproduceEnergy = 30;
-					}
+			    	if (_sporeversion < 0) {
+			    		if (_earlyReproduceEnergy < 40) {
+							_earlyReproduceEnergy = 40;
+						}
+			    	} else {
+			    		if (_earlyReproduceEnergy < 30) {
+							_earlyReproduceEnergy = 30;
+						}
+			    	}
 			    } else {
 			    	if (_earlyReproduceEnergy < 40) {
 						_earlyReproduceEnergy = 40;
@@ -1282,26 +1288,44 @@ public class Organism extends Rectangle {
 			} else {
 				if ((_isaconsumer) || (_isafungus)) {
 					_earlyReproduceEnergy = _reproduceEnergy - _earlyReproduceEnergy;
-					if (_earlyReproduceEnergy < 21) {
-						_earlyReproduceEnergy = 21;
-					}
+					if (_sporeversion < 0) {
+			    		if (_earlyReproduceEnergy < 40) {
+							_earlyReproduceEnergy = 40;
+						}
+			    	} else {
+			    		if (_earlyReproduceEnergy < 21) {
+							_earlyReproduceEnergy = 21;
+						}
+			    	}
 				} else {
 					if ((_transfersenergy) && (_isinfectious) && (_isblond)) {
 						_earlyReproduceEnergy = _reproduceEnergy - _earlyReproduceEnergy;
-						if (_earlyReproduceEnergy < 21) {
-							_earlyReproduceEnergy = 21;
-						}
+						if (_sporeversion < 0) {
+				    		if (_earlyReproduceEnergy < 40) {
+								_earlyReproduceEnergy = 40;
+							}
+				    	} else {
+				    		if (_earlyReproduceEnergy < 21) {
+								_earlyReproduceEnergy = 21;
+							}
+				    	}
 					} else {
-						if ((_sporeversion < 0) || (_sporeversion == 6)) {
+						if (_sporeversion == 6) {
 							_earlyReproduceEnergy = _reproduceEnergy - _earlyReproduceEnergy;
 							if (_earlyReproduceEnergy < 21) {
 								_earlyReproduceEnergy = 21;
 							}
 						} else {
 							_earlyReproduceEnergy = _reproduceEnergy - _earlyReproduceEnergy;
-							if (_earlyReproduceEnergy < 14) {
-								_earlyReproduceEnergy = 14;
-							}
+							if (_sporeversion < 0) {
+					    		if (_earlyReproduceEnergy < 40) {
+									_earlyReproduceEnergy = 40;
+								}
+					    	} else {
+					    		if (_earlyReproduceEnergy < 14) {
+									_earlyReproduceEnergy = 14;
+								}
+					    	}
 						}
 					}
 				}
@@ -1344,7 +1368,7 @@ public class Organism extends Rectangle {
 		_haseyes =false;
 		boolean enhancedconsumer =false;
 		boolean ispink =false;
-		int isprotective = 0;
+		boolean isprotective = false;
 		_updateEffects = 2;
 		if (_geneticCode.getSiblingBattle()) {
 			_siblingbattle =true;
@@ -1577,7 +1601,7 @@ public class Organism extends Rectangle {
 				_mphoto[i] = -4;
 				break;
 			case FALLOW:
-				isprotective = 3;
+				isprotective = true;
 				if (_fallowversion == 0) {
 					if (_geneticCode.getModifiesfallow() == 1) {
 						_fallowversion = 1;
@@ -1679,31 +1703,27 @@ public class Organism extends Rectangle {
 				}
 				break;
 			case VIOLET:
-				if (isprotective == 0) {
-					isprotective = 1;
-				}
+				isprotective = true;
 				_mphoto[i] = -4;
 				break;
 			case OCHRE:
-				if (isprotective <= 1) {
-					isprotective = 2;
-				}
+				isprotective = true;
 				_mphoto[i] = -1;
 				break;
 			case OLIVE:
-				isprotective = 3;
+				isprotective = true;
 				_mphoto[i] = -4;
 				break;
 			case DARKOLIVE:
-				isprotective = 3;
+				isprotective = true;
 				_mphoto[i] = -20;
 				break;
 			case BLUE:
-				isprotective = 3;
+				isprotective = true;
 				_mphoto[i] = -0.1;
 				break;
 			case SKY:
-				isprotective = 3;
+				isprotective = true;
 				if (_skyversion <= 0) {
 					if (_geneticCode.getModifiessky()) {
 						_skyversion = 2;
@@ -1714,7 +1734,7 @@ public class Organism extends Rectangle {
 				_mphoto[i] = -4;
 				break;
 			case DEEPSKY:
-				isprotective = 3;
+				isprotective = true;
 				if (_skyversion <= 0) {
 					if (_geneticCode.getModifiessky()) {
 						_skyversion = 2;
@@ -1878,7 +1898,7 @@ public class Organism extends Rectangle {
 		}
 		if (_isonlyc4 > 0) {
 			if ((!_isaplant) && (_methanotrophy == 0) && (!_isplankton) && (_blackversion >= 0)) {
-				if ((!_isaconsumer) && (!_isafungus) && (!_isakiller) && (_plagueversion == 0) && (isprotective == 0)) {
+				if ((!_isaconsumer) && (!_isafungus) && (!_isakiller) && (_plagueversion == 0) && (!isprotective)) {
 					if ((!_iscoral) && (!_isinfectious)) {
 						_isonlyc4 = 2;
 						_candodge =true;
@@ -1890,7 +1910,7 @@ public class Organism extends Rectangle {
 							switch (getTypeColor(_segColor[j])) {
 							case C4:
 								if ((_sporetime == 0) || (_geneticCode.getModifiesspore() <= 6)) {
-									_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * (11.25 + (1.075*_geneticCode.getGene(j%_geneticCode.getNGenes()).getLength()));
+									_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * (11.25 + (1.08*_geneticCode.getGene(j%_geneticCode.getNGenes()).getLength()));
 								}
 								break;
 							case LAVENDER:
@@ -1932,7 +1952,7 @@ public class Organism extends Rectangle {
 							switch (getTypeColor(_segColor[j])) {
 							case C4:
 								if ((_sporetime == 0) || (_geneticCode.getModifiesspore() <= 6)) {
-									_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * (10.625 + (1.0375*_geneticCode.getGene(j%_geneticCode.getNGenes()).getLength()));
+									_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * (10.625 + (1.04*_geneticCode.getGene(j%_geneticCode.getNGenes()).getLength()));
 								}
 								break;
 							}
@@ -1944,7 +1964,7 @@ public class Organism extends Rectangle {
 							switch (getTypeColor(_segColor[j])) {
 							case C4:
 								if ((_sporetime == 0) || (_geneticCode.getModifiesspore() <= 6)) {
-									_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * (11.25 + (1.075*_geneticCode.getGene(j%_geneticCode.getNGenes()).getLength()));
+									_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * (11.25 + (1.08*_geneticCode.getGene(j%_geneticCode.getNGenes()).getLength()));
 								}
 								break;
 							}
@@ -1964,7 +1984,7 @@ public class Organism extends Rectangle {
 				if (_symmetry >= 4) {
 					_lowersymmetric = 600 + 200;
 				} else {
-					if ((_symmetry <= 2) && (!_isaconsumer) && (!_isafungus) && (!_isakiller) && (_blackversion >= 0) && (isprotective <= 2)) {
+					if ((_symmetry <= 2) && (!_isaconsumer) && (!_isafungus) && (!_isakiller) && (_blackversion >= 0) && (!isprotective)) {
 						_lowersymmetric = 600 + (1200 / (_symmetry + 1));
 					} else {
 						_lowersymmetric = 700 + (1200 / (_symmetry + 1));
@@ -2011,11 +2031,11 @@ public class Organism extends Rectangle {
 					}
 				}
 			} else {
-				if ((_isinfectious) || (_plagueversion > 0) || (_isakiller) || (isprotective >= 2)) {
+				if ((_isinfectious) || (_plagueversion > 0) || (_isakiller) || (isprotective)) {
 					int q;
 					for (q=_segments-1; q>=0; q--) {
 				         if (_segColor[q].equals(Utils.ColorPLANKTON)) {
-				             _mphoto[q] = 0.82 * Utils.PLANKTON_ENERGY_CONSUMPTION * photomultiplier * _geneticCode.getGene(q%_geneticCode.getNGenes()).getLength();
+				             _mphoto[q] = 0.8125 * Utils.PLANKTON_ENERGY_CONSUMPTION * photomultiplier * _geneticCode.getGene(q%_geneticCode.getNGenes()).getLength();
 						}
 					}
 				}
@@ -2146,9 +2166,15 @@ public class Organism extends Rectangle {
 			if (_isaplant) {
 			    _earlyReproduceEnergy = _reproduceEnergy - _earlyReproduceEnergy;
 			    if ((_isonlyc4 == 2) && (_isblond) && (!_isenhanced)) {
-			    	if (_earlyReproduceEnergy < 30) {
-						_earlyReproduceEnergy = 30;
-					}
+			    	if (_sporeversion < 0) {
+			    		if (_earlyReproduceEnergy < 40) {
+							_earlyReproduceEnergy = 40;
+						}
+			    	} else {
+			    		if (_earlyReproduceEnergy < 30) {
+							_earlyReproduceEnergy = 30;
+						}
+			    	}
 			    } else {
 			    	if (_earlyReproduceEnergy < 40) {
 						_earlyReproduceEnergy = 40;
@@ -2157,29 +2183,47 @@ public class Organism extends Rectangle {
 			} else {
 				if ((_isaconsumer) || (_isafungus)) {
 					_earlyReproduceEnergy = _reproduceEnergy - _earlyReproduceEnergy;
-					if (_earlyReproduceEnergy < 21) {
-						_earlyReproduceEnergy = 21;
-					}
+					if (_sporeversion < 0) {
+			    		if (_earlyReproduceEnergy < 40) {
+							_earlyReproduceEnergy = 40;
+						}
+			    	} else {
+			    		if (_earlyReproduceEnergy < 21) {
+							_earlyReproduceEnergy = 21;
+						}
+			    	}
 				} else {
 					if ((_transfersenergy) && (_isinfectious) && (_isblond)) {
 						_earlyReproduceEnergy = _reproduceEnergy - _earlyReproduceEnergy;
-						if (_earlyReproduceEnergy < 21) {
-							_earlyReproduceEnergy = 21;
-						}
+						if (_sporeversion < 0) {
+				    		if (_earlyReproduceEnergy < 40) {
+								_earlyReproduceEnergy = 40;
+							}
+				    	} else {
+				    		if (_earlyReproduceEnergy < 21) {
+								_earlyReproduceEnergy = 21;
+							}
+				    	}
 						if (_age == 0) {
 							_timeToReproduce = _timeToReproduceMax;
 						}
 					} else {
-						if ((_sporeversion < 0) || (_sporeversion == 6)) {
+						if (_sporeversion == 6) {
 							_earlyReproduceEnergy = _reproduceEnergy - _earlyReproduceEnergy;
 							if (_earlyReproduceEnergy < 21) {
 								_earlyReproduceEnergy = 21;
 							}
 						} else {
 							_earlyReproduceEnergy = _reproduceEnergy - _earlyReproduceEnergy;
-							if (_earlyReproduceEnergy < 14) {
-								_earlyReproduceEnergy = 14;
-							}
+							if (_sporeversion < 0) {
+					    		if (_earlyReproduceEnergy < 40) {
+									_earlyReproduceEnergy = 40;
+								}
+					    	} else {
+					    		if (_earlyReproduceEnergy < 14) {
+									_earlyReproduceEnergy = 14;
+								}
+					    	}
 						}
 					}
 					if ((_createlavender > 0) && (_isinfectious) && (_isblond) && (_age == 0)) {
@@ -2956,7 +3000,7 @@ public class Organism extends Rectangle {
 				int subcladecounter = 0;
 				if (Utils.CLADE_COMPLEXITY >= 0) {
 					for(char c : _geneticCode._cladeID.toCharArray()) {
-				        if( c == '|' || c == '+' || c == '-' || c == '<' || c == '>') {
+				        if( c == '|' || c == '+' || c == '-' || c == '<' || c == '>' || c == '=' || c == '#') {
 				            ++subcladecounter;
 				        }
 				    }
@@ -2973,6 +3017,12 @@ public class Organism extends Rectangle {
 				    		_geneticCode._cladeID += ">" + Integer.toHexString(_world.getNewCladePart());
 				    	} else if (_symmetry < inheritGeneticCode.getSymmetry()) {
 				    		_geneticCode._cladeID += "<" + Integer.toHexString(_world.getNewCladePart());
+				    	} else if (_geneticCode.getMirror() != inheritGeneticCode.getMirror()) {
+				    		if (_geneticCode.getMirror() == 0) {
+					    		_geneticCode._cladeID += "#" + Integer.toHexString(_world.getNewCladePart());
+					    	} else {
+					    		_geneticCode._cladeID += "=" + Integer.toHexString(_world.getNewCladePart());
+					    	}
 				    	}
 			    	} else {
 			    		if (_geneticCode.getNGenes() > inheritGeneticCode.getNGenes()) {
@@ -2983,6 +3033,12 @@ public class Organism extends Rectangle {
 				    		_geneticCode._cladeID += ">";
 				    	} else if (_symmetry < inheritGeneticCode.getSymmetry()) {
 				    		_geneticCode._cladeID += "<";
+				    	} else if (_geneticCode.getMirror() != inheritGeneticCode.getMirror()) {
+				    		if (_geneticCode.getMirror() == 0) {
+					    		_geneticCode._cladeID += "#";
+					    	} else {
+					    		_geneticCode._cladeID += "=";
+					    	}
 				    	}
 			    		if (_geneticCode.getUpdateClade() == 1) {
 			    			_geneticCode._cladeID += "|" + Integer.toHexString(_world.getNewCladePart());
@@ -3469,7 +3525,7 @@ public class Organism extends Rectangle {
 					int subcladecounter = 0;
 					if (Utils.CLADE_COMPLEXITY >= 0) {
 						for(char c : _geneticCode._cladeID.toCharArray()) {
-					        if( c == '|' || c == '+' || c == '-' || c == '<' || c == '>') {
+					        if( c == '|' || c == '+' || c == '-' || c == '<' || c == '>' || c == '=' || c == '#') {
 					            ++subcladecounter;
 					        }
 					    }
@@ -3486,6 +3542,12 @@ public class Organism extends Rectangle {
 					    		_geneticCode._cladeID += ">" + Integer.toHexString(_world.getNewCladePart());
 					    	} else if (_symmetry < inheritGeneticCode.getSymmetry()) {
 					    		_geneticCode._cladeID += "<" + Integer.toHexString(_world.getNewCladePart());
+					    	} else if (_geneticCode.getMirror() != inheritGeneticCode.getMirror()) {
+					    		if (_geneticCode.getMirror() == 0) {
+						    		_geneticCode._cladeID += "#" + Integer.toHexString(_world.getNewCladePart());
+						    	} else {
+						    		_geneticCode._cladeID += "=" + Integer.toHexString(_world.getNewCladePart());
+						    	}
 					    	}
 				    	} else {
 				    		if (_geneticCode.getNGenes() > inheritGeneticCode.getNGenes()) {
@@ -3496,6 +3558,12 @@ public class Organism extends Rectangle {
 					    		_geneticCode._cladeID += ">";
 					    	} else if (_symmetry < inheritGeneticCode.getSymmetry()) {
 					    		_geneticCode._cladeID += "<";
+					    	} else if (_geneticCode.getMirror() != inheritGeneticCode.getMirror()) {
+					    		if (_geneticCode.getMirror() == 0) {
+						    		_geneticCode._cladeID += "#";
+						    	} else {
+						    		_geneticCode._cladeID += "=";
+						    	}
 					    	}
 				    		if (_geneticCode.getUpdateClade() == 1) {
 				    			_geneticCode._cladeID += "|" + Integer.toHexString(_world.getNewCladePart());
