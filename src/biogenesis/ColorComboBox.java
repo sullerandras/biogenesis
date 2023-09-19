@@ -20,9 +20,10 @@ public class ColorComboBox extends JComboBox {
 		Messages.getString("T_WHITE"),Messages.getString("T_PLAGUE"),Messages.getString("T_CORAL"),  //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
 		Messages.getString("T_MINT"),Messages.getString("T_LAVENDER"),Messages.getString("T_MAGENTA"),  //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
 		Messages.getString("T_ROSE"),Messages.getString("T_CYAN"),Messages.getString("T_TEAL"),  //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
-		Messages.getString("T_YELLOW"),Messages.getString("T_AUBURN"),Messages.getString("T_INDIGO"),  //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
-		Messages.getString("T_BLOND"),Messages.getString("T_FLOWER"),Messages.getString("T_DARKGRAY"),  //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
-		Messages.getString("T_GOLD"),Messages.getString("T_DARK"),Messages.getString("T_EYE")};  //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$ 
+		Messages.getString("T_SPIN"),Messages.getString("T_YELLOW"),Messages.getString("T_AUBURN"),  //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+		Messages.getString("T_INDIGO"),Messages.getString("T_BLOND"),Messages.getString("T_FLOWER"),  //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+		Messages.getString("T_DARKGRAY"),Messages.getString("T_GOLD"),Messages.getString("T_DARK"),  //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+		Messages.getString("T_EYE")};  //$NON-NLS-1$
 	
 	public ColorComboBox(Color c) {
 		super(colorValues);
@@ -69,32 +70,33 @@ public class ColorComboBox extends JComboBox {
 		case 35: return Utils.ColorROSE;
 		case 36: return Color.CYAN;
 		case 37: return Utils.ColorTEAL;
-		case 38: return Color.YELLOW;
-		case 39: return Utils.ColorAUBURN;
-		case 40: return Utils.ColorINDIGO;
-		case 41: return Utils.ColorBLOND;
-		case 42: return Utils.ColorFLOWER;
-		case 43: return Color.DARK_GRAY;
-		case 44: return Utils.ColorGOLD;
-		case 45: return Utils.ColorDARK;
-		case 46: return Utils.ColorEYE;
-		case 47: return Utils.ColorWINTER;
-		case 48: return Utils.ColorOLDBARK;
-		case 49: return Utils.ColorDARKJADE;
-		case 50: return Utils.ColorDARKGREEN;
-		case 51: return Utils.ColorDARKFIRE;
-		case 52: return Utils.ColorDARKLILAC;
-		case 53: return Utils.ColorDEEPSKY;
-		case 54: return Utils.ColorDARKOLIVE;
-		case 55: return Utils.ColorSPIKEPOINT;
-		case 56: return Utils.ColorFRUIT;
-		case 57: return Utils.ColorVISION;
-		case 58: return Utils.ColorICE;
-		case 59: return Utils.ColorLIGHT_BLUE;
-		case 60: return Utils.ColorLIGHTBROWN;
-		case 61: return Utils.ColorGREENBROWN;
-		case 62: return Utils.ColorBROKEN;
-		case 63: return Utils.ColorDEADBARK;
+		case 38: return Utils.ColorSPIN;
+		case 39: return Color.YELLOW;
+		case 40: return Utils.ColorAUBURN;
+		case 41: return Utils.ColorINDIGO;
+		case 42: return Utils.ColorBLOND;
+		case 43: return Utils.ColorFLOWER;
+		case 44: return Color.DARK_GRAY;
+		case 45: return Utils.ColorGOLD;
+		case 46: return Utils.ColorDARK;
+		case 47: return Utils.ColorEYE;
+		case 48: return Utils.ColorWINTER;
+		case 49: return Utils.ColorOLDBARK;
+		case 50: return Utils.ColorDARKJADE;
+		case 51: return Utils.ColorDARKGREEN;
+		case 52: return Utils.ColorDARKFIRE;
+		case 53: return Utils.ColorDARKLILAC;
+		case 54: return Utils.ColorDEEPSKY;
+		case 55: return Utils.ColorDARKOLIVE;
+		case 56: return Utils.ColorSPIKEPOINT;
+		case 57: return Utils.ColorFRUIT;
+		case 58: return Utils.ColorVISION;
+		case 59: return Utils.ColorICE;
+		case 60: return Utils.ColorLIGHT_BLUE;
+		case 61: return Utils.ColorLIGHTBROWN;
+		case 62: return Utils.ColorGREENBROWN;
+		case 63: return Utils.ColorBROKEN;
+		case 64: return Utils.ColorDEADBARK;
 		default: return Utils.ColorBROWN;
 		}
 	}
@@ -138,31 +140,32 @@ public class ColorComboBox extends JComboBox {
 		if (c.equals(Utils.ColorROSE)) setSelectedIndex(35);
 		if (c.equals(Color.CYAN)) setSelectedIndex(36);
 		if (c.equals(Utils.ColorTEAL)) setSelectedIndex(37);
-		if (c.equals(Color.YELLOW)) setSelectedIndex(38);
-		if (c.equals(Utils.ColorAUBURN)) setSelectedIndex(39);
-		if (c.equals(Utils.ColorINDIGO)) setSelectedIndex(40);
-		if (c.equals(Utils.ColorBLOND)) setSelectedIndex(41);
-		if (c.equals(Utils.ColorFLOWER)) setSelectedIndex(42);
-		if (c.equals(Color.DARK_GRAY)) setSelectedIndex(43);
-		if (c.equals(Utils.ColorGOLD)) setSelectedIndex(44);
-		if (c.equals(Utils.ColorDARK)) setSelectedIndex(45);
-		if (c.equals(Utils.ColorEYE)) setSelectedIndex(46);
-		if (c.equals(Utils.ColorWINTER)) setSelectedIndex(47);
-		if (c.equals(Utils.ColorOLDBARK)) setSelectedIndex(48);
-		if (c.equals(Utils.ColorDARKJADE)) setSelectedIndex(49);
-		if (c.equals(Utils.ColorDARKGREEN)) setSelectedIndex(50);
-		if (c.equals(Utils.ColorDARKFIRE)) setSelectedIndex(51);
-		if (c.equals(Utils.ColorDARKLILAC)) setSelectedIndex(52);
-		if (c.equals(Utils.ColorDEEPSKY)) setSelectedIndex(53);
-		if (c.equals(Utils.ColorDARKOLIVE)) setSelectedIndex(54);
-		if (c.equals(Utils.ColorSPIKEPOINT)) setSelectedIndex(55);
-		if (c.equals(Utils.ColorFRUIT)) setSelectedIndex(56);
-		if (c.equals(Utils.ColorVISION)) setSelectedIndex(57);
-		if (c.equals(Utils.ColorICE)) setSelectedIndex(58);
-		if (c.equals(Utils.ColorLIGHT_BLUE)) setSelectedIndex(59);
-		if (c.equals(Utils.ColorLIGHTBROWN)) setSelectedIndex(60);
-		if (c.equals(Utils.ColorGREENBROWN)) setSelectedIndex(61);
-		if (c.equals(Utils.ColorBROKEN)) setSelectedIndex(62);
-		if (c.equals(Utils.ColorDEADBARK)) setSelectedIndex(63);
+		if (c.equals(Utils.ColorSPIN)) setSelectedIndex(38);
+		if (c.equals(Color.YELLOW)) setSelectedIndex(39);
+		if (c.equals(Utils.ColorAUBURN)) setSelectedIndex(40);
+		if (c.equals(Utils.ColorINDIGO)) setSelectedIndex(41);
+		if (c.equals(Utils.ColorBLOND)) setSelectedIndex(42);
+		if (c.equals(Utils.ColorFLOWER)) setSelectedIndex(43);
+		if (c.equals(Color.DARK_GRAY)) setSelectedIndex(44);
+		if (c.equals(Utils.ColorGOLD)) setSelectedIndex(45);
+		if (c.equals(Utils.ColorDARK)) setSelectedIndex(46);
+		if (c.equals(Utils.ColorEYE)) setSelectedIndex(47);
+		if (c.equals(Utils.ColorWINTER)) setSelectedIndex(48);
+		if (c.equals(Utils.ColorOLDBARK)) setSelectedIndex(49);
+		if (c.equals(Utils.ColorDARKJADE)) setSelectedIndex(50);
+		if (c.equals(Utils.ColorDARKGREEN)) setSelectedIndex(51);
+		if (c.equals(Utils.ColorDARKFIRE)) setSelectedIndex(52);
+		if (c.equals(Utils.ColorDARKLILAC)) setSelectedIndex(53);
+		if (c.equals(Utils.ColorDEEPSKY)) setSelectedIndex(54);
+		if (c.equals(Utils.ColorDARKOLIVE)) setSelectedIndex(55);
+		if (c.equals(Utils.ColorSPIKEPOINT)) setSelectedIndex(56);
+		if (c.equals(Utils.ColorFRUIT)) setSelectedIndex(57);
+		if (c.equals(Utils.ColorVISION)) setSelectedIndex(58);
+		if (c.equals(Utils.ColorICE)) setSelectedIndex(59);
+		if (c.equals(Utils.ColorLIGHT_BLUE)) setSelectedIndex(60);
+		if (c.equals(Utils.ColorLIGHTBROWN)) setSelectedIndex(61);
+		if (c.equals(Utils.ColorGREENBROWN)) setSelectedIndex(62);
+		if (c.equals(Utils.ColorBROKEN)) setSelectedIndex(63);
+		if (c.equals(Utils.ColorDEADBARK)) setSelectedIndex(64);
 	}
 }
