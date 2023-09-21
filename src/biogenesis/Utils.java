@@ -336,7 +336,7 @@ public final class Utils {
 	/**
 	 * This is the default energy that is consumed when a spin segment is used.
 	 */
-	final static double DEF_SPIN_ENERGY_CONSUMPTION = 12.5d;
+	final static double DEF_SPIN_ENERGY_CONSUMPTION = 13.333d;
 	/**
 	 * This is the default energy that is consumed when an eye segment is used.
 	 */

@@ -1942,7 +1942,7 @@ public class Organism extends Rectangle {
 							switch (getTypeColor(_segColor[j])) {
 							case C4:
 								if ((_sporetime == 0) || (_geneticCode.getModifiesspore() <= 6)) {
-									_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * (11.27 + (1.075*_geneticCode.getGene(j%_geneticCode.getNGenes()).getLength()));
+									_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * (11.28 + (1.07*_geneticCode.getGene(j%_geneticCode.getNGenes()).getLength()));
 								}
 								break;
 							case LAVENDER:
@@ -1984,7 +1984,7 @@ public class Organism extends Rectangle {
 							switch (getTypeColor(_segColor[j])) {
 							case C4:
 								if ((_sporetime == 0) || (_geneticCode.getModifiesspore() <= 6)) {
-									_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * (10.635 + (1.0375*_geneticCode.getGene(j%_geneticCode.getNGenes()).getLength()));
+									_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * (10.64 + (1.035*_geneticCode.getGene(j%_geneticCode.getNGenes()).getLength()));
 								}
 								break;
 							}
@@ -1996,7 +1996,7 @@ public class Organism extends Rectangle {
 							switch (getTypeColor(_segColor[j])) {
 							case C4:
 								if ((_sporetime == 0) || (_geneticCode.getModifiesspore() <= 6)) {
-									_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * (11.27 + (1.075*_geneticCode.getGene(j%_geneticCode.getNGenes()).getLength()));
+									_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * (11.28 + (1.07*_geneticCode.getGene(j%_geneticCode.getNGenes()).getLength()));
 								}
 								break;
 							}
@@ -4848,14 +4848,14 @@ public class Organism extends Rectangle {
 					if (_haseyes) {
 						if (dx == dxbak) {
 							if (_spin > 0) {
-								_energy += _world.filterfeeding((Math.abs(dx) + Math.abs(dy) + (23 * Math.abs(dtheta))) * _filterfeeding);
+								_energy += _world.filterfeeding(((0.95 * (Math.abs(dx) + Math.abs(dy))) + (22.67 * Math.abs(dtheta))) * _filterfeeding);
 							} else {
 								_energy += _world.filterfeeding((Math.abs(dx) + Math.abs(dy)) * _filterfeeding);
 							}
 						}
 					} else {
 						if (_spin > 0) {
-							_energy += _world.filterfeeding((Math.abs(dx) + Math.abs(dy) + (23 * Math.abs(dtheta))) * _filterfeeding);
+							_energy += _world.filterfeeding(((0.95 * (Math.abs(dx) + Math.abs(dy))) + (22.67 * Math.abs(dtheta))) * _filterfeeding);
 						} else {
 							_energy += _world.filterfeeding((Math.abs(dx) + Math.abs(dy)) * _filterfeeding);
 						}
