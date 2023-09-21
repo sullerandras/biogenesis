@@ -873,6 +873,9 @@ public class GeneticCode implements Cloneable, Serializable {
 		if (Utils.random.nextInt(10000) < _mutationrate) {
 			// change symmetry
 			randomSymmetry();
+			// keep mirror
+			_mirror = parentCode.getMirror();
+			// keep number of segments
 			nGenes = parentCode.getNGenes();
 			if (_symmetry != parentCode.getSymmetry()) {
 				_updateClade = -1;
@@ -883,8 +886,9 @@ public class GeneticCode implements Cloneable, Serializable {
 			if (Utils.random.nextInt(10000) < _mutationrate) {
 				// change mirror
 				randomMirror();
+				// keep number of segments
 				nGenes = parentCode.getNGenes();
-				if ((_mirror != parentCode.getMirror()) && (_symmetry != 1)) {
+				if (_mirror != parentCode.getMirror()) {
 					_updateClade = -1;
 				}
 			} else {

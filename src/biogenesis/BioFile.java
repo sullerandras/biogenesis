@@ -136,7 +136,7 @@ public class BioFile {
       stats.put("alive", stats.getOrDefault("alive", 0) + (o.alive ? 1 : 0));
       stats.put("all frozen", stats.getOrDefault("all frozen", 0) + (o._allfrozen ? 1 : 0));
       stats.put("altruist", stats.getOrDefault("altruist", 0) + (o._altruist ? 1 : 0));
-      stats.put("can move", stats.getOrDefault("can move", 0) + (o._canmove ? 1 : 0));
+      stats.put("can move", stats.getOrDefault("can move", 0) + (o._canmove == 2 ? 1 : 0));
       stats.put("can react", stats.getOrDefault("can react", 0) + (o._canreact ? 1 : 0));
       stats.put("candodge", stats.getOrDefault("candodge", 0) + (o._candodge ? 1 : 0));
       stats.put("clockwise", stats.getOrDefault("clockwise", 0) + (o._clockwise ? 1 : 0));

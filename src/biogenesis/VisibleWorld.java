@@ -322,6 +322,7 @@ public class VisibleWorld extends JPanel implements VisibleWorldInterface {
 				b._isenhanced = false;
 				b._isakiller = false;
 				b._isgray = false;
+				b._isprotective = false;
 				b._isreproductive = false;
 				b._isinfectious = false;
 				b._iscoral = false;
