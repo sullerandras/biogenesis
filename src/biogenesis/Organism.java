@@ -4848,14 +4848,14 @@ public class Organism extends Rectangle {
 					if (_haseyes) {
 						if (dx == dxbak) {
 							if (_spin > 0) {
-								_energy += _world.filterfeeding(((0.5 * (Math.abs(dx) + Math.abs(dy))) + (29 * Math.abs(dtheta))) * _filterfeeding);
+								_energy += _world.filterfeeding((Math.abs(dx) + Math.abs(dy) + (23 * Math.abs(dtheta))) * _filterfeeding);
 							} else {
 								_energy += _world.filterfeeding((Math.abs(dx) + Math.abs(dy)) * _filterfeeding);
 							}
 						}
 					} else {
 						if (_spin > 0) {
-							_energy += _world.filterfeeding(((0.5 * (Math.abs(dx) + Math.abs(dy))) + (29 * Math.abs(dtheta))) * _filterfeeding);
+							_energy += _world.filterfeeding((Math.abs(dx) + Math.abs(dy) + (23 * Math.abs(dtheta))) * _filterfeeding);
 						} else {
 							_energy += _world.filterfeeding((Math.abs(dx) + Math.abs(dy)) * _filterfeeding);
 						}
