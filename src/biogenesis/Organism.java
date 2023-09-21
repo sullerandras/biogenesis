@@ -996,6 +996,7 @@ public class Organism extends Rectangle {
 			_gold = 0;
 			_max_age = Utils.MAX_AGE + (_segments/Utils.AGE_DIVISOR);
 		}
+		boolean isspin =false;
 		_canreact =false;
 		_isreproductive =false;
 		if (_skyversion > 0) {
@@ -1031,6 +1032,7 @@ public class Organism extends Rectangle {
 				if (_canmove == 0) {
 					_canmove = 1;
 				}
+				isspin =true;
 				_spin += (int)(Utils.SPIN_ENERGY_CONSUMPTION * _geneticCode.getGene(i%_geneticCode.getNGenes()).getLength());
 				_mphoto[i] = 0;
 				break;
@@ -1248,9 +1250,9 @@ public class Organism extends Rectangle {
 		    }
 		}
 		// Can this organism dodge?
-		if (_canreact) {
-			if ((!_isaconsumer) && (!_isafungus) && (!_isplankton) && (!_isakiller) && (_blackversion >= 0) && (_skyversion == 0) && (!_modifiesleaf)
-				&& (((!_isinfectious) && (!_iscoral) && (_plagueversion == 0) && (!_isprotective)) || ((!_isaplant) && (_methanotrophy == 0) && (_geneticCode.getPassive())))) {
+		if ((_canreact) || (isspin)) {
+			if ((!_isaconsumer) && (!_isafungus) && (!_isplankton) && (!_isakiller) && (_blackversion >= 0)
+				&& (((!_isinfectious) && (!_iscoral) && (_plagueversion == 0) && (!_isprotective)) || ((!_isaplant) && ((_geneticCode.getPassive()) || (_spin > 0))))) {
 				_candodge =true;
 			} else {
 				if (_isonlyc4 != 2) {
@@ -1394,6 +1396,7 @@ public class Organism extends Rectangle {
 		_haseyes =false;
 		boolean enhancedconsumer =false;
 		boolean ispink =false;
+		boolean isspin =false;
 		_updateEffects = 2;
 		if (_geneticCode.getSiblingBattle()) {
 			_siblingbattle =true;
@@ -1530,6 +1533,7 @@ public class Organism extends Rectangle {
 				if (_canmove == 0) {
 					_canmove = 1;
 				}
+				isspin =true;
 				_spin += (int)(Utils.SPIN_ENERGY_CONSUMPTION * _geneticCode.getGene(i%_geneticCode.getNGenes()).getLength());
 				_mphoto[i] = 0;
 				break;
@@ -2024,16 +2028,6 @@ public class Organism extends Rectangle {
 				}
 			}
 		}
-		// Can this organism dodge?
-		if (_canreact) {
-			if ((!_isaconsumer) && (!_isafungus) && (!_isplankton) && (!_isakiller) && (_blackversion >= 0) && (_skyversion == 0) && (!_modifiesleaf)
-				&& (((!_isinfectious) && (!_iscoral) && (_plagueversion == 0) && (!_isprotective)) || ((!_isaplant) && (_methanotrophy == 0) && (_geneticCode.getPassive())))) {
-				_candodge =true;
-			} else {
-				_candodge =false;
-				_dodge =false;
-			}
-		}
 		// Calculate jade delay used in restoration of the color
 		if (_jadefactor > 1) {
 			if (_symmetry != 1) {
@@ -2103,6 +2097,16 @@ public class Organism extends Rectangle {
 				}
 			}
 			_isaplant =true;
+		}
+		// Can this organism dodge?
+		if ((_canreact) || (isspin)) {
+			if ((!_isaconsumer) && (!_isafungus) && (!_isplankton) && (!_isakiller) && (_blackversion >= 0)
+				&& (((!_isinfectious) && (!_iscoral) && (_plagueversion == 0) && (!_isprotective)) || ((!_isaplant) && ((_geneticCode.getPassive()) || (_spin > 0))))) {
+				_candodge =true;
+			} else {
+				_candodge =false;
+				_dodge =false;
+			}
 		}
 		if ((_transfersenergy) && (!_isaplant)) {
 			if ((!_isaconsumer) && (!_isafungus)) {
@@ -2831,7 +2835,7 @@ public class Organism extends Rectangle {
 			                   				_methanotrophy = (120 * _mass)/Utils.GREEN_OBTAINED_ENERGY_DIVISOR;
 										}
 									} else {
-										if (_blackversion < 0) {
+										if ((_blackversion < 0) || (_isplankton)) {
 											_islime = false;
 				                   			for (int i=0; i<_segments; i++) {
 				                   				_segColor[i] = Utils.ColorWINTER;
@@ -3358,7 +3362,7 @@ public class Organism extends Rectangle {
 			                   				_methanotrophy = (120 * _mass)/Utils.GREEN_OBTAINED_ENERGY_DIVISOR;
 										}
 									} else {
-										if (_blackversion < 0) {
+										if ((_blackversion < 0) || (_isplankton)) {
 											_islime = false;
 				                   			for (int i=0; i<_segments; i++) {
 				                   				_segColor[i] = Utils.ColorWINTER;
@@ -4848,14 +4852,14 @@ public class Organism extends Rectangle {
 					if (_haseyes) {
 						if (dx == dxbak) {
 							if (_spin > 0) {
-								_energy += _world.filterfeeding(((0.95 * (Math.abs(dx) + Math.abs(dy))) + (22.67 * Math.abs(dtheta))) * _filterfeeding);
+								_energy += _world.filterfeeding(((0.9375 * (Math.abs(dx) + Math.abs(dy))) + (22.7 * Math.abs(dtheta))) * _filterfeeding);
 							} else {
 								_energy += _world.filterfeeding((Math.abs(dx) + Math.abs(dy)) * _filterfeeding);
 							}
 						}
 					} else {
 						if (_spin > 0) {
-							_energy += _world.filterfeeding(((0.95 * (Math.abs(dx) + Math.abs(dy))) + (22.67 * Math.abs(dtheta))) * _filterfeeding);
+							_energy += _world.filterfeeding(((0.9375 * (Math.abs(dx) + Math.abs(dy))) + (22.7 * Math.abs(dtheta))) * _filterfeeding);
 						} else {
 							_energy += _world.filterfeeding((Math.abs(dx) + Math.abs(dy)) * _filterfeeding);
 						}
