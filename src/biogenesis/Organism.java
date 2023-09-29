@@ -222,7 +222,7 @@ public class Organism extends Rectangle {
 	/**
 	 * Indicates if this organism is plankton (filter feeder)
 	 */
-	protected boolean _isplankton;
+	protected int _isplankton;
 	/**
 	 * Indicates if this organism is a fungal consumer (modified pink)
 	 */
@@ -1259,7 +1259,7 @@ public class Organism extends Rectangle {
 		}
 		// Can this organism dodge?
 		if ((_canreact) || (isspin)) {
-			if ((!_isaconsumer) && (!_isafungus) && (!_isplankton) && (!_isakiller) && (_blackversion >= 0)
+			if ((!_isaconsumer) && (!_isafungus) && (_isplankton == 0) && (!_isakiller) && (_blackversion >= 0)
 				&& (((!_isinfectious) && (!_iscoral) && (_plagueversion == 0) && (!_isprotective)) || ((!_isaplant) && ((_geneticCode.getPassive()) || (_spin > 0))))) {
 				_candodge =true;
 			} else {
@@ -1535,7 +1535,7 @@ public class Organism extends Rectangle {
 					_mphoto[i] = Utils.PLANKTON_ENERGY_CONSUMPTION * photomultiplier * _geneticCode.getGene(i%_geneticCode.getNGenes()).getLength();
 				}
 				_filterfeeding += 1;
-				_isplankton =true;
+				_isplankton = 1;
 				break;
 			case SPIN:
 				if (_canmove == 0) {
@@ -1947,7 +1947,7 @@ public class Organism extends Rectangle {
 			}
 		}
 		if (_isonlyc4 > 0) {
-			if ((!_isaplant) && (_methanotrophy == 0) && (!_isplankton) && (_blackversion >= 0)) {
+			if ((!_isaplant) && (_methanotrophy == 0) && (_isplankton == 0) && (_blackversion >= 0)) {
 				if ((!_isaconsumer) && (!_isafungus) && (!_isakiller) && (_plagueversion == 0) && (!_isprotective)) {
 					if ((!_iscoral) && (!_isinfectious)) {
 						_isonlyc4 = 2;
@@ -2037,7 +2037,7 @@ public class Organism extends Rectangle {
 					if (_symmetry >= 2) {
 						_lowersymmetric = 800;
 					} else {
-						_lowersymmetric = 1100;
+						_lowersymmetric = 1150;
 					}
 				}
 			}
@@ -2051,7 +2051,7 @@ public class Organism extends Rectangle {
 			}
 		}
 		// Give non green filterfeeders the ability of jade during virus hatching, then make them count as plants and lower effectivity for mixed organisms
-		if (_isplankton) {
+		if (_isplankton > 0) {
 			if (!_isaplant) {
 				if (_jadefactor == 0) {
 					_jadefactor = -1;
@@ -2078,6 +2078,10 @@ public class Organism extends Rectangle {
 				             _mphoto[q] = 0.8125 * Utils.PLANKTON_ENERGY_CONSUMPTION * photomultiplier * _geneticCode.getGene(q%_geneticCode.getNGenes()).getLength();
 						}
 					}
+				} else {
+					if ((_isenhanced) && (_blackversion >= 0)) {
+						_isplankton = 2;
+					}
 				}
 			}
 			_isaplant =true;
@@ -2094,7 +2098,7 @@ public class Organism extends Rectangle {
 					_jadefactor = -1;
 				}
 			}
-			if ((_isaplant) || (_isplankton)) {
+			if ((_isaplant) || (_isplankton > 0)) {
 				if (_age == 0) {
 					int p;
 					double methanefactor = 0;
@@ -2114,7 +2118,7 @@ public class Organism extends Rectangle {
 		}
 		// Can this organism dodge?
 		if ((_canreact) || (isspin)) {
-			if ((!_isaconsumer) && (!_isafungus) && (!_isplankton) && (!_isakiller) && (_blackversion >= 0)
+			if ((!_isaconsumer) && (!_isafungus) && (_isplankton == 0) && (!_isakiller) && (_blackversion >= 0)
 				&& (((!_isinfectious) && (!_iscoral) && (_plagueversion == 0) && (!_isprotective)) || ((!_isaplant) && ((_geneticCode.getPassive()) || (_spin > 0))))) {
 				_candodge =true;
 			} else {
@@ -2849,7 +2853,7 @@ public class Organism extends Rectangle {
 			                   				_methanotrophy = (120 * _mass)/Utils.GREEN_OBTAINED_ENERGY_DIVISOR;
 										}
 									} else {
-										if ((_blackversion < 0) || (_isplankton)) {
+										if ((_blackversion < 0) || (_isplankton > 0)) {
 											_islime = false;
 				                   			for (int i=0; i<_segments; i++) {
 				                   				_segColor[i] = Utils.ColorWINTER;
@@ -3376,7 +3380,7 @@ public class Organism extends Rectangle {
 			                   				_methanotrophy = (120 * _mass)/Utils.GREEN_OBTAINED_ENERGY_DIVISOR;
 										}
 									} else {
-										if ((_blackversion < 0) || (_isplankton)) {
+										if ((_blackversion < 0) || (_isplankton > 0)) {
 											_islime = false;
 				                   			for (int i=0; i<_segments; i++) {
 				                   				_segColor[i] = Utils.ColorWINTER;
@@ -4866,14 +4870,14 @@ public class Organism extends Rectangle {
 					if (_haseyes) {
 						if (dx == dxbak) {
 							if (_spin > 0) {
-								_energy += _world.filterfeeding(((0.9375 * (Math.abs(dx) + Math.abs(dy))) + (22.65 * Math.abs(dtheta))) * _filterfeeding);
+								_energy += _world.filterfeeding(((0.9375 * (Math.abs(dx) + Math.abs(dy))) + (22.6 * Math.abs(dtheta))) * _filterfeeding);
 							} else {
 								_energy += _world.filterfeeding((Math.abs(dx) + Math.abs(dy)) * _filterfeeding);
 							}
 						}
 					} else {
 						if (_spin > 0) {
-							_energy += _world.filterfeeding(((0.9375 * (Math.abs(dx) + Math.abs(dy))) + (22.65 * Math.abs(dtheta))) * _filterfeeding);
+							_energy += _world.filterfeeding(((0.9375 * (Math.abs(dx) + Math.abs(dy))) + (22.6 * Math.abs(dtheta))) * _filterfeeding);
 						} else {
 							_energy += _world.filterfeeding((Math.abs(dx) + Math.abs(dy)) * _filterfeeding);
 						}
@@ -9852,10 +9856,10 @@ public class Organism extends Rectangle {
 						takenEnergyCrimson = Utils.between((0.02 * _m[seg]) / Utils.CRIMSON_ENERGY_CONSUMPTION, 0, org._energy);
 						// The other organism will be shown in dark olive
 						org.setColorforLeaf(Utils.ColorDARKOLIVE);
-						if (!_isenhanced) {
-							// candodge is used here to make Crimson piercing stop later
-							_candodge =true;
-						}
+					}
+					if (!_isenhanced) {
+						// candodge is used here to make Crimson piercing stop later
+						_candodge =true;
 					}
 				} else {
 					// Get energy depending on segment length
@@ -11577,24 +11581,13 @@ public class Organism extends Rectangle {
 				break;
 			case GRAY:
 				if ((_isenhanced) && ((org._isaconsumer) || (org._isafungus))) {
-					if (org._isenhanced) {
-						if (useEnergy(Utils.RED_ENERGY_CONSUMPTION)) {
-							// Get energy depending on segment length
-							takenEnergyRed = Utils.between((Math.sqrt(_m[seg])) * Utils.ORGANIC_OBTAINED_ENERGY, 0, org._energy);
-							// The other organism will be shown in yellow
-							org.setColor(Color.YELLOW);
-							// This organism will be shown in red
-							setColor(Color.RED);
-						}
-					} else {
-						if (useEnergy(Utils.RED_ENERGY_CONSUMPTION)) {
-							// Get energy depending on segment length
-							takenEnergyRed = Utils.between((0.25 * Math.sqrt(_m[seg])) * Utils.ORGANIC_OBTAINED_ENERGY, 0, org._energy);
-							// The other organism will be shown in yellow
-							org.setColor(Color.YELLOW);
-							// This organism will be shown in dark fire
-							setColor(Utils.ColorDARKFIRE);
-						}
+					if (useEnergy(Utils.RED_ENERGY_CONSUMPTION)) {
+						// Get energy depending on segment length
+						takenEnergyRed = Utils.between((Math.sqrt(_m[seg])) * Utils.ORGANIC_OBTAINED_ENERGY, 0, org._energy);
+						// The other organism will be shown in yellow
+						org.setColor(Color.YELLOW);
+						// This organism will be shown in red
+						setColor(Color.RED);
 					}
 				}
 				break;
@@ -15155,7 +15148,7 @@ public class Organism extends Rectangle {
 					org.setColor(Utils.ColorTEAL);
 					setColor(Color.GRAY);
 				} else {
-					if ((org._healing > 0) && ((!_isenhanced) || (_segmentpretoucheffects == 3)) && (org.active)) {
+					if ((!org._isgray) && (org.active)) {
 						org._segColor[oseg] = Utils.ColorDARKJADE;
 				    	setColor(Color.GRAY);
 				    	org._useextraeffects =true;
@@ -15178,7 +15171,7 @@ public class Organism extends Rectangle {
 					org.setColor(Utils.ColorTEAL);
 					setColor(Color.GRAY);
 				} else {
-					if ((org._healing > 0) && ((!_isenhanced) || (_segmentpretoucheffects == 3)) && (org.active)) {
+					if ((!org._isgray) && (org.active)) {
 						org._segColor[oseg] = Utils.ColorDARKGREEN;
 				    	setColor(Color.GRAY);
 				    	org._useextraeffects =true;
@@ -20155,11 +20148,9 @@ public class Organism extends Rectangle {
 						}
 					} else {
 						if (!_isenhanced) {
-							if ((org._healing == 0) || (!org.active)) {
-								org._segColor[oseg] = Utils.ColorDARKGREEN;
-								setColor(Utils.ColorSKY);
-								org._useextraeffects =true;
-							}
+							org._segColor[oseg] = Utils.ColorDARKGREEN;
+							setColor(Utils.ColorSKY);
+							org._useextraeffects =true;
 						} else {
 							org.frozen(this);
 						}
@@ -22239,9 +22230,11 @@ public class Organism extends Rectangle {
 			}
 			// Effective maintenance used for breathing
 			_maintenance = (addmaintenance / Utils.SEGMENT_COST_DIVISOR);
-			// Scale filter feeding
+			// Scale filter feeding, not for some enhanced ones
 			if (_filterfeeding > 0) {
-				_filterfeeding = (_filterfeeding*Utils.scale[_growthRatio-1]);
+				if (_isplankton == 1) {
+					_filterfeeding = (_filterfeeding*Utils.scale[_growthRatio-1]);
+				}
 			}
 			// Get chemotrophic energy from methane
 			if (_methanotrophy > 0) {
@@ -22708,9 +22701,11 @@ public class Organism extends Rectangle {
 			}
 			// Effective maintenance used for breathing
 			_maintenance = (addmaintenance / Utils.SEGMENT_COST_DIVISOR);
-			// Scale filter feeding
+			// Scale filter feeding, not for some enhanced ones
 			if (_filterfeeding > 0) {
-				_filterfeeding = (_filterfeeding*Utils.scale[_growthRatio-1]);
+				if (_isplankton == 1) {
+					_filterfeeding = (_filterfeeding*Utils.scale[_growthRatio-1]);
+				}
 			}
 			// Get chemotrophic energy from methane
 			if (_methanotrophy > 0) {
