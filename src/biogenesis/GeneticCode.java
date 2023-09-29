@@ -360,7 +360,7 @@ public class GeneticCode implements Cloneable, Serializable {
 	/**
 	 * Returns the further specialization of black
 	 * 
-	 * @return  a value of 1 - 24.
+	 * @return  a value of 1 - 25.
 	 */
 	public int getAdaptblack() {
 		return _adaptblack;
@@ -621,10 +621,10 @@ public class GeneticCode implements Cloneable, Serializable {
 		_modifiesblack = Utils.random.nextInt(6)+1;
 	}
 	/**
-	 * Gives adaptblack a random value (1 - 24)
+	 * Gives adaptblack a random value (1 - 25)
 	 */
 	private void randomAdaptblack() {
-		_adaptblack = Utils.random.nextInt(24)+1;
+		_adaptblack = Utils.random.nextInt(25)+1;
 	}
 	/**
 	 * Decide randomly if the function of lilac is modified or not.
@@ -789,6 +789,7 @@ public class GeneticCode implements Cloneable, Serializable {
 		boolean randomvioletReaction;
 		boolean randomvirusReaction;
 		boolean randommaroonReaction;
+		boolean randomcrimsonReaction;
 		boolean randomoliveReaction;
 		boolean randommintReaction;
 		boolean randomcreamReaction;
@@ -963,9 +964,9 @@ public class GeneticCode implements Cloneable, Serializable {
 			randomLength = randomTheta = randomBranch = randomredReaction = randomgreenReaction = randomblueReaction = randomplagueReaction = randomscourgeReaction
 			= randomwhiteReaction = randomgrayReaction = randomsilverReaction = randomdefaultReaction = randomconsumerReaction = randomplantReaction = randommagentaReaction
 			= randompinkReaction = randomcoralReaction = randomorangeReaction = randombarkReaction = randomvioletReaction = randomvirusReaction = randommaroonReaction
-			= randomoliveReaction = randommintReaction = randomcreamReaction = randomspikeReaction = randomfallowReaction = randomlightblueReaction = randomochreReaction
-			= randomskyReaction = randomlilacReaction = randomfireReaction = randomlightbrownReaction = randomgreenbrownReaction = randombrownReaction = randomiceReaction
-			= randombrokenReaction = randomsickReaction = randomfriendReaction = randomColor = false;
+			= randomcrimsonReaction = randomoliveReaction = randommintReaction = randomcreamReaction = randomspikeReaction = randomfallowReaction = randomlightblueReaction
+			= randomochreReaction = randomskyReaction = randomlilacReaction = randomfireReaction = randomlightbrownReaction = randomgreenbrownReaction = randombrownReaction
+			= randomiceReaction = randombrokenReaction = randomsickReaction = randomfriendReaction = randomColor = false;
 			if (Utils.random.nextInt(10000) < _mutationrate)
 				randomLength = true;
 			if (Utils.random.nextInt(10000) < _mutationrate)
@@ -1011,6 +1012,8 @@ public class GeneticCode implements Cloneable, Serializable {
 			if (Utils.random.nextInt(10000) < _mutationrate)
 				randommaroonReaction = true;
 			if (Utils.random.nextInt(10000) < _mutationrate)
+				randomcrimsonReaction = true;
+			if (Utils.random.nextInt(10000) < _mutationrate)
 				randomoliveReaction = true;
 			if (Utils.random.nextInt(10000) < _mutationrate)
 				randommintReaction = true;
@@ -1049,10 +1052,10 @@ public class GeneticCode implements Cloneable, Serializable {
 			if (randomLength || randomTheta || randomBranch || repairBranch || randomredReaction || randomgreenReaction || randomblueReaction || randomplagueReaction
 				|| randomscourgeReaction || randomwhiteReaction || randomgrayReaction || randomsilverReaction || randomdefaultReaction || randomconsumerReaction
 				|| randomplantReaction || randommagentaReaction || randompinkReaction || randomcoralReaction || randomorangeReaction || randombarkReaction
-				|| randomvioletReaction || randomvirusReaction || randommaroonReaction || randomoliveReaction || randommintReaction || randomcreamReaction
-				|| randomspikeReaction || randomfallowReaction || randomlightblueReaction || randomochreReaction || randomskyReaction || randomlilacReaction
-				|| randomfireReaction || randomlightbrownReaction || randomgreenbrownReaction || randombrownReaction || randomiceReaction || randombrokenReaction
-				|| randomsickReaction || randomfriendReaction || randomColor || clonedGene != 0) {
+				|| randomvioletReaction || randomvirusReaction || randommaroonReaction || randomcrimsonReaction || randomoliveReaction || randommintReaction
+				|| randomcreamReaction || randomspikeReaction || randomfallowReaction || randomlightblueReaction || randomochreReaction || randomskyReaction
+				|| randomlilacReaction || randomfireReaction || randomlightbrownReaction || randomgreenbrownReaction || randombrownReaction || randomiceReaction
+				|| randombrokenReaction || randomsickReaction || randomfriendReaction || randomColor || clonedGene != 0) {
 				_genes[i] = new Gene();
 				if (clonedGene != 0) {
 					if ((Utils.random.nextBoolean()) || (randomLength)) {
@@ -1187,6 +1190,10 @@ public class GeneticCode implements Cloneable, Serializable {
 					_genes[i].randomizemaroonReaction();
 				else
 					_genes[i].setmaroonReaction(parentCode.getGene(j).getmaroonReaction());
+				if (randomcrimsonReaction)
+					_genes[i].randomizecrimsonReaction();
+				else
+					_genes[i].setcrimsonReaction(parentCode.getGene(j).getcrimsonReaction());
 				if (randomoliveReaction)
 					_genes[i].randomizeoliveReaction();
 				else

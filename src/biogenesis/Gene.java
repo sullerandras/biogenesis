@@ -71,6 +71,7 @@ public class Gene implements Cloneable, Serializable {
 	private int _violetreaction = 0;
 	private int _virusreaction = 0;
 	private int _maroonreaction = 0;
+	private int _crimsonreaction = 0;
 	private int _olivereaction = 0;
 	private int _mintreaction = 0;
 	private int _creamreaction = 0;
@@ -109,9 +110,9 @@ public class Gene implements Cloneable, Serializable {
 	 */
 	public Gene(double length, double theta, Color color, int branch, int redreaction, int greenreaction, int bluereaction, int plaguereaction, int scourgereaction
 			, int whitereaction, int grayreaction, int silverreaction, int defaultreaction, int consumerreaction, int plantreaction, int magentareaction, int pinkreaction
-			, int coralreaction, int orangereaction, int barkreaction, int violetreaction, int virusreaction, int maroonreaction, int olivereaction, int mintreaction
-			, int creamreaction, int spikereaction, int fallowreaction, int lightbluereaction, int ochrereaction, int skyreaction, int lilacreaction, int firereaction
-			, int lightbrownreaction, int greenbrownreaction, int brownreaction, int icereaction, int brokenreaction, int sickreaction, int friendreaction) {
+			, int coralreaction, int orangereaction, int barkreaction, int violetreaction, int virusreaction, int maroonreaction, int crimsonreaction, int olivereaction
+			, int mintreaction, int creamreaction, int spikereaction, int fallowreaction, int lightbluereaction, int ochrereaction, int skyreaction, int lilacreaction
+			, int firereaction, int lightbrownreaction, int greenbrownreaction, int brownreaction, int icereaction, int brokenreaction, int sickreaction, int friendreaction) {
 		_length = length;
 		_theta = theta;
 		_color = color;
@@ -135,6 +136,7 @@ public class Gene implements Cloneable, Serializable {
 		_violetreaction = violetreaction;
 		_virusreaction = virusreaction;
 		_maroonreaction = maroonreaction;
+		_crimsonreaction = crimsonreaction;
 		_olivereaction = olivereaction;
 		_mintreaction = mintreaction;
 		_creamreaction = creamreaction;
@@ -157,10 +159,11 @@ public class Gene implements Cloneable, Serializable {
 	public void randomizeColor() {
 		int max_prob = Utils.RED_PROB + Utils.GREEN_PROB + Utils.BLUE_PROB + Utils.CYAN_PROB + Utils.WHITE_PROB + Utils.GRAY_PROB + Utils.YELLOW_PROB + Utils.MAGENTA_PROB
 				+ Utils.PINK_PROB + Utils.CORAL_PROB + Utils.ORANGE_PROB + Utils.FOREST_PROB + Utils.SPRING_PROB + Utils.LEAF_PROB + Utils.SUMMER_PROB + Utils.LIME_PROB
-				+ Utils.BARK_PROB + Utils.VIOLET_PROB + Utils.TEAL_PROB + Utils.SPIN_PROB + Utils.EYE_PROB + Utils.MAROON_PROB + Utils.OLIVE_PROB + Utils.MINT_PROB
-				+ Utils.CREAM_PROB + Utils.ROSE_PROB + Utils.DARK_PROB + Utils.OCHRE_PROB + Utils.SKY_PROB + Utils.LILAC_PROB + Utils.SILVER_PROB + Utils.FIRE_PROB
-				+ Utils.DARKGRAY_PROB + Utils.GOLD_PROB + Utils.BLOND_PROB + Utils.FLOWER_PROB + Utils.AUBURN_PROB + Utils.PLAGUE_PROB + Utils.SPIKE_PROB + Utils.INDIGO_PROB
-				+ Utils.LAVENDER_PROB + Utils.FALLOW_PROB + Utils.SPORE_PROB + Utils.JADE_PROB + Utils.C4_PROB + Utils.GRASS_PROB + Utils.PURPLE_PROB + Utils.PLANKTON_PROB;
+				+ Utils.BARK_PROB + Utils.VIOLET_PROB + Utils.TEAL_PROB + Utils.SPIN_PROB + Utils.EYE_PROB + Utils.MAROON_PROB + Utils.CRIMSON_PROB + Utils.OLIVE_PROB
+				+ Utils.MINT_PROB + Utils.CREAM_PROB + Utils.ROSE_PROB + Utils.DARK_PROB + Utils.OCHRE_PROB + Utils.SKY_PROB + Utils.LILAC_PROB + Utils.SILVER_PROB
+				+ Utils.FIRE_PROB + Utils.DARKGRAY_PROB + Utils.GOLD_PROB + Utils.BLOND_PROB + Utils.FLOWER_PROB + Utils.AUBURN_PROB + Utils.PLAGUE_PROB + Utils.SPIKE_PROB
+				+ Utils.INDIGO_PROB + Utils.LAVENDER_PROB + Utils.FALLOW_PROB + Utils.SPORE_PROB + Utils.JADE_PROB + Utils.C4_PROB + Utils.GRASS_PROB + Utils.PURPLE_PROB
+				+ Utils.PLANKTON_PROB;
 		int prob = Utils.random.nextInt(max_prob);
 		int ac_prob = Utils.RED_PROB;
 		if (prob < ac_prob) {
@@ -265,6 +268,11 @@ public class Gene implements Cloneable, Serializable {
 		ac_prob += Utils.MAROON_PROB;
 		if (prob < ac_prob) {
 			_color = Utils.ColorMAROON;
+			return;
+		}
+		ac_prob += Utils.CRIMSON_PROB;
+		if (prob < ac_prob) {
+			_color = Utils.ColorCRIMSON;
 			return;
 		}
 		ac_prob += Utils.OLIVE_PROB;
@@ -476,6 +484,10 @@ public class Gene implements Cloneable, Serializable {
 		_maroonreaction = Utils.random.nextInt(6);
 	}
 	
+	public void randomizecrimsonReaction() {
+		_crimsonreaction = Utils.random.nextInt(6);
+	}
+	
 	public void randomizeoliveReaction() {
 		_olivereaction = Utils.random.nextInt(6);
 	}
@@ -581,6 +593,7 @@ public class Gene implements Cloneable, Serializable {
 		randomizevioletReaction();
 		randomizevirusReaction();
 		randomizemaroonReaction();
+		randomizecrimsonReaction();
 		randomizeoliveReaction();
 		randomizemintReaction();
 		randomizecreamReaction();
@@ -718,6 +731,10 @@ public class Gene implements Cloneable, Serializable {
 	
 	public int getmaroonReaction() {
 		return _maroonreaction;
+	}
+	
+	public int getcrimsonReaction() {
+		return _crimsonreaction;
 	}
 	
 	public int getoliveReaction() {
@@ -888,6 +905,10 @@ public class Gene implements Cloneable, Serializable {
 	
 	public void setmaroonReaction(int maroonreaction) {
 		_maroonreaction = maroonreaction;
+	}
+	
+	public void setcrimsonReaction(int crimsonreaction) {
+		_crimsonreaction = crimsonreaction;
 	}
 	
 	public void setoliveReaction(int olivereaction) {

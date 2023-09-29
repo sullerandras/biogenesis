@@ -18,6 +18,7 @@ public enum GeneColor {
   FIRE("fire"),
   ORANGE("orange"),
   MAROON("maroon"),
+  CRIMSON("crimson"),
   PINK("pink"),
   CREAM("cream"),
   SILVER("silver"),

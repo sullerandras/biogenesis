@@ -346,6 +346,10 @@ public final class Utils {
 	 */
 	final static double DEF_MAROON_ENERGY_CONSUMPTION = 2d;
 	/**
+	 * This is the default energy that is consumed when a crimson segment is used.
+	 */
+	final static double DEF_CRIMSON_ENERGY_CONSUMPTION = 3.2d;
+	/**
 	 * This is the default energy that is consumed when a olive segment is used.
 	 */
 	final static double DEF_OLIVE_ENERGY_CONSUMPTION = 0.1d;
@@ -541,6 +545,10 @@ public final class Utils {
 	 * This is the default probability for a new segment to be maroon.
 	 */
 	final static int DEF_MAROON_PROB = 2;
+	/**
+	 * This is the default probability for a new segment to be crimson.
+	 */
+	final static int DEF_CRIMSON_PROB = 1;
 	/**
 	 * This is the default probability for a new segment to be olive.
 	 */
@@ -1046,6 +1054,10 @@ public final class Utils {
 	 */
 	static double MAROON_ENERGY_CONSUMPTION = DEF_MAROON_ENERGY_CONSUMPTION;
 	/**
+	 * This is the energy that is consumed when a crimson segment is used.
+	 */
+	static double CRIMSON_ENERGY_CONSUMPTION = DEF_CRIMSON_ENERGY_CONSUMPTION;
+	/**
 	 * This is the energy that is consumed when a olive segment is used.
 	 */
 	static double OLIVE_ENERGY_CONSUMPTION = DEF_OLIVE_ENERGY_CONSUMPTION;
@@ -1241,6 +1253,10 @@ public final class Utils {
 	 * This is the probability for a new segment to be maroon.
 	 */
 	static int MAROON_PROB = DEF_MAROON_PROB;
+	/**
+	 * This is the probability for a new segment to be crimson.
+	 */
+	static int CRIMSON_PROB = DEF_CRIMSON_PROB;
 	/**
 	 * This is the probability for a new segment to be olive.
 	 */
@@ -1648,6 +1664,14 @@ public final class Utils {
 	 */
 	public static final Color ColorMAROON = new Color(128,0,0);
 	/**
+	 * Precalculated crimson color
+	 */
+	public static final Color ColorCRIMSON = new Color(220,40,60);
+	/**
+	 * Precalculated pierced color
+	 */
+	public static final Color ColorPIERCED = new Color(220,220,160);
+	/**
 	 * Precalculated olive color
 	 */
 	public static final Color ColorOLIVE = new Color(176,176,0);
@@ -1886,6 +1910,7 @@ public final class Utils {
 		if (c.equals(Utils.ColorFIRE)) return Messages.getString("T_FIRE"); //$NON-NLS-1$
 		if (c.equals(Color.ORANGE)) return Messages.getString("T_ORANGE"); //$NON-NLS-1$
 		if (c.equals(Utils.ColorMAROON)) return Messages.getString("T_MAROON"); //$NON-NLS-1$
+		if (c.equals(Utils.ColorCRIMSON)) return Messages.getString("T_CRIMSON"); //$NON-NLS-1$
 		if (c.equals(Color.PINK)) return Messages.getString("T_PINK"); //$NON-NLS-1$
 		if (c.equals(Utils.ColorCREAM)) return Messages.getString("T_CREAM"); //$NON-NLS-1$
 		if (c.equals(Color.LIGHT_GRAY)) return Messages.getString("T_SILVER"); //$NON-NLS-1$
@@ -1995,6 +2020,7 @@ public final class Utils {
 			prefs.putDouble("SPIN_ENERGY_CONSUMPTION",SPIN_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			prefs.putDouble("EYE_ENERGY_CONSUMPTION",EYE_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			prefs.putDouble("MAROON_ENERGY_CONSUMPTION",MAROON_ENERGY_CONSUMPTION); //$NON-NLS-1$
+			prefs.putDouble("CRIMSON_ENERGY_CONSUMPTION",CRIMSON_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			prefs.putDouble("OLIVE_ENERGY_CONSUMPTION",OLIVE_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			prefs.putDouble("MINT_ENERGY_CONSUMPTION",MINT_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			prefs.putDouble("CREAM_ENERGY_CONSUMPTION",CREAM_ENERGY_CONSUMPTION); //$NON-NLS-1$
@@ -2044,6 +2070,7 @@ public final class Utils {
 			prefs.putInt("SPIN_PROB",SPIN_PROB); //$NON-NLS-1$
 			prefs.putInt("EYE_PROB",EYE_PROB); //$NON-NLS-1$
 			prefs.putInt("MAROON_PROB",MAROON_PROB); //$NON-NLS-1$
+			prefs.putInt("CRIMSON_PROB",CRIMSON_PROB); //$NON-NLS-1$
 			prefs.putInt("OLIVE_PROB",OLIVE_PROB); //$NON-NLS-1$
 			prefs.putInt("MINT_PROB",MINT_PROB); //$NON-NLS-1$
 			prefs.putInt("CREAM_PROB",CREAM_PROB); //$NON-NLS-1$
@@ -2187,6 +2214,7 @@ public final class Utils {
 			SPIN_ENERGY_CONSUMPTION = prefs.getDouble("SPIN_ENERGY_CONSUMPTION",DEF_SPIN_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			EYE_ENERGY_CONSUMPTION = prefs.getDouble("EYE_ENERGY_CONSUMPTION",DEF_EYE_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			MAROON_ENERGY_CONSUMPTION = prefs.getDouble("MAROON_ENERGY_CONSUMPTION",DEF_MAROON_ENERGY_CONSUMPTION); //$NON-NLS-1$
+			CRIMSON_ENERGY_CONSUMPTION = prefs.getDouble("CRIMSON_ENERGY_CONSUMPTION",DEF_CRIMSON_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			OLIVE_ENERGY_CONSUMPTION = prefs.getDouble("OLIVE_ENERGY_CONSUMPTION",DEF_OLIVE_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			MINT_ENERGY_CONSUMPTION = prefs.getDouble("MINT_ENERGY_CONSUMPTION",DEF_MINT_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			CREAM_ENERGY_CONSUMPTION = prefs.getDouble("CREAM_ENERGY_CONSUMPTION",DEF_CREAM_ENERGY_CONSUMPTION); //$NON-NLS-1$
@@ -2236,6 +2264,7 @@ public final class Utils {
 			SPIN_PROB = prefs.getInt("SPIN_PROB",DEF_SPIN_PROB); //$NON-NLS-1$
 			EYE_PROB = prefs.getInt("EYE_PROB",DEF_EYE_PROB); //$NON-NLS-1$
 			MAROON_PROB = prefs.getInt("MAROON_PROB",DEF_MAROON_PROB); //$NON-NLS-1$
+			CRIMSON_PROB = prefs.getInt("CRIMSON_PROB",DEF_CRIMSON_PROB); //$NON-NLS-1$
 			OLIVE_PROB = prefs.getInt("OLIVE_PROB",DEF_OLIVE_PROB); //$NON-NLS-1$
 			MINT_PROB = prefs.getInt("MINT_PROB",DEF_MINT_PROB); //$NON-NLS-1$
 			CREAM_PROB = prefs.getInt("CREAM_PROB",DEF_CREAM_PROB); //$NON-NLS-1$

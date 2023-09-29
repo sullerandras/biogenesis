@@ -64,7 +64,7 @@ public class BioXMLParser implements ErrorHandler {
 		ps.println("<!ATTLIST genetic_code modifiesspore (1|2|3|4|5|6|7|8|9|10|11|12) #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST genetic_code adaptspore (1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29|30|31|32|33|34|35|36|37|38|39|40|41|42|43|44|45|46|47|48|49|50|51|52|53|54|55|56|57|58|59|60|61|62|63|64|65|66|67|68|69|70) #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST genetic_code modifiesblack (1|2|3|4|5|6) #REQUIRED>"); //$NON-NLS-1$
-		ps.println("<!ATTLIST genetic_code adaptblack (1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|21|22|23|24) #REQUIRED>"); //$NON-NLS-1$
+		ps.println("<!ATTLIST genetic_code adaptblack (1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|21|22|23|24|25) #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST genetic_code plague (yes|no) #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST genetic_code mirror (yes|no) #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST genetic_code disperse (yes|no) #REQUIRED>"); //$NON-NLS-1$
@@ -84,7 +84,7 @@ public class BioXMLParser implements ErrorHandler {
 		ps.println("<!ELEMENT gene EMPTY>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST gene length CDATA #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST gene theta CDATA #REQUIRED>"); //$NON-NLS-1$
-		ps.println("<!ATTLIST gene color (green|forest|spring|summer|lime|leaf|c4|jade|grass|bark|purple|plankton|red|fire|orange|maroon|pink|cream|silver|spike|lilac|gray|violet|olive|sky|blue|ochre|fallow|spore|white|plague|coral|mint|lavender|magenta|rose|cyan|teal|spin|yellow|auburn|indigo|blond|flower|darkgray|gold|dark|eye) #REQUIRED>"); //$NON-NLS-1$
+		ps.println("<!ATTLIST gene color (green|forest|spring|summer|lime|leaf|c4|jade|grass|bark|purple|plankton|red|fire|orange|maroon|crimson|pink|cream|silver|spike|lilac|gray|violet|olive|sky|blue|ochre|fallow|spore|white|plague|coral|mint|lavender|magenta|rose|cyan|teal|spin|yellow|auburn|indigo|blond|flower|darkgray|gold|dark|eye) #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST gene branch CDATA #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST gene redreaction CDATA #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST gene greenreaction CDATA #REQUIRED>"); //$NON-NLS-1$
@@ -105,6 +105,7 @@ public class BioXMLParser implements ErrorHandler {
 		ps.println("<!ATTLIST gene violetreaction CDATA #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST gene virusreaction CDATA #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST gene maroonreaction CDATA #REQUIRED>"); //$NON-NLS-1$
+		ps.println("<!ATTLIST gene crimsonreaction CDATA #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST gene olivereaction CDATA #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST gene mintreaction CDATA #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST gene creamreaction CDATA #REQUIRED>"); //$NON-NLS-1$
@@ -178,7 +179,8 @@ public class BioXMLParser implements ErrorHandler {
 				Integer.toString(gene.getbarkReaction())+"\" violetreaction=\""+ //$NON-NLS-1$
 				Integer.toString(gene.getvioletReaction())+"\" virusreaction=\""+ //$NON-NLS-1$
 				Integer.toString(gene.getvirusReaction())+"\" maroonreaction=\""+ //$NON-NLS-1$
-				Integer.toString(gene.getmaroonReaction())+"\" olivereaction=\""+ //$NON-NLS-1$
+				Integer.toString(gene.getmaroonReaction())+"\" crimsonreaction=\""+ //$NON-NLS-1$
+				Integer.toString(gene.getcrimsonReaction())+"\" olivereaction=\""+ //$NON-NLS-1$
 				Integer.toString(gene.getoliveReaction())+"\" mintreaction=\""+ //$NON-NLS-1$
 				Integer.toString(gene.getmintReaction())+"\" creamreaction=\""+ //$NON-NLS-1$
 				Integer.toString(gene.getcreamReaction())+"\" spikereaction=\""+ //$NON-NLS-1$
@@ -306,7 +308,7 @@ public class BioXMLParser implements ErrorHandler {
 			} catch (NumberFormatException e) {
 				throw new SAXException("Adaptblack has not an allowed value."); //$NON-NLS-1$
 			}
-			if (adaptblack<1 || adaptblack>24)
+			if (adaptblack<1 || adaptblack>25)
 				throw new SAXException("Adaptblack has not an allowed value."); //$NON-NLS-1$
 			s = geneticCode.getAttribute("plague"); //$NON-NLS-1$
 			if (s.equals("yes")) //$NON-NLS-1$
@@ -449,9 +451,9 @@ public class BioXMLParser implements ErrorHandler {
 	public Gene parseGene(Element gene) throws SAXException {
 		double length, theta;
 		int branch, redreaction, greenreaction, bluereaction, plaguereaction, scourgereaction, whitereaction, grayreaction, silverreaction, defaultreaction, consumerreaction
-		, plantreaction, magentareaction, pinkreaction, coralreaction, orangereaction, barkreaction, violetreaction, virusreaction, maroonreaction, olivereaction, mintreaction
-		, creamreaction, spikereaction, fallowreaction, lightbluereaction, ochrereaction, skyreaction, lilacreaction, firereaction, lightbrownreaction, greenbrownreaction
-		, brownreaction, icereaction, brokenreaction, sickreaction, friendreaction;
+		, plantreaction, magentareaction, pinkreaction, coralreaction, orangereaction, barkreaction, violetreaction, virusreaction, maroonreaction, crimsonreaction, olivereaction
+		, mintreaction, creamreaction, spikereaction, fallowreaction, lightbluereaction, ochrereaction, skyreaction, lilacreaction, firereaction, lightbrownreaction
+		, greenbrownreaction, brownreaction, icereaction, brokenreaction, sickreaction, friendreaction;
 		Color color;
 		if (gene.getNodeName().equals("gene")) { //$NON-NLS-1$
 			try {
@@ -477,6 +479,7 @@ public class BioXMLParser implements ErrorHandler {
 				violetreaction = Integer.parseInt(gene.getAttribute("violetreaction")); //$NON-NLS-1$
 				virusreaction = Integer.parseInt(gene.getAttribute("virusreaction")); //$NON-NLS-1$
 				maroonreaction = Integer.parseInt(gene.getAttribute("maroonreaction")); //$NON-NLS-1$
+				crimsonreaction = Integer.parseInt(gene.getAttribute("crimsonreaction")); //$NON-NLS-1$
 				olivereaction = Integer.parseInt(gene.getAttribute("olivereaction")); //$NON-NLS-1$
 				mintreaction = Integer.parseInt(gene.getAttribute("mintreaction")); //$NON-NLS-1$
 				creamreaction = Integer.parseInt(gene.getAttribute("creamreaction")); //$NON-NLS-1$
@@ -504,8 +507,8 @@ public class BioXMLParser implements ErrorHandler {
 			}
 			return new Gene(length,theta,color,branch,redreaction,greenreaction,bluereaction,plaguereaction,scourgereaction,whitereaction,grayreaction,silverreaction
 					        ,defaultreaction,consumerreaction,plantreaction,magentareaction,pinkreaction,coralreaction,orangereaction,barkreaction,violetreaction,virusreaction
-					        ,maroonreaction,olivereaction,mintreaction,creamreaction,spikereaction,fallowreaction,lightbluereaction,ochrereaction,skyreaction,lilacreaction
-					        ,firereaction,lightbrownreaction,greenbrownreaction,brownreaction,icereaction,brokenreaction,sickreaction,friendreaction);
+					        ,maroonreaction,crimsonreaction,olivereaction,mintreaction,creamreaction,spikereaction,fallowreaction,lightbluereaction,ochrereaction,skyreaction
+					        ,lilacreaction,firereaction,lightbrownreaction,greenbrownreaction,brownreaction,icereaction,brokenreaction,sickreaction,friendreaction);
 		}
 		throw new SAXException("Parse error. "+gene.getNodeName()+" found but gene expected.");  //$NON-NLS-1$//$NON-NLS-2$
 	}
@@ -527,6 +530,7 @@ public class BioXMLParser implements ErrorHandler {
 		if (s.equals("fire")) return Utils.ColorFIRE; //$NON-NLS-1$
 		if (s.equals("orange")) return Color.ORANGE; //$NON-NLS-1$
 		if (s.equals("maroon")) return Utils.ColorMAROON; //$NON-NLS-1$
+		if (s.equals("crimson")) return Utils.ColorCRIMSON; //$NON-NLS-1$
 		if (s.equals("pink")) return Color.PINK; //$NON-NLS-1$
 		if (s.equals("cream")) return Utils.ColorCREAM; //$NON-NLS-1$
 		if (s.equals("silver")) return Color.LIGHT_GRAY; //$NON-NLS-1$
@@ -579,6 +583,7 @@ public class BioXMLParser implements ErrorHandler {
 		if (c.equals(Utils.ColorFIRE)) return "fire"; //$NON-NLS-1$
 		if (c.equals(Color.ORANGE)) return "orange"; //$NON-NLS-1$
 		if (c.equals(Utils.ColorMAROON)) return "maroon"; //$NON-NLS-1$
+		if (c.equals(Utils.ColorCRIMSON)) return "crimson"; //$NON-NLS-1$
 		if (c.equals(Color.PINK)) return "pink"; //$NON-NLS-1$
 		if (c.equals(Utils.ColorCREAM)) return "cream"; //$NON-NLS-1$
 		if (c.equals(Color.LIGHT_GRAY)) return "silver"; //$NON-NLS-1$
