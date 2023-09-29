@@ -1960,7 +1960,7 @@ public class Organism extends Rectangle {
 							switch (getTypeColor(_segColor[j])) {
 							case C4:
 								if ((_sporetime == 0) || (_geneticCode.getModifiesspore() <= 6)) {
-									_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * (11.3 + (1.07*_geneticCode.getGene(j%_geneticCode.getNGenes()).getLength()));
+									_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * (11.35 + (1.07*_geneticCode.getGene(j%_geneticCode.getNGenes()).getLength()));
 								}
 								break;
 							case LAVENDER:
@@ -2002,7 +2002,7 @@ public class Organism extends Rectangle {
 							switch (getTypeColor(_segColor[j])) {
 							case C4:
 								if ((_sporetime == 0) || (_geneticCode.getModifiesspore() <= 6)) {
-									_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * (10.65 + (1.035*_geneticCode.getGene(j%_geneticCode.getNGenes()).getLength()));
+									_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * (10.675 + (1.035*_geneticCode.getGene(j%_geneticCode.getNGenes()).getLength()));
 								}
 								break;
 							}
@@ -2014,7 +2014,7 @@ public class Organism extends Rectangle {
 							switch (getTypeColor(_segColor[j])) {
 							case C4:
 								if ((_sporetime == 0) || (_geneticCode.getModifiesspore() <= 6)) {
-									_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * (11.3 + (1.07*_geneticCode.getGene(j%_geneticCode.getNGenes()).getLength()));
+									_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * (11.35 + (1.07*_geneticCode.getGene(j%_geneticCode.getNGenes()).getLength()));
 								}
 								break;
 							}
@@ -4866,14 +4866,14 @@ public class Organism extends Rectangle {
 					if (_haseyes) {
 						if (dx == dxbak) {
 							if (_spin > 0) {
-								_energy += _world.filterfeeding(((0.925 * (Math.abs(dx) + Math.abs(dy))) + (22.7 * Math.abs(dtheta))) * _filterfeeding);
+								_energy += _world.filterfeeding(((0.9375 * (Math.abs(dx) + Math.abs(dy))) + (22.6 * Math.abs(dtheta))) * _filterfeeding);
 							} else {
 								_energy += _world.filterfeeding((Math.abs(dx) + Math.abs(dy)) * _filterfeeding);
 							}
 						}
 					} else {
 						if (_spin > 0) {
-							_energy += _world.filterfeeding(((0.925 * (Math.abs(dx) + Math.abs(dy))) + (22.7 * Math.abs(dtheta))) * _filterfeeding);
+							_energy += _world.filterfeeding(((0.9375 * (Math.abs(dx) + Math.abs(dy))) + (22.6 * Math.abs(dtheta))) * _filterfeeding);
 						} else {
 							_energy += _world.filterfeeding((Math.abs(dx) + Math.abs(dy)) * _filterfeeding);
 						}
@@ -9746,6 +9746,10 @@ public class Organism extends Rectangle {
 					org.setColor(Utils.ColorGREENBROWN);
 					// This organism will be shown in crimson
 					setColor(Utils.ColorCRIMSON);
+					if ((!org._isaplant) && (!_isenhanced)) {
+						// candodge is used here to make Crimson piercing stop later
+						_candodge =true;
+					}
 				}
 			}
 			break;
@@ -9756,15 +9760,36 @@ public class Organism extends Rectangle {
 				_candodge =true;
 			}
 			break;
+		case OLIVE:
+		case DARKOLIVE:
+		case SKY:
+		case DEEPSKY:
+		case OCHRE:
+		case FALLOW:
+		case LILAC:
+		case DARKLILAC:
+			if ((!org._isaplant) && (!_isenhanced)) {
+				// candodge is used here to make Crimson piercing stop later
+				_candodge =true;
+			}
+			break;
+		case SPIKEPOINT:
+			if ((!org._isenhanced) && (!_isenhanced)) {
+				// candodge is used here to make Crimson piercing stop later
+				_candodge =true;
+			}
+			break;
 		case VIOLET:
 		case GRAY:
-			if ((org._isaconsumer) || (org._isafungus) || (org._isinfectious) || (org._iscoral)) {
-				// Get energy depending on segment length
-				takenEnergyCrimson = Utils.between((_m[seg]) / Utils.CRIMSON_ENERGY_CONSUMPTION, 0, org._energy);
-				// The other organism will be shown in yellow
-			    org.setColor(Color.YELLOW);
-			    // This organism will be shown in crimson
-			    setColor(Utils.ColorCRIMSON);
+			if (!_isenhanced) {
+				if ((org._isaconsumer) || (org._isafungus) || (org._isinfectious) || (org._iscoral)) {
+					// Get energy depending on segment length
+					takenEnergyCrimson = Utils.between((_m[seg]) / Utils.CRIMSON_ENERGY_CONSUMPTION, 0, org._energy);
+					// The other organism will be shown in yellow
+				    org.setColor(Color.YELLOW);
+				    // This organism will be shown in crimson
+				    setColor(Utils.ColorCRIMSON);
+				}
 			}
 			break;
 		case BLUE:
@@ -9920,6 +9945,20 @@ public class Organism extends Rectangle {
 			}
 			break;
 		case SPIKE:
+			if ((org._isaplant) || (org._isenhanced)) {
+				// Get energy depending on segment length
+				takenEnergyCrimson = Utils.between((_m[seg]) / Utils.CRIMSON_ENERGY_CONSUMPTION, 0, org._energy);
+			    // The other organism will be shown in yellow
+			    org.setColor(Color.YELLOW);
+			    // This organism will be shown in crimson
+			    setColor(Utils.ColorCRIMSON);
+			} else {
+				if (!_isenhanced) {
+					// candodge is used here to make Crimson piercing stop later
+					_candodge =true;
+				}
+			}
+			break;
 		case BROKEN:
 		case VISION:
 		case SILVER:
@@ -10005,6 +10044,10 @@ public class Organism extends Rectangle {
 				    org.setColor(Color.YELLOW);
 				    // This organism will be shown in crimson
 				    setColor(Utils.ColorCRIMSON);
+				    if (!_isenhanced) {
+						// candodge is used here to make Crimson piercing stop later
+						_candodge =true;
+					}
 				}
 			}
 			break;
@@ -10046,13 +10089,15 @@ public class Organism extends Rectangle {
 		switch (getTypeColor(org._segColor[oseg])) {
 		case VIOLET:
 		case GRAY:
-			if ((org._isaconsumer) || (org._isafungus) || (org._isinfectious) || (org._iscoral)) {
-				// Get energy depending on segment length
-				takenEnergyCrimson = Utils.between((_m[seg]) / Utils.CRIMSON_ENERGY_CONSUMPTION, 0, org._energy);
-				// The other organism will be shown in pierced yellow
-			    org.setColor(Utils.ColorPIERCED);
-			    // This organism will be shown in crimson
-			    setColor(Utils.ColorCRIMSON);
+			if (!_isenhanced) {
+				if ((org._isaconsumer) || (org._isafungus) || (org._isinfectious) || (org._iscoral)) {
+					// Get energy depending on segment length
+					takenEnergyCrimson = Utils.between((_m[seg]) / Utils.CRIMSON_ENERGY_CONSUMPTION, 0, org._energy);
+					// The other organism will be shown in pierced yellow
+				    org.setColor(Utils.ColorPIERCED);
+				    // This organism will be shown in crimson
+				    setColor(Utils.ColorCRIMSON);
+				}
 			}
 			break;
 		case GRASS:
@@ -22059,7 +22104,7 @@ public class Organism extends Rectangle {
 						break;
 					case PLANKTON:
 						_filterfeeding += _mphoto[i];
-						addmaintenance -= 0.33 * _m[i];
+						addmaintenance -= 0.3 * _m[i];
 						break;
 					case PURPLE:
 						_methanotrophy += _mphoto[i];
@@ -22116,7 +22161,7 @@ public class Organism extends Rectangle {
 							switch (getTypeColor(_segColor[i])) {
 							// is a consumer
 							case MAROON:
-								addmaintenance -= 0.8 * _m[i];
+								addmaintenance -= 0.875 * _m[i];
 								break;
 							// is a fungus
 							case PINK:
@@ -22360,7 +22405,7 @@ public class Organism extends Rectangle {
 						break;
 					case PLANKTON:
 						_filterfeeding += _mphoto[i];
-						addmaintenance -= 0.33 * _m[i];
+						addmaintenance -= 0.3 * _m[i];
 						break;
 					case PURPLE:
 						_methanotrophy += _mphoto[i];
@@ -22517,7 +22562,7 @@ public class Organism extends Rectangle {
 							switch (getTypeColor(_segColor[i])) {
 							// is a consumer
 							case MAROON:
-								addmaintenance -= 0.8 * _m[i];
+								addmaintenance -= 0.875 * _m[i];
 								break;
 							// is a fungus
 							case PINK:
@@ -22932,7 +22977,7 @@ public class Organism extends Rectangle {
 							switch (getTypeColor(_segColor[i])) {
 							// is a consumer
 							case MAROON:
-								addmaintenance -= 0.8 * _m[i];
+								addmaintenance -= 0.875 * _m[i];
 								break;
 							// is a fungus
 							case PINK:
@@ -23171,7 +23216,7 @@ public class Organism extends Rectangle {
 						switch (getTypeColor(_segColor[i])) {
 						// is a consumer
 						case MAROON:
-							addmaintenance -= 0.8 * _m[i];
+							addmaintenance -= 0.875 * _m[i];
 							break;
 						// is a fungus
 						case PINK:
