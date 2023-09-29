@@ -118,6 +118,7 @@ public class ParamDialog extends JDialog {
 	private JTextField spincostText = null;
 	private JTextField eyecostText = null;
 	private JTextField marooncostText = null;
+	private JTextField crimsoncostText = null;
 	private JTextField olivecostText = null;
 	private JTextField mintcostText = null;
 	private JTextField creamcostText = null;
@@ -186,6 +187,7 @@ public class ParamDialog extends JDialog {
 	private JTextField spinprobText = null;
 	private JTextField eyeprobText = null;
 	private JTextField maroonprobText = null;
+	private JTextField crimsonprobText = null;
 	private JTextField oliveprobText = null;
 	private JTextField mintprobText = null;
 	private JTextField creamprobText = null;
@@ -333,6 +335,7 @@ public class ParamDialog extends JDialog {
 		spincostText.setText(String.valueOf(Utils.DEF_SPIN_ENERGY_CONSUMPTION));
 		eyecostText.setText(String.valueOf(Utils.DEF_EYE_ENERGY_CONSUMPTION));
 		marooncostText.setText(String.valueOf(Utils.DEF_MAROON_ENERGY_CONSUMPTION));
+		crimsoncostText.setText(String.valueOf(Utils.DEF_CRIMSON_ENERGY_CONSUMPTION));
 		olivecostText.setText(String.valueOf(Utils.DEF_OLIVE_ENERGY_CONSUMPTION));
 		mintcostText.setText(String.valueOf(Utils.DEF_MINT_ENERGY_CONSUMPTION));
 		creamcostText.setText(String.valueOf(Utils.DEF_CREAM_ENERGY_CONSUMPTION));
@@ -381,6 +384,7 @@ public class ParamDialog extends JDialog {
 		spinprobText.setText(String.valueOf(Utils.DEF_SPIN_PROB));
 		eyeprobText.setText(String.valueOf(Utils.DEF_EYE_PROB));
 		maroonprobText.setText(String.valueOf(Utils.DEF_MAROON_PROB));
+		crimsonprobText.setText(String.valueOf(Utils.DEF_CRIMSON_PROB));
 		oliveprobText.setText(String.valueOf(Utils.DEF_OLIVE_PROB));
 		mintprobText.setText(String.valueOf(Utils.DEF_MINT_PROB));
 		creamprobText.setText(String.valueOf(Utils.DEF_CREAM_PROB));
@@ -1020,7 +1024,7 @@ public class ParamDialog extends JDialog {
 
 	protected JPanel setGenes2Tab() {
 		JPanel genesPanel = new JPanel();
-		genesPanel.setLayout(new GridLayout(17,3));
+		genesPanel.setLayout(new GridLayout(18,3));
 		JLabel label;
 
 		genesPanel.add(new JLabel(Messages.getString("T_COLOR2"),SwingConstants.CENTER)); //$NON-NLS-1$
@@ -1054,6 +1058,13 @@ public class ParamDialog extends JDialog {
 		genesPanel.add(maroonprobText);
 		marooncostText = new JTextField(Double.toString(Utils.MAROON_ENERGY_CONSUMPTION));
 		genesPanel.add(marooncostText);
+		
+		label = new JLabel(Messages.getString("T_CRIMSON"),SwingConstants.CENTER); //$NON-NLS-1$
+		genesPanel.add(label);
+		crimsonprobText = new JTextField(Integer.toString(Utils.CRIMSON_PROB));
+		genesPanel.add(crimsonprobText);
+		crimsoncostText = new JTextField(Double.toString(Utils.CRIMSON_ENERGY_CONSUMPTION));
+		genesPanel.add(crimsoncostText);
 
 		label = new JLabel(Messages.getString("T_PINK"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
@@ -1623,6 +1634,12 @@ public class ParamDialog extends JDialog {
 			// Keep old value if there is a problem
 		}
 		try {
+			d = Double.parseDouble(crimsoncostText.getText());
+			if (d > 0) Utils.CRIMSON_ENERGY_CONSUMPTION = d;
+		} catch (NumberFormatException ex) {
+			// Keep old value if there is a problem
+		}
+		try {
 			d = Double.parseDouble(olivecostText.getText());
 			if (d >= 0) Utils.OLIVE_ENERGY_CONSUMPTION = d;
 		} catch (NumberFormatException ex) {
@@ -1907,6 +1924,12 @@ public class ParamDialog extends JDialog {
 		try {
 			i = Integer.parseInt(maroonprobText.getText());
 			if (i >= 0) Utils.MAROON_PROB = i;
+		} catch (NumberFormatException ex) {
+			// Keep old value if there is a problem
+		}
+		try {
+			i = Integer.parseInt(crimsonprobText.getText());
+			if (i >= 0) Utils.CRIMSON_PROB = i;
 		} catch (NumberFormatException ex) {
 			// Keep old value if there is a problem
 		}
