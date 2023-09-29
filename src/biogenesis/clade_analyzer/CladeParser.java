@@ -72,7 +72,7 @@ public class CladeParser {
     int branch = gene.get("_branch").getAsInt();
 
     return new Gene(length, theta, color, branch, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   }
 
   private static Color parseColor(JsonObject color) {
