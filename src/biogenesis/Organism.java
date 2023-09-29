@@ -4866,14 +4866,14 @@ public class Organism extends Rectangle {
 					if (_haseyes) {
 						if (dx == dxbak) {
 							if (_spin > 0) {
-								_energy += _world.filterfeeding(((0.9375 * (Math.abs(dx) + Math.abs(dy))) + (22.6 * Math.abs(dtheta))) * _filterfeeding);
+								_energy += _world.filterfeeding(((0.9375 * (Math.abs(dx) + Math.abs(dy))) + (22.65 * Math.abs(dtheta))) * _filterfeeding);
 							} else {
 								_energy += _world.filterfeeding((Math.abs(dx) + Math.abs(dy)) * _filterfeeding);
 							}
 						}
 					} else {
 						if (_spin > 0) {
-							_energy += _world.filterfeeding(((0.9375 * (Math.abs(dx) + Math.abs(dy))) + (22.6 * Math.abs(dtheta))) * _filterfeeding);
+							_energy += _world.filterfeeding(((0.9375 * (Math.abs(dx) + Math.abs(dy))) + (22.65 * Math.abs(dtheta))) * _filterfeeding);
 						} else {
 							_energy += _world.filterfeeding((Math.abs(dx) + Math.abs(dy)) * _filterfeeding);
 						}
@@ -6691,11 +6691,11 @@ public class Organism extends Rectangle {
 	 * Stop reaction for non moving organisms with eyes
 	 */
 	private final void standstill() {
-		dx *= Utils.RUBBING/2.5;
+		dx *= Utils.RUBBING/2;
 		if (Math.abs(dx) < Utils.tol) dx = 0;
-		dy *= Utils.RUBBING/2.5;
+		dy *= Utils.RUBBING/2;
 		if (Math.abs(dy) < Utils.tol) dy = 0;
-		dtheta *= Utils.RUBBING/2.5;
+		dtheta *= Utils.RUBBING/5;
 		if (Math.abs(dtheta) < Utils.tol) dtheta = 0;
 	}
 	/**
@@ -9714,11 +9714,11 @@ public class Organism extends Rectangle {
 		case WHITE:
 			if (org._isaplant) {
 				// Get energy depending on segment length
-				takenEnergyCrimson = Utils.between((_m[seg]) / Utils.CRIMSON_ENERGY_CONSUMPTION, 0, org._energy);
-			    // The other organism will be shown in yellow
-			    org.setColor(Color.YELLOW);
-			    // This organism will be shown in crimson
-			    setColor(Utils.ColorCRIMSON);
+				takenEnergyCrimson = Utils.between((0.5 * _m[seg]) / Utils.CRIMSON_ENERGY_CONSUMPTION, 0, org._energy);
+				// The other organism will be shown in green brown
+				org.setColor(Utils.ColorGREENBROWN);
+				// This organism will be shown in crimson
+				setColor(Utils.ColorCRIMSON);
 			} else {
 				if ((org._isaconsumer) || (org._isafungus) || (org._plagueversion > 0) || (org._isauburn)) {
 					break;
@@ -9734,11 +9734,11 @@ public class Organism extends Rectangle {
 			if (org._isaplant) {
 				if (org._isinfectious) {
 					// Get energy depending on segment length
-					takenEnergyCrimson = Utils.between((_m[seg]) / Utils.CRIMSON_ENERGY_CONSUMPTION, 0, org._energy);
-				    // The other organism will be shown in yellow
-				    org.setColor(Color.YELLOW);
-				    // This organism will be shown in crimson
-				    setColor(Utils.ColorCRIMSON);
+					takenEnergyCrimson = Utils.between((0.5 * _m[seg]) / Utils.CRIMSON_ENERGY_CONSUMPTION, 0, org._energy);
+					// The other organism will be shown in green brown
+					org.setColor(Utils.ColorGREENBROWN);
+					// This organism will be shown in crimson
+					setColor(Utils.ColorCRIMSON);
 				} else {
 					// Get energy depending on segment length
 					takenEnergyCrimson = Utils.between((0.1 * _m[seg]) / Utils.CRIMSON_ENERGY_CONSUMPTION, 0, org._energy);
@@ -9782,7 +9782,7 @@ public class Organism extends Rectangle {
 		case VIOLET:
 		case GRAY:
 			if (!_isenhanced) {
-				if ((org._isaconsumer) || (org._isafungus) || (org._isinfectious) || (org._iscoral)) {
+				if ((org._isaconsumer) || (org._isafungus) || (!org._isaplant)) {
 					// Get energy depending on segment length
 					takenEnergyCrimson = Utils.between((_m[seg]) / Utils.CRIMSON_ENERGY_CONSUMPTION, 0, org._energy);
 					// The other organism will be shown in yellow
@@ -9812,11 +9812,11 @@ public class Organism extends Rectangle {
 				org.setColor(Color.BLUE);
 		    } else {
 		    	// Get energy depending on segment length
-				takenEnergyCrimson = Utils.between((_m[seg]) / Utils.CRIMSON_ENERGY_CONSUMPTION, 0, org._energy);
-			    // The other organism will be shown in yellow
-			    org.setColor(Color.YELLOW);
-			    // This organism will be shown in crimson
-			    setColor(Utils.ColorCRIMSON);
+				takenEnergyCrimson = Utils.between((0.5 * _m[seg]) / Utils.CRIMSON_ENERGY_CONSUMPTION, 0, org._energy);
+				// The other organism will be shown in green brown
+				org.setColor(Utils.ColorGREENBROWN);
+				// This organism will be shown in crimson
+				setColor(Utils.ColorCRIMSON);
 			}
 			break;
 		case GRASS:
@@ -10039,12 +10039,12 @@ public class Organism extends Rectangle {
 					_candodge =true;
 				} else {
 					// Get energy depending on segment length
-					takenEnergyCrimson = Utils.between((_m[seg]) / Utils.CRIMSON_ENERGY_CONSUMPTION, 0, org._energy);
-				    // The other organism will be shown in yellow
-				    org.setColor(Color.YELLOW);
-				    // This organism will be shown in crimson
-				    setColor(Utils.ColorCRIMSON);
-				    if (!_isenhanced) {
+					takenEnergyCrimson = Utils.between((0.5 * _m[seg]) / Utils.CRIMSON_ENERGY_CONSUMPTION, 0, org._energy);
+					// The other organism will be shown in green brown
+					org.setColor(Utils.ColorGREENBROWN);
+					// This organism will be shown in crimson
+					setColor(Utils.ColorCRIMSON);
+					if ((!org._isaplant) && (!_isenhanced)) {
 						// candodge is used here to make Crimson piercing stop later
 						_candodge =true;
 					}
@@ -10090,7 +10090,7 @@ public class Organism extends Rectangle {
 		case VIOLET:
 		case GRAY:
 			if (!_isenhanced) {
-				if ((org._isaconsumer) || (org._isafungus) || (org._isinfectious) || (org._iscoral)) {
+				if ((org._isaconsumer) || (org._isafungus) || (!org._isaplant)) {
 					// Get energy depending on segment length
 					takenEnergyCrimson = Utils.between((_m[seg]) / Utils.CRIMSON_ENERGY_CONSUMPTION, 0, org._energy);
 					// The other organism will be shown in pierced yellow
@@ -14122,7 +14122,7 @@ public class Organism extends Rectangle {
 			switch (getTypeColor(org._segColor[oseg])) {
 			case SILVER:
 				if ((org._infectedGeneticCode != _geneticCode) && (org._nTotalInfected < _nTotalInfected)) {
-					if ((org._isaplant) || (org._isaconsumer)) {
+					if ((org._isaplant) || (org._isaconsumer) || ((org._isafungus) && (org._nTotalKills > 0))) {
 						if (useEnergy(Utils.SILVER_ENERGY_CONSUMPTION)) {
 					        org.infectedBy(this);
 					        org.setColor(Utils.ColorBLOND);
@@ -14138,7 +14138,7 @@ public class Organism extends Rectangle {
 			    		}
 			    	}
 				}
-				if (((_nTotalKills > 0) && ((_isaconsumer) || ((_isafungus) && (_isaconsumer = true)))) || (_isenhanced)) {
+				if (((_nTotalKills > 0) && ((_isaconsumer) || (_isafungus))) || (_isenhanced)) {
 					if (((org._nTotalKills > 0) && ((org._isaconsumer) || (org._isafungus))) || (org._isenhanced)) {
 						if (useEnergy(Utils.EXPERIENCE_ENERGY_CONSUMPTION)) {
 						    // Get energy depending on segment length and relation between kills of both organisms
@@ -14180,7 +14180,7 @@ public class Organism extends Rectangle {
 			    	}
 				}
 				if ((org._isaplant) || (org._isaconsumer) || (org._isafungus) || (org._plagueversion > 0) || (org._isauburn)) {
-					if (((_nTotalKills > 0) && ((_isaconsumer) || ((_isafungus) && (_isaconsumer = true)))) || (_isenhanced)) {
+					if (((_nTotalKills > 0) && ((_isaconsumer) || (_isafungus))) || (_isenhanced)) {
 						if (useEnergy(Utils.EXPERIENCE_ENERGY_CONSUMPTION)) {
 						    // Get energy depending on segment length and relation between kills of both organisms
 						    takenEnergy = Utils.between(((_nTotalKills+12)/(org._nTotalKills+12))*(Math.sqrt(_m[seg])) * Utils.ORGANIC_OBTAINED_ENERGY, 0, org._energy);
@@ -14194,7 +14194,7 @@ public class Organism extends Rectangle {
 				break;
 			case FRUIT:
 				if ((org._sporeversion == 2) && (!_hasgoodvision)) {
-					if (((_nTotalKills > 0) && ((_isaconsumer) || ((_isafungus) && (_isaconsumer = true)))) || (_isenhanced)) {
+					if (((_nTotalKills > 0) && ((_isaconsumer) || (_isafungus))) || (_isenhanced)) {
 						if (useEnergy(Utils.EXPERIENCE_ENERGY_CONSUMPTION)) {
 						    // Get energy depending on segment length and relation between kills of both organisms
 						    takenEnergy = Utils.between(((_nTotalKills+12)/(org._nTotalKills+12))*(0.1 * Math.sqrt(_m[seg])) * Utils.ORGANIC_OBTAINED_ENERGY, 0, org._energy);
@@ -14221,7 +14221,7 @@ public class Organism extends Rectangle {
 			    		}
 			    	}
 				}
-				if (((_nTotalKills > 0) && ((_isaconsumer) || ((_isafungus) && (_isaconsumer = true)))) || (_isenhanced)) {
+				if (((_nTotalKills > 0) && ((_isaconsumer) || (_isafungus))) || (_isenhanced)) {
 					if ((org._dodge) && (org.useEnergy(Utils.DODGE_ENERGY_CONSUMPTION))) {
 						org.setColor(Utils.ColorTEAL);
 					    setColor(Utils.ColorGOLD);
@@ -14258,7 +14258,7 @@ public class Organism extends Rectangle {
 				    	}
 					}
 				}
-				if (((_nTotalKills > 0) && ((_isaconsumer) || ((_isafungus) && (_isaconsumer = true)))) || (_isenhanced)) {
+				if (((_nTotalKills > 0) && ((_isaconsumer) || (_isafungus))) || (_isenhanced)) {
 					if ((org._dodge) && (org.useEnergy(Utils.DODGE_ENERGY_CONSUMPTION))) {
 						org.setColor(Utils.ColorTEAL);
 					    setColor(Utils.ColorGOLD);
@@ -14295,7 +14295,7 @@ public class Organism extends Rectangle {
 				    	}
 					}
 				}
-				if (((_nTotalKills > 0) && ((_isaconsumer) || ((_isafungus) && (_isaconsumer = true)))) || (_isenhanced)) {
+				if (((_nTotalKills > 0) && ((_isaconsumer) || (_isafungus))) || (_isenhanced)) {
 					if ((org._dodge) && (org.useEnergy(Utils.DODGE_ENERGY_CONSUMPTION))) {
 						org.setColor(Utils.ColorTEAL);
 					    setColor(Utils.ColorGOLD);
@@ -14364,7 +14364,7 @@ public class Organism extends Rectangle {
 				    	}
 					}
 				}
-				if (((_nTotalKills > 0) && ((_isaconsumer) || ((_isafungus) && (_isaconsumer = true)))) || (_isenhanced)) {
+				if (((_nTotalKills > 0) && ((_isaconsumer) || (_isafungus))) || (_isenhanced)) {
 					if ((org._dodge) && (org.useEnergy(Utils.DODGE_ENERGY_CONSUMPTION))) {
 						org.setColor(Utils.ColorTEAL);
 					    setColor(Utils.ColorGOLD);
@@ -14414,7 +14414,7 @@ public class Organism extends Rectangle {
 						}
 					}
 				}
-				if (((_nTotalKills > 0) && ((_isaconsumer) || ((_isafungus) && (_isaconsumer = true)))) || (_isenhanced)) {
+				if (((_nTotalKills > 0) && ((_isaconsumer) || (_isafungus))) || (_isenhanced)) {
 					if ((org._dodge) && (org.useEnergy(Utils.DODGE_ENERGY_CONSUMPTION))) {
 						org.setColor(Utils.ColorTEAL);
 					    setColor(Utils.ColorGOLD);
@@ -14438,7 +14438,7 @@ public class Organism extends Rectangle {
 				        setColor(Color.LIGHT_GRAY);
 					}
 				}
-			    if (((_nTotalKills > 0) && ((_isaconsumer) || ((_isafungus) && (_isaconsumer = true)))) || (_isenhanced)) {
+			    if (((_nTotalKills > 0) && ((_isaconsumer) || (_isafungus))) || (_isenhanced)) {
 				    if (useEnergy(Utils.EXPERIENCE_ENERGY_CONSUMPTION)) {
 					    // Get energy depending on segment length and relation between kills of both organisms
 					    takenEnergy = Utils.between(((_nTotalKills+12)/(org._nTotalKills+12))*(Math.sqrt(_m[seg])) * Utils.ORGANIC_OBTAINED_ENERGY, 0, org._energy);
@@ -14457,7 +14457,7 @@ public class Organism extends Rectangle {
 				        setColor(Color.LIGHT_GRAY);
 					}
 				}
-				if (((_nTotalKills > 0) && ((_isaconsumer) || ((_isafungus) && (_isaconsumer = true)))) || (_isenhanced)) {
+				if (((_nTotalKills > 0) && ((_isaconsumer) || (_isafungus))) || (_isenhanced)) {
 				    if (useEnergy(Utils.EXPERIENCE_ENERGY_CONSUMPTION)) {
 					    // Get energy depending on segment length and relation between kills of both organisms
 					    takenEnergy = Utils.between(((_nTotalKills+12)/(org._nTotalKills+12))*(Math.sqrt(_m[seg])) * Utils.ORGANIC_OBTAINED_ENERGY, 0, org._energy);
@@ -14476,7 +14476,7 @@ public class Organism extends Rectangle {
 				        setColor(Color.LIGHT_GRAY);
 					}
 				}
-				if (((_nTotalKills > 0) && ((_isaconsumer) || ((_isafungus) && (_isaconsumer = true)))) || (_isenhanced)) {
+				if (((_nTotalKills > 0) && ((_isaconsumer) || (_isafungus))) || (_isenhanced)) {
 				    if (useEnergy(Utils.EXPERIENCE_ENERGY_CONSUMPTION)) {
 					    // Get energy depending on segment length and relation between kills of both organisms
 					    takenEnergy = Utils.between(((_nTotalKills+12)/(org._nTotalKills+12))*(Math.sqrt(_m[seg])) * Utils.ORGANIC_OBTAINED_ENERGY, 0, org._energy);
@@ -14497,7 +14497,7 @@ public class Organism extends Rectangle {
 						}
 			    	}
 				}
-				if (((_nTotalKills > 0) && ((_isaconsumer) || ((_isafungus) && (_isaconsumer = true)))) || (_isenhanced)) {
+				if (((_nTotalKills > 0) && ((_isaconsumer) || (_isafungus))) || (_isenhanced)) {
 					if (useEnergy(Utils.EXPERIENCE_ENERGY_CONSUMPTION)) {
 					    // Get energy depending on segment length and relation between kills of both organisms
 					    takenEnergy = Utils.between(((_nTotalKills+12)/(org._nTotalKills+12))*(Math.sqrt(_m[seg])) * Utils.ORGANIC_OBTAINED_ENERGY, 0, org._energy);
@@ -14519,7 +14519,7 @@ public class Organism extends Rectangle {
 					}
 				}
 				if ((org._isaplant) || (org._isenhanced) || (org._nTotalKills < _nTotalKills)) {
-					if (((_nTotalKills > 0) && ((_isaconsumer) || ((_isafungus) && (_isaconsumer = true)))) || (_isenhanced)) {
+					if (((_nTotalKills > 0) && ((_isaconsumer) || (_isafungus))) || (_isenhanced)) {
 					    if (useEnergy(Utils.EXPERIENCE_ENERGY_CONSUMPTION)) {
 						    // Get energy depending on segment length and relation between kills of both organisms
 						    takenEnergy = Utils.between(((_nTotalKills+12)/(org._nTotalKills+12))*(Math.sqrt(_m[seg])) * Utils.ORGANIC_OBTAINED_ENERGY, 0, org._energy);
@@ -14533,7 +14533,7 @@ public class Organism extends Rectangle {
 				break;
 			case SPIKEPOINT:
 				if (org._nTotalKills < _nTotalKills) {
-					if (((_nTotalKills > 0) && ((_isaconsumer) || ((_isafungus) && (_isaconsumer = true)))) || (_isenhanced)) {
+					if (((_nTotalKills > 0) && ((_isaconsumer) || (_isafungus))) || (_isenhanced)) {
 					    if (useEnergy(Utils.EXPERIENCE_ENERGY_CONSUMPTION)) {
 						    // Get energy depending on segment length and relation between kills of both organisms
 						    takenEnergy = Utils.between(((_nTotalKills+12)/(org._nTotalKills+12))*(Math.sqrt(_m[seg])) * Utils.ORGANIC_OBTAINED_ENERGY, 0, org._energy);
@@ -14554,7 +14554,7 @@ public class Organism extends Rectangle {
 				if (_altruist) {
 				break;
 				} else {
-					if (((_nTotalKills > 0) && ((_isaconsumer) || ((_isafungus) && (_isaconsumer = true)))) || (_isenhanced)) {
+					if (((_nTotalKills > 0) && ((_isaconsumer) || (_isafungus))) || (_isenhanced)) {
 						if ((org._dodge) && (org._framesColor <= 0) && (org.useEnergy(Utils.DODGE_ENERGY_CONSUMPTION))) {
 							org.setColor(Utils.ColorTEAL);
 						    setColor(Utils.ColorGOLD);
@@ -14582,7 +14582,7 @@ public class Organism extends Rectangle {
 				if (_altruist) {
 				break;
 				} else {
-					if (((_nTotalKills > 0) && ((_isaconsumer) || ((_isafungus) && (_isaconsumer = true)))) || (_isenhanced)) {
+					if (((_nTotalKills > 0) && ((_isaconsumer) || (_isafungus))) || (_isenhanced)) {
 						if ((org._dodge) && (org.useEnergy(Utils.DODGE_ENERGY_CONSUMPTION))) {
 							org.setColor(Utils.ColorTEAL);
 						    setColor(Utils.ColorGOLD);
@@ -14632,7 +14632,7 @@ public class Organism extends Rectangle {
 							}
 						}
 					}
-					if (((_nTotalKills > 0) && ((_isaconsumer) || ((_isafungus) && (_isaconsumer = true)))) || (_isenhanced)) {
+					if (((_nTotalKills > 0) && ((_isaconsumer) || (_isafungus))) || (_isenhanced)) {
 						if ((org._dodge) && (org.useEnergy(Utils.DODGE_ENERGY_CONSUMPTION))) {
 							org.setColor(Utils.ColorTEAL);
 						    setColor(Utils.ColorGOLD);
@@ -14666,7 +14666,7 @@ public class Organism extends Rectangle {
 						}
 					}
 				}
-				if (((_nTotalKills > 0) && ((_isaconsumer) || ((_isafungus) && (_isaconsumer = true)))) || (_isenhanced)) {
+				if (((_nTotalKills > 0) && ((_isaconsumer) || (_isafungus))) || (_isenhanced)) {
 					if (org.useEnergy(Utils.BLUE_ENERGY_CONSUMPTION)) {
 						if (org._isenhanced) {
 						    useDetritus(Utils.between((0.5 * Math.sqrt(org._m[oseg])) * Utils.ORGANIC_OBTAINED_ENERGY, 0, _energy));
@@ -14760,7 +14760,7 @@ public class Organism extends Rectangle {
 							}
 						}
 					}
-					if (((_nTotalKills > 0) && ((_isaconsumer) || ((_isafungus) && (_isaconsumer = true)))) || (_isenhanced)) {
+					if (((_nTotalKills > 0) && ((_isaconsumer) || (_isafungus))) || (_isenhanced)) {
 						if ((org._dodge) && (org._blackversion == 0) && (org.useEnergy(Utils.DODGE_ENERGY_CONSUMPTION))) {
 							org.setColor(Utils.ColorTEAL);
 						    setColor(Utils.ColorGOLD);
@@ -14789,7 +14789,7 @@ public class Organism extends Rectangle {
 						}
 					}
 				}
-				if (((_nTotalKills > 0) && ((_isaconsumer) || ((_isafungus) && (_isaconsumer = true)))) || (_isenhanced)) {
+				if (((_nTotalKills > 0) && ((_isaconsumer) || (_isafungus))) || (_isenhanced)) {
 				    if (useEnergy(Utils.EXPERIENCE_ENERGY_CONSUMPTION)) {
 					    // Get energy depending on segment length and relation between kills of both organisms
 					    takenEnergy = Utils.between(((_nTotalKills+12)/(org._nTotalKills+12))*(Math.sqrt(_m[seg])) * Utils.ORGANIC_OBTAINED_ENERGY, 0, org._energy);
@@ -15067,7 +15067,7 @@ public class Organism extends Rectangle {
 	    		}
 				break;
 			case MAROON:
-				if ((org._healing > 0) && (org._framesColor <= 0) && ((_isaconsumer) || (_isafungus)) && (org.useEnergy(Utils.MAGENTA_ENERGY_CONSUMPTION))) {
+				if ((org._healing > 0) && (org._framesColor <= 0) && (org.useEnergy(Utils.MAGENTA_ENERGY_CONSUMPTION))) {
 				    org.setColor(Color.MAGENTA);
 				    setColor(Color.GRAY);
 				} else {
@@ -15583,7 +15583,7 @@ public class Organism extends Rectangle {
 				break;
 			case SILVER:
 				if (org._infectedGeneticCode != _geneticCode) {
-					if ((org._isaplant) || (org._isaconsumer)) {
+					if ((org._isaplant) || (org._isaconsumer) || ((org._isafungus) && (org._nTotalKills > 0))) {
 						if ((org._isenhanced) || (_nTotalInfected >= org._nTotalInfected)) {
 							if (_isaplant) {
 								if (useEnergy(Utils.WHITE_ENERGY_CONSUMPTION)) {
@@ -17402,7 +17402,7 @@ public class Organism extends Rectangle {
 				}
 				break;
 			case MAROON:
-				if ((org._healing > 0) && (org._framesColor <= 0) && ((_isaconsumer) || (_isafungus)) && (org.useEnergy(Utils.MAGENTA_ENERGY_CONSUMPTION))) {
+				if ((org._healing > 0) && (org._framesColor <= 0) && (org.useEnergy(Utils.MAGENTA_ENERGY_CONSUMPTION))) {
 				    org.setColor(Color.MAGENTA);
 				    setColor(Utils.ColorVIOLET);
 				} else {
@@ -18015,7 +18015,7 @@ public class Organism extends Rectangle {
 						org._isinjured =true;
 					}
 				} else {
-					if ((org._healing > 0) && (org._framesColor <= 0) && ((_isaconsumer) || (_isafungus)) && (org.useEnergy(Utils.MAGENTA_ENERGY_CONSUMPTION))) {
+					if ((org._healing > 0) && (org._framesColor <= 0) && (org.useEnergy(Utils.MAGENTA_ENERGY_CONSUMPTION))) {
 					    org.setColor(Color.MAGENTA);
 					    setColor(Utils.ColorVIOLET);
 					} else {
@@ -22104,7 +22104,7 @@ public class Organism extends Rectangle {
 						break;
 					case PLANKTON:
 						_filterfeeding += _mphoto[i];
-						addmaintenance -= 0.3 * _m[i];
+						addmaintenance -= 0.32 * _m[i];
 						break;
 					case PURPLE:
 						_methanotrophy += _mphoto[i];
@@ -22405,7 +22405,7 @@ public class Organism extends Rectangle {
 						break;
 					case PLANKTON:
 						_filterfeeding += _mphoto[i];
-						addmaintenance -= 0.3 * _m[i];
+						addmaintenance -= 0.32 * _m[i];
 						break;
 					case PURPLE:
 						_methanotrophy += _mphoto[i];
