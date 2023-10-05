@@ -2066,10 +2066,18 @@ public class Organism extends Rectangle {
 			if ((_isaplant) || (_isaconsumer) || (_methanotrophy > 0)) {
 				int q;
 				double filterfactor = 0;
-				if (_geneticCode.getNGenes() > 1) {
-					filterfactor = (0.5 + ((_filterfeeding / _symmetry) / (10 * (_geneticCode.getNGenes() - 1))));
+				if (_isaplant) {
+					if (_geneticCode.getNGenes() > 1) {
+						filterfactor = (0.4 + ((_filterfeeding / _symmetry) / (10 * (_geneticCode.getNGenes() - 1))));
+					} else {
+						filterfactor = (0.4 + ((_filterfeeding / _symmetry) / (10 * _geneticCode.getNGenes())));
+					}
 				} else {
-					filterfactor = (0.5 + ((_filterfeeding / _symmetry) / (10 * _geneticCode.getNGenes())));
+					if (_geneticCode.getNGenes() > 1) {
+						filterfactor = (0.5 + ((_filterfeeding / _symmetry) / (10 * (_geneticCode.getNGenes() - 1))));
+					} else {
+						filterfactor = (0.5 + ((_filterfeeding / _symmetry) / (10 * _geneticCode.getNGenes())));
+					}
 				}
 				for (q=_segments-1; q>=0; q--) {
 			         if (_segColor[q].equals(Utils.ColorPLANKTON)) {
