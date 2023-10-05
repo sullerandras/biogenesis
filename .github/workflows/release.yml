@@ -20,12 +20,20 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '8'
-      - run: make build build-analyzer
 
       - name: Get current date and time
         id: date
         run: |
           echo "date=$(date +'%Y-%m-%d--%H-%M')" >> "$GITHUB_ENV"
+
+      - name: Set version
+        run: |
+          echo "package biogenesis;" > src/biogenesis/Version.java
+          echo "public interface Version {" >> src/biogenesis/Version.java
+          echo "	public static final String VERSION = \"v${{ env.date }}\";" >> src/biogenesis/Version.java
+          echo "}" >> src/biogenesis/Version.java
+
+      - run: make build build-analyzer
 
       - name: Create tag
         run: |

@@ -1193,7 +1193,7 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 				quit();
 			}
 		});
-		setTitle(Messages.getString("T_BIOGENESIS")); //$NON-NLS-1$
+		setTitle(Messages.getString("T_BIOGENESIS") + (Version.VERSION.length() > 0 ? " - " + Version.VERSION : "")); //$NON-NLS-1$
 		UIManager.put("OptionPane.yesButtonText", Messages.getString("T_YES"));
 		UIManager.put("OptionPane.noButtonText", Messages.getString("T_NO"));
 		UIManager.put("OptionPane.cancelButtonText", Messages.getString("T_CANCEL"));
