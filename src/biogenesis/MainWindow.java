@@ -415,6 +415,9 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 		}
 
 		public void actionPerformed(ActionEvent e) {
+			_isProcessActive = false;
+			startStopAction.setActive(false);
+			_menuStartStopGame.setIcon(null);
 			int newWorld = JOptionPane.YES_NO_CANCEL_OPTION;
 			Object[] options = { Messages.getString("T_CANCEL"), Messages.getString("T_YES"),
 					Messages.getString("T_SAVE_WORLD") };

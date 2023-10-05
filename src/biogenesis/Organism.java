@@ -2066,10 +2066,18 @@ public class Organism extends Rectangle {
 			if ((_isaplant) || (_isaconsumer) || (_methanotrophy > 0)) {
 				int q;
 				double filterfactor = 0;
-				if (_geneticCode.getNGenes() > 1) {
-					filterfactor = (0.5 + ((_filterfeeding / _symmetry) / (10 * (_geneticCode.getNGenes() - 1))));
+				if (_isaplant) {
+					if (_geneticCode.getNGenes() > 1) {
+						filterfactor = (0.4 + ((_filterfeeding / _symmetry) / (10 * (_geneticCode.getNGenes() - 1))));
+					} else {
+						filterfactor = (0.4 + ((_filterfeeding / _symmetry) / (10 * _geneticCode.getNGenes())));
+					}
 				} else {
-					filterfactor = (0.5 + ((_filterfeeding / _symmetry) / (10 * _geneticCode.getNGenes())));
+					if (_geneticCode.getNGenes() > 1) {
+						filterfactor = (0.5 + ((_filterfeeding / _symmetry) / (10 * (_geneticCode.getNGenes() - 1))));
+					} else {
+						filterfactor = (0.5 + ((_filterfeeding / _symmetry) / (10 * _geneticCode.getNGenes())));
+					}
 				}
 				for (q=_segments-1; q>=0; q--) {
 			         if (_segColor[q].equals(Utils.ColorPLANKTON)) {
@@ -2142,7 +2150,7 @@ public class Organism extends Rectangle {
 					_colonyPhotosynthesis = Utils.SYMBIONT_ENERGY_CONSUMPTION * (_lengthfriend + 9);
 					_lengthfriend = -_lengthfriend;
 				}
-				if ((!_isinfectious) && (_age == 0)) {
+				if ((!_isinfectious) && (_earlyReproduceEnergy == 0) && (_blackversion >= 0) && (_age == 0)) {
 					int c;
 					for (c=_segments-1; c>=0; c--) {
 			            if (_segColor[c].equals(Utils.ColorROSE)) {
@@ -2612,7 +2620,7 @@ public class Organism extends Rectangle {
     			// Create spores
     			if (_sporetime > 0) {
     			    if (_sporeversion == 1) {
-                    	if (parent._sporeversion == 1) {
+                    	if ((parent._sporeversion == 1) && (inheritGeneticCode == parent._geneticCode)) {
                     		if ((useEnergy(Utils.SPORE_ENERGY_CONSUMPTION)) || (useEnergy(_energy))) {
                     			for (int i=0; i<_segments; i++) {
                           			 _segColor[i] = Utils.ColorFRUIT;
@@ -2637,7 +2645,7 @@ public class Organism extends Rectangle {
                        		}
                     	}
     			    } else if (_sporeversion == 2) {
-                    	if (parent._sporeversion == 2) {
+                    	if ((parent._sporeversion == 2) && (inheritGeneticCode == parent._geneticCode)) {
                     		if ((useEnergy(Utils.SPORE_ENERGY_CONSUMPTION)) || (useEnergy(_energy))) {
                     			for (int i=0; i<_segments; i++) {
                           			 _segColor[i] = Utils.ColorFRUIT;
@@ -2671,7 +2679,7 @@ public class Organism extends Rectangle {
                        		}
                     	}
     				} else if (_sporeversion == 3) {
-    					if (parent._sporeversion == 3) {
+    					if ((parent._sporeversion == 3) && (inheritGeneticCode == parent._geneticCode)) {
     						if (_isaplant) {
     							if ((_isaconsumer) || (_isafungus)) {
     								if (parent._geneticCode.getDisperseChildren()) {
@@ -2738,7 +2746,7 @@ public class Organism extends Rectangle {
                        		}
                     	}
     				} else if (_sporeversion == 4) {
-    					if (parent._sporeversion == 4) {
+    					if ((parent._sporeversion == 4) && (inheritGeneticCode == parent._geneticCode)) {
                        		for (int i=0; i<_segments; i++) {
                      			 _segColor[i] = Utils.ColorBROWN;
                      			 _mphoto[i] = 0;
@@ -2764,7 +2772,7 @@ public class Organism extends Rectangle {
                        		}
                     	}
     				} else if (_sporeversion == 5) {
-    					if (parent._sporeversion == 5) {
+    					if ((parent._sporeversion == 5) && (inheritGeneticCode == parent._geneticCode)) {
                        		for (int i=0; i<_segments; i++) {
                      			 _segColor[i] = Utils.ColorCREAM;
                      			 _mphoto[i] = -1;
@@ -2797,7 +2805,7 @@ public class Organism extends Rectangle {
                        		}
                     	}
     				} else if (_sporeversion == 6) {
-    					if (parent._sporeversion == 6) {
+    					if ((parent._sporeversion == 6) && (inheritGeneticCode == parent._geneticCode)) {
     						boolean largeenough = false;
     						_usepretoucheffects = false;
 							if (_isaplant) {
@@ -4876,16 +4884,16 @@ public class Organism extends Rectangle {
 				if (_filterfeeding > 0) {
 					if ((!_haseyes) || (dx == dxbak)) {
 						if (_spin > 0) {
-							if (_world._detritus < 450) {
-								if (Utils.random.nextInt(450) < _world._detritus) {
-									_energy += _world.filterfeeding(((0.9375 * (Math.abs(dx) + Math.abs(dy))) + (22.75 * Math.abs(dtheta))) * _filterfeeding);
+							if (_world._detritus < 440) {
+								if (Utils.random.nextInt(440) < _world._detritus) {
+									_energy += _world.filterfeeding(((0.9375 * (Math.abs(dx) + Math.abs(dy))) + (22.74 * Math.abs(dtheta))) * _filterfeeding);
 								}
 							} else {
-								_energy += _world.filterfeeding(((0.9375 * (Math.abs(dx) + Math.abs(dy))) + (22.75 * Math.abs(dtheta))) * _filterfeeding);
+								_energy += _world.filterfeeding(((0.9375 * (Math.abs(dx) + Math.abs(dy))) + (22.74 * Math.abs(dtheta))) * _filterfeeding);
 							}
 						} else {
-							if ((_symmetry == 1) && (_world._detritus < 450)) {
-								if (Utils.random.nextInt(450) < _world._detritus) {
+							if ((_symmetry == 1) && (_world._detritus < 440)) {
+								if (Utils.random.nextInt(440) < _world._detritus) {
 									_energy += _world.filterfeeding((Math.abs(dx) + Math.abs(dy)) * _filterfeeding);
 								}
 							} else {
@@ -15984,6 +15992,45 @@ public class Organism extends Rectangle {
 					            setColor(Color.WHITE);
 					        }
 						}
+					} else {
+						if ((org._isafungus) && (_isauburn) && (!_isaplant) && (!_isaconsumer) && (!_isafungus)) {
+							if (org._infectedGeneticCode != _geneticCode) {
+								if (useEnergy(Utils.VIRUS_ENERGY_CONSUMPTION)) {
+							        org.infectedBy(this);
+						            org.setColor(Utils.ColorLIGHTBROWN);
+						            setColor(Color.WHITE);
+						        }
+							}
+						}
+					}
+				}
+				break;
+			case LIGHTBROWN:
+				if (org._infectedGeneticCode != _geneticCode) {
+					if ((org._isaplant) || (org._isaconsumer)) {
+					    if (_isaplant) {
+					    	if (useEnergy(Utils.WHITE_ENERGY_CONSUMPTION)) {
+						        org.infectedBy(this);
+						        org.setColor(Utils.ColorBLOND);
+						        setColor(Color.WHITE);
+					    	}
+					    } else {
+					    	if (useEnergy(Utils.VIRUS_ENERGY_CONSUMPTION)) {
+						        org.infectedBy(this);
+					            org.setColor(Utils.ColorLIGHTBROWN);
+					            setColor(Color.WHITE);
+					        }
+						}
+					} else {
+						if ((org._isafungus) && (_isauburn) && (!_isaplant) && (!_isaconsumer) && (!_isafungus)) {
+							if (org._infectedGeneticCode != _geneticCode) {
+								if (useEnergy(Utils.VIRUS_ENERGY_CONSUMPTION)) {
+							        org.infectedBy(this);
+						            org.setColor(Utils.ColorLIGHTBROWN);
+						            setColor(Color.WHITE);
+						        }
+							}
+						}
 					}
 				}
 				break;
@@ -22930,14 +22977,18 @@ public class Organism extends Rectangle {
 							// Organisms with indigo segments reduce the energy the new born virus receives
 							case INDIGO:
 								if (_isonlyc4 == 2) {
-									addmaintenance -= 0.95 * _m[i];
+									addmaintenance -= 0.975 * _m[i];
 								} else {
 									addmaintenance -= 0.8 * _m[i];
 								}
 								break;
 							// Organism will create spores
 							case SPORE:
-								addmaintenance -= 0.99 * _m[i];
+								if (_isonlyc4 == 2) {
+									addmaintenance -= _m[i];
+								} else {
+									addmaintenance -= 0.99 * _m[i];
+								}
 								break;
 							// Auburn always has one real child if infected
 							case AUBURN:
@@ -22964,7 +23015,7 @@ public class Organism extends Rectangle {
 							// Organisms with gold segments live longer
 							case GOLD:
 								if (_isonlyc4 == 2) {
-									addmaintenance -= 0.95 * _m[i];
+									addmaintenance -= 0.975 * _m[i];
 								} else {
 									addmaintenance -= 0.8715 * _m[i];
 								}
