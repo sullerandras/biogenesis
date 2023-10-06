@@ -12,6 +12,7 @@ import biogenesis.WorldStatistics;
  * Panel that shows the statistics of the atmosphere:
  * <ul>
  * <li>Maximum and minimum carbon dioxide.</li>
+ * <li>Maximum and minimum carbon monoxide.</li>
  * <li>Maximum and minimum methane.</li>
  * <li>Maximum and minimum detritus.</li>
  * <li>Maximum and minimum oxygen.</li>
@@ -23,6 +24,8 @@ public class AtmosphereStatsPanel extends JPanel {
 
   private ValueAndTimeLabel maxCarbonDioxideLabel;
   private ValueAndTimeLabel minCarbonDioxideLabel;
+  private ValueAndTimeLabel maxCarbonMonoxideLabel;
+  private ValueAndTimeLabel minCarbonMonoxideLabel;
   private ValueAndTimeLabel maxMethaneLabel;
   private ValueAndTimeLabel minMethaneLabel;
   private ValueAndTimeLabel maxDetritusLabel;
@@ -49,6 +52,8 @@ public class AtmosphereStatsPanel extends JPanel {
 
     maxCarbonDioxideLabel = new ValueAndTimeLabel(Messages.getString("T_MAXIMUM_CARBON_DIOXIDE"), timeLabel, nf); //$NON-NLS-1$
     minCarbonDioxideLabel = new ValueAndTimeLabel(Messages.getString("T_MINIMUM_CARBON_DIOXIDE"), timeLabel, nf); //$NON-NLS-1$
+    maxCarbonMonoxideLabel = new ValueAndTimeLabel(Messages.getString("T_MAXIMUM_CARBON_MONOXIDE"), timeLabel, nf); //$NON-NLS-1$
+    minCarbonMonoxideLabel = new ValueAndTimeLabel(Messages.getString("T_MINIMUM_CARBON_MONOXIDE"), timeLabel, nf); //$NON-NLS-1$
     maxMethaneLabel = new ValueAndTimeLabel(Messages.getString("T_MAXIMUM_METHANE"), timeLabel, nf); //$NON-NLS-1$
     minMethaneLabel = new ValueAndTimeLabel(Messages.getString("T_MINIMUM_METHANE"), timeLabel, nf); //$NON-NLS-1$
     maxDetritusLabel = new ValueAndTimeLabel(Messages.getString("T_MAXIMUM_DETRITUS"), timeLabel, nf); //$NON-NLS-1$
@@ -58,6 +63,8 @@ public class AtmosphereStatsPanel extends JPanel {
 
     add(maxCarbonDioxideLabel);
     add(minCarbonDioxideLabel);
+    add(maxCarbonMonoxideLabel);
+    add(minCarbonMonoxideLabel);
     add(maxMethaneLabel);
     add(minMethaneLabel);
     add(maxDetritusLabel);
@@ -72,6 +79,8 @@ public class AtmosphereStatsPanel extends JPanel {
   public void update() {
     maxCarbonDioxideLabel.update(worldStatistics.getMaxCarbonDioxide(), worldStatistics.getMaxCarbonDioxideTime());
     minCarbonDioxideLabel.update(worldStatistics.getMinCarbonDioxide(), worldStatistics.getMinCarbonDioxideTime());
+    maxCarbonMonoxideLabel.update(worldStatistics.getMaxCarbonMonoxide(), worldStatistics.getMaxCarbonMonoxideTime());
+    minCarbonMonoxideLabel.update(worldStatistics.getMinCarbonMonoxide(), worldStatistics.getMinCarbonMonoxideTime());
     maxMethaneLabel.update(worldStatistics.getMaxMethane(), worldStatistics.getMaxMethaneTime());
     minMethaneLabel.update(worldStatistics.getMinMethane(), worldStatistics.getMinMethaneTime());
     maxDetritusLabel.update(worldStatistics.getMaxDetritus(), worldStatistics.getMaxDetritusTime());

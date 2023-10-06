@@ -76,6 +76,10 @@ public final class Utils {
 	 */
 	final static double DEF_INITIAL_CH4 = 0;
 	/**
+	 * This is the default amount of CO that exists in a newly created world.
+	 */
+	final static double DEF_INITIAL_CO1 = 0;
+	/**
 	 * This is the default amount of detritus that exists in a newly created world.
 	 */
 	final static double DEF_INITIAL_DETRITUS = 0;
@@ -112,10 +116,15 @@ public final class Utils {
 	 */
 	final static int DEF_CH4_TO_CO2_DIVISOR = 1000;
 	/**
-	 * This is the default detritus to CO2 divisor,
-	 * which turns detritus into CO2, divided by this value.
+	 * This is the default detritus to CO divisor,
+	 * which turns detritus into CO, divided by this value.
 	 */
-	final static int DEF_DETRITUS_TO_CO2_DIVISOR = 600;
+	final static int DEF_DETRITUS_TO_CO1_DIVISOR = 600;
+	/**
+	 * This is the default CO to CO2 divisor,
+	 * which turns CO into CO2, divided by this value.
+	 */
+	final static int DEF_CO1_TO_CO2_DIVISOR = 100;
 	/**
 	 * This is the default rubbing coefficient that is applied to movements. This value is
 	 * multiplied by the speed at every frame.
@@ -683,6 +692,10 @@ public final class Utils {
 	 */
 	final static boolean DEF_AUTO_BACKUP = false;
 	/**
+	 * This is the default value for having or not having automatic saves.
+	 */
+	final static boolean DEF_AUTO_SAVE = false;
+	/**
 	 * This is the default value for compressing or not the backups.
 	 */
 	final static boolean DEF_COMPRESS_BACKUPS = false;
@@ -717,7 +730,11 @@ public final class Utils {
 	/**
 	 * This is the default number of game time units that pass between backups.
 	 */
-	final static int DEF_BACKUP_DELAY = 100;
+	final static int DEF_BACKUP_DELAY = 10;
+	/**
+	 * This is the default number of game time units that pass between saves.
+	 */
+	final static int DEF_SAVE_DELAY = 100;
 	/**
 	 * This is the default port where the net server will listen for connections.
 	 */
@@ -784,6 +801,10 @@ public final class Utils {
 	 */
 	static double INITIAL_CH4 = DEF_INITIAL_CH4;
 	/**
+	 * This is the effective amount of CO that exists in a newly created world.
+	 */
+	static double INITIAL_CO1 = DEF_INITIAL_CO1;
+	/**
 	 * This is the effective amount of detritus that exists in a newly created world.
 	 */
 	static double INITIAL_DETRITUS = DEF_INITIAL_DETRITUS;
@@ -820,10 +841,15 @@ public final class Utils {
 	 */
 	static int CH4_TO_CO2_DIVISOR = DEF_CH4_TO_CO2_DIVISOR;
 	/**
-	 * This is the detritus to CO2 divisor,
-	 * which turns detritus into CO2, divided by this value.
+	 * This is the detritus to CO divisor,
+	 * which turns detritus into CO, divided by this value.
 	 */
-	static int DETRITUS_TO_CO2_DIVISOR = DEF_DETRITUS_TO_CO2_DIVISOR;
+	static int DETRITUS_TO_CO1_DIVISOR = DEF_DETRITUS_TO_CO1_DIVISOR;
+	/**
+	 * This is the CO to CO2 divisor,
+	 * which turns CO into CO2, divided by this value.
+	 */
+	static int CO1_TO_CO2_DIVISOR = DEF_CO1_TO_CO2_DIVISOR;
 	/**
 	 * This is the rubbing coefficient that is applied to movements. This value is
 	 * multiplied by the speed at every frame.
@@ -1424,6 +1450,10 @@ public final class Utils {
 	 * This is the value for having or not having automatic backups.
 	 */
 	static boolean AUTO_BACKUP = DEF_AUTO_BACKUP;
+	/** 
+	 * This is the value for having or not having an autosave.
+	 */
+	static boolean AUTO_SAVE = DEF_AUTO_SAVE;
 	/**
 	 * If true the backups will be compressed using gzip. Otherwise it's uncompressed serialized object.
 	 */
@@ -1460,6 +1490,10 @@ public final class Utils {
 	 * This is the number of game time units that pass between backups.
 	 */
 	static int BACKUP_DELAY = DEF_BACKUP_DELAY;
+	/**
+	 * This is the number of game time units that pass between autosaves.
+	 */
+	static int SAVE_DELAY = DEF_SAVE_DELAY;
 	/**
 	 * This is the port where the net server will listen for connections.
 	 */
@@ -1957,6 +1991,7 @@ public final class Utils {
 			prefs.putInt("CLADE_COMPLEXITY",CLADE_COMPLEXITY); //$NON-NLS-1$
 			prefs.putDouble("INITIAL_O2",INITIAL_O2); //$NON-NLS-1$
 			prefs.putDouble("INITIAL_CO2",INITIAL_CO2); //$NON-NLS-1$
+			prefs.putDouble("INITIAL_CO1",INITIAL_CO1); //$NON-NLS-1$
 			prefs.putDouble("INITIAL_CH4",INITIAL_CH4); //$NON-NLS-1$
 			prefs.putDouble("INITIAL_DETRITUS",INITIAL_DETRITUS); //$NON-NLS-1$
 			prefs.putInt("ORGANISMS_VECTOR_SIZE",ORGANISMS_VECTOR_SIZE); //$NON-NLS-1$
@@ -1966,7 +2001,8 @@ public final class Utils {
 			prefs.putInt("AGE_DIVISOR",AGE_DIVISOR); //$NON-NLS-1$
 			prefs.putInt("CO2_TO_CH4_DIVISOR",CO2_TO_CH4_DIVISOR); //$NON-NLS-1$
 			prefs.putInt("CH4_TO_CO2_DIVISOR",CH4_TO_CO2_DIVISOR); //$NON-NLS-1$
-			prefs.putInt("DETRITUS_TO_CO2_DIVISOR",DETRITUS_TO_CO2_DIVISOR); //$NON-NLS-1$
+			prefs.putInt("DETRITUS_TO_CO1_DIVISOR",DETRITUS_TO_CO1_DIVISOR); //$NON-NLS-1$
+			prefs.putInt("CO1_TO_CO2_DIVISOR",CO1_TO_CO2_DIVISOR); //$NON-NLS-1$
 			prefs.putDouble("RUBBING",RUBBING); //$NON-NLS-1$
 			prefs.putInt("META_MUTATION_RATE",META_MUTATION_RATE); //$NON-NLS-1$
 			prefs.putInt("MAX_MUTATION_RATE",MAX_MUTATION_RATE); //$NON-NLS-1$
@@ -2106,6 +2142,8 @@ public final class Utils {
 			prefs.putInt("STATISTICS_REFRESH_FPS",STATISTICS_REFRESH_FPS); //$NON-NLS-1$
 			prefs.putInt("THREAD_COUNT",THREAD_COUNT); //$NON-NLS-1$
 			prefs.putBoolean("AUTO_BACKUP",AUTO_BACKUP);
+			prefs.putBoolean("AUTO_SAVE",AUTO_SAVE);
+			prefs.putInt("SAVE_DELAY",SAVE_DELAY);
 			prefs.putBoolean("COMPRESS_BACKUPS",COMPRESS_BACKUPS);
 			prefs.putBoolean("AUTO_BACKUP_CSV",AUTO_BACKUP_CSV);
 			prefs.putBoolean("AUTO_BACKUP_WORLD_PNG",AUTO_BACKUP_WORLD_PNG);
@@ -2151,6 +2189,7 @@ public final class Utils {
 			CLADE_COMPLEXITY = prefs.getInt("CLADE_COMPLEXITY",DEF_CLADE_COMPLEXITY); //$NON-NLS-1$
 			INITIAL_O2 = prefs.getDouble("INITIAL_O2",DEF_INITIAL_O2); //$NON-NLS-1$
 			INITIAL_CO2 = prefs.getDouble("INITIAL_CO2",DEF_INITIAL_CO2); //$NON-NLS-1$
+			INITIAL_CO1 = prefs.getDouble("INITIAL_CO1",DEF_INITIAL_CO1); //$NON-NLS-1$
 			INITIAL_CH4 = prefs.getDouble("INITIAL_CH4",DEF_INITIAL_CH4); //$NON-NLS-1$
 			INITIAL_DETRITUS = prefs.getDouble("INITIAL_DETRITUS",DEF_INITIAL_DETRITUS); //$NON-NLS-1$
 			ORGANISMS_VECTOR_SIZE = prefs.getInt("ORGANISMS_VECTOR_SIZE",DEF_ORGANISMS_VECTOR_SIZE); //$NON-NLS-1$
@@ -2160,7 +2199,8 @@ public final class Utils {
 			AGE_DIVISOR = prefs.getInt("AGE_DIVISOR",DEF_AGE_DIVISOR); //$NON-NLS-1$
 			CO2_TO_CH4_DIVISOR = prefs.getInt("CO2_TO_CH4_DIVISOR",DEF_CO2_TO_CH4_DIVISOR); //$NON-NLS-1$
 			CH4_TO_CO2_DIVISOR = prefs.getInt("CH4_TO_CO2_DIVISOR",DEF_CH4_TO_CO2_DIVISOR); //$NON-NLS-1$
-			DETRITUS_TO_CO2_DIVISOR = prefs.getInt("DETRITUS_TO_CO2_DIVISOR",DEF_DETRITUS_TO_CO2_DIVISOR); //$NON-NLS-1$
+			DETRITUS_TO_CO1_DIVISOR = prefs.getInt("DETRITUS_TO_CO1_DIVISOR",DEF_DETRITUS_TO_CO1_DIVISOR); //$NON-NLS-1$
+			CO1_TO_CO2_DIVISOR = prefs.getInt("CO1_TO_CO2_DIVISOR",DEF_CO1_TO_CO2_DIVISOR); //$NON-NLS-1$
 			RUBBING = prefs.getDouble("RUBBING",DEF_RUBBING); //$NON-NLS-1$
 			META_MUTATION_RATE = prefs.getInt("META_MUTATION_RATE",DEF_META_MUTATION_RATE); //$NON-NLS-1$
 			MAX_MUTATION_RATE = prefs.getInt("MAX_MUTATION_RATE",DEF_MAX_MUTATION_RATE); //$NON-NLS-1$
@@ -2299,6 +2339,7 @@ public final class Utils {
 			STATUS_BAR_REFRESH_FPS = prefs.getInt("STATUS_BAR_REFRESH_FPS",DEF_STATUS_BAR_REFRESH_FPS); //$NON-NLS-1$
 			STATISTICS_REFRESH_FPS = prefs.getInt("STATISTICS_REFRESH_FPS",DEF_STATISTICS_REFRESH_FPS); //$NON-NLS-1$
 			THREAD_COUNT = prefs.getInt("THREAD_COUNT",DEF_THREAD_COUNT); //$NON-NLS-1$
+			AUTO_SAVE = prefs.getBoolean("AUTO_SAVE",DEF_AUTO_SAVE); //$NON-NLS-1$
 			AUTO_BACKUP = prefs.getBoolean("AUTO_BACKUP",DEF_AUTO_BACKUP);
 			COMPRESS_BACKUPS = prefs.getBoolean("COMPRESS_BACKUPS",DEF_COMPRESS_BACKUPS);
 			AUTO_BACKUP_CSV = prefs.getBoolean("AUTO_BACKUP_CSV",DEF_AUTO_BACKUP_CSV);
@@ -2307,6 +2348,7 @@ public final class Utils {
 			AUTO_BACKUP_CLADES_PNG = prefs.getBoolean("AUTO_BACKUP_CLADES_PNG",DEF_AUTO_BACKUP_CLADES_PNG);
 			AUTO_BACKUP_IMAGES_AS_FOLDERS = prefs.getBoolean("AUTO_BACKUP_IMAGES_AS_FOLDERS",DEF_AUTO_BACKUP_IMAGES_AS_FOLDERS);
 			BACKUP_DELAY = prefs.getInt("BACKUP_DELAY",DEF_BACKUP_DELAY);
+			SAVE_DELAY = prefs.getInt("SAVE_DELAY",DEF_SAVE_DELAY);
 			LOCAL_PORT = prefs.getInt("LOCAL_PORT",DEF_LOCAL_PORT); //$NON-NLS-1$
 			USER_NAME = prefs.get("USER_NAME",DEF_USER_NAME);
 			MAX_CONNECTIONS = prefs.getInt("MAX_CONNECTIONS",DEF_MAX_CONNECTIONS); //$NON-NLS-1$

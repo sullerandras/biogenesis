@@ -94,6 +94,8 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 	protected StdAction backupGameAction;
 	protected StdAction increaseCO2Action;
 	protected StdAction decreaseCO2Action;
+	protected StdAction increaseCO1Action;
+	protected StdAction decreaseCO1Action;
 	protected StdAction increaseCH4Action;
 	protected StdAction decreaseCH4Action;
 	protected StdAction increaseDetritusAction;
@@ -255,6 +257,8 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 		quitAction = new QuitAction("T_QUIT", null, "T_QUIT_PROGRAM"); //$NON-NLS-1$ //$NON-NLS-2$
 		statisticsAction = new StatisticsAction("T_STATISTICS", null, "T_WORLD_STATISTICS"); //$NON-NLS-1$ //$NON-NLS-2$
 		labAction = new LabAction("T_GENETIC_LABORATORY", null, "T_GENETIC_LABORATORY"); //$NON-NLS-1$ //$NON-NLS-2$
+		increaseCO1Action = new IncreaseCO1Action("T_INCREASE_CO1", null, "T_INCREASE_CO1"); //$NON-NLS-1$ //$NON-NLS-2$
+		decreaseCO1Action = new DecreaseCO1Action("T_DECREASE_CO1", null, "T_DECREASE_CO1"); //$NON-NLS-1$ //$NON-NLS-2$
 		increaseCH4Action = new IncreaseCH4Action("T_INCREASE_CH4", null, "T_INCREASE_CH4"); //$NON-NLS-1$ //$NON-NLS-2$
 		decreaseCH4Action = new DecreaseCH4Action("T_DECREASE_CH4", null, "T_DECREASE_CH4"); //$NON-NLS-1$ //$NON-NLS-2$
 		increaseDetritusAction = new IncreaseDetritusAction("T_INCREASE_DETRITUS", null, "T_INCREASE_DETRITUS"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -322,6 +326,8 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 		menuItem = new JMenuItem(decreaseCO2Action);
 		menuItem.setIcon(null);
 		_menuGlobal.add(menuItem);
+		_menuGlobal.add(new JMenuItem(increaseCO1Action));
+		_menuGlobal.add(new JMenuItem(decreaseCO1Action));
 		_menuGlobal.add(new JMenuItem(increaseCH4Action));
 		_menuGlobal.add(new JMenuItem(decreaseCH4Action));
 		_menuGlobal.add(new JMenuItem(increaseDetritusAction));
@@ -611,6 +617,30 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 			_world.decreaseCO2(1000);
 		}
 	}
+	
+	class IncreaseCO1Action extends StdAction {
+		private static final long serialVersionUID = 1L;
+
+		public IncreaseCO1Action(String text, String icon_path, String desc) {
+			super(text, icon_path, desc);
+		}
+
+		public void actionPerformed(ActionEvent e) {
+			_world.addCO1(1000);
+		}
+	}
+
+	class DecreaseCO1Action extends StdAction {
+		private static final long serialVersionUID = 1L;
+
+		public DecreaseCO1Action(String text, String icon_path, String desc) {
+			super(text, icon_path, desc);
+		}
+
+		public void actionPerformed(ActionEvent e) {
+			_world.decreaseCO1(1000);
+		}
+	}
 
 	class IncreaseCH4Action extends StdAction {
 		private static final long serialVersionUID = 1L;
@@ -754,6 +784,7 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 						_trackedOrganism = null;
 						_world.worldStatistics.saveGameLoaded(MainWindow.this);
 						_world._isbackuped = true;
+						_world._issaved = true;
 						setStatusMessage(Messages.getString("T_WORLD_LOADED_SUCCESSFULLY")); //$NON-NLS-1$
 					} catch (IOException ex) {
 						ex.printStackTrace();
@@ -1219,6 +1250,9 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 		statusLabelText.append(Messages.getString("T_CO2")); //$NON-NLS-1$
 		statusLabelText.append(_nf.format(_world.getCO2()));
 		statusLabelText.append("     "); //$NON-NLS-1$
+		statusLabelText.append(Messages.getString("T_CO1")); //$NON-NLS-1$
+		statusLabelText.append(_nf.format(_world.getCO1()));
+		statusLabelText.append("     "); //$NON-NLS-1$
 		statusLabelText.append(Messages.getString("T_CH4")); //$NON-NLS-1$
 		statusLabelText.append(_nf.format(_world.getCH4()));
 		statusLabelText.append("     "); //$NON-NLS-1$
@@ -1364,6 +1398,18 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 								}
 							}
 						}
+						if (Utils.AUTO_SAVE && _world.getTime() % Utils.SAVE_DELAY == 0 && _world.getFrame() == 1) {
+							if (_world.getTime() > 0) {
+								if ((_gameFile != null) && (!_world._issaved)) {
+									saveGameAction.actionPerformed(null);
+									_world._issaved = true;
+								}
+							} else {
+								if (_gameFile == null) {
+									saveGameAction.actionPerformed(null);
+								}
+							}
+						}
 					}
 				} catch (InterruptedException e) {
 					e.printStackTrace();
@@ -1393,6 +1439,8 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 		statisticsAction.changeLocale();
 		increaseCO2Action.changeLocale();
 		decreaseCO2Action.changeLocale();
+		increaseCO1Action.changeLocale();
+		decreaseCO1Action.changeLocale();
 		increaseCH4Action.changeLocale();
 		decreaseCH4Action.changeLocale();
 		increaseDetritusAction.changeLocale();

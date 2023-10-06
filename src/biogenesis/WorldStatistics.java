@@ -78,29 +78,37 @@ public class WorldStatistics implements Serializable {
 
 	private long maxOxygenTime;
 
-	private double minOxygen = Utils.INITIAL_CO2 +  Utils.INITIAL_CH4 +  Utils.INITIAL_DETRITUS + Utils.INITIAL_O2;
+	private double minOxygen = Utils.INITIAL_CO2 +  Utils.INITIAL_CH4 +  Utils.INITIAL_CO1 +  Utils.INITIAL_DETRITUS + Utils.INITIAL_O2;
 
 	private long minOxygenTime;
 
 	private double maxCarbonDioxide = 0;
+	
+	private double maxCarbonMonoxide = 0;
 
 	private double maxMethane = 0;
 
 	private double maxDetritus = 0;
 
 	private long maxCarbonDioxideTime;
+	
+	private long maxCarbonMonoxideTime;
 
 	private long maxMethaneTime;
 
 	private long maxDetritusTime;
 
-	private double minCarbonDioxide = Utils.INITIAL_CO2 +  Utils.INITIAL_CH4 +  Utils.INITIAL_DETRITUS + Utils.INITIAL_O2;
+	private double minCarbonDioxide = Utils.INITIAL_CO2 +  Utils.INITIAL_CH4 +  Utils.INITIAL_CO1 +  Utils.INITIAL_DETRITUS + Utils.INITIAL_O2;
+	
+	private double minCarbonMonoxide = Utils.INITIAL_CO2 +  Utils.INITIAL_CH4 +  Utils.INITIAL_CO1 +  Utils.INITIAL_DETRITUS + Utils.INITIAL_O2;
 
-	private double minMethane = Utils.INITIAL_CO2 +  Utils.INITIAL_CH4 +  Utils.INITIAL_DETRITUS + Utils.INITIAL_O2;
+	private double minMethane = Utils.INITIAL_CO2 +  Utils.INITIAL_CH4 +  Utils.INITIAL_CO1 +  Utils.INITIAL_DETRITUS + Utils.INITIAL_O2;
 
-	private double minDetritus = Utils.INITIAL_CO2 +  Utils.INITIAL_CH4 +  Utils.INITIAL_DETRITUS + Utils.INITIAL_O2;
+	private double minDetritus = Utils.INITIAL_CO2 +  Utils.INITIAL_CH4 +  Utils.INITIAL_CO1 +  Utils.INITIAL_DETRITUS + Utils.INITIAL_O2;
 
 	private long minCarbonDioxideTime;
+	
+	private long minCarbonMonoxideTime;
 
 	private long minMethaneTime;
 
@@ -165,6 +173,8 @@ public class WorldStatistics implements Serializable {
 	private List<Double> oxygenList = new ArrayList<Double>(100);
 
 	private List<Double> carbonDioxideList = new ArrayList<Double>(100);
+	
+	private List<Double> carbonMonoxideList = new ArrayList<Double>(100);
 
 	private List<Double> methaneList = new ArrayList<Double>(100);
 
@@ -304,6 +314,22 @@ public class WorldStatistics implements Serializable {
 
 	public long getMinCarbonDioxideTime() {
 		return minCarbonDioxideTime;
+	}
+	
+	public double getMaxCarbonMonoxide() {
+		return maxCarbonMonoxide;
+	}
+
+	public long getMaxCarbonMonoxideTime() {
+		return maxCarbonMonoxideTime;
+	}
+
+	public double getMinCarbonMonoxide() {
+		return minCarbonMonoxide;
+	}
+
+	public long getMinCarbonMonoxideTime() {
+		return minCarbonMonoxideTime;
 	}
 
 	public double getMaxMethane() {
@@ -473,6 +499,10 @@ public class WorldStatistics implements Serializable {
 	public List<Double> getCarbonDioxideList() {
 		return carbonDioxideList;
 	}
+	
+	public List<Double> getCarbonMonoxideList() {
+		return carbonMonoxideList;
+	}
 
 	public List<Double> getMethaneList() {
 		return methaneList;
@@ -548,7 +578,7 @@ public class WorldStatistics implements Serializable {
 		infectionsSum++;
 	}
 
-	public void eventTime(int population, int distinctClades, int distinctCladesWith10Orgs, int distinctCladesWith100Orgs, double O2, double CO2, double CH4, double detritus, Collection<Organism> organisms) {
+	public void eventTime(int population, int distinctClades, int distinctCladesWith10Orgs, int distinctCladesWith100Orgs, double O2, double CO2, double CO1, double CH4, double detritus, Collection<Organism> organisms) {
 		time++;
 		if (deathLastTime > 1.5 * getAverageDeaths()) {
 			if (deathLastTime > 3 * getAverageDeaths()) {
@@ -602,6 +632,14 @@ public class WorldStatistics implements Serializable {
 			minCarbonDioxide = CO2;
 			minCarbonDioxideTime = time;
 		}
+		if ((CO1 > maxCarbonMonoxide) && (time >= 10)) {
+			maxCarbonMonoxide = CO1;
+			maxCarbonMonoxideTime = time;
+		}
+		if ((CO1 < minCarbonMonoxide) && (time >= 10)) {
+			minCarbonMonoxide = CO1;
+			minCarbonMonoxideTime = time;
+		}
 		if ((CH4 > maxMethane) && (time >= 10)) {
 			maxMethane = CH4;
 			maxMethaneTime = time;
@@ -640,6 +678,9 @@ public class WorldStatistics implements Serializable {
 		if (carbonDioxideList.size() == 100)
 			carbonDioxideList.remove(0);
 		carbonDioxideList.add(Double.valueOf(Math.sqrt(Math.sqrt(CO2))));
+		if (carbonMonoxideList.size() == 100)
+			carbonMonoxideList.remove(0);
+		carbonMonoxideList.add(Double.valueOf(Math.sqrt(Math.sqrt(CO1))));
 		if (methaneList.size() == 100)
 			methaneList.remove(0);
 		methaneList.add(Double.valueOf(Math.sqrt(Math.sqrt(CH4))));
@@ -650,7 +691,7 @@ public class WorldStatistics implements Serializable {
 		birthLastTime = 0;
 
 		if ((Utils.AUTO_BACKUP_CSV) && (mainWindowInterface.getBioFile() != null)) {
-			mainWindowInterface.getBioFile().appendToCsv(time, population, distinctClades, distinctCladesWith10Orgs, distinctCladesWith100Orgs, O2, CO2, CH4, detritus, organisms);
+			mainWindowInterface.getBioFile().appendToCsv(time, population, distinctClades, distinctCladesWith10Orgs, distinctCladesWith100Orgs, O2, CO2, CO1, CH4, detritus, organisms);
 		}
 	}
 
