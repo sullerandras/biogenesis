@@ -334,6 +334,7 @@ public class VisibleWorld extends JPanel implements VisibleWorldInterface {
 				b._lengthfriend=-1;
 				b._thetafriend=-1;
 				b._lavender=0;
+				b._isonlyc4=0;
 				b._jadefactor=0;
 				b._skyversion=0;
 				b._fallowversion=0;

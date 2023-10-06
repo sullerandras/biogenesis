@@ -90,7 +90,11 @@ public class GraphPanel extends JPanel {
 				hoveredIndex = index;
 
 				for (GraphInfo graph : graphList) {
-					tooltip.addValue(graph.getName(), graph.getPointAt(index));
+					if (h == 105) {
+						tooltip.addAtmosphereValue(graph.getName(), graph.getPointAt(index));
+					} else {
+						tooltip.addValue(graph.getName(), graph.getPointAt(index));
+					}
 				}
 
 				// Show popup on the screen and ensure it's always visible

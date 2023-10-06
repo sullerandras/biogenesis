@@ -22,6 +22,7 @@ package biogenesis;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -51,10 +52,12 @@ public class ParamDialog extends JDialog {
 	private JTextField widthText = null;
 	private JTextField heightText = null;
 	private JTextField delayText = null;
+	private JTextField saveDelayText = null;
 	private JTextField threadCountText = null;
 	private JRadioButton repaintWorldStrategyRadio1 = null;
 	private JRadioButton repaintWorldStrategyRadio2 = null;
 	private JRadioButton repaintWorldStrategyRadio3 = null;
+	private JCheckBox autoSaveCheck = null;
 	private JCheckBox autoBackupsCheck = null;
 	private JCheckBox compressBackupsCheck = null;
 	private JCheckBox autoBackupsCSVCheck = null;
@@ -75,13 +78,15 @@ public class ParamDialog extends JDialog {
 	private JTextField cladecomplexityText = null;
 	private JTextField initialO2Text = null;
 	private JTextField initialCO2Text = null;
+	private JTextField initialCO1Text = null;
 	private JTextField initialCH4Text = null;
 	private JTextField initialDetritusText = null;
 	private JTextField maxageText = null;
 	private JTextField agedivisorText = null;
 	private JTextField CO2toCH4divisorText = null;
 	private JTextField CH4toCO2divisorText = null;
-	private JTextField detritustoCO2divisorText = null;
+	private JTextField detritustoCO1divisorText = null;
+	private JTextField CO1toCO2divisorText = null;
 	private JTextField metamutationrateText = null;
 	private JTextField maxmutationrateText = null;
 	private JTextField minmutationrateText = null;
@@ -224,7 +229,7 @@ public class ParamDialog extends JDialog {
 		setComponents();
 		pack();
 		WindowManager.registerWindow(this, getWidth(), getHeight(), 0, 0);
-		setResizable(false);
+		setResizable(true);
 		// Configurem les accions dels butons
 		OKButton.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent evt) {
@@ -252,11 +257,13 @@ public class ParamDialog extends JDialog {
 		widthText.setText(String.valueOf(Utils.DEF_WORLD_WIDTH));
 		heightText.setText(String.valueOf(Utils.DEF_WORLD_HEIGHT));
 		delayText.setText(String.valueOf(Utils.DEF_DELAY));
+		saveDelayText.setText(String.valueOf(Utils.DEF_SAVE_DELAY));
 		threadCountText.setText(String.valueOf(Utils.DEF_THREAD_COUNT));
 		repaintWorldStrategyRadio1.setSelected(Utils.DEF_repaintWorldStrategy.equals(RepaintWorldStrategy.ALWAYS.toString()));
 		repaintWorldStrategyRadio2.setSelected(Utils.DEF_repaintWorldStrategy.equals(RepaintWorldStrategy.ONLY_WHEN_MAIN_WINDOW_IS_IN_FOCUS.toString()));
 		repaintWorldStrategyRadio3.setSelected(Utils.DEF_repaintWorldStrategy.equals(RepaintWorldStrategy.WHEN_ANY_APP_WINDOW_IS_IN_FOCUS.toString()));
 		autoBackupsCheck.setSelected(Utils.DEF_AUTO_BACKUP);
+		autoSaveCheck.setSelected(Utils.DEF_AUTO_SAVE);
 		compressBackupsCheck.setSelected(Utils.DEF_COMPRESS_BACKUPS);
 		autoBackupsCSVCheck.setSelected(Utils.DEF_AUTO_BACKUP_CSV);
 		autoBackupsWorldPngCheck.setSelected(Utils.DEF_AUTO_BACKUP_WORLD_PNG);
@@ -272,13 +279,15 @@ public class ParamDialog extends JDialog {
 		cladecomplexityText.setText(String.valueOf(Utils.DEF_CLADE_COMPLEXITY));
 		initialO2Text.setText(String.valueOf(Utils.DEF_INITIAL_O2));
 		initialCO2Text.setText(String.valueOf(Utils.DEF_INITIAL_CO2));
+		initialCO1Text.setText(String.valueOf(Utils.DEF_INITIAL_CO1));
 		initialCH4Text.setText(String.valueOf(Utils.DEF_INITIAL_CH4));
 		initialDetritusText.setText(String.valueOf(Utils.DEF_INITIAL_DETRITUS));
 		maxageText.setText(String.valueOf(Utils.DEF_MAX_AGE));
 		agedivisorText.setText(String.valueOf(Utils.DEF_AGE_DIVISOR));
 		CO2toCH4divisorText.setText(String.valueOf(Utils.DEF_CO2_TO_CH4_DIVISOR));
 		CH4toCO2divisorText.setText(String.valueOf(Utils.DEF_CH4_TO_CO2_DIVISOR));
-		detritustoCO2divisorText.setText(String.valueOf(Utils.DEF_DETRITUS_TO_CO2_DIVISOR));
+		detritustoCO1divisorText.setText(String.valueOf(Utils.DEF_DETRITUS_TO_CO1_DIVISOR));
+		CO1toCO2divisorText.setText(String.valueOf(Utils.DEF_CO1_TO_CO2_DIVISOR));
 		metamutationrateText.setText(String.valueOf(Utils.DEF_META_MUTATION_RATE));
 		maxmutationrateText.setText(String.valueOf(Utils.DEF_MAX_MUTATION_RATE));
 		minmutationrateText.setText(String.valueOf(Utils.DEF_MIN_MUTATION_RATE));
@@ -501,20 +510,43 @@ public class ParamDialog extends JDialog {
 		buttonGroup.add(repaintWorldStrategyRadio2);
 		buttonGroup.add(repaintWorldStrategyRadio3);
 		generalPanel.add(panel);
+		// Autosaves
+		JPanel autosavePanel = new JPanel();
+		autosavePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+		autoSaveCheck = new JCheckBox(Messages.getString("T_AUTOMATIC_SAVES"));
+		autoSaveCheck.setSelected(Utils.AUTO_SAVE);
+		autosavePanel.add(autoSaveCheck);
+		label = new JLabel(Messages.getString("T_TIME_BETWEEN_SAVES"));
+		saveDelayText = new JTextField(Integer.toString(Utils.SAVE_DELAY),6);
+		saveDelayText.setEnabled(Utils.AUTO_SAVE);
+		autoSaveCheck.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				saveDelayText.setEnabled(autoSaveCheck.isSelected());
+			}
+		});
+		autosavePanel.add(label);
+		autosavePanel.add(saveDelayText);
+		generalPanel.add(autosavePanel);
 		//Backups
-		panel = new JPanel();
-		panel.setLayout(new GridLayout(8,1));
+		JPanel backupPanel = new JPanel();
+		backupPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 		autoBackupsCheck = new JCheckBox(Messages.getString("T_AUTOMATIC_BACKUPS"));
-		label = new JLabel(Messages.getString("T_TIME_BETWEEN_BACKUPS")); //$NON-NLS-1$
-		backupDelayText = new JTextField(Integer.toString(Utils.BACKUP_DELAY),10);
 		autoBackupsCheck.setSelected(Utils.AUTO_BACKUP);
+		backupPanel.add(autoBackupsCheck);
+		label = new JLabel(Messages.getString("T_TIME_BETWEEN_BACKUPS")); //$NON-NLS-1$
+		backupDelayText = new JTextField(Integer.toString(Utils.BACKUP_DELAY),6);
 		backupDelayText.setEnabled(Utils.AUTO_BACKUP);
 		autoBackupsCheck.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				backupDelayText.setEnabled(autoBackupsCheck.isSelected());
 			}
 		});
-		panel.add(autoBackupsCheck);
+		backupPanel.add(label);
+		backupPanel.add(backupDelayText);
+		generalPanel.add(backupPanel);
+		// Other automatic backups
+		panel = new JPanel();
+		panel.setLayout(new GridLayout(6,1));
 
 		compressBackupsCheck = new JCheckBox(Messages.getString("T_COMPRESS_BACKUPS"));
 		compressBackupsCheck.setSelected(Utils.COMPRESS_BACKUPS);
@@ -539,11 +571,6 @@ public class ParamDialog extends JDialog {
 		autoBackupsImagesAsFoldersCheck = new JCheckBox(Messages.getString("T_AUTOMATIC_BACKUPS_IMAGES_AS_FOLDERS"));
 		autoBackupsImagesAsFoldersCheck.setSelected(Utils.AUTO_BACKUP_IMAGES_AS_FOLDERS);
 		panel.add(autoBackupsImagesAsFoldersCheck);
-
-		JPanel backupDelayPanel = new JPanel();
-		backupDelayPanel.add(label);
-		backupDelayPanel.add(backupDelayText);
-		panel.add(backupDelayPanel);
 		generalPanel.add(panel);
 		// OpenGL
 		panel = new JPanel();
@@ -616,12 +643,19 @@ public class ParamDialog extends JDialog {
 		initialCO2Text = new JTextField(Double.toString(Utils.INITIAL_CO2),6);
 		panel.add(initialCO2Text);
 		worldPanel.add(panel);
-		// Initial CH4 -initial Detritus
+		// Initial CH4 -initial CO
 		panel = new JPanel();
 		label = new JLabel(Messages.getString("T_INITIAL_METHANE")); //$NON-NLS-1$
 		panel.add(label);
 		initialCH4Text = new JTextField(Double.toString(Utils.INITIAL_CH4),6);
 		panel.add(initialCH4Text);
+		label = new JLabel(Messages.getString("T_INITIAL_CARBON_MONOXIDE")); //$NON-NLS-1$
+		panel.add(label);
+		initialCO1Text = new JTextField(Double.toString(Utils.INITIAL_CO1),6);
+		panel.add(initialCO1Text);
+		worldPanel.add(panel);
+		// Initial Detritus
+		panel = new JPanel();
 		label = new JLabel(Messages.getString("T_INITIAL_DETRITUS")); //$NON-NLS-1$
 		panel.add(label);
 		initialDetritusText = new JTextField(Double.toString(Utils.INITIAL_DETRITUS),6);
@@ -638,12 +672,16 @@ public class ParamDialog extends JDialog {
 		CH4toCO2divisorText = new JTextField(Integer.toString(Utils.CH4_TO_CO2_DIVISOR),6);
 		panel.add(CH4toCO2divisorText);
 		worldPanel.add(panel);
-		// Detritus -> CO2
+		// Detritus -> CO - CO -> CO2
 		panel = new JPanel();
-		label = new JLabel(Messages.getString("T_DETRITUS_TO_CO2_DIVISOR")); //$NON-NLS-1$
+		label = new JLabel(Messages.getString("T_DETRITUS_TO_CO1_DIVISOR")); //$NON-NLS-1$
 		panel.add(label);
-		detritustoCO2divisorText = new JTextField(Integer.toString(Utils.DETRITUS_TO_CO2_DIVISOR),6);
-		panel.add(detritustoCO2divisorText);
+		detritustoCO1divisorText = new JTextField(Integer.toString(Utils.DETRITUS_TO_CO1_DIVISOR),6);
+		panel.add(detritustoCO1divisorText);
+		label = new JLabel(Messages.getString("T_CO1_TO_CO2_DIVISOR")); //$NON-NLS-1$
+		panel.add(label);
+		CO1toCO2divisorText = new JTextField(Integer.toString(Utils.CO1_TO_CO2_DIVISOR),6);
+		panel.add(CO1toCO2divisorText);
 		worldPanel.add(panel);
 		// Rubbing - Elasticity
 		panel = new JPanel();
@@ -1313,6 +1351,15 @@ public class ParamDialog extends JDialog {
 			// Keep old value if there is a problem
 		}
 		Utils.AUTO_BACKUP = autoBackupsCheck.isSelected();
+		Utils.AUTO_SAVE = autoSaveCheck.isSelected();
+		try {
+			i = Integer.parseInt(saveDelayText.getText());
+			if (i > 0) {
+				Utils.SAVE_DELAY = i;
+			}
+		} catch (NumberFormatException ex) {
+			// Keep old value if there is a problem
+		}
 		Utils.COMPRESS_BACKUPS = compressBackupsCheck.isSelected();
 		Utils.AUTO_BACKUP_CSV = autoBackupsCSVCheck.isSelected();
 		Utils.AUTO_BACKUP_WORLD_PNG = autoBackupsWorldPngCheck.isSelected();
@@ -1336,6 +1383,12 @@ public class ParamDialog extends JDialog {
 		try {
 			d = Double.parseDouble(initialCO2Text.getText());
 			if (d >= 0) Utils.INITIAL_CO2 = d;
+		} catch (NumberFormatException ex) {
+			// Keep old value if there is a problem
+		}
+		try {
+			d = Double.parseDouble(initialCO1Text.getText());
+			if (d >= 0) Utils.INITIAL_CO1 = d;
 		} catch (NumberFormatException ex) {
 			// Keep old value if there is a problem
 		}
@@ -1412,8 +1465,14 @@ public class ParamDialog extends JDialog {
 			// Keep old value if there is a problem
 		}
 		try {
-			i = Integer.parseInt(detritustoCO2divisorText.getText());
-			if (i > 0) Utils.DETRITUS_TO_CO2_DIVISOR = i;
+			i = Integer.parseInt(detritustoCO1divisorText.getText());
+			if (i > 0) Utils.DETRITUS_TO_CO1_DIVISOR = i;
+		} catch (NumberFormatException ex) {
+			// Keep old value if there is a problem
+		}
+		try {
+			i = Integer.parseInt(CO1toCO2divisorText.getText());
+			if (i > 0) Utils.CO1_TO_CO2_DIVISOR = i;
 		} catch (NumberFormatException ex) {
 			// Keep old value if there is a problem
 		}

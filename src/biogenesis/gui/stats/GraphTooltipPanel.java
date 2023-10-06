@@ -38,6 +38,17 @@ public class GraphTooltipPanel extends JPanel {
 
     updateText();
   }
+  
+  /**
+   * Adds a new value to the tooltip for the atmosphere graph.
+   * @param name Name of the value.
+   * @param value Value to add.
+   */
+  public void addAtmosphereValue(String name, double value) {
+    values.put(name, (value * value * value * value));
+
+    updateText();
+  }
 
   private void updateText() {
     StringBuilder sb = new StringBuilder("<html><table>");
