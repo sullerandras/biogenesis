@@ -32,6 +32,12 @@ import com.google.gson.annotations.Expose;
 public class WorldStatistics implements Serializable {
 	private static final long serialVersionUID = Utils.FILE_VERSION;
 
+	/**
+	 * How many items are stored in the statistics lists.
+	 * Each "time" is one item.
+	 */
+	public static final int MAX_STATS_COUNT = 100;
+
 	@Expose
 	private long time;
 
@@ -83,7 +89,7 @@ public class WorldStatistics implements Serializable {
 	private long minOxygenTime;
 
 	private double maxCarbonDioxide = 0;
-	
+
 	private double maxCarbonMonoxide = 0;
 
 	private double maxMethane = 0;
@@ -91,7 +97,7 @@ public class WorldStatistics implements Serializable {
 	private double maxDetritus = 0;
 
 	private long maxCarbonDioxideTime;
-	
+
 	private long maxCarbonMonoxideTime;
 
 	private long maxMethaneTime;
@@ -99,7 +105,7 @@ public class WorldStatistics implements Serializable {
 	private long maxDetritusTime;
 
 	private double minCarbonDioxide = Utils.INITIAL_CO2 +  Utils.INITIAL_CH4 +  Utils.INITIAL_CO1 +  Utils.INITIAL_DETRITUS + Utils.INITIAL_O2;
-	
+
 	private double minCarbonMonoxide = Utils.INITIAL_CO2 +  Utils.INITIAL_CH4 +  Utils.INITIAL_CO1 +  Utils.INITIAL_DETRITUS + Utils.INITIAL_O2;
 
 	private double minMethane = Utils.INITIAL_CO2 +  Utils.INITIAL_CH4 +  Utils.INITIAL_CO1 +  Utils.INITIAL_DETRITUS + Utils.INITIAL_O2;
@@ -107,7 +113,7 @@ public class WorldStatistics implements Serializable {
 	private double minDetritus = Utils.INITIAL_CO2 +  Utils.INITIAL_CH4 +  Utils.INITIAL_CO1 +  Utils.INITIAL_DETRITUS + Utils.INITIAL_O2;
 
 	private long minCarbonDioxideTime;
-	
+
 	private long minCarbonMonoxideTime;
 
 	private long minMethaneTime;
@@ -165,23 +171,23 @@ public class WorldStatistics implements Serializable {
 
 	private GeneticCode lastInfectedBeing;
 
-	private List<Double> populationList = new ArrayList<Double>(100);
+	private List<Double> populationList = new ArrayList<Double>(MAX_STATS_COUNT);
 
-	private List<Double> distinctCladesList = new ArrayList<Double>(100);
+	private List<Double> distinctCladesList = new ArrayList<Double>(MAX_STATS_COUNT);
 
-	private List<Double> deathList = new ArrayList<Double>(100);
+	private List<Double> deathList = new ArrayList<Double>(MAX_STATS_COUNT);
 
-	private List<Double> birthList = new ArrayList<Double>(100);
+	private List<Double> birthList = new ArrayList<Double>(MAX_STATS_COUNT);
 
-	private List<Double> oxygenList = new ArrayList<Double>(100);
+	private List<Double> oxygenList = new ArrayList<Double>(MAX_STATS_COUNT);
 
-	private List<Double> carbonDioxideList = new ArrayList<Double>(100);
-	
-	private List<Double> carbonMonoxideList = new ArrayList<Double>(100);
+	private List<Double> carbonDioxideList = new ArrayList<Double>(MAX_STATS_COUNT);
 
-	private List<Double> methaneList = new ArrayList<Double>(100);
+	private List<Double> carbonMonoxideList = new ArrayList<Double>(MAX_STATS_COUNT);
 
-	private List<Double> detritusList = new ArrayList<Double>(100);
+	private List<Double> methaneList = new ArrayList<Double>(MAX_STATS_COUNT);
+
+	private List<Double> detritusList = new ArrayList<Double>(MAX_STATS_COUNT);
 
 	private List<Double> generationHistogramList = new ArrayList<>(0);
 	private int minGeneration;
@@ -203,7 +209,7 @@ public class WorldStatistics implements Serializable {
 		// may not have this attribute, in which case the value is going to be reset to `null`
 		// for some reason.
 		if (distinctCladesList == null) {
-			distinctCladesList = new ArrayList<Double>(100);
+			distinctCladesList = new ArrayList<Double>(MAX_STATS_COUNT);
 			// fill distinctCladesList with elements if there are elements in other lists.
 			for (int i = 0; i < populationList.size(); i++) {
 				distinctCladesList.add(Double.valueOf(0));
@@ -318,7 +324,7 @@ public class WorldStatistics implements Serializable {
 	public long getMinCarbonDioxideTime() {
 		return minCarbonDioxideTime;
 	}
-	
+
 	public double getMaxCarbonMonoxide() {
 		return maxCarbonMonoxide;
 	}
@@ -510,7 +516,7 @@ public class WorldStatistics implements Serializable {
 	public List<Double> getCarbonDioxideList() {
 		return carbonDioxideList;
 	}
-	
+
 	public List<Double> getCarbonMonoxideList() {
 		return carbonMonoxideList;
 	}
@@ -671,31 +677,31 @@ public class WorldStatistics implements Serializable {
 			maxBirths = birthLastTime;
 		if (deathLastTime > maxDeaths)
 			maxDeaths = deathLastTime;
-		if (populationList.size() == 100)
+		if (populationList.size() == MAX_STATS_COUNT)
 			populationList.remove(0);
 		populationList.add(Double.valueOf(population));
-		if (distinctCladesList.size() == 100)
+		if (distinctCladesList.size() == MAX_STATS_COUNT)
 			distinctCladesList.remove(0);
 		distinctCladesList.add(Double.valueOf(distinctClades));
-		if (deathList.size() == 100)
+		if (deathList.size() == MAX_STATS_COUNT)
 			deathList.remove(0);
 		deathList.add(Double.valueOf(deathLastTime));
-		if (birthList.size() == 100)
+		if (birthList.size() == MAX_STATS_COUNT)
 			birthList.remove(0);
 		birthList.add(Double.valueOf(birthLastTime));
-		if (oxygenList.size() == 100)
+		if (oxygenList.size() == MAX_STATS_COUNT)
 			oxygenList.remove(0);
 		oxygenList.add(Double.valueOf(Math.sqrt(Math.sqrt(O2))));
-		if (carbonDioxideList.size() == 100)
+		if (carbonDioxideList.size() == MAX_STATS_COUNT)
 			carbonDioxideList.remove(0);
 		carbonDioxideList.add(Double.valueOf(Math.sqrt(Math.sqrt(CO2))));
-		if (carbonMonoxideList.size() == 100)
+		if (carbonMonoxideList.size() == MAX_STATS_COUNT)
 			carbonMonoxideList.remove(0);
 		carbonMonoxideList.add(Double.valueOf(Math.sqrt(Math.sqrt(CO1))));
-		if (methaneList.size() == 100)
+		if (methaneList.size() == MAX_STATS_COUNT)
 			methaneList.remove(0);
 		methaneList.add(Double.valueOf(Math.sqrt(Math.sqrt(CH4))));
-		if (detritusList.size() == 100)
+		if (detritusList.size() == MAX_STATS_COUNT)
 			detritusList.remove(0);
 		detritusList.add(Double.valueOf(Math.sqrt(Math.sqrt(detritus))));
 		deathLastTime = 0;

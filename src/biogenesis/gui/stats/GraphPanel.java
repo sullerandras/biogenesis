@@ -21,6 +21,7 @@ import javax.swing.PopupFactory;
 import javax.swing.SwingConstants;
 
 import biogenesis.Utils;
+import biogenesis.WorldStatistics;
 
 /**
  * Panel that shows a graph with zero or more lines, and shows a legend.
@@ -83,7 +84,7 @@ public class GraphPanel extends JPanel {
 				}
 
 				final int elementCount = graphList.get(0).getPointsSize();
-				final int index = (int) Math.round(e.getX() * elementCount / (double) centralPanel.getWidth());
+				final int index = (int) Math.round(e.getX() * WorldStatistics.MAX_STATS_COUNT / (double) centralPanel.getWidth());
 				if (index < 0 || index >= elementCount) {
 					return;
 				}
