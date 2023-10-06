@@ -273,6 +273,7 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 		netConfigAction = new NetConfigAction("T_CONFIGURE_NETWORK", null, "T_CONFIGURE_NETWORK"); //$NON-NLS-1$ //$NON-NLS-2$
 
 		toggleRepaintWorld = new JCheckBox(Messages.getString("T_RENDER_WORLD"));
+		toggleRepaintWorld.setToolTipText(Messages.getString("T_RENDER_WORLD_TOOLTIP"));
 		toggleRepaintWorld.setSelected(Utils.isRepaintWorld());
 		toggleRepaintWorld.setAlignmentY(100);
 		toggleRepaintWorld.addActionListener(arg0 -> Utils.setRepaintWorld(!Utils.isRepaintWorld()));
@@ -617,7 +618,7 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 			_world.decreaseCO2(1000);
 		}
 	}
-	
+
 	class IncreaseCO1Action extends StdAction {
 		private static final long serialVersionUID = 1L;
 
