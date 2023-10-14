@@ -263,10 +263,6 @@ public class MainFrame extends javax.swing.JFrame {
     analyzeInProgress = true;
     new Thread() {
       public void run() {
-        if (analyzeInProgress) {
-          return;
-        }
-
         try {
           int oldMaxTime = db.getMaxTime();
           ProgressMonitor progressMonitor = new ProgressMonitor(MainFrame.this, "Reanalyzing database", "", 0, 100);
