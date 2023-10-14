@@ -59,8 +59,8 @@ public class CladePopulationOverTime extends JPanel {
     XYChart chart = new XYChartBuilder().width(200).height(200).title("Population over time").xAxisTitle("Time")
         .yAxisTitle("Population").build();
     chart.getStyler().setLegendVisible(false);
-    chart.getStyler().setXAxisDecimalPattern("0");
-    chart.getStyler().setYAxisDecimalPattern("0");
+    chart.getStyler().setXAxisDecimalPattern("###,###,###");
+    chart.getStyler().setYAxisDecimalPattern("###,###,###,###.#");
     chart.getStyler().setCursorEnabled(true);
     chart.getStyler().setXAxisTitleVisible(false);
 

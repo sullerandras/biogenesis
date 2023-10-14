@@ -1,6 +1,7 @@
 package biogenesis.clade_analyzer.gui;
 
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 
@@ -32,6 +33,7 @@ public class MainFrame extends javax.swing.JFrame {
   private CladeListPanel longestSurvivorsPanel;
   private CladeListPanel mostPopulousCladesPanel;
   private HeatMapPanel heatMapPanel;
+  private CsvAnalyzerPanel csvAnalyzerPanel;
   private JCheckBox autoAnalyzeCheckBox;
   private LogsDialog logsDialog;
 
@@ -116,6 +118,9 @@ public class MainFrame extends javax.swing.JFrame {
     heatMapPanel = new HeatMapPanel(this);
     tabbedPane.add("Heat map", heatMapPanel);
 
+    csvAnalyzerPanel = new CsvAnalyzerPanel(this);
+    tabbedPane.add("CSV analyzer", csvAnalyzerPanel);
+
     getContentPane().add(tabbedPane,
         new java.awt.GridBagConstraints(0, 1, 1, 1, 1, 1, java.awt.GridBagConstraints.NORTHWEST,
             java.awt.GridBagConstraints.BOTH, new java.awt.Insets(0, 0, 0, 0), 0, 0));
@@ -188,6 +193,8 @@ public class MainFrame extends javax.swing.JFrame {
         });
 
         heatMapPanel.setDB(db);
+
+        csvAnalyzerPanel.setDB(db);
       }
     }.start();
   }
@@ -256,11 +263,18 @@ public class MainFrame extends javax.swing.JFrame {
     analyzeInProgress = true;
     new Thread() {
       public void run() {
+        if (analyzeInProgress) {
+          return;
+        }
+
         try {
           int oldMaxTime = db.getMaxTime();
           ProgressMonitor progressMonitor = new ProgressMonitor(MainFrame.this, "Reanalyzing database", "", 0, 100);
-          Analyzer.analyze(db.getDbFile(), db, progressMonitor);
-          progressMonitor.close();
+          try {
+            Analyzer.analyze(db.getDbFile(), db, progressMonitor);
+          } finally {
+            progressMonitor.close();
+          }
 
           maxTime = db.getMaxTime();
 

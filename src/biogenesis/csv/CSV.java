@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -46,6 +45,32 @@ public class CSV {
     } catch (IOException e) {
       e.printStackTrace();
     }
+  }
+
+  /**
+   * Read the csv file and return the content. Implemented in a very rudimentary way.
+   * @return
+   */
+  public CsvContent read() throws IOException {
+    CsvContent csvContent = new CsvContent();
+
+    BufferedReader br = new BufferedReader(new FileReader(file));
+    try {
+      String headerLine = br.readLine();
+      columnNames = Arrays.asList(headerLine.split(","));
+
+      String line;
+      while ((line = br.readLine()) != null) {
+        String[] values = line.split(",");
+        for (int i = 0; i < columnNames.size(); i++) {
+          csvContent.addValue(columnNames.get(i), values[i]);
+        }
+      }
+    } finally {
+      br.close();
+    }
+
+    return csvContent;
   }
 
   private FileWriter openFile() throws IOException {
