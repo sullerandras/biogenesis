@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.List;
 
 import biogenesis.clade_analyzer.db.DB;
+import biogenesis.clade_analyzer.gui.downsamplers.Downsampler;
 import biogenesis.csv.CSV;
 import biogenesis.csv.CsvContent;
 import biogenesis.gui.stats.BetterJScrollPane;
@@ -16,7 +17,10 @@ import biogenesis.gui.stats.BetterJScrollPane;
  */
 public class CsvAnalyzerPanel extends javax.swing.JPanel {
   private final MainFrame mainFrame;
+  private DB db;
   private javax.swing.JPanel chartsPanel;
+  private javax.swing.JComboBox<Integer> maxPointsComboBox;
+  private javax.swing.JComboBox<Downsampler> downsamplerComboBox;
 
   /**
    * Creates a new CsvAnalyzerPanel that will show charts the DB's CSV file.
@@ -34,9 +38,13 @@ public class CsvAnalyzerPanel extends javax.swing.JPanel {
    * @param db
    */
   public void setDB(DB db) {
+    this.db = db;
     java.awt.EventQueue.invokeLater(new Runnable() {
       public void run() {
-        refreshCharts(db);
+        refreshCharts(
+            db,
+            (Downsampler) downsamplerComboBox.getSelectedItem(),
+            (Integer) maxPointsComboBox.getSelectedItem());
       }
     });
   }
@@ -48,15 +56,44 @@ public class CsvAnalyzerPanel extends javax.swing.JPanel {
 
     setLayout(new java.awt.BorderLayout());
 
-    javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
-    jLabel1.setText("CSV Analyzer");
-    add(jLabel1, java.awt.BorderLayout.NORTH);
+    javax.swing.JPanel toolbarPanel = new javax.swing.JPanel();
+    toolbarPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
+
+    // downsampler algorithm combo box
+    downsamplerComboBox = new javax.swing.JComboBox<>();
+    for (Downsampler downsampler : Downsampler.downsamplers) {
+      downsamplerComboBox.addItem(downsampler);
+    }
+    downsamplerComboBox.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        setDB(db);
+      }
+    });
+    toolbarPanel.add(new javax.swing.JLabel("Downsampler:"));
+    toolbarPanel.add(downsamplerComboBox);
+
+    // max points combo box
+    maxPointsComboBox = new javax.swing.JComboBox<>();
+    maxPointsComboBox.addItem(100);
+    maxPointsComboBox.addItem(500);
+    maxPointsComboBox.addItem(1000);
+    maxPointsComboBox.addItem(5000);
+    maxPointsComboBox.setSelectedIndex(1);
+    maxPointsComboBox.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        setDB(db);
+      }
+    });
+    toolbarPanel.add(new javax.swing.JLabel("Max points:"));
+    toolbarPanel.add(maxPointsComboBox);
+
+    add(toolbarPanel, java.awt.BorderLayout.NORTH);
 
     chartsPanel = new javax.swing.JPanel();
     add(new BetterJScrollPane(chartsPanel), java.awt.BorderLayout.CENTER);
   }
 
-  private void refreshCharts(DB db) {
+  private void refreshCharts(DB db, Downsampler downsampler, int maxPoints) {
     if (!java.awt.EventQueue.isDispatchThread()) {
       throw new RuntimeException("Not in dispatch thread");
     }
@@ -79,8 +116,12 @@ public class CsvAnalyzerPanel extends javax.swing.JPanel {
           continue;
         }
 
+        List<Double> values = csvContent.getColumnAsDoubles(columnName);
+        List<Double> downsampledValues = new java.util.ArrayList<>();
+        List<Integer> downsampledValueLabels = new java.util.ArrayList<>();
+        downsampler.downsample(values, valueLabels, maxPoints, downsampledValues, downsampledValueLabels);
         chartsPanel.add(new GenericChart(mainFrame, columnName, "Time", columnName,
-            csvContent.getColumnAsDoubles(columnName), valueLabels));
+            downsampledValues, downsampledValueLabels));
       }
     } catch (IOException e) {
       e.printStackTrace();
