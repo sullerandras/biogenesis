@@ -29,10 +29,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
-import java.util.concurrent.Semaphore;
 import java.util.stream.Collectors;
 
 import javax.swing.JViewport;
@@ -160,6 +157,12 @@ public class World implements Serializable{
 	 */
 	@Expose
 	protected WorldStatistics worldStatistics;
+	/**
+	 * Represents the obstacles in the world. Obstacles can be used to
+	 * restrict the movement of organisms.
+	 */
+	@Expose
+	protected Collection<Wall> walls;
 	/**
 	 * Called by the JRE when an instance of this class is read from a file
 	 *
@@ -642,6 +645,12 @@ public class World implements Serializable{
 		inCorridors = Collections.synchronizedList(new ArrayList<InCorridor>());
 		outCorridors = Collections.synchronizedList(new ArrayList<OutCorridor>());
 		worldStatistics = new WorldStatistics(_visibleWorld.getMainWindow());
+		walls = new ArrayList<Wall>();
+		final int wallThickness = 100;
+		addVerticalWall(_width / 4, 0, _height * 3 / 4, wallThickness);
+		addHorizontalWall(_width / 4, _height * 3 / 4, _width * 2 / 4, wallThickness);
+		addVerticalWall(_width * 3 / 4, _height / 4, _height * 2 / 4, wallThickness);
+		addHorizontalWall(_width * 2 / 4, _height / 4, _width / 4, wallThickness);
 
 		Utils.addRepaintWorldChangeListener(new RepaintWorldChangeListener() {
 			@Override
@@ -650,6 +659,23 @@ public class World implements Serializable{
 			}
 		});
 	}
+
+	protected void addHorizontalWall(int startX, int startY, int length, int wallThickness) {
+		addWall(startX, startY, startX + length, startY, wallThickness);
+	}
+
+	protected void addVerticalWall(int startX, int startY, int length, int wallThickness) {
+		addWall(startX, startY, startX, startY + length, wallThickness);
+	}
+
+	protected void addWall(int startX, int startY, int endX, int endY, int wallThickness) {
+		final int x0 = Math.max(0, startX - wallThickness / 2);
+		final int y0 = Math.max(0, startY - wallThickness / 2);
+		final int x1 = Math.min(_width, endX + wallThickness / 2);
+		final int y1 = Math.min(_height, endY + wallThickness / 2);
+		walls.add(new Wall(x0, y0, x1 - x0, y1 - y0));
+	}
+
 	/**
 	 * When a world object is read from a file, it must be linked with its visualization.
 	 * That is what this method does.
@@ -741,6 +767,13 @@ public class World implements Serializable{
 				}
 			}
 		}
+
+		if (walls != null && walls.size() > 0) { // can be null if loaded an older world
+			for (Wall wall : walls) {
+				wall.draw(g);
+			}
+		}
+
 		synchronized (_organisms) {
 			if (organismBuckets != null && !fullRedraw) {
 				final JViewport viewPort = (JViewport) SwingUtilities.getAncestorOfClass(JViewport.class, (VisibleWorld) _visibleWorld);

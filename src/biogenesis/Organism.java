@@ -3961,8 +3961,8 @@ public class Organism extends Rectangle {
 			setBounds(origin.x,origin.y,_sizeRect.width,_sizeRect.height);
 			_dCenterX = _centerX = origin.x + (_sizeRect.width>>1);
 			_dCenterY = _centerY = origin.y + (_sizeRect.height>>1);
-			// Check that the position is not occupied.
-			if (_world.genesisCheckHit(this) == null) {
+			// Check that the position is not occupied and not colliding with walls
+			if (_world.genesisCheckHit(this) == null && isInsideWorld()) {
 				// Generate an identification
 				_ID = _world.getNewId();
 				if (Utils.ACCEPT_CONNECTIONS) {
@@ -6702,16 +6702,17 @@ public class Organism extends Rectangle {
 		org.dtheta = Utils.between(org.dtheta - j * (rbpx * ny - rbpy * ny) / org._I, -Utils.MAX_ROT, Utils.MAX_ROT);
 	}
 	/**
-	 * Checks if the organism is inside the world. If it is not, calculates its
-	 * speed after the collision with the world border.
+	 * Checks if the organism collided with the world boundaries or with any of the
+	 * walls. If it did, calculates its speed after the collision.
 	 * This calculation should be updated to follow the parallel axis theorem, just
 	 * like the collision between two organisms.
 	 *
-	 * @return  true if the organism is inside the world, false otherwise.
+	 * @return  false if the organism collided with the world boundaries or with any
+	 * 					of the walls, true if there was no collision.
 	 */
 	private final boolean isInsideWorld() {
-		// Check it is inside the world
-		if (x<=0 || y<=0 || x+width>=_world._width || y+height>=_world._height) {
+		// Check if it is outside the world
+		if (x <= 0 || y <= 0 || x + width >= _world._width || y + height >= _world._height) {
 			if (height <= 1 && width <= 1 && alive && x == 0 && y == 0)
 				die(null);
 			// Adjust direction
@@ -6722,6 +6723,26 @@ public class Organism extends Rectangle {
 			dtheta = 0;
 			return false;
 		}
+
+		// Check if it collided with any walls
+		if (_world.walls != null && _world.walls.size() > 0) { // can be null if loaded an older world
+			for (Wall wall : _world.walls) {
+				if (wall.intersects(this)) {
+					if (x < wall.x && x + width >= wall.x // touched the left side of the wall
+						|| x < wall.x + wall.width && x + width >= wall.x + wall.width) { // touched the right side of the wall
+						dx = -dx;
+					}
+					if (y < wall.y && y + height >= wall.y // touched the top side of the wall
+						|| y < wall.y + wall.height && y + height >= wall.y + wall.height) { // touched the bottom side of the wall
+						dy = -dy;
+					}
+					dtheta = 0;
+					return false;
+				}
+			}
+		}
+
+		// It is inside the world and did not collide with any walls
 		return true;
 	}
 	/**
@@ -6994,7 +7015,7 @@ public class Organism extends Rectangle {
 														}
 													}
 												}
-											}											
+											}
 										}
 										if (org._canreact) {
 											if ((_mphoto[i] == -9) && (!org._hasgoodvision)) {
@@ -7029,7 +7050,7 @@ public class Organism extends Rectangle {
 														}
 													}
 												}
-											}											
+											}
 										}
 									}
 									return true;
@@ -7185,7 +7206,7 @@ public class Organism extends Rectangle {
 													}
 												}
 											}
-										}										
+										}
 									}
 									if (org._canreact) {
 										if ((_mphoto[i] == -9) && (!org._hasgoodvision)) {
@@ -7220,7 +7241,7 @@ public class Organism extends Rectangle {
 													}
 												}
 											}
-										}											
+										}
 									}
 								}
 								return true;
@@ -13907,7 +13928,7 @@ public class Organism extends Rectangle {
 							if ((org._dodge) && (org._blackversion == 0) && (org.useEnergy(Utils.DODGE_ENERGY_CONSUMPTION))) {
 								org.setColor(Utils.ColorTEAL);
 								setColor(Utils.ColorSPIKE);
-							} else {							
+							} else {
 								if (useEnergy(Utils.SPIKE_ENERGY_CONSUMPTION)) {
 									// Get energy depending on segment length
 									takenEnergySpike = Utils.between((5 * Math.sqrt(_m[seg])) * Utils.ORGANIC_OBTAINED_ENERGY, 0, org._energy);
