@@ -62,6 +62,7 @@ public class GsonFileSaver {
       try {
         GsonBuilder builder = new GsonBuilder()
             .registerTypeAdapter(java.awt.Color.class, new JavaAwtColorAdapter())
+            .registerTypeAdapter(Wall.class, new Wall.Serializer())
             .excludeFieldsWithoutExposeAnnotation();
         w.write(builder.create().toJson(world));
       } finally {
