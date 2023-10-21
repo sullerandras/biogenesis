@@ -2,8 +2,8 @@ name: Release
 
 on:
   push:
-    branches:
-      - andras-patches
+    branches-ignore:
+      - main
 
 jobs:
   build-and-create-release:
