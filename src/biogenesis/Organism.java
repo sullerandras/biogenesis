@@ -4896,16 +4896,16 @@ public class Organism extends Rectangle {
 				if (_filterfeeding > 0) {
 					if ((!_haseyes) || (dx == dxbak)) {
 						if (_spin > 0) {
-							if (_world._detritus < 440) {
-								if (Utils.random.nextInt(440) < _world._detritus) {
+							if (_world.getDetritus() < 440) {
+								if (Utils.random.nextInt(440) < _world.getDetritus()) {
 									_energy += _world.filterfeeding(((0.9375 * (Math.abs(dx) + Math.abs(dy))) + (22.74 * Math.abs(dtheta))) * _filterfeeding);
 								}
 							} else {
 								_energy += _world.filterfeeding(((0.9375 * (Math.abs(dx) + Math.abs(dy))) + (22.74 * Math.abs(dtheta))) * _filterfeeding);
 							}
 						} else {
-							if ((_symmetry == 1) && (_world._detritus < 440)) {
-								if (Utils.random.nextInt(440) < _world._detritus) {
+							if ((_symmetry == 1) && (_world.getDetritus() < 440)) {
+								if (Utils.random.nextInt(440) < _world.getDetritus()) {
 									_energy += _world.filterfeeding((Math.abs(dx) + Math.abs(dy)) * _filterfeeding);
 								}
 							} else {
@@ -5036,8 +5036,8 @@ public class Organism extends Rectangle {
 								    if (_photosynthesis > 0) {
 								    	//Get sun's energy
 										if (_colonyPhotosynthesis > 0) {
-											if ((_lowersymmetric > 0) && (_world._CO2 < _lowersymmetric)) {
-												if (Utils.random.nextInt(_lowersymmetric) < _world._CO2) {
+											if ((_lowersymmetric > 0) && (_world.getCO2() < _lowersymmetric)) {
+												if (Utils.random.nextInt(_lowersymmetric) < _world.getCO2()) {
 													_energy += _world.photosynthesis(_photosynthesis + _colonyPhotosynthesis);
 												}
 											} else {
@@ -5045,8 +5045,8 @@ public class Organism extends Rectangle {
 											}
 											_colonyPhotosynthesis = 0;
 										} else {
-											if ((_lowersymmetric > 0) && (_world._CO2 < _lowersymmetric)) {
-												if (Utils.random.nextInt(_lowersymmetric) < _world._CO2) {
+											if ((_lowersymmetric > 0) && (_world.getCO2() < _lowersymmetric)) {
+												if (Utils.random.nextInt(_lowersymmetric) < _world.getCO2()) {
 													_energy += _world.photosynthesis(_photosynthesis);
 												}
 											} else {
@@ -5057,8 +5057,8 @@ public class Organism extends Rectangle {
 							    } else {
 							    	//Get sun's energy
 							    	if (_colonyPhotosynthesis > 0) {
-										if ((_lowersymmetric > 0) && (_world._CO2 < _lowersymmetric)) {
-											if (Utils.random.nextInt(_lowersymmetric) < _world._CO2) {
+										if ((_lowersymmetric > 0) && (_world.getCO2() < _lowersymmetric)) {
+											if (Utils.random.nextInt(_lowersymmetric) < _world.getCO2()) {
 												_energy += _world.photosynthesis(_photosynthesis + _colonyPhotosynthesis);
 											}
 										} else {
@@ -5066,17 +5066,17 @@ public class Organism extends Rectangle {
 										}
 										_colonyPhotosynthesis = 0;
 									} else {
-										if ((_isonlyc4 == 0) || (_world._CO2 > _world._CO1)) {
-											if ((_lowersymmetric > 0) && (_world._CO2 < _lowersymmetric)) {
-												if (Utils.random.nextInt(_lowersymmetric) < _world._CO2) {
+										if ((_isonlyc4 == 0) || (_world.getCO2() > _world.getCO1())) {
+											if ((_lowersymmetric > 0) && (_world.getCO2() < _lowersymmetric)) {
+												if (Utils.random.nextInt(_lowersymmetric) < _world.getCO2()) {
 													_energy += _world.photosynthesis(_photosynthesis);
 												}
 											} else {
 												_energy += _world.photosynthesis(_photosynthesis);
 											}
 										} else {
-											if ((_lowersymmetric > 0) && (_world._CO1 < _lowersymmetric)) {
-												if (Utils.random.nextInt(_lowersymmetric) < _world._CO1) {
+											if ((_lowersymmetric > 0) && (_world.getCO1() < _lowersymmetric)) {
+												if (Utils.random.nextInt(_lowersymmetric) < _world.getCO1()) {
 													_energy += _world.C4photosynthesis(_photosynthesis);
 												}
 											} else {
@@ -5102,8 +5102,8 @@ public class Organism extends Rectangle {
 							    if (_photosynthesis > 0) {
 							    	//Get sun's energy
 							    	if (_colonyPhotosynthesis > 0) {
-										if ((_lowersymmetric > 0) && (_world._CO2 < _lowersymmetric)) {
-											if (Utils.random.nextInt(_lowersymmetric) < _world._CO2) {
+										if ((_lowersymmetric > 0) && (_world.getCO2() < _lowersymmetric)) {
+											if (Utils.random.nextInt(_lowersymmetric) < _world.getCO2()) {
 												_energy += _world.photosynthesis(_photosynthesis + _colonyPhotosynthesis);
 											}
 										} else {
@@ -5111,8 +5111,8 @@ public class Organism extends Rectangle {
 										}
 										_colonyPhotosynthesis = 0;
 									} else {
-										if ((_lowersymmetric > 0) && (_world._CO2 < _lowersymmetric)) {
-											if (Utils.random.nextInt(_lowersymmetric) < _world._CO2) {
+										if ((_lowersymmetric > 0) && (_world.getCO2() < _lowersymmetric)) {
+											if (Utils.random.nextInt(_lowersymmetric) < _world.getCO2()) {
 												_energy += _world.photosynthesis(_photosynthesis);
 											}
 										} else {
@@ -5123,8 +5123,8 @@ public class Organism extends Rectangle {
 						    } else {
 						    	//Get sun's energy
 						    	if (_colonyPhotosynthesis > 0) {
-									if ((_lowersymmetric > 0) && (_world._CO2 < _lowersymmetric)) {
-										if (Utils.random.nextInt(_lowersymmetric) < _world._CO2) {
+									if ((_lowersymmetric > 0) && (_world.getCO2() < _lowersymmetric)) {
+										if (Utils.random.nextInt(_lowersymmetric) < _world.getCO2()) {
 											_energy += _world.photosynthesis(_photosynthesis + _colonyPhotosynthesis);
 										}
 									} else {
@@ -5132,8 +5132,8 @@ public class Organism extends Rectangle {
 									}
 									_colonyPhotosynthesis = 0;
 								} else {
-									if ((_lowersymmetric > 0) && (_world._CO2 < _lowersymmetric)) {
-										if (Utils.random.nextInt(_lowersymmetric) < _world._CO2) {
+									if ((_lowersymmetric > 0) && (_world.getCO2() < _lowersymmetric)) {
+										if (Utils.random.nextInt(_lowersymmetric) < _world.getCO2()) {
 											_energy += _world.photosynthesis(_photosynthesis);
 										}
 									} else {
@@ -6994,7 +6994,7 @@ public class Organism extends Rectangle {
 														}
 													}
 												}
-											}											
+											}
 										}
 										if (org._canreact) {
 											if ((_mphoto[i] == -9) && (!org._hasgoodvision)) {
@@ -7029,7 +7029,7 @@ public class Organism extends Rectangle {
 														}
 													}
 												}
-											}											
+											}
 										}
 									}
 									return true;
@@ -7185,7 +7185,7 @@ public class Organism extends Rectangle {
 													}
 												}
 											}
-										}										
+										}
 									}
 									if (org._canreact) {
 										if ((_mphoto[i] == -9) && (!org._hasgoodvision)) {
@@ -7220,7 +7220,7 @@ public class Organism extends Rectangle {
 													}
 												}
 											}
-										}											
+										}
 									}
 								}
 								return true;
@@ -13907,7 +13907,7 @@ public class Organism extends Rectangle {
 							if ((org._dodge) && (org._blackversion == 0) && (org.useEnergy(Utils.DODGE_ENERGY_CONSUMPTION))) {
 								org.setColor(Utils.ColorTEAL);
 								setColor(Utils.ColorSPIKE);
-							} else {							
+							} else {
 								if (useEnergy(Utils.SPIKE_ENERGY_CONSUMPTION)) {
 									// Get energy depending on segment length
 									takenEnergySpike = Utils.between((5 * Math.sqrt(_m[seg])) * Utils.ORGANIC_OBTAINED_ENERGY, 0, org._energy);
@@ -21604,8 +21604,8 @@ public class Organism extends Rectangle {
 		    	}
 			}
 		    if (_colonyPhotosynthesis > 0) {
-				if ((_lowersymmetric > 0) && (_world._CO2 < _lowersymmetric)) {
-					if (Utils.random.nextInt(_lowersymmetric) < _world._CO2) {
+				if ((_lowersymmetric > 0) && (_world.getCO2() < _lowersymmetric)) {
+					if (Utils.random.nextInt(_lowersymmetric) < _world.getCO2()) {
 						_energy += _world.photosynthesis(_photosynthesis - _leafphoto + _colonyPhotosynthesis);
 					}
 				} else {
@@ -21613,8 +21613,8 @@ public class Organism extends Rectangle {
 				}
 				_colonyPhotosynthesis = 0;
 			} else {
-				if ((_lowersymmetric > 0) && (_world._CO2 < _lowersymmetric)) {
-					if (Utils.random.nextInt(_lowersymmetric) < _world._CO2) {
+				if ((_lowersymmetric > 0) && (_world.getCO2() < _lowersymmetric)) {
+					if (Utils.random.nextInt(_lowersymmetric) < _world.getCO2()) {
 						_energy += _world.photosynthesis(_photosynthesis - _leafphoto);
 					}
 				} else {
@@ -21839,8 +21839,8 @@ public class Organism extends Rectangle {
 				}
 				if (specialphoto > 0) {
 					if (_colonyPhotosynthesis > 0) {
-						if ((_lowersymmetric > 0) && (_world._CO2 < _lowersymmetric)) {
-							if (Utils.random.nextInt(_lowersymmetric) < _world._CO2) {
+						if ((_lowersymmetric > 0) && (_world.getCO2() < _lowersymmetric)) {
+							if (Utils.random.nextInt(_lowersymmetric) < _world.getCO2()) {
 								_energy += _world.photosynthesis(_photosynthesis - _leafphoto - (specialphoto*Utils.scale[_growthRatio-1]) + _colonyPhotosynthesis);
 							}
 						} else {
@@ -21848,8 +21848,8 @@ public class Organism extends Rectangle {
 						}
 						_colonyPhotosynthesis = 0;
 					} else {
-						if ((_lowersymmetric > 0) && (_world._CO2 < _lowersymmetric)) {
-							if (Utils.random.nextInt(_lowersymmetric) < _world._CO2) {
+						if ((_lowersymmetric > 0) && (_world.getCO2() < _lowersymmetric)) {
+							if (Utils.random.nextInt(_lowersymmetric) < _world.getCO2()) {
 								_energy += _world.photosynthesis(_photosynthesis - _leafphoto - (specialphoto*Utils.scale[_growthRatio-1]));
 							}
 						} else {
@@ -21858,8 +21858,8 @@ public class Organism extends Rectangle {
 					}
 				} else {
 					if (_colonyPhotosynthesis > 0) {
-						if ((_lowersymmetric > 0) && (_world._CO2 < _lowersymmetric)) {
-							if (Utils.random.nextInt(_lowersymmetric) < _world._CO2) {
+						if ((_lowersymmetric > 0) && (_world.getCO2() < _lowersymmetric)) {
+							if (Utils.random.nextInt(_lowersymmetric) < _world.getCO2()) {
 								_energy += _world.photosynthesis(_photosynthesis - _leafphoto + _colonyPhotosynthesis);
 							}
 						} else {
@@ -21867,8 +21867,8 @@ public class Organism extends Rectangle {
 						}
 						_colonyPhotosynthesis = 0;
 					} else {
-						if ((_lowersymmetric > 0) && (_world._CO2 < _lowersymmetric)) {
-							if (Utils.random.nextInt(_lowersymmetric) < _world._CO2) {
+						if ((_lowersymmetric > 0) && (_world.getCO2() < _lowersymmetric)) {
+							if (Utils.random.nextInt(_lowersymmetric) < _world.getCO2()) {
 								_energy += _world.photosynthesis(_photosynthesis - _leafphoto);
 							}
 						} else {
@@ -21879,8 +21879,8 @@ public class Organism extends Rectangle {
 			} else {
 				if (specialphoto > 0) {
 					if (_colonyPhotosynthesis > 0) {
-						if ((_lowersymmetric > 0) && (_world._CO2 < _lowersymmetric)) {
-							if (Utils.random.nextInt(_lowersymmetric) < _world._CO2) {
+						if ((_lowersymmetric > 0) && (_world.getCO2() < _lowersymmetric)) {
+							if (Utils.random.nextInt(_lowersymmetric) < _world.getCO2()) {
 								_energy += _world.photosynthesis(_photosynthesis - (specialphoto*Utils.scale[_growthRatio-1]) + _colonyPhotosynthesis);
 							}
 						} else {
@@ -21888,8 +21888,8 @@ public class Organism extends Rectangle {
 						}
 						_colonyPhotosynthesis = 0;
 					} else {
-						if ((_lowersymmetric > 0) && (_world._CO2 < _lowersymmetric)) {
-							if (Utils.random.nextInt(_lowersymmetric) < _world._CO2) {
+						if ((_lowersymmetric > 0) && (_world.getCO2() < _lowersymmetric)) {
+							if (Utils.random.nextInt(_lowersymmetric) < _world.getCO2()) {
 								_energy += _world.photosynthesis(_photosynthesis - (specialphoto*Utils.scale[_growthRatio-1]));
 							}
 						} else {
@@ -21898,8 +21898,8 @@ public class Organism extends Rectangle {
 					}
 				} else {
 					if (_colonyPhotosynthesis > 0) {
-						if ((_lowersymmetric > 0) && (_world._CO2 < _lowersymmetric)) {
-							if (Utils.random.nextInt(_lowersymmetric) < _world._CO2) {
+						if ((_lowersymmetric > 0) && (_world.getCO2() < _lowersymmetric)) {
+							if (Utils.random.nextInt(_lowersymmetric) < _world.getCO2()) {
 								_energy += _world.photosynthesis(_photosynthesis + _colonyPhotosynthesis);
 							}
 						} else {
@@ -21907,8 +21907,8 @@ public class Organism extends Rectangle {
 						}
 						_colonyPhotosynthesis = 0;
 					} else {
-						if ((_lowersymmetric > 0) && (_world._CO2 < _lowersymmetric)) {
-							if (Utils.random.nextInt(_lowersymmetric) < _world._CO2) {
+						if ((_lowersymmetric > 0) && (_world.getCO2() < _lowersymmetric)) {
+							if (Utils.random.nextInt(_lowersymmetric) < _world.getCO2()) {
 								_energy += _world.photosynthesis(_photosynthesis);
 							}
 						} else {
@@ -22384,8 +22384,8 @@ public class Organism extends Rectangle {
 					    	}
 						}
 						if (_colonyPhotosynthesis > 0) {
-							if ((_lowersymmetric > 0) && (_world._CO2 < _lowersymmetric)) {
-								if (Utils.random.nextInt(_lowersymmetric) < _world._CO2) {
+							if ((_lowersymmetric > 0) && (_world.getCO2() < _lowersymmetric)) {
+								if (Utils.random.nextInt(_lowersymmetric) < _world.getCO2()) {
 									_energy += _world.photosynthesis(_photosynthesis - _leafphoto + _colonyPhotosynthesis);
 								}
 							} else {
@@ -22393,8 +22393,8 @@ public class Organism extends Rectangle {
 							}
 							_colonyPhotosynthesis = 0;
 						} else {
-							if ((_lowersymmetric > 0) && (_world._CO2 < _lowersymmetric)) {
-								if (Utils.random.nextInt(_lowersymmetric) < _world._CO2) {
+							if ((_lowersymmetric > 0) && (_world.getCO2() < _lowersymmetric)) {
+								if (Utils.random.nextInt(_lowersymmetric) < _world.getCO2()) {
 									_energy += _world.photosynthesis(_photosynthesis - _leafphoto);
 								}
 							} else {
@@ -22403,8 +22403,8 @@ public class Organism extends Rectangle {
 						}
 					} else {
 						if (_colonyPhotosynthesis > 0) {
-							if ((_lowersymmetric > 0) && (_world._CO2 < _lowersymmetric)) {
-								if (Utils.random.nextInt(_lowersymmetric) < _world._CO2) {
+							if ((_lowersymmetric > 0) && (_world.getCO2() < _lowersymmetric)) {
+								if (Utils.random.nextInt(_lowersymmetric) < _world.getCO2()) {
 									_energy += _world.photosynthesis(_photosynthesis + _colonyPhotosynthesis);
 								}
 							} else {
@@ -22412,8 +22412,8 @@ public class Organism extends Rectangle {
 							}
 							_colonyPhotosynthesis = 0;
 						} else {
-							if ((_lowersymmetric > 0) && (_world._CO2 < _lowersymmetric)) {
-								if (Utils.random.nextInt(_lowersymmetric) < _world._CO2) {
+							if ((_lowersymmetric > 0) && (_world.getCO2() < _lowersymmetric)) {
+								if (Utils.random.nextInt(_lowersymmetric) < _world.getCO2()) {
 									_energy += _world.photosynthesis(_photosynthesis);
 								}
 							} else {
@@ -22423,8 +22423,8 @@ public class Organism extends Rectangle {
 					}
 				} else {
 					if (_colonyPhotosynthesis > 0) {
-						if ((_lowersymmetric > 0) && (_world._CO2 < _lowersymmetric)) {
-							if (Utils.random.nextInt(_lowersymmetric) < _world._CO2) {
+						if ((_lowersymmetric > 0) && (_world.getCO2() < _lowersymmetric)) {
+							if (Utils.random.nextInt(_lowersymmetric) < _world.getCO2()) {
 								_energy += _world.photosynthesis(_photosynthesis + _colonyPhotosynthesis);
 							}
 						} else {
@@ -22432,8 +22432,8 @@ public class Organism extends Rectangle {
 						}
 						_colonyPhotosynthesis = 0;
 					} else {
-						if ((_lowersymmetric > 0) && (_world._CO2 < _lowersymmetric)) {
-							if (Utils.random.nextInt(_lowersymmetric) < _world._CO2) {
+						if ((_lowersymmetric > 0) && (_world.getCO2() < _lowersymmetric)) {
+							if (Utils.random.nextInt(_lowersymmetric) < _world.getCO2()) {
 								_energy += _world.photosynthesis(_photosynthesis);
 							}
 						} else {
@@ -22856,8 +22856,8 @@ public class Organism extends Rectangle {
 						}
 						if (specialphoto > 0) {
 							if (_colonyPhotosynthesis > 0) {
-								if ((_lowersymmetric > 0) && (_world._CO2 < _lowersymmetric)) {
-									if (Utils.random.nextInt(_lowersymmetric) < _world._CO2) {
+								if ((_lowersymmetric > 0) && (_world.getCO2() < _lowersymmetric)) {
+									if (Utils.random.nextInt(_lowersymmetric) < _world.getCO2()) {
 										_energy += _world.photosynthesis(_photosynthesis - _leafphoto - (specialphoto*Utils.scale[_growthRatio-1]) + _colonyPhotosynthesis);
 									}
 								} else {
@@ -22865,8 +22865,8 @@ public class Organism extends Rectangle {
 								}
 								_colonyPhotosynthesis = 0;
 							} else {
-								if ((_lowersymmetric > 0) && (_world._CO2 < _lowersymmetric)) {
-									if (Utils.random.nextInt(_lowersymmetric) < _world._CO2) {
+								if ((_lowersymmetric > 0) && (_world.getCO2() < _lowersymmetric)) {
+									if (Utils.random.nextInt(_lowersymmetric) < _world.getCO2()) {
 										_energy += _world.photosynthesis(_photosynthesis - _leafphoto - (specialphoto*Utils.scale[_growthRatio-1]));
 									}
 								} else {
@@ -22875,8 +22875,8 @@ public class Organism extends Rectangle {
 							}
 						} else {
 							if (_colonyPhotosynthesis > 0) {
-								if ((_lowersymmetric > 0) && (_world._CO2 < _lowersymmetric)) {
-									if (Utils.random.nextInt(_lowersymmetric) < _world._CO2) {
+								if ((_lowersymmetric > 0) && (_world.getCO2() < _lowersymmetric)) {
+									if (Utils.random.nextInt(_lowersymmetric) < _world.getCO2()) {
 										_energy += _world.photosynthesis(_photosynthesis - _leafphoto + _colonyPhotosynthesis);
 									}
 								} else {
@@ -22884,8 +22884,8 @@ public class Organism extends Rectangle {
 								}
 								_colonyPhotosynthesis = 0;
 							} else {
-								if ((_lowersymmetric > 0) && (_world._CO2 < _lowersymmetric)) {
-									if (Utils.random.nextInt(_lowersymmetric) < _world._CO2) {
+								if ((_lowersymmetric > 0) && (_world.getCO2() < _lowersymmetric)) {
+									if (Utils.random.nextInt(_lowersymmetric) < _world.getCO2()) {
 										_energy += _world.photosynthesis(_photosynthesis - _leafphoto);
 									}
 								} else {
@@ -22896,8 +22896,8 @@ public class Organism extends Rectangle {
 					} else {
 						if (specialphoto > 0) {
 							if (_colonyPhotosynthesis > 0) {
-								if ((_lowersymmetric > 0) && (_world._CO2 < _lowersymmetric)) {
-									if (Utils.random.nextInt(_lowersymmetric) < _world._CO2) {
+								if ((_lowersymmetric > 0) && (_world.getCO2() < _lowersymmetric)) {
+									if (Utils.random.nextInt(_lowersymmetric) < _world.getCO2()) {
 										_energy += _world.photosynthesis(_photosynthesis - (specialphoto*Utils.scale[_growthRatio-1]) + _colonyPhotosynthesis);
 									}
 								} else {
@@ -22905,8 +22905,8 @@ public class Organism extends Rectangle {
 								}
 								_colonyPhotosynthesis = 0;
 							} else {
-								if ((_lowersymmetric > 0) && (_world._CO2 < _lowersymmetric)) {
-									if (Utils.random.nextInt(_lowersymmetric) < _world._CO2) {
+								if ((_lowersymmetric > 0) && (_world.getCO2() < _lowersymmetric)) {
+									if (Utils.random.nextInt(_lowersymmetric) < _world.getCO2()) {
 										_energy += _world.photosynthesis(_photosynthesis - (specialphoto*Utils.scale[_growthRatio-1]));
 									}
 								} else {
@@ -22915,8 +22915,8 @@ public class Organism extends Rectangle {
 							}
 						} else {
 							if (_colonyPhotosynthesis > 0) {
-								if ((_lowersymmetric > 0) && (_world._CO2 < _lowersymmetric)) {
-									if (Utils.random.nextInt(_lowersymmetric) < _world._CO2) {
+								if ((_lowersymmetric > 0) && (_world.getCO2() < _lowersymmetric)) {
+									if (Utils.random.nextInt(_lowersymmetric) < _world.getCO2()) {
 										_energy += _world.photosynthesis(_photosynthesis + _colonyPhotosynthesis);
 									}
 								} else {
@@ -22924,8 +22924,8 @@ public class Organism extends Rectangle {
 								}
 								_colonyPhotosynthesis = 0;
 							} else {
-								if ((_lowersymmetric > 0) && (_world._CO2 < _lowersymmetric)) {
-									if (Utils.random.nextInt(_lowersymmetric) < _world._CO2) {
+								if ((_lowersymmetric > 0) && (_world.getCO2() < _lowersymmetric)) {
+									if (Utils.random.nextInt(_lowersymmetric) < _world.getCO2()) {
 										_energy += _world.photosynthesis(_photosynthesis);
 									}
 								} else {
@@ -22937,8 +22937,8 @@ public class Organism extends Rectangle {
 				} else {
 					if (specialphoto > 0) {
 						if (_colonyPhotosynthesis > 0) {
-							if ((_lowersymmetric > 0) && (_world._CO2 < _lowersymmetric)) {
-								if (Utils.random.nextInt(_lowersymmetric) < _world._CO2) {
+							if ((_lowersymmetric > 0) && (_world.getCO2() < _lowersymmetric)) {
+								if (Utils.random.nextInt(_lowersymmetric) < _world.getCO2()) {
 									_energy += _world.photosynthesis(_photosynthesis - (specialphoto*Utils.scale[_growthRatio-1]) + _colonyPhotosynthesis);
 								}
 							} else {
@@ -22946,8 +22946,8 @@ public class Organism extends Rectangle {
 							}
 							_colonyPhotosynthesis = 0;
 						} else {
-							if ((_lowersymmetric > 0) && (_world._CO2 < _lowersymmetric)) {
-								if (Utils.random.nextInt(_lowersymmetric) < _world._CO2) {
+							if ((_lowersymmetric > 0) && (_world.getCO2() < _lowersymmetric)) {
+								if (Utils.random.nextInt(_lowersymmetric) < _world.getCO2()) {
 									_energy += _world.photosynthesis(_photosynthesis - (specialphoto*Utils.scale[_growthRatio-1]));
 								}
 							} else {
@@ -22956,8 +22956,8 @@ public class Organism extends Rectangle {
 						}
 					} else {
 						if (_colonyPhotosynthesis > 0) {
-							if ((_lowersymmetric > 0) && (_world._CO2 < _lowersymmetric)) {
-								if (Utils.random.nextInt(_lowersymmetric) < _world._CO2) {
+							if ((_lowersymmetric > 0) && (_world.getCO2() < _lowersymmetric)) {
+								if (Utils.random.nextInt(_lowersymmetric) < _world.getCO2()) {
 									_energy += _world.photosynthesis(_photosynthesis + _colonyPhotosynthesis);
 								}
 							} else {
@@ -22965,8 +22965,8 @@ public class Organism extends Rectangle {
 							}
 							_colonyPhotosynthesis = 0;
 						} else {
-							if ((_lowersymmetric > 0) && (_world._CO2 < _lowersymmetric)) {
-								if (Utils.random.nextInt(_lowersymmetric) < _world._CO2) {
+							if ((_lowersymmetric > 0) && (_world.getCO2() < _lowersymmetric)) {
+								if (Utils.random.nextInt(_lowersymmetric) < _world.getCO2()) {
 									_energy += _world.photosynthesis(_photosynthesis);
 								}
 							} else {
@@ -23251,17 +23251,17 @@ public class Organism extends Rectangle {
 				_photosynthesis = (addphoto*Utils.scale[_growthRatio-1]);
 			}
 			if (_photosynthesis > 0) {
-				if ((_isonlyc4 == 0) || (_world._CO2 > _world._CO1)) {
-					if ((_lowersymmetric > 0) && (_world._CO2 < _lowersymmetric)) {
-						if (Utils.random.nextInt(_lowersymmetric) < _world._CO2) {
+				if ((_isonlyc4 == 0) || (_world.getCO2() > _world.getCO1())) {
+					if ((_lowersymmetric > 0) && (_world.getCO2() < _lowersymmetric)) {
+						if (Utils.random.nextInt(_lowersymmetric) < _world.getCO2()) {
 							_energy += _world.photosynthesis(_photosynthesis);
 						}
 					} else {
 						_energy += _world.photosynthesis(_photosynthesis);
 					}
 				} else {
-					if ((_lowersymmetric > 0) && (_world._CO1 < _lowersymmetric)) {
-						if (Utils.random.nextInt(_lowersymmetric) < _world._CO1) {
+					if ((_lowersymmetric > 0) && (_world.getCO1() < _lowersymmetric)) {
+						if (Utils.random.nextInt(_lowersymmetric) < _world.getCO1()) {
 							_energy += _world.C4photosynthesis(_photosynthesis);
 						}
 					} else {

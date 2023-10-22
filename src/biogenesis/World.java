@@ -114,35 +114,10 @@ public class World implements Serializable{
 	 */
 	private int nFrames;
 	/**
-	 * The amount of O2 in the atmosphere of this world.
+	 * Resource manager keeps track of all resources in the world.
 	 */
 	@Expose
-	protected volatile double _O2;
-	private static final Object _O2_monitor = new Object();
-	/**
-	 * The amount of CO2 in the atmosphere of this world.
-	 */
-	@Expose
-	protected volatile double _CO2;
-	private static final Object _CO2_monitor = new Object();
-	/**
-	 * The amount of CH4 in the atmosphere of this world.
-	 */
-	@Expose
-	protected volatile double _CH4;
-	private static final Object _CH4_monitor = new Object();
-	/**
-	 * The amount of CO in the atmosphere of this world.
-	 */
-	@Expose
-	protected volatile double _CO1;
-	private static final Object _CO1_monitor = new Object();
-	/**
-	 * The amount of detritus in the atmosphere of this world.
-	 */
-	@Expose
-	protected volatile double _detritus;
-	private static final Object _detritus_monitor = new Object();
+	private ResourceManager resourceManager;
 	/**
 	 * Do we need to check for corridors?
 	 */
@@ -322,7 +297,7 @@ public class World implements Serializable{
 	 * @return  The amount of O2.
 	 */
 	public double getO2() {
-		return _O2;
+		return resourceManager.getO2();
 	}
 	/**
 	 * Returns the amount of CO2 that exist in the atmosphere.
@@ -330,7 +305,7 @@ public class World implements Serializable{
 	 * @return  The amount of CO2.
 	 */
 	public double getCO2() {
-		return _CO2;
+		return resourceManager.getCO2();
 	}
 	/**
 	 * Returns the amount of CH4 that exist in the atmosphere.
@@ -338,7 +313,7 @@ public class World implements Serializable{
 	 * @return  The amount of CH4.
 	 */
 	public double getCH4() {
-		return _CH4;
+		return resourceManager.getCH4();
 	}
 	/**
 	 * Returns the amount of CO that exist in the atmosphere.
@@ -346,7 +321,7 @@ public class World implements Serializable{
 	 * @return  The amount of CO.
 	 */
 	public double getCO1() {
-		return _CO1;
+		return resourceManager.getCO1();
 	}
 	/**
 	 * Returns the amount of detritus that exist in the atmosphere.
@@ -354,7 +329,7 @@ public class World implements Serializable{
 	 * @return  The amount of detritus.
 	 */
 	public double getDetritus() {
-		return _detritus;
+		return resourceManager.getDetritus();
 	}
 	/**
 	 * Add CO2 to the atmosphere.
@@ -362,9 +337,7 @@ public class World implements Serializable{
 	 * @param q  The amount of CO2 to add.
 	 */
 	public void addCO2(double q) {
-		synchronized (_CO2_monitor) {
-			_CO2 += q;
-		}
+		resourceManager.addCO2(q);
 	}
 	/**
 	 * Add CH4 to the atmosphere.
@@ -372,9 +345,7 @@ public class World implements Serializable{
 	 * @param q  The amount of CH4 to add.
 	 */
 	public void addCH4(double q) {
-		synchronized (_CH4_monitor) {
-			_CH4 += q;
-		}
+		resourceManager.addCH4(q);
 	}
 	/**
 	 * Add CO to the atmosphere.
@@ -382,9 +353,7 @@ public class World implements Serializable{
 	 * @param q  The amount of CO to add.
 	 */
 	public void addCO1(double q) {
-		synchronized (_CO1_monitor) {
-			_CO1 += q;
-		}
+		resourceManager.addCO1(q);
 	}
 	/**
 	 * Add detritus to the atmosphere.
@@ -392,9 +361,7 @@ public class World implements Serializable{
 	 * @param q  The amount of detritus to add.
 	 */
 	public void addDetritus(double q) {
-		synchronized (_detritus_monitor) {
-			_detritus += q;
-		}
+		resourceManager.addDetritus(q);
 	}
 	/**
 	 * Substract CO2 from the atmosphere.
@@ -402,9 +369,7 @@ public class World implements Serializable{
 	 * @param q  The amount of CO2 to substract.
 	 */
 	public void decreaseCO2(double q) {
-		synchronized (_CO2_monitor) {
-			_CO2 -= Math.min(q, _CO2);
-		}
+		resourceManager.removeCO2(q);
 	}
 	/**
 	 * Substract CH4 from the atmosphere.
@@ -412,9 +377,7 @@ public class World implements Serializable{
 	 * @param q  The amount of CH4 to substract.
 	 */
 	public void decreaseCH4(double q) {
-		synchronized (_CH4_monitor) {
-			_CH4 -= Math.min(q, _CH4);
-		}
+		resourceManager.removeCH4(q);
 	}
 	/**
 	 * Substract CO from the atmosphere.
@@ -422,9 +385,7 @@ public class World implements Serializable{
 	 * @param q  The amount of CO to substract.
 	 */
 	public void decreaseCO1(double q) {
-		synchronized (_CO1_monitor) {
-			_CO1 -= Math.min(q, _CO1);
-		}
+		resourceManager.removeCO1(q);
 	}
 	/**
 	 * Substract detritus from the atmosphere.
@@ -432,9 +393,7 @@ public class World implements Serializable{
 	 * @param q  The amount of detritus to substract.
 	 */
 	public void decreaseDetritus(double q) {
-		synchronized (_detritus_monitor) {
-			_detritus -= Math.min(q, _detritus);
-		}
+		resourceManager.removeDetritus(q);
 	}
 	/**
 	 * Takes the given amount of CO2 from the atmosphere and converts it to O2.
@@ -446,14 +405,7 @@ public class World implements Serializable{
 	 * unless there weren't enough CO2 in the atmosphere.
 	 */
 	public double convertCO2ToO2(double q) {
-		synchronized (_CO2_monitor) {
-			synchronized (_O2_monitor) {
-				double d = Math.min(q,_CO2);
-				_CO2 -= d;
-				_O2 += d;
-				return d;
-			}
-		}
+		return resourceManager.convertCO2ToO2(q);
 	}
 	/**
 	 * Consume O2 from the atmosphere to realize the respiration process
@@ -464,13 +416,7 @@ public class World implements Serializable{
 	 * @return  The amount of O2 obtained. This is always <code>q</code>
 	 */
 	public double respiration(double q) {
-		synchronized (_CO2_monitor) {
-			synchronized (_O2_monitor) {
-				_O2 -= q;
-				_CO2 += q;
-				return q;
-			}
-		}
+		return resourceManager.convertO2ToCO2(q);
 	}
 	/**
 	 * Decaying organisms and pink, while consuming another organism, release
@@ -480,13 +426,7 @@ public class World implements Serializable{
 	 * @return  The amount of O2 obtained. This is always <code>q</code>
 	 */
 	public double decomposition(double q) {
-		synchronized (_CH4_monitor) {
-			synchronized (_O2_monitor) {
-				_O2 -= q;
-				_CH4 += q;
-				return q;
-			}
-		}
+		return resourceManager.convertO2ToCH4(q);
 	}
 	/**
 	 * Organisms using their abilities, release
@@ -496,13 +436,7 @@ public class World implements Serializable{
 	 * @return  The amount of O2 obtained. This is always <code>q</code>
 	 */
 	public double energyuse(double q) {
-		synchronized (_CO1_monitor) {
-			synchronized (_O2_monitor) {
-				_O2 -= q;
-				_CO1 += q;
-				return q;
-			}
-		}
+		return resourceManager.convertO2ToCO1(q);
 	}
 	/**
 	 * Feeding organisms except pink (but also produced in some other cases) release
@@ -512,13 +446,7 @@ public class World implements Serializable{
 	 * @return  The amount of O2 obtained. This is always <code>q</code>
 	 */
 	public double detritusproduction(double q) {
-		synchronized (_detritus_monitor) {
-			synchronized (_O2_monitor) {
-				_O2 -= q;
-				_detritus += q;
-				return q;
-			}
-		}
+		return resourceManager.convertO2ToDetritus(q);
 	}
 	/**
 	 * Consume CO2 from the atmosphere to realize the photosynthesis process
@@ -538,14 +466,7 @@ public class World implements Serializable{
 	 * @return  The amount of CO2 obtained.
 	 */
 	public double photosynthesis(double q) {
-		synchronized (_CO2_monitor) {
-			synchronized (_O2_monitor) {
-				q = Utils.min(q,q*_CO2/Utils.DRAIN_SUBS_DIVISOR,_CO2);
-				_CO2 -= q;
-				_O2 += q;
-				return q;
-			}
-		}
+		return resourceManager.convertCO2ToO2(q);
 	}
 	/**
 	 * Consume CH4 from the atmosphere to realize the methanotrophic process
@@ -565,14 +486,7 @@ public class World implements Serializable{
 	 * @return  The amount of CH4 obtained.
 	 */
 	public double methanotrophy(double q) {
-		synchronized (_CH4_monitor) {
-			synchronized (_O2_monitor) {
-				q = Utils.min(q,q*_CH4/Utils.DRAIN_SUBS_DIVISOR,_CH4);
-				_CH4 -= q;
-				_O2 += q;
-				return q;
-			}
-		}
+		return resourceManager.convertCH4ToO2(q);
 	}
 	/**
 	 * Consume CO from the atmosphere for C4 only plants to realize the photosynthesis process
@@ -592,14 +506,7 @@ public class World implements Serializable{
 	 * @return  The amount of CO obtained.
 	 */
 	public double C4photosynthesis(double q) {
-		synchronized (_CO1_monitor) {
-			synchronized (_O2_monitor) {
-				q = Utils.min(q,q*_CO1/Utils.DRAIN_SUBS_DIVISOR,_CO1);
-				_CO1 -= q;
-				_O2 += q;
-				return q;
-			}
-		}
+		return resourceManager.convertCO1ToO2(q);
 	}
 	/**
 	 * Consume detritus from the atmosphere to realize the filter feeder
@@ -619,14 +526,7 @@ public class World implements Serializable{
 	 * @return  The amount of detritus obtained.
 	 */
 	public double filterfeeding(double q) {
-		synchronized (_detritus_monitor) {
-			synchronized (_O2_monitor) {
-				q = Utils.min(q,q*_detritus/Utils.DRAIN_SUBS_DIVISOR,_detritus);
-				_detritus -= q;
-				_O2 += q;
-				return q;
-			}
-		}
+		return resourceManager.convertDetritusToO2(q);
 	}
 	/**
 	 * Constructor of the World class. All internal structures are initialized and
@@ -667,11 +567,12 @@ public class World implements Serializable{
 	public void genesis() {
 		// Reset atributs
 		nFrames = 0;
-		_O2 = Utils.INITIAL_O2;
-		_CO2 = Utils.INITIAL_CO2;
-		_CH4 = Utils.INITIAL_CH4;
-		_CO1 = Utils.INITIAL_CO1;
-		_detritus = Utils.INITIAL_DETRITUS;
+		resourceManager = new ResourceManager(
+				Utils.INITIAL_O2,
+				Utils.INITIAL_CO2,
+				Utils.INITIAL_CH4,
+				Utils.INITIAL_DETRITUS,
+				Utils.INITIAL_CO1);
 		NEXT_ID = 0;
 		NEXT_CLADE_PART = 0;
 		_population = 0;
@@ -796,37 +697,13 @@ public class World implements Serializable{
 		ParallelExecutor.progressAllOrganisms(_organisms, organismBuckets, _visibleWorld);
 
 		// Reactions turning CO2 and CH4 into each other, detritus into CO, and CO into CO2
-		synchronized (_CH4_monitor) {
-			synchronized (_CO2_monitor) {
-				synchronized (_CO1_monitor) {
-					synchronized (_detritus_monitor) {
-						double x = Math.min(getCO2()/Utils.CO2_TO_CH4_DIVISOR,getCO2());
-						_CO2 -= x;
-						_CH4 += x;
-						double y = Math.min(getCH4()/Utils.CH4_TO_CO2_DIVISOR,getCH4());
-						_CH4 -= y;
-						_CO2 += y;
-						double z = Math.min(getDetritus()/Utils.DETRITUS_TO_CO1_DIVISOR,getDetritus());
-						_detritus -= z;
-						_CO1 += z;
-						if (getCO1() > getCO2()) {
-							double v = Math.min((getCO1()+(getCO1()-getCO2()))/Utils.CO1_TO_CO2_DIVISOR,getCO1());
-							_CO1 -= v;
-							_CO2 += v;
-						} else {
-							double w = Math.min(getCO1()/Utils.CO1_TO_CO2_DIVISOR,getCO1());
-							_CO1 -= w;
-							_CO2 += w;
-						}
-					}
-				}
-			}
-		}
+		resourceManager.reactions();
 		if (nFrames++ % 20 == 0)
 			_visibleWorld.getMainWindow().getInfoPanel().recalculate();
 		if (nFrames % 256 == 0) {
 			nFrames = 0;
-			worldStatistics.eventTime(_population, getDistinctCladeIDCount(1), getDistinctCladeIDCount(10), getDistinctCladeIDCount(100), _O2, _CO2, _CO1, _CH4, _detritus, _organisms);
+			worldStatistics.eventTime(_population, getDistinctCladeIDCount(1), getDistinctCladeIDCount(10), getDistinctCladeIDCount(100),
+				resourceManager.getO2(), resourceManager.getCO2(), resourceManager.getCO1(), resourceManager.getCH4(), resourceManager.getDetritus(), _organisms);
 			_isbackuped = false;
 			_issaved = false;
 		}
