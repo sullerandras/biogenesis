@@ -1,3 +1,9 @@
+ifdef OS # is Windows
+	PATH_SEPARATOR = ;
+else # is Linux/macos
+	PATH_SEPARATOR = :
+endif
+
 run: build
 	SKIP_OPENGL=true java -Dsun.java2d.opengl=True -Dsun.java2d.opengl.fbobject=false -jar biogenesis.jar
 
@@ -38,7 +44,7 @@ build-src-jar:
 
 compile: clean
 	mkdir -p classes
-	javac -cp lib/gson-2.10.1.jar:lib/xchart-3.8.5.jar -sourcepath src src/biogenesis/*.java -source 8 -target 8 -d classes
+	javac -cp "lib/gson-2.10.1.jar$(PATH_SEPARATOR)lib/xchart-3.8.5.jar" -sourcepath src src/biogenesis/*.java -source 8 -target 8 -d classes
 	cp -r src/biogenesis/messages classes/biogenesis
 	cp -r src/biogenesis/images classes/biogenesis
 
