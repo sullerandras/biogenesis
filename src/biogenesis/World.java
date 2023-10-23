@@ -297,7 +297,7 @@ public class World implements Serializable{
 	 * @return  The amount of O2.
 	 */
 	public double getO2() {
-		return resourceManager.getO2();
+		return resourceManager.getTotalO2();
 	}
 	/**
 	 * Returns the amount of CO2 that exist in the atmosphere.
@@ -305,7 +305,7 @@ public class World implements Serializable{
 	 * @return  The amount of CO2.
 	 */
 	public double getCO2() {
-		return resourceManager.getCO2();
+		return resourceManager.getTotalCO2();
 	}
 	/**
 	 * Returns the amount of CH4 that exist in the atmosphere.
@@ -313,7 +313,7 @@ public class World implements Serializable{
 	 * @return  The amount of CH4.
 	 */
 	public double getCH4() {
-		return resourceManager.getCH4();
+		return resourceManager.getTotalCH4();
 	}
 	/**
 	 * Returns the amount of CO that exist in the atmosphere.
@@ -321,7 +321,7 @@ public class World implements Serializable{
 	 * @return  The amount of CO.
 	 */
 	public double getCO1() {
-		return resourceManager.getCO1();
+		return resourceManager.getTotalCO1();
 	}
 	/**
 	 * Returns the amount of detritus that exist in the atmosphere.
@@ -329,7 +329,7 @@ public class World implements Serializable{
 	 * @return  The amount of detritus.
 	 */
 	public double getDetritus() {
-		return resourceManager.getDetritus();
+		return resourceManager.getTotalDetritus();
 	}
 	/**
 	 * Add CO2 to the atmosphere.
@@ -396,60 +396,60 @@ public class World implements Serializable{
 		resourceManager.removeDetritus(q);
 	}
 	/**
-	 * Takes the given amount of CO2 from the atmosphere and converts it to O2.
-	 * If the atmosphere doesn't have enough CO2, only the available amount is
+	 * Takes the given amount of CO2 from the region around the given coordinates and converts it to O2.
+	 * If the regi=ion doesn't have enough CO2, only the available amount is
 	 * converted.
 	 *
 	 * @param q  The amount of CO2 to convert.
 	 * @return  The amount of CO2 converted. This is always <code>q</code>
 	 * unless there weren't enough CO2 in the atmosphere.
 	 */
-	public double convertCO2ToO2(double q) {
-		return resourceManager.convertCO2ToO2(q);
+	public double convertCO2ToO2(double q, int x, int y) {
+		return resourceManager.convertCO2ToO2(q, x, y);
 	}
 	/**
-	 * Consume O2 from the atmosphere to realize the respiration process
+	 * Consume O2 from the region around the given coordinates to realize the respiration process
 	 * needed to consume accumulated chemical energy. Frees the same
 	 * amount of CO2 to the atmosphere than O2 consumed.
 	 *
 	 * @param q  The amount of O2 required.
 	 * @return  The amount of O2 obtained. This is always <code>q</code>
 	 */
-	public double respiration(double q) {
-		return resourceManager.convertO2ToCO2(q);
+	public double respiration(double q, int x, int y) {
+		return resourceManager.convertO2ToCO2(q, x, y);
 	}
 	/**
 	 * Decaying organisms and pink, while consuming another organism, release
-	 * carbon as methane into the atmosphere
+	 * carbon as methane into the region around the given coordinates.
 	 *
 	 * @param q  The amount of O2 required.
 	 * @return  The amount of O2 obtained. This is always <code>q</code>
 	 */
-	public double decomposition(double q) {
-		return resourceManager.convertO2ToCH4(q);
+	public double decomposition(double q, int x, int y) {
+		return resourceManager.convertO2ToCH4(q, x, y);
 	}
 	/**
 	 * Organisms using their abilities, release
-	 * carbon as CO into the atmosphere
+	 * carbon as CO into the region around the given coordinates.
 	 *
 	 * @param q  The amount of O2 required.
 	 * @return  The amount of O2 obtained. This is always <code>q</code>
 	 */
-	public double energyuse(double q) {
-		return resourceManager.convertO2ToCO1(q);
+	public double energyuse(double q, int x, int y) {
+		return resourceManager.convertO2ToCO1(q, x, y);
 	}
 	/**
 	 * Feeding organisms except pink (but also produced in some other cases) release
-	 * carbon as detritus into the atmosphere
+	 * carbon as detritus into the region around the given coordinates.
 	 *
 	 * @param q  The amount of O2 required.
 	 * @return  The amount of O2 obtained. This is always <code>q</code>
 	 */
-	public double detritusproduction(double q) {
-		return resourceManager.convertO2ToDetritus(q);
+	public double detritusproduction(double q, int x, int y) {
+		return resourceManager.convertO2ToDetritus(q, x, y);
 	}
 	/**
-	 * Consume CO2 from the atmosphere to realize the photosynthesis process
+	 * Consume CO2 from the region around the given coordinates to realize the photosynthesis process
 	 * needed to obtain chemical energy from the Sun. Frees the same amount
 	 * of O2 to the atmosphere than CO2 consumed.
 	 *
@@ -465,11 +465,11 @@ public class World implements Serializable{
 	 * @param q  The total length of the organism's green segments.
 	 * @return  The amount of CO2 obtained.
 	 */
-	public double photosynthesis(double q) {
-		return resourceManager.convertCO2ToO2(q);
+	public double photosynthesis(double q, int x, int y) {
+		return resourceManager.convertCO2ToO2(q, x, y);
 	}
 	/**
-	 * Consume CH4 from the atmosphere to realize the methanotrophic process
+	 * Consume CH4 from the region around the given coordinates to realize the methanotrophic process
 	 * needed to obtain chemical energy. Frees the same amount
 	 * of O2 to the atmosphere than CH4 consumed.
 	 *
@@ -485,11 +485,11 @@ public class World implements Serializable{
 	 * @param q  The total length of the organism's purple segments.
 	 * @return  The amount of CH4 obtained.
 	 */
-	public double methanotrophy(double q) {
-		return resourceManager.convertCH4ToO2(q);
+	public double methanotrophy(double q, int x, int y) {
+		return resourceManager.convertCH4ToO2(q, x, y);
 	}
 	/**
-	 * Consume CO from the atmosphere for C4 only plants to realize the photosynthesis process
+	 * Consume CO from the region around the given coordinates for C4 only plants to realize the photosynthesis process
 	 * needed to obtain chemical energy from the Sun. Frees the same amount
 	 * of O2 to the atmosphere than CO consumed.
 	 *
@@ -505,11 +505,11 @@ public class World implements Serializable{
 	 * @param q  The total length of the organism's C4 segments.
 	 * @return  The amount of CO obtained.
 	 */
-	public double C4photosynthesis(double q) {
-		return resourceManager.convertCO1ToO2(q);
+	public double C4photosynthesis(double q, int x, int y) {
+		return resourceManager.convertCO1ToO2(q, x, y);
 	}
 	/**
-	 * Consume detritus from the atmosphere to realize the filter feeder
+	 * Consume detritus from the region around the given coordinates to realize the filter feeder
 	 * process needed to obtain chemical energy. Frees the same amount
 	 * of O2 to the atmosphere than detritus consumed.
 	 *
@@ -525,8 +525,8 @@ public class World implements Serializable{
 	 * @param q  The total length of the organism's plankton segments.
 	 * @return  The amount of detritus obtained.
 	 */
-	public double filterfeeding(double q) {
-		return resourceManager.convertDetritusToO2(q);
+	public double filterfeeding(double q, int x, int y) {
+		return resourceManager.convertDetritusToO2(q, x, y);
 	}
 	/**
 	 * Constructor of the World class. All internal structures are initialized and
@@ -572,7 +572,9 @@ public class World implements Serializable{
 				Utils.INITIAL_CO2,
 				Utils.INITIAL_CH4,
 				Utils.INITIAL_DETRITUS,
-				Utils.INITIAL_CO1);
+				Utils.INITIAL_CO1,
+				Utils.WORLD_WIDTH,
+				Utils.WORLD_HEIGHT);
 		NEXT_ID = 0;
 		NEXT_CLADE_PART = 0;
 		_population = 0;
@@ -642,6 +644,7 @@ public class World implements Serializable{
 				}
 			}
 		}
+		resourceManager.draw(g);
 		synchronized (_organisms) {
 			if (organismBuckets != null && !fullRedraw) {
 				final JViewport viewPort = (JViewport) SwingUtilities.getAncestorOfClass(JViewport.class, (VisibleWorld) _visibleWorld);
@@ -703,7 +706,7 @@ public class World implements Serializable{
 		if (nFrames % 256 == 0) {
 			nFrames = 0;
 			worldStatistics.eventTime(_population, getDistinctCladeIDCount(1), getDistinctCladeIDCount(10), getDistinctCladeIDCount(100),
-				resourceManager.getO2(), resourceManager.getCO2(), resourceManager.getCO1(), resourceManager.getCH4(), resourceManager.getDetritus(), _organisms);
+				getO2(), getCO2(), getCO1(), getCH4(), getDetritus(), _organisms);
 			_isbackuped = false;
 			_issaved = false;
 		}
