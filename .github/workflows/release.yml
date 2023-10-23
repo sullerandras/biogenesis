@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - andras-patches
+      - localized-gases
 
 jobs:
   build-and-create-release:
