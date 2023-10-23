@@ -8,6 +8,8 @@ package biogenesis;
 public class ResourceRegion implements java.io.Serializable {
     private static final long serialVersionUID = 1L;
 
+    private static final double DIFFUSION_RATE = 0.01;
+
     private Resource o2;
     private Resource co2;
     private Resource ch4;
@@ -265,5 +267,20 @@ public class ResourceRegion implements java.io.Serializable {
 
     private double convertCO1ToCO2(double q) {
         return convert(co1, co2, q);
+    }
+
+    public void swapResources(ResourceRegion other) {
+        swapResource(o2, other.o2);
+        swapResource(co2, other.co2);
+        swapResource(ch4, other.ch4);
+        swapResource(detritus, other.detritus);
+        swapResource(co1, other.co1);
+    }
+
+    private void swapResource(Resource resource1, Resource resource2) {
+        double amount1 = resource1.remove(resource1.getAmount() * DIFFUSION_RATE);
+        double amount2 = resource2.remove(resource2.getAmount() * DIFFUSION_RATE);
+        resource1.add(amount2);
+        resource2.add(amount1);
     }
 }

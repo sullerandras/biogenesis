@@ -701,6 +701,9 @@ public class World implements Serializable{
 
 		// Reactions turning CO2 and CH4 into each other, detritus into CO, and CO into CO2
 		resourceManager.reactions();
+		// Diffuse resources between regions
+		resourceManager.diffusion();
+
 		if (nFrames++ % 20 == 0)
 			_visibleWorld.getMainWindow().getInfoPanel().recalculate();
 		if (nFrames % 256 == 0) {

@@ -218,6 +218,26 @@ public class ResourceManager implements java.io.Serializable {
     }
 
     /**
+     * Diffuses the resources across the world.
+     * Swaps a small portion of resources between adjacent regions.
+     *
+     * Not a good implementation, resources can spread to the right and bottom quickly, while they spread to the left and top slowly.
+     */
+    public synchronized void diffusion() {
+        for (int y = 0; y <= maxHeight; y++) {
+            for (int x = 0; x <= maxWidth; x++) {
+                ResourceRegion region = regions[y][x];
+                if (x < maxWidth) {
+                    region.swapResources(regions[y][x + 1]);
+                }
+                if (y < maxHeight) {
+                    region.swapResources(regions[y + 1][x]);
+                }
+            }
+        }
+    }
+
+    /**
      * Returns the total amount of O2 in the world.
      */
     public double getTotalO2() {
@@ -430,8 +450,15 @@ public class ResourceManager implements java.io.Serializable {
         g.setColor(Color.LIGHT_GRAY);
         for (int y = 0; y <= maxHeight; y++) {
             for (int x = 0; x <= maxWidth; x++) {
+                ResourceRegion region = regions[y][x];
                 g.drawLine(x * regionSize, y * regionSize, (x + 1) * regionSize, y * regionSize);
                 g.drawLine(x * regionSize, y * regionSize, x * regionSize, (y + 1) * regionSize);
+                g.drawString(String.format("O2: %.2f", region.getO2()), x * regionSize + 10, y * regionSize + 10);
+                g.drawString(String.format("CO2: %.2f", region.getCO2()), x * regionSize + 10, y * regionSize + 20);
+                g.drawString(String.format("CH4: %.2f", region.getCH4()), x * regionSize + 10, y * regionSize + 30);
+                g.drawString(String.format("Detritus: %.2f", region.getDetritus()), x * regionSize + 10, y * regionSize + 40);
+                g.drawString(String.format("CO1: %.2f", region.getCO1()), x * regionSize + 10, y * regionSize + 50);
+                g.drawString(String.format("Total: %.2f", region.getO2()+region.getCO2()+region.getCH4()+region.getDetritus()+region.getCO1()), x * regionSize + 10, y * regionSize + 60);
             }
         }
     }
