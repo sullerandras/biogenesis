@@ -345,7 +345,7 @@ public final class Utils {
 	/**
 	 * This is the default energy that is consumed when a drift segment is used.
 	 */
-	final static double DEF_DRIFT_ENERGY_CONSUMPTION = 3.333d;
+	final static double DEF_DRIFT_ENERGY_CONSUMPTION = 3.5d;
 	/**
 	 * This is the default energy that is consumed when a spin segment is used.
 	 */
@@ -457,7 +457,7 @@ public final class Utils {
 	/**
 	 * This is the default probability for a new segment to be cyan.
 	 */
-	final static int DEF_CYAN_PROB = 4;
+	final static int DEF_CYAN_PROB = 6;
 	/**
 	 * This is the default probability for a new segment to be white.
 	 */
@@ -545,11 +545,11 @@ public final class Utils {
 	/**
 	 * This is the default probability for a new segment to be teal.
 	 */
-	final static int DEF_TEAL_PROB = 8;
+	final static int DEF_TEAL_PROB = 9;
 	/**
 	 * This is the default probability for a new segment to be drift.
 	 */
-	final static int DEF_DRIFT_PROB = 4;
+	final static int DEF_DRIFT_PROB = 3;
 	/**
 	 * This is the default probability for a new segment to be spin.
 	 */
