@@ -626,9 +626,10 @@ public class Organism extends Rectangle {
 	protected double _theta;
 	/**
 	 * Last frame angle, used to avoid calculating point rotations when the angle doesn't
-	 * change between two consecutive frames.
-	 */
+	 * change between two consecutive frames. (not used at the moment)
+	
 	protected double _lastTheta = -1;
+	*/
 	/**
 	 * Rotated segments of the last frame, to use when _theta == _lastTheta
 	 */
@@ -2999,7 +3000,7 @@ public class Organism extends Rectangle {
 		                   				}
 		                    		}
 									if (largeenough) {
-										_photosynthesis = (2.5 * _mass)/Utils.GREEN_OBTAINED_ENERGY_DIVISOR;
+										_photosynthesis = (2.4 * _mass)/Utils.GREEN_OBTAINED_ENERGY_DIVISOR;
 									}
 								}
 							}
@@ -3535,7 +3536,7 @@ public class Organism extends Rectangle {
 		                   				}
 		                    		}
 									if (largeenough) {
-										_photosynthesis = (2.5 * _mass)/Utils.GREEN_OBTAINED_ENERGY_DIVISOR;
+										_photosynthesis = (2.4 * _mass)/Utils.GREEN_OBTAINED_ENERGY_DIVISOR;
 									}
 								}
 							}
@@ -4270,7 +4271,6 @@ public class Organism extends Rectangle {
 			bottom = Utils.max(bottom, y1[i] + _dCenterY, y2[i] + _dCenterY);
 		}
 		setBounds((int)left, (int)top, (int)(right-left+1)+1, (int)(bottom-top+1)+1);
-		_lastTheta = _theta;
 	}
 	/**
 	 * If its the time for this organism to grow, calculates its new segments and speed.
@@ -4905,16 +4905,16 @@ public class Organism extends Rectangle {
 				if (_filterfeeding > 0) {
 					if ((!_haseyes) || (dx == dxbak)) {
 						if (_spin > 0) {
-							if (_world._detritus < 475) {
-								if (Utils.random.nextInt(475) < _world._detritus) {
-									_energy += _world.filterfeeding(((0.93 * (Math.abs(dx) + Math.abs(dy))) + (22.768 * Math.abs(dtheta))) * _filterfeeding);
+							if (_world._detritus < 500) {
+								if (Utils.random.nextInt(500) < _world._detritus) {
+									_energy += _world.filterfeeding(((0.93 * (Math.abs(dx) + Math.abs(dy))) + (22.77 * Math.abs(dtheta))) * _filterfeeding);
 								}
 							} else {
-								_energy += _world.filterfeeding(((0.93 * (Math.abs(dx) + Math.abs(dy))) + (22.768 * Math.abs(dtheta))) * _filterfeeding);
+								_energy += _world.filterfeeding(((0.93 * (Math.abs(dx) + Math.abs(dy))) + (22.77 * Math.abs(dtheta))) * _filterfeeding);
 							}
 						} else {
-							if ((_symmetry == 1) && (_world._detritus < 475)) {
-								if (Utils.random.nextInt(475) < _world._detritus) {
+							if ((_symmetry == 1) && (_world._detritus < 500)) {
+								if (Utils.random.nextInt(500) < _world._detritus) {
 									_energy += _world.filterfeeding((Math.abs(dx) + Math.abs(dy)) * _filterfeeding);
 								}
 							} else {
@@ -5087,18 +5087,34 @@ public class Organism extends Rectangle {
 											if (_world._CO2 > _world._CO1) {
 												if ((_lowersymmetric > 0) && (_world._CO2 < _lowersymmetric)) {
 													if (Utils.random.nextInt(_lowersymmetric) < _world._CO2) {
-														_energy += _world.C4photosynthesis(_photosynthesis);
+														if (_isonlyc4 == 4) {
+															_energy += _world.photosynthesis(_photosynthesis);
+														} else {
+															_energy += _world.C4photosynthesis(_photosynthesis);
+														}
 													}
 												} else {
-													_energy += _world.C4photosynthesis(_photosynthesis);
+													if (_isonlyc4 == 4) {
+														_energy += _world.photosynthesis(_photosynthesis);
+													} else {
+														_energy += _world.C4photosynthesis(_photosynthesis);
+													}
 												}
 											} else {
 												if ((_lowersymmetric > 0) && (_world._CO1 < _lowersymmetric)) {
 													if (Utils.random.nextInt(_lowersymmetric) < _world._CO1) {
-														_energy += _world.COphotosynthesis(_photosynthesis);
+														if (_isonlyc4 == 4) {
+															_energy += _world.COcappedphotosynthesis(_photosynthesis);
+														} else {
+															_energy += _world.COphotosynthesis(_photosynthesis);
+														}
 													}
 												} else {
-													_energy += _world.COphotosynthesis(_photosynthesis);
+													if (_isonlyc4 == 4) {
+														_energy += _world.COcappedphotosynthesis(_photosynthesis);
+													} else {
+														_energy += _world.COphotosynthesis(_photosynthesis);
+													}
 												}
 											}
 										}
@@ -15397,19 +15413,14 @@ public class Organism extends Rectangle {
 						org.setColor(Utils.ColorTEAL);
 						setColor(Color.GRAY);
 					} else {
-						if ((org._segColor[oseg].equals(Color.MAGENTA)) && (!org._isgray) && (org.useEnergy(Utils.MAGENTA_ENERGY_CONSUMPTION))) {
-						    org.setColor(Color.MAGENTA);
-						    setColor(Color.GRAY);
+						if ((org._healing > 0) && ((!org._isgray) || ((!org._isaconsumer) && (!org._isafungus)))) {
+							if (useEnergy(Utils.GRAY_ENERGY_CONSUMPTION)) {
+								org.survive(this);
+							}
 						} else {
-							if ((org._healing > 0) && ((!org._isgray) || ((!org._isaconsumer) && (!org._isafungus)))) {
-								if (useEnergy(Utils.GRAY_ENERGY_CONSUMPTION)) {
-									org.survive(this);
-								}
-							} else {
-								if (useEnergy(Utils.GRAY_ENERGY_CONSUMPTION)) {
-									org.die(this);
-									setColor(Color.GRAY);
-								}
+							if (useEnergy(Utils.GRAY_ENERGY_CONSUMPTION)) {
+								org.die(this);
+								setColor(Color.GRAY);
 							}
 						}
 					}
@@ -23282,18 +23293,34 @@ public class Organism extends Rectangle {
 					if (_world._CO2 > _world._CO1) {
 						if ((_lowersymmetric > 0) && (_world._CO2 < _lowersymmetric)) {
 							if (Utils.random.nextInt(_lowersymmetric) < _world._CO2) {
-								_energy += _world.C4photosynthesis(_photosynthesis);
+								if (_isonlyc4 == 4) {
+									_energy += _world.photosynthesis(_photosynthesis);
+								} else {
+									_energy += _world.C4photosynthesis(_photosynthesis);
+								}
 							}
 						} else {
-							_energy += _world.C4photosynthesis(_photosynthesis);
+							if (_isonlyc4 == 4) {
+								_energy += _world.photosynthesis(_photosynthesis);
+							} else {
+								_energy += _world.C4photosynthesis(_photosynthesis);
+							}
 						}
 					} else {
 						if ((_lowersymmetric > 0) && (_world._CO1 < _lowersymmetric)) {
 							if (Utils.random.nextInt(_lowersymmetric) < _world._CO1) {
-								_energy += _world.COphotosynthesis(_photosynthesis);
+								if (_isonlyc4 == 4) {
+									_energy += _world.COcappedphotosynthesis(_photosynthesis);
+								} else {
+									_energy += _world.COphotosynthesis(_photosynthesis);
+								}
 							}
 						} else {
-							_energy += _world.COphotosynthesis(_photosynthesis);
+							if (_isonlyc4 == 4) {
+								_energy += _world.COcappedphotosynthesis(_photosynthesis);
+							} else {
+								_energy += _world.COphotosynthesis(_photosynthesis);
+							}
 						}
 					}
 				}

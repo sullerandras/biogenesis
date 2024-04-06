@@ -585,7 +585,7 @@ public class World implements Serializable{
 	 * CO2 in the atmosphere and divided by another parameter that indicates
 	 * the concentration of CO2 needed to absorb it. The result is the total
 	 * amount of CO2 that the organism can get. This value can't be greater than
-	 * the total amount of CO2 in the atmosphere, nor the doubled effectiveness of the
+	 * the total amount of CO2 in the atmosphere, nor the 8* effectiveness of the
 	 * initial length.
 	 *
 	 * @param q  The total length of the organism's C4 segments.
@@ -612,7 +612,7 @@ public class World implements Serializable{
 	 * CO in the atmosphere and divided by another parameter that indicates
 	 * the concentration of CO needed to absorb it. The result is the total
 	 * amount of CO that the organism can get. This value can't be greater than
-	 * the total amount of CO in the atmosphere, nor the doubled effectiveness of the
+	 * the total amount of CO in the atmosphere, nor the 8* effectiveness of the
 	 * initial length.
 	 *
 	 * @param q  The total length of the organism's C4 segments.
@@ -622,6 +622,33 @@ public class World implements Serializable{
 		synchronized (_CO1_monitor) {
 			synchronized (_O2_monitor) {
 				q = Utils.min(q*8,q*_CO1/Utils.DRAIN_SUBS_DIVISOR,_CO1);
+				_CO1 -= q;
+				_O2 += q;
+				return q;
+			}
+		}
+	}
+	/**
+	 * Consume CO from the atmosphere for C4 only plants to realize the photosynthesis process
+	 * needed to obtain chemical energy from the Sun. Frees the same amount
+	 * of O2 to the atmosphere than CO consumed. Capped version
+	 *
+	 * The CO obtained is calculated as follows: the total length of the
+	 * organism's C4 segments is divided by a fixed parameter that indicates
+	 * C4 segment effectiveness. Then, the result is multiplied by the total
+	 * CO in the atmosphere and divided by another parameter that indicates
+	 * the concentration of CO needed to absorb it. The result is the total
+	 * amount of CO that the organism can get. This value can't be greater than
+	 * the total amount of CO in the atmosphere, nor the effectiveness of the
+	 * initial length.
+	 *
+	 * @param q  The total length of the organism's C4 segments.
+	 * @return  The amount of CO obtained.
+	 */
+	public double COcappedphotosynthesis(double q) {
+		synchronized (_CO1_monitor) {
+			synchronized (_O2_monitor) {
+				q = Utils.min(q,q*_CO1/Utils.DRAIN_SUBS_DIVISOR,_CO1);
 				_CO1 -= q;
 				_O2 += q;
 				return q;
