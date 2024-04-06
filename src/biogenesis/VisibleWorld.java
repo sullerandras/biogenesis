@@ -314,7 +314,7 @@ public class VisibleWorld extends JPanel implements VisibleWorldInterface {
 				b.hasMoved = true;
 				b._age = 0;
 				b._timeToReproduce = 0;
-				b._max_age = Utils.MAX_AGE + (b._segments/Utils.AGE_DIVISOR);
+				b._max_age = Utils.MAX_AGE + (int) (b._segments/Utils.AGE_DIVISOR);
 				b._reproduceEnergy = (40 + 3 * b._segments);
 				b._isaplant = false;
 				b._isaconsumer = false;

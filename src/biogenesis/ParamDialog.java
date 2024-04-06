@@ -762,7 +762,7 @@ public class ParamDialog extends JDialog {
 		panel.add(maxageText);
 		label = new JLabel(Messages.getString("T_LIFE_EXPECTANCY_DIVISOR")); //$NON-NLS-1$
 		panel.add(label);
-		agedivisorText = new JTextField(Integer.toString(Utils.AGE_DIVISOR),6);
+		agedivisorText = new JTextField(Double.toString(Utils.AGE_DIVISOR),6);
 		panel.add(agedivisorText);
 		organismsPanel.add(panel);
 		// Spore-1 velocity factor - Spore-5 velocity factor
@@ -1447,8 +1447,8 @@ public class ParamDialog extends JDialog {
 			// Keep old value if there is a problem
 		}
 		try {
-			i = Integer.parseInt(agedivisorText.getText());
-			if (i > 0) Utils.AGE_DIVISOR = i;
+			d = Double.parseDouble(agedivisorText.getText());
+			if (d > 0) Utils.AGE_DIVISOR = d;
 		} catch (NumberFormatException ex) {
 			// Keep old value if there is a problem
 		}

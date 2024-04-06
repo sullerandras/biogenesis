@@ -1000,7 +1000,7 @@ public class Organism extends Rectangle {
 		}
 		if (_gold > 0) {
 			_gold = 0;
-			_max_age = Utils.MAX_AGE + (_segments/Utils.AGE_DIVISOR);
+			_max_age = Utils.MAX_AGE + (int) (_segments/Utils.AGE_DIVISOR);
 		}
 		boolean isspin =false;
 		_canreact =false;
@@ -1381,7 +1381,7 @@ public class Organism extends Rectangle {
 		}
 		// Calculate life expectancy with gold segments
 		if (_gold > 0) {
-			_max_age = Utils.MAX_AGE + (_segments/Utils.AGE_DIVISOR) + (int) Math.round((_gold/10)/Utils.GOLD_DIVISOR);
+			_max_age = Utils.MAX_AGE + (int) (_segments/Utils.AGE_DIVISOR) + (int) Math.round((_gold/10)/Utils.GOLD_DIVISOR);
 			_gold = 1;
 		}
 	}
@@ -1978,7 +1978,7 @@ public class Organism extends Rectangle {
 									}
 									break;
 								case DARKGRAY:
-									if ((_sporetime == 0) || ((_geneticCode.getModifiesspore() >= 3) && (_geneticCode.getModifiesspore() <= 5))) {
+									if ((_sporetime == 0) || (_geneticCode.getModifiesspore() >= 3)) {
 										if ((!_isblond) && (_reproducelate == 0) && (_age == 0)) {
 											_reproduceEnergy -= 3;
 										}
@@ -2004,9 +2004,7 @@ public class Organism extends Rectangle {
 							for (j=_segments-1; j>=0; j--) {
 								switch (getTypeColor(_segColor[j])) {
 								case C4:
-									if ((_sporetime == 0) || (_geneticCode.getModifiesspore() <= 6)) {
-										_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * (10.5 + _geneticCode.getGene(j%_geneticCode.getNGenes()).getLength());
-									}
+									_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * (10.5 + _geneticCode.getGene(j%_geneticCode.getNGenes()).getLength());
 									break;
 								}
 							}
@@ -2016,9 +2014,7 @@ public class Organism extends Rectangle {
 							for (j=_segments-1; j>=0; j--) {
 								switch (getTypeColor(_segColor[j])) {
 								case C4:
-									if ((_sporetime == 0) || (_geneticCode.getModifiesspore() <= 6)) {
-										_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * 1.0415 * (11 + _geneticCode.getGene(j%_geneticCode.getNGenes()).getLength());
-									}
+									_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * 1.0415 * (11 + _geneticCode.getGene(j%_geneticCode.getNGenes()).getLength());
 									break;
 								}
 							}
@@ -2087,16 +2083,33 @@ public class Organism extends Rectangle {
 					}
 				}
 			} else {
-				if ((_isinfectious) || (_plagueversion > 0) || (_isakiller) || (_isprotective)) {
+				if (_isakiller) {
 					int q;
 					for (q=_segments-1; q>=0; q--) {
 				         if (_segColor[q].equals(Utils.ColorPLANKTON)) {
-				             _mphoto[q] = 0.8125 * Utils.PLANKTON_ENERGY_CONSUMPTION * photomultiplier * _geneticCode.getGene(q%_geneticCode.getNGenes()).getLength();
+				             _mphoto[q] = 0.75 * Utils.PLANKTON_ENERGY_CONSUMPTION * photomultiplier * _geneticCode.getGene(q%_geneticCode.getNGenes()).getLength();
 						}
 					}
 				} else {
-					if ((_isenhanced) && (!_isafungus) && (!_iscoral) && (_blackversion >= 0)) {
-						_isplankton = 2;
+					if ((_isinfectious) || (_plagueversion > 0) || (_isprotective)) {
+						int q;
+						for (q=_segments-1; q>=0; q--) {
+					         if (_segColor[q].equals(Utils.ColorPLANKTON)) {
+					             _mphoto[q] = 0.8125 * Utils.PLANKTON_ENERGY_CONSUMPTION * photomultiplier * _geneticCode.getGene(q%_geneticCode.getNGenes()).getLength();
+							}
+						}
+					} else {
+						if ((_usefriendeffects > 0) || (_isafungus)) {
+							int q;
+							for (q=_segments-1; q>=0; q--) {
+						         if (_segColor[q].equals(Utils.ColorPLANKTON)) {
+						             _mphoto[q] = 0.9375 * Utils.PLANKTON_ENERGY_CONSUMPTION * photomultiplier * _geneticCode.getGene(q%_geneticCode.getNGenes()).getLength();
+								}
+							}
+						}
+						if ((_isenhanced) && (!_isafungus) && (!_iscoral) && (_blackversion >= 0)) {
+							_isplankton = 2;
+						}
 					}
 				}
 			}
@@ -2322,7 +2335,7 @@ public class Organism extends Rectangle {
 		}
 		// Calculate life expectancy with gold segments
 		if (_gold > 0) {
-			_max_age = Utils.MAX_AGE + (_segments/Utils.AGE_DIVISOR) + (int) Math.round((_gold/10)/Utils.GOLD_DIVISOR);
+			_max_age = Utils.MAX_AGE + (int) (_segments/Utils.AGE_DIVISOR) + (int) Math.round((_gold/10)/Utils.GOLD_DIVISOR);
 			_gold = 1;
 		}
 	}
@@ -2589,7 +2602,7 @@ public class Organism extends Rectangle {
 				parent._savedGeneticCode = null;
 			}
 			// Maximum age that an organism can reach
-			_max_age = Utils.MAX_AGE + (_segments/Utils.AGE_DIVISOR);
+			_max_age = Utils.MAX_AGE + (int) (_segments/Utils.AGE_DIVISOR);
 			// Calculates the energy required to reproduce this genetic code.
             _reproduceEnergy = (40 + 3 * _segments);
 			// Maximum time that needs to elapse after a reproduction attempt
@@ -2820,7 +2833,7 @@ public class Organism extends Rectangle {
 			                   			for (int i=0; i<_segments; i++) {
 			                   				_segColor[i] = Utils.ColorPURPLE;
 			                   				_mphoto[i] = 0;
-			                   				if (_m[i]>=1.368) {
+			                   				if (_m[i]>=1.62) {
 			                   					largeenough = true;
 			                   				}
 			                    		}
@@ -2832,12 +2845,12 @@ public class Organism extends Rectangle {
 											for (int i=0; i<_segments; i++) {
 				                  			    _segColor[i] = Utils.ColorC4;
 				                  			    _mphoto[i] = 0;
-				                  			    if (_m[i]>=1.368) {
+				                  			    if (_m[i]>=1.62) {
 				                   					largeenough = true;
 				                   				}
 				                  		    }
 				                   			if (largeenough) {
-				                   				_photosynthesis = (7 * _mass)/Utils.GREEN_OBTAINED_ENERGY_DIVISOR;
+				                   				_photosynthesis = (2 * _mass)/Utils.GREEN_OBTAINED_ENERGY_DIVISOR;
 											}
 										} else {
 											if (_jadefactor > 0) {
@@ -2847,7 +2860,7 @@ public class Organism extends Rectangle {
 				                   			for (int i=0; i<_segments; i++) {
 				                  			    _segColor[i] = Utils.ColorLEAF;
 				                  			    _mphoto[i] = 0;
-				                  			    if (_m[i]>=1.368) {
+				                  			    if (_m[i]>=1.62) {
 				                   					largeenough = true;
 				                   				}
 				                  		    }
@@ -2861,7 +2874,7 @@ public class Organism extends Rectangle {
 			                   			for (int i=0; i<_segments; i++) {
 			                   				_segColor[i] = Utils.ColorPURPLE;
 			                   				_mphoto[i] = 0;
-			                   				if (_m[i]>=1.368) {
+			                   				if (_m[i]>=1.62) {
 			                   					largeenough = true;
 			                   				}
 			                    		}
@@ -2873,12 +2886,12 @@ public class Organism extends Rectangle {
 											for (int i=0; i<_segments; i++) {
 				                  			    _segColor[i] = Utils.ColorC4;
 				                  			    _mphoto[i] = 0;
-				                  			    if (_m[i]>=1.368) {
+				                  			    if (_m[i]>=1.62) {
 				                   					largeenough = true;
 				                   				}
 				                  		    }
 				                   			if (largeenough) {
-				                   				_photosynthesis = ((7 * _mass) + (19.6 * (double)_symmetry))/Utils.GREEN_OBTAINED_ENERGY_DIVISOR;
+				                   				_photosynthesis = ((2 * _mass) + (19.6 * (double)_symmetry))/Utils.GREEN_OBTAINED_ENERGY_DIVISOR;
 											}
 										} else {
 											if (_blackversion < 0) {
@@ -2886,7 +2899,7 @@ public class Organism extends Rectangle {
 					                   			for (int i=0; i<_segments; i++) {
 					                   				_segColor[i] = Utils.ColorWINTER;
 					                   				_mphoto[i] = 0;
-					                   				if (_m[i]>=1.368) {
+					                   				if (_m[i]>=1.62) {
 					                   					largeenough = true;
 					                   				}
 					                    		}
@@ -2899,7 +2912,7 @@ public class Organism extends Rectangle {
 						                   			for (int i=0; i<_segments; i++) {
 						                   				_segColor[i] = Utils.ColorSUMMER;
 						                   				_mphoto[i] = 0;
-						                   				if (_m[i]>=1.368) {
+						                   				if (_m[i]>=1.62) {
 						                   					largeenough = true;
 						                   				}
 						                    		}
@@ -2911,7 +2924,7 @@ public class Organism extends Rectangle {
 														for (int i=0; i<_segments; i++) {
 							                   				_segColor[i] = Utils.ColorLIME;
 							                   				_mphoto[i] = 0;
-							                   				if (_m[i]>=1.368) {
+							                   				if (_m[i]>=1.62) {
 							                   					largeenough = true;
 							                   				}
 							                    		}
@@ -2924,7 +2937,7 @@ public class Organism extends Rectangle {
 								                   			for (int i=0; i<_segments; i++) {
 								                   				_segColor[i] = Utils.ColorFOREST;
 								                   				_mphoto[i] = 1;
-								                   				if (_m[i]>=1.368) {
+								                   				if (_m[i]>=1.62) {
 								                   					largeenough = true;
 								                   				}
 								                    		}
@@ -2938,7 +2951,7 @@ public class Organism extends Rectangle {
 									                   			for (int i=0; i<_segments; i++) {
 									                   				_segColor[i] = Utils.ColorGRASS;
 									                   				_mphoto[i] = 0;
-									                   				if (_m[i]>=1.368) {
+									                   				if (_m[i]>=1.62) {
 									                   					largeenough = true;
 									                   				}
 									                    		}
@@ -2950,7 +2963,7 @@ public class Organism extends Rectangle {
 										                   			for (int i=0; i<_segments; i++) {
 										                   				_segColor[i] = Utils.ColorJADE;
 										                   				_mphoto[i] = 0;
-										                   				if (_m[i]>=1.368) {
+										                   				if (_m[i]>=1.62) {
 										                   					largeenough = true;
 										                   				}
 										                    		}
@@ -2961,7 +2974,7 @@ public class Organism extends Rectangle {
 										                   			for (int i=0; i<_segments; i++) {
 										                   				_segColor[i] = Color.GREEN;
 										                   				_mphoto[i] = 0;
-										                   				if (_m[i]>=1.368) {
+										                   				if (_m[i]>=1.62) {
 										                   					largeenough = true;
 										                   				}
 										                    		}
@@ -2983,7 +2996,7 @@ public class Organism extends Rectangle {
 		                   			for (int i=0; i<_segments; i++) {
 		                   				_segColor[i] = Utils.ColorSPRING;
 		                   				_mphoto[i] = 0;
-		                   				if (_m[i]>=1.368) {
+		                   				if (_m[i]>=1.62) {
 		                   					largeenough = true;
 		                   				}
 		                  		    }
@@ -2996,12 +3009,12 @@ public class Organism extends Rectangle {
 									for (int i=0; i<_segments; i++) {
 										_segColor[i] = Utils.ColorC4;
 		                   				_mphoto[i] = 0;
-		                   				if (_m[i]>=1.368) {
+		                   				if (_m[i]>=1.62) {
 		                   					largeenough = true;
 		                   				}
 		                    		}
 									if (largeenough) {
-										_photosynthesis = (2 * _mass)/Utils.GREEN_OBTAINED_ENERGY_DIVISOR;
+										_photosynthesis = (_mass)/Utils.GREEN_OBTAINED_ENERGY_DIVISOR;
 									}
 								}
 							}
@@ -3010,7 +3023,7 @@ public class Organism extends Rectangle {
 								_methanotrophy = (2d/3d) * _methanotrophy;
 							}
 							if (_gold != 0) {
-								_max_age = Utils.MAX_AGE + (_segments/Utils.AGE_DIVISOR);
+								_max_age = Utils.MAX_AGE + (int) (_segments/Utils.AGE_DIVISOR);
 							}
 							if ((_isblond) && (_jadefactor > 0)) {
 								_jadefactor = 1;
@@ -3172,7 +3185,7 @@ public class Organism extends Rectangle {
 			ok = transform(victim);
 			if (ok) {
 				// Maximum age that an organism can reach
-				_max_age = Utils.MAX_AGE + (_segments/Utils.AGE_DIVISOR);
+				_max_age = Utils.MAX_AGE + (int) (_segments/Utils.AGE_DIVISOR);
 				// Calculates the energy required to reproduce this genetic code.
                 _reproduceEnergy = (40 + 3 * _segments);
 				// Maximum time that needs to elapse after a reproduction attempt
@@ -3356,7 +3369,7 @@ public class Organism extends Rectangle {
 			                   			for (int i=0; i<_segments; i++) {
 			                   				_segColor[i] = Utils.ColorPURPLE;
 			                   				_mphoto[i] = 0;
-			                   				if (_m[i]>=1.368) {
+			                   				if (_m[i]>=1.62) {
 			                   					largeenough = true;
 			                   				}
 			                    		}
@@ -3368,12 +3381,12 @@ public class Organism extends Rectangle {
 											for (int i=0; i<_segments; i++) {
 				                  			    _segColor[i] = Utils.ColorC4;
 				                  			    _mphoto[i] = 0;
-				                  			    if (_m[i]>=1.368) {
+				                  			    if (_m[i]>=1.62) {
 				                   					largeenough = true;
 				                   				}
 				                  		    }
 				                   			if (largeenough) {
-				                   				_photosynthesis = (7 * _mass)/Utils.GREEN_OBTAINED_ENERGY_DIVISOR;
+				                   				_photosynthesis = (2 * _mass)/Utils.GREEN_OBTAINED_ENERGY_DIVISOR;
 											}
 										} else {
 											if (_jadefactor > 0) {
@@ -3383,7 +3396,7 @@ public class Organism extends Rectangle {
 				                   			for (int i=0; i<_segments; i++) {
 				                  			    _segColor[i] = Utils.ColorLEAF;
 				                  			    _mphoto[i] = 0;
-				                  			    if (_m[i]>=1.368) {
+				                  			    if (_m[i]>=1.62) {
 				                   					largeenough = true;
 				                   				}
 				                  		    }
@@ -3397,7 +3410,7 @@ public class Organism extends Rectangle {
 			                   			for (int i=0; i<_segments; i++) {
 			                   				_segColor[i] = Utils.ColorPURPLE;
 			                   				_mphoto[i] = 0;
-			                   				if (_m[i]>=1.368) {
+			                   				if (_m[i]>=1.62) {
 			                   					largeenough = true;
 			                   				}
 			                    		}
@@ -3409,12 +3422,12 @@ public class Organism extends Rectangle {
 											for (int i=0; i<_segments; i++) {
 				                  			    _segColor[i] = Utils.ColorC4;
 				                  			    _mphoto[i] = 0;
-				                  			    if (_m[i]>=1.368) {
+				                  			    if (_m[i]>=1.62) {
 				                   					largeenough = true;
 				                   				}
 				                  		    }
 				                   			if (largeenough) {
-				                   				_photosynthesis = ((7 * _mass) + (19.6 * (double)_symmetry))/Utils.GREEN_OBTAINED_ENERGY_DIVISOR;
+				                   				_photosynthesis = ((2 * _mass) + (19.6 * (double)_symmetry))/Utils.GREEN_OBTAINED_ENERGY_DIVISOR;
 											}
 										} else {
 											if (_blackversion < 0) {
@@ -3422,7 +3435,7 @@ public class Organism extends Rectangle {
 					                   			for (int i=0; i<_segments; i++) {
 					                   				_segColor[i] = Utils.ColorWINTER;
 					                   				_mphoto[i] = 0;
-					                   				if (_m[i]>=1.368) {
+					                   				if (_m[i]>=1.62) {
 					                   					largeenough = true;
 					                   				}
 					                    		}
@@ -3435,7 +3448,7 @@ public class Organism extends Rectangle {
 						                   			for (int i=0; i<_segments; i++) {
 						                   				_segColor[i] = Utils.ColorSUMMER;
 						                   				_mphoto[i] = 0;
-						                   				if (_m[i]>=1.368) {
+						                   				if (_m[i]>=1.62) {
 						                   					largeenough = true;
 						                   				}
 						                    		}
@@ -3447,7 +3460,7 @@ public class Organism extends Rectangle {
 														for (int i=0; i<_segments; i++) {
 							                   				_segColor[i] = Utils.ColorLIME;
 							                   				_mphoto[i] = 0;
-							                   				if (_m[i]>=1.368) {
+							                   				if (_m[i]>=1.62) {
 							                   					largeenough = true;
 							                   				}
 							                    		}
@@ -3460,7 +3473,7 @@ public class Organism extends Rectangle {
 								                   			for (int i=0; i<_segments; i++) {
 								                   				_segColor[i] = Utils.ColorFOREST;
 								                   				_mphoto[i] = 1;
-								                   				if (_m[i]>=1.368) {
+								                   				if (_m[i]>=1.62) {
 								                   					largeenough = true;
 								                   				}
 								                    		}
@@ -3474,7 +3487,7 @@ public class Organism extends Rectangle {
 									                   			for (int i=0; i<_segments; i++) {
 									                   				_segColor[i] = Utils.ColorGRASS;
 									                   				_mphoto[i] = 0;
-									                   				if (_m[i]>=1.368) {
+									                   				if (_m[i]>=1.62) {
 									                   					largeenough = true;
 									                   				}
 									                    		}
@@ -3486,7 +3499,7 @@ public class Organism extends Rectangle {
 										                   			for (int i=0; i<_segments; i++) {
 										                   				_segColor[i] = Utils.ColorJADE;
 										                   				_mphoto[i] = 0;
-										                   				if (_m[i]>=1.368) {
+										                   				if (_m[i]>=1.62) {
 										                   					largeenough = true;
 										                   				}
 										                    		}
@@ -3497,7 +3510,7 @@ public class Organism extends Rectangle {
 										                   			for (int i=0; i<_segments; i++) {
 										                   				_segColor[i] = Color.GREEN;
 										                   				_mphoto[i] = 0;
-										                   				if (_m[i]>=1.368) {
+										                   				if (_m[i]>=1.62) {
 										                   					largeenough = true;
 										                   				}
 										                    		}
@@ -3519,7 +3532,7 @@ public class Organism extends Rectangle {
 		                   			for (int i=0; i<_segments; i++) {
 		                   				_segColor[i] = Utils.ColorSPRING;
 		                   				_mphoto[i] = 0;
-		                   				if (_m[i]>=1.368) {
+		                   				if (_m[i]>=1.62) {
 		                   					largeenough = true;
 		                   				}
 		                  		    }
@@ -3532,12 +3545,12 @@ public class Organism extends Rectangle {
 									for (int i=0; i<_segments; i++) {
 										_segColor[i] = Utils.ColorC4;
 		                   				_mphoto[i] = 0;
-		                   				if (_m[i]>=1.368) {
+		                   				if (_m[i]>=1.62) {
 		                   					largeenough = true;
 		                   				}
 		                    		}
 									if (largeenough) {
-										_photosynthesis = (2 * _mass)/Utils.GREEN_OBTAINED_ENERGY_DIVISOR;
+										_photosynthesis = (_mass)/Utils.GREEN_OBTAINED_ENERGY_DIVISOR;
 									}
 								}
 							}
@@ -3546,7 +3559,7 @@ public class Organism extends Rectangle {
 								_methanotrophy = (2d/3d) * _methanotrophy;
 							}
 							if (_gold != 0) {
-								_max_age = Utils.MAX_AGE + (_segments/Utils.AGE_DIVISOR);
+								_max_age = Utils.MAX_AGE + (int) (_segments/Utils.AGE_DIVISOR);
 							}
 							if ((_isblond) && (_jadefactor > 0)) {
 								_jadefactor = 1;
@@ -3717,7 +3730,7 @@ public class Organism extends Rectangle {
 				}
 				_energy = _world.convertCO2ToO2(Utils.INITIAL_ENERGY);
 				// Maximum age that an organism can reach
-				_max_age = Utils.MAX_AGE + (_segments/Utils.AGE_DIVISOR);
+				_max_age = Utils.MAX_AGE + (int) (_segments/Utils.AGE_DIVISOR);
 				// Calculates the energy required to reproduce this genetic code.
                 _reproduceEnergy = (40 + 3 * _segments);
 				// Maximum time that needs to elapse after a reproduction attempt
@@ -3983,7 +3996,7 @@ public class Organism extends Rectangle {
 					_geneticCode._cladeID = Integer.toString(_ID);
 				}
 				// Maximum age that an organism can reach
-				_max_age = Utils.MAX_AGE + (_segments/Utils.AGE_DIVISOR);
+				_max_age = Utils.MAX_AGE + (int) (_segments/Utils.AGE_DIVISOR);
 				// Calculates the energy required to reproduce this genetic code.
                 _reproduceEnergy = (40 + 3 * _segments);
 				// Maximum time that needs to elapse after a reproduction attempt
@@ -12137,7 +12150,7 @@ public class Organism extends Rectangle {
 			case ICE:
 				if (org._isaplant) {
 					// Get energy depending on segment length
-					takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+					takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
 				    // The other organism will be shown in yellow
 				    org.setColor(Color.YELLOW);
 				    // This organism will be shown in maroon
@@ -12150,7 +12163,7 @@ public class Organism extends Rectangle {
 					setColor(Utils.ColorMAROON);
 				} else {
 					// Get energy depending on segment length
-					takenEnergyMaroon = Utils.between((0.5 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+					takenEnergyMaroon = Utils.between((0.5 * (1 + _m[seg])) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
 					// The other organism will be shown in green brown
 					org.setColor(Utils.ColorGREENBROWN);
 					// This organism will be shown in maroon
@@ -12165,25 +12178,25 @@ public class Organism extends Rectangle {
 					if (org._modifiesleaf) {
 						if (org._framesColor > 0) {
 							// Get energy depending on segment length
-							takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+							takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
 						    // The other organism will be shown in yellow
 						    org.setColor(Color.YELLOW);
 						} else {
 							if (org._framesColor < 0) {
 								// Get energy depending on segment length
-								takenEnergyMaroon = Utils.between((0.02 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+								takenEnergyMaroon = Utils.between((0.02 * (1 + _m[seg])) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
 								// The other organism will be shown in broken
 								org.setColor(Utils.ColorBROKEN);
 							} else {
 								// Get energy depending on segment length
-								takenEnergyMaroon = Utils.between((0.02 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+								takenEnergyMaroon = Utils.between((0.02 * (1 + _m[seg])) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
 								// The other organism will be shown in dark olive
 								org.setColorforLeaf(Utils.ColorDARKOLIVE);
 							}
 						}
 					} else {
 						// Get energy depending on segment length
-						takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+						takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
 					    // The other organism will be shown in yellow
 					    org.setColor(Color.YELLOW);
 					}
@@ -12208,7 +12221,7 @@ public class Organism extends Rectangle {
 					setColor(Utils.ColorMAROON);
 				} else {
 					// Get energy depending on segment length
-					takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+					takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
 				    // The other organism will be shown in yellow
 				    org.setColor(Color.YELLOW);
 				    // This organism will be shown in maroon
@@ -12219,7 +12232,7 @@ public class Organism extends Rectangle {
 				if (org._isaplant) {
 				    if (org.useEnergy(Utils.BLUE_ENERGY_CONSUMPTION)) {
 				    	if ((org._isenhanced) && (!_isenhanced)) {
-						    useDetritus(Utils.between((0.125 * Math.sqrt(org._m[oseg])) * Utils.ORGANIC_OBTAINED_ENERGY, 0, _energy));
+						    useDetritus(Utils.between((0.1 * Math.sqrt(org._m[oseg])) * Utils.ORGANIC_OBTAINED_ENERGY, 0, _energy));
 							setColor(Utils.ColorDARKLILAC);
 							if (_energy < Utils.tol) {
 								die(org);
@@ -12231,7 +12244,7 @@ public class Organism extends Rectangle {
 				    } else {
 						// Doesn't have energy to use the shield
 				    	// Get energy depending on segment length
-						takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+						takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
 					    // The other organism will be shown in yellow
 					    org.setColor(Color.YELLOW);
 					    // This organism will be shown in maroon
@@ -12243,14 +12256,14 @@ public class Organism extends Rectangle {
 				if (org._isaplant) {
 					if (org._isinfectious) {
 						// Get energy depending on segment length
-						takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+						takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
 					    // The other organism will be shown in yellow
 					    org.setColor(Color.YELLOW);
 					    // This organism will be shown in maroon
 					    setColor(Utils.ColorMAROON);
 					} else {
 						// Get energy depending on segment length
-						takenEnergyMaroon = Utils.between((0.1 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+						takenEnergyMaroon = Utils.between((0.1 * (1 + _m[seg])) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
 						// The other organism will be shown in green brown
 						org.setColor(Utils.ColorGREENBROWN);
 						// This organism will be shown in maroon
@@ -12261,7 +12274,7 @@ public class Organism extends Rectangle {
 			case FRUIT:
 				if ((org._sporeversion == 2) && (!_hasgoodvision)) {
 					// Get energy depending on segment length
-					takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+					takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
 					// The other organism will be shown in yellow
 					org.setColor(Color.YELLOW);
 					if (_infectedGeneticCode != org._geneticCode) {
@@ -12280,7 +12293,7 @@ public class Organism extends Rectangle {
 			case DEADBARK:
 				if ((org._isaplant) || (!org.active)) {
 					// Get energy depending on segment length
-					takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+					takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
 				    // The other organism will be shown in yellow
 				    org.setColor(Color.YELLOW);
 				    // This organism will be shown in maroon
@@ -12292,7 +12305,7 @@ public class Organism extends Rectangle {
 					if (org._isenhanced) {
 						if (org._framesColor > 0) {
 							// Get energy depending on segment length
-							takenEnergyMaroon = Utils.between((0.01 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+							takenEnergyMaroon = Utils.between((0.01 * (1 + _m[seg])) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
 							// The other organism will be shown in broken
 							org.setColor(Utils.ColorBROKEN);
 							// This organism will be shown in maroon
@@ -12303,7 +12316,7 @@ public class Organism extends Rectangle {
 						}
 					} else {
 						// Get energy depending on segment length
-						takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+						takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
 					    // The other organism will be shown in yellow
 					    org.setColor(Color.YELLOW);
 					    // This organism will be shown in maroon
@@ -12312,14 +12325,14 @@ public class Organism extends Rectangle {
 				} else {
 					if (org._isenhanced) {
 						// Get energy depending on segment length
-						takenEnergyMaroon = Utils.between((0.5 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+						takenEnergyMaroon = Utils.between((0.5 * (1 + _m[seg])) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
 						// The other organism will be shown in green brown
 						org.setColor(Utils.ColorGREENBROWN);
 						// This organism will be shown in maroon
 						setColor(Utils.ColorMAROON);
 					} else {
 						// Get energy depending on segment length
-						takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+						takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
 					    // The other organism will be shown in yellow
 					    org.setColor(Color.YELLOW);
 					    // This organism will be shown in maroon
@@ -12335,7 +12348,7 @@ public class Organism extends Rectangle {
 				} else {
 					if (!org._isenhanced) {
 						// Get energy depending on segment length
-						takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+						takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
 					    // The other organism will be shown in yellow
 					    org.setColor(Color.YELLOW);
 					    // This organism will be shown in maroon
@@ -12360,7 +12373,7 @@ public class Organism extends Rectangle {
 						setColor(Utils.ColorMAROON);
 					} else {
 						// Get energy depending on segment length
-						takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+						takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
 						// The other organism will be shown in yellow
 						org.setColor(Color.YELLOW);
 						// This organism will be shown in auburn
@@ -12374,7 +12387,7 @@ public class Organism extends Rectangle {
 				} else {
 					if ((_isenhanced) && (org._isaplant)) {
 						// Get energy depending on segment length
-						takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+						takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
 						// The other organism will be shown in yellow
 						org.setColor(Color.YELLOW);
 						// This organism will be shown in auburn
@@ -12385,7 +12398,7 @@ public class Organism extends Rectangle {
 			case SPIKEPOINT:
 				if ((_isenhanced) && (!org._isenhanced) && (org._isaplant)) {
 					// Get energy depending on segment length
-					takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+					takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
 					// The other organism will be shown in yellow
 					org.setColor(Color.YELLOW);
 					// This organism will be shown in auburn
@@ -12403,12 +12416,12 @@ public class Organism extends Rectangle {
 						} else {
 							if ((!org._isaconsumer) && (!org._isafungus) && (!org._isakiller)) {
 								// Get energy depending on segment length
-								takenEnergyMaroon = Utils.between((0.5 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+								takenEnergyMaroon = Utils.between((0.5 * (1 + _m[seg])) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
 								// The other organism will be shown in green brown
 								org.setColor(Utils.ColorGREENBROWN);
 							} else {
 								// Get energy depending on segment length
-								takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+								takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
 								// The other organism will be shown in yellow
 								org.setColor(Color.YELLOW);
 							}
@@ -12431,12 +12444,12 @@ public class Organism extends Rectangle {
 						} else {
 							if ((!org._isaconsumer) && (!org._isafungus) && (!org._isakiller)) {
 								// Get energy depending on segment length
-								takenEnergyMaroon = Utils.between((0.5 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+								takenEnergyMaroon = Utils.between((0.5 * (1 + _m[seg])) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
 								// The other organism will be shown in green brown
 								org.setColor(Utils.ColorGREENBROWN);
 							} else {
 								// Get energy depending on segment length
-								takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+								takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
 								// The other organism will be shown in yellow
 								org.setColor(Color.YELLOW);
 							}
@@ -12456,7 +12469,7 @@ public class Organism extends Rectangle {
 						org.setColor(Utils.ColorDEEPSKY);
 					} else {
 						// Get energy depending on segment length
-						takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+						takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
 						// The other organism will be shown in yellow
 						org.setColor(Color.YELLOW);
 						// This organism will be shown in auburn
@@ -12468,7 +12481,7 @@ public class Organism extends Rectangle {
 			case VISION:
 				if ((_isenhanced) && (org._isaplant)) {
 					// Get energy depending on segment length
-					takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+					takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
 					// The other organism will be shown in yellow
 					org.setColor(Color.YELLOW);
 					// This organism will be shown in auburn
@@ -12486,7 +12499,7 @@ public class Organism extends Rectangle {
 							setColor(Utils.ColorMAROON);
 						} else {
 							// Get energy depending on segment length
-							takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+							takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
 							// The other organism will be shown in yellow
 							org.setColor(Color.YELLOW);
 							// This organism will be shown in auburn

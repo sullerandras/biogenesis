@@ -193,7 +193,7 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 		for (int i=0; i<g.getNGenes(); i++)
 			genesList.add((Gene)g.getGene(i).clone());
 		energy = 40 + 3 * symmetry * genesList.size();
-		life = Utils.MAX_AGE + ((genesList.size() * symmetry)/Utils.AGE_DIVISOR);
+		life = Utils.MAX_AGE + (int) ((genesList.size() * symmetry)/Utils.AGE_DIVISOR);
 	}
 
 	/* Initialize all the components of the dialog */
@@ -277,7 +277,7 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 					symmetry = Integer.parseInt((String)symmetryCombo.getSelectedItem());
 					energy = 40 + 3 * symmetry * genesList.size();
 					energyLabel.setText(Integer.toString(energy));
-					life = Utils.MAX_AGE + ((genesList.size() * symmetry)/Utils.AGE_DIVISOR);
+					life = Utils.MAX_AGE + (int) ((genesList.size() * symmetry)/Utils.AGE_DIVISOR);
 					lifeLabel.setText(Integer.toString(life));
 					segmentsLabel.setText(Integer.toString(genesList.size() * symmetry));
 					drawPanel.repaint();
@@ -1162,7 +1162,7 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 
 		energy = 40 + 3 * symmetry * genesList.size();
 		energyLabel.setText(Integer.toString(energy));
-		life = Utils.MAX_AGE + ((genesList.size() * symmetry)/Utils.AGE_DIVISOR);
+		life = Utils.MAX_AGE + (int) ((genesList.size() * symmetry)/Utils.AGE_DIVISOR);
 		lifeLabel.setText(Integer.toString(life));
 		segmentsLabel.setText(Integer.toString(genesList.size() * symmetry));
 

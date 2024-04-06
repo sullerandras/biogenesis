@@ -104,7 +104,7 @@ public final class Utils {
 	 * This is the default age divisor,
 	 * which adds the number of segments to the maximum age, divided by this value.
 	 */
-	final static int DEF_AGE_DIVISOR = 4;
+	final static double DEF_AGE_DIVISOR = 4;
 	/**
 	 * This is the default CO2 to CH4 divisor,
 	 * which turns CO2 into CH4, divided by this value.
@@ -829,7 +829,7 @@ public final class Utils {
 	 * This is the age divisor,
 	 * which adds the number of segments to the maximum age, divided by this value.
 	 */
-	static int AGE_DIVISOR = DEF_AGE_DIVISOR;
+	static double AGE_DIVISOR = DEF_AGE_DIVISOR;
 	/**
 	 * This is the CO2 to CH4 divisor,
 	 * which turns CO2 into CH4, divided by this value.
@@ -1998,7 +1998,7 @@ public final class Utils {
 			prefs.putInt("WORLD_WIDTH",WORLD_WIDTH); //$NON-NLS-1$
 			prefs.putInt("WORLD_HEIGHT",WORLD_HEIGHT); //$NON-NLS-1$
 			prefs.putInt("MAX_AGE",MAX_AGE); //$NON-NLS-1$
-			prefs.putInt("AGE_DIVISOR",AGE_DIVISOR); //$NON-NLS-1$
+			prefs.putDouble("AGE_DIVISOR",AGE_DIVISOR); //$NON-NLS-1$
 			prefs.putInt("CO2_TO_CH4_DIVISOR",CO2_TO_CH4_DIVISOR); //$NON-NLS-1$
 			prefs.putInt("CH4_TO_CO2_DIVISOR",CH4_TO_CO2_DIVISOR); //$NON-NLS-1$
 			prefs.putInt("DETRITUS_TO_CO1_DIVISOR",DETRITUS_TO_CO1_DIVISOR); //$NON-NLS-1$
@@ -2196,7 +2196,7 @@ public final class Utils {
 			WORLD_WIDTH = prefs.getInt("WORLD_WIDTH",DEF_WORLD_WIDTH); //$NON-NLS-1$
 			WORLD_HEIGHT = prefs.getInt("WORLD_HEIGHT",DEF_WORLD_HEIGHT); //$NON-NLS-1$
 			MAX_AGE = prefs.getInt("MAX_AGE",DEF_MAX_AGE); //$NON-NLS-1$
-			AGE_DIVISOR = prefs.getInt("AGE_DIVISOR",DEF_AGE_DIVISOR); //$NON-NLS-1$
+			AGE_DIVISOR = prefs.getDouble("AGE_DIVISOR",DEF_AGE_DIVISOR); //$NON-NLS-1$
 			CO2_TO_CH4_DIVISOR = prefs.getInt("CO2_TO_CH4_DIVISOR",DEF_CO2_TO_CH4_DIVISOR); //$NON-NLS-1$
 			CH4_TO_CO2_DIVISOR = prefs.getInt("CH4_TO_CO2_DIVISOR",DEF_CH4_TO_CO2_DIVISOR); //$NON-NLS-1$
 			DETRITUS_TO_CO1_DIVISOR = prefs.getInt("DETRITUS_TO_CO1_DIVISOR",DEF_DETRITUS_TO_CO1_DIVISOR); //$NON-NLS-1$
