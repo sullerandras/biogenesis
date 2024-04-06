@@ -9894,7 +9894,7 @@ public class Organism extends Rectangle {
 			break;
 		case BLUE:
 			if (org.useEnergy(Utils.BLUE_ENERGY_CONSUMPTION)) {
-				if (((!org._isaplant) || (org._framesColor <= 0)) && (!_isenhanced)) {
+				if (((!org._isaplant) || (org._framesColor <= 0)) && (org._isplankton == 0) && (!_isenhanced)) {
 					// candodge is used here to make Crimson piercing stop later
 					_candodge =true;
 				}
@@ -14228,7 +14228,7 @@ public class Organism extends Rectangle {
 			double takenEnergy = 0;
 			switch (getTypeColor(org._segColor[oseg])) {
 			case SILVER:
-				if ((org._infectedGeneticCode != _geneticCode) && (org._nTotalInfected < _nTotalInfected)) {
+				if ((org._infectedGeneticCode != _geneticCode) && (org._nTotalInfected < _nTotalInfected) && (!_isenhanced)) {
 					if ((org._isaplant) || (org._isaconsumer) || ((org._isafungus) && (org._nTotalKills > 0))) {
 						if (useBreathing(Utils.SILVER_ENERGY_CONSUMPTION)) {
 					        org.infectedBy(this);
@@ -14269,7 +14269,7 @@ public class Organism extends Rectangle {
 				break;
 			case WHITE:
 			case PLAGUE:
-				if ((org._infectedGeneticCode != _geneticCode) && (org._nTotalInfected < _nTotalInfected)) {
+				if ((org._infectedGeneticCode != _geneticCode) && (org._nTotalInfected < _nTotalInfected) && (!_isenhanced)) {
 					if ((org._isaplant) || (org._isaconsumer)) {
 						if (useBreathing(Utils.SILVER_ENERGY_CONSUMPTION)) {
 					        org.infectedBy(this);
@@ -21265,6 +21265,13 @@ public class Organism extends Rectangle {
 					}
 				}
 				break;
+			case LAVENDER:
+		    case MAGENTA:
+		    case ROSE:
+				if (_altruist) {
+                break;
+				}
+				// else continue with it
 			default:
 				if (_isinfectious) {
 				    if ((!_isaconsumer) && (!_isaplant) && (!_isafungus) && ((!_transfersenergy) || (org._indigo == 0))) {
