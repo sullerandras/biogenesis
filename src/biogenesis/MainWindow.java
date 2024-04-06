@@ -232,16 +232,22 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 		        // Check if a JDialog is active
 		        Window[] windows = Window.getWindows();
 		        for (Window window : windows) {
-		            if ((window instanceof JDialog) && !(window instanceof StatisticsWindow)) {
-		                if (window.isVisible()) {
-		                    // If a JDialog is active and visible, return false to allow further dispatching of the event.
-		                    // However, we exclude the Statistics Window from this check because otherwise that would be annoying!
-		                    // This is mostly to prevent unwanted hotkey triggers when typing in dialogues
-		                	// such as parameters or when naming world/organism save files.
-		                    return false;
-		                }
-		            }
-		        }
+                    String windowName = window.getClass().getSimpleName();
+                    //System.out.println("Window Name: " + windowName + "\n"); //Reset zoom (key) while one or more windows are open to learn their names
+                    if ((window instanceof JDialog)
+                            && !(windowName.equals("StatisticsWindow"))
+                            && !(windowName.equals("ToolBarDialog"))
+                            ) {
+                        if (window.isVisible()) {
+                            // If a JDialog is active and visible, return false to allow further dispatching of the event.
+                            // However, we exclude the Statistics Window from this check because otherwise that would be annoying!
+                            // Likewise for the main window's two draggable tool bar dialogs.
+                            // This is mostly to prevent unwanted hotkey triggers when typing within interactive dialogues
+                            // such as parameters or when naming world/organism save files.
+                            return false;
+                        }
+                    }
+                }
 		        if (e.getID() == KeyEvent.KEY_PRESSED) {
 		            // Start zooming in when the relevant key is pressed
 		            if (e.getKeyCode() == KeyEvent.VK_Q) {
@@ -334,7 +340,7 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 	            @Override
 	            public void actionPerformed(ActionEvent e) {
 	                // Perform the appropriate zoom action based on the pressed keys
-	                if (zoomInKeyPressed && (VisibleWorld.zoomFactor < 4.2) && !zoomInOverrideKeyPressed && !zoomOutKeyPressed) {
+	            	if (zoomInKeyPressed && (VisibleWorld.zoomFactor < 2.05) && !zoomInOverrideKeyPressed && !zoomOutKeyPressed) {
 	                	_visibleWorld.zoomIn();
 	                }
 	                if (zoomInOverrideKeyPressed && zoomInKeyPressed && !zoomOutKeyPressed) {

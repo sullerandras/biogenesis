@@ -41,6 +41,7 @@ public class InfoToolbar extends JToolBar {
 	protected JTextArea _lCladeID;
 	protected JButton _buttonGenes;
 	protected GeneticCodePanel _geneticCodePanel;
+	protected GeneticCodePanel _infectedgeneticCodePanel;
 	static private NumberFormat _nf = NumberFormat.getInstance();
 	protected MainWindow _mainWindow;
 
@@ -91,6 +92,13 @@ public class InfoToolbar extends JToolBar {
 		_lEnergy.setText(_selOrganism!=null?_nf.format(_selOrganism.getEnergy()):"0"); //$NON-NLS-1$
 		_lAge.setText(_selOrganism!=null?_nf.format(_selOrganism.getAge()>>8):"0"); //$NON-NLS-1$
 		_lMass.setText(_selOrganism!=null?_nf.format(_selOrganism.getMass()):"0"); //$NON-NLS-1$
+		_infectedgeneticCodePanel.setGeneticCode(_selOrganism!=null?_selOrganism.getInfectedGeneticCode():null);
+		if (_selOrganism != null && _selOrganism.getInfectedGeneticCode() == null) {
+			_infectedgeneticCodePanel.setPreferredSize(new Dimension(0,0));
+		} else {
+			_infectedgeneticCodePanel.setPreferredSize(new Dimension(50,50));
+		}
+		_infectedgeneticCodePanel.repaint();
 	}
 
 	// Notify panel of important events
@@ -253,6 +261,18 @@ public class InfoToolbar extends JToolBar {
 		gridBagConstraints.gridx = 8;
 		gridBagConstraints.gridy = 2;
 		add(_lMutationRate, gridBagConstraints);
+		// Picture of the virus
+		gridBagConstraints.gridx = 9;
+		gridBagConstraints.gridy = 0;
+		gridBagConstraints.weightx = 1.0;
+		gridBagConstraints.gridheight=3;
+		_infectedgeneticCodePanel = new GeneticCodePanel(_selOrganism!=null?_selOrganism.getInfectedGeneticCode():null, _mainWindow.getVisibleWorld());
+		if (_selOrganism != null && _selOrganism.getInfectedGeneticCode() == null) {
+			_infectedgeneticCodePanel.setPreferredSize(new Dimension(0,0));
+		} else {
+			_infectedgeneticCodePanel.setPreferredSize(new Dimension(50,50));
+		}
+		add(_infectedgeneticCodePanel, gridBagConstraints);
 		// Clade String
 	    gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 3;

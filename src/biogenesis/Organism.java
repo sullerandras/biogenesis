@@ -843,6 +843,14 @@ public class Organism extends Rectangle {
 		return _geneticCode;
 	}
 	/**
+	 * Returns a reference to this organism's infected genetic code.
+	 *
+	 * @return  A reference to this organism's infected genetic code.
+	 */
+	public GeneticCode getInfectedGeneticCode() {
+		return _infectedGeneticCode;
+	}
+	/**
 	 * Returns the total mass of this organism.
 	 *
 	 * @return  The total mass of this organism calculated as the sum
@@ -1487,7 +1495,11 @@ public class Organism extends Rectangle {
 			_reproducelate = (int) Math.round(_reproducelate/10);
 			if (_isinfectious) {
 				if ((_switchdrift >= 0) && (!_isaplant) && (!_isaconsumer) && (!_isafungus)) {
-					_reproduceEnergy = (40 + 3 * _segments) + (int)(_reproducelate*Utils.scale[_growthRatio-1]) - (2 * _symmetry);
+					if (_geneticCode.getModifiesdrift() == false) {
+						_reproduceEnergy = (40 + 3 * _segments) + (int)(_reproducelate*Utils.scale[_growthRatio-1]) - _symmetry;
+					} else {
+						_reproduceEnergy = (40 + 3 * _segments) + (int)(_reproducelate*Utils.scale[_growthRatio-1]) - (2 * _symmetry);
+					}
 				} else {
 					_reproduceEnergy = (40 + 3 * _segments) + (int)(_reproducelate*Utils.scale[_growthRatio-1]);
 				}
@@ -1632,8 +1644,8 @@ public class Organism extends Rectangle {
 			case C4:
 				if (createall) {
 					_mphoto[i] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * (10 + _geneticCode.getGene(i%_geneticCode.getNGenes()).getLength());
+					_isonlyc4 = 1;
 				}
-				_isonlyc4 = 1;
 				break;
 			case SPRING:
 				_mphoto[i] = Utils.SPRING_ENERGY_CONSUMPTION * photomultiplier * _geneticCode.getGene(i%_geneticCode.getNGenes()).getLength();
@@ -1658,8 +1670,10 @@ public class Organism extends Rectangle {
 				_methanotrophy += 1;
 				break;
 			case PLANKTON:
-				_filterfeeding += 1;
-				_isplankton = 1;
+				if (createall) {
+					_filterfeeding += 1;
+					_isplankton = 1;
+				}
 				break;
 			case SPIN:
 				if (_canmove == 0) {
@@ -2575,7 +2589,11 @@ public class Organism extends Rectangle {
 				}
 			}
 			if ((!_isaplant) && (!_isaconsumer) && (!_isafungus) && (_reproducelate == 0) && (_age == 0)) {
-				_reproduceEnergy -= (2 * _symmetry);
+				if (_geneticCode.getModifiesdrift() == false) {
+					_reproduceEnergy -= _symmetry;
+				} else {
+					_reproduceEnergy -= (2 * _symmetry);
+				}
 			}
 		}
 		// Calculate reproduction energy for flower segments
@@ -2583,7 +2601,11 @@ public class Organism extends Rectangle {
 			_reproducelate = (int) Math.round(_reproducelate/10);
 			if (_isinfectious) {
 				if ((_switchdrift >= 0) && (!_isaplant) && (!_isaconsumer) && (!_isafungus)) {
-					_reproduceEnergy = (40 + 3 * _segments) + (int)(_reproducelate*Utils.scale[_growthRatio-1]) - (2 * _symmetry);
+					if (_geneticCode.getModifiesdrift() == false) {
+						_reproduceEnergy = (40 + 3 * _segments) + (int)(_reproducelate*Utils.scale[_growthRatio-1]) - _symmetry;
+					} else {
+						_reproduceEnergy = (40 + 3 * _segments) + (int)(_reproducelate*Utils.scale[_growthRatio-1]) - (2 * _symmetry);
+					}
 				} else {
 					_reproduceEnergy = (40 + 3 * _segments) + (int)(_reproducelate*Utils.scale[_growthRatio-1]);
 				}
@@ -5357,7 +5379,11 @@ public class Organism extends Rectangle {
 					if ((_reproducelate > 0) && (_isinfectious)) {
 						// Calculate reproduction energy for flower segments of viruses
 						if ((_switchdrift >= 0) && (!_isaplant) && (!_isaconsumer) && (!_isafungus)) {
-							_reproduceEnergy = (40 + 3 * _segments) + (int)(_reproducelate*Utils.scale[_growthRatio-1]) - (2 * _symmetry);
+							if (_geneticCode.getModifiesdrift() == false) {
+								_reproduceEnergy = (40 + 3 * _segments) + (int)(_reproducelate*Utils.scale[_growthRatio-1]) - _symmetry;
+							} else {
+								_reproduceEnergy = (40 + 3 * _segments) + (int)(_reproducelate*Utils.scale[_growthRatio-1]) - (2 * _symmetry);
+							}
 						} else {
 							_reproduceEnergy = (40 + 3 * _segments) + (int)(_reproducelate*Utils.scale[_growthRatio-1]);
 						}
@@ -5572,7 +5598,11 @@ public class Organism extends Rectangle {
 					if ((_reproducelate > 0) && (_isinfectious)) {
 						// Calculate reproduction energy for flower segments of viruses
 						if ((_switchdrift >= 0) && (!_isaplant) && (!_isaconsumer) && (!_isafungus)) {
-							_reproduceEnergy = (40 + 3 * _segments) + (int)(_reproducelate*Utils.scale[_growthRatio-1]) - (2 * _symmetry);
+							if (_geneticCode.getModifiesdrift() == false) {
+								_reproduceEnergy = (40 + 3 * _segments) + (int)(_reproducelate*Utils.scale[_growthRatio-1]) - _symmetry;
+							} else {
+								_reproduceEnergy = (40 + 3 * _segments) + (int)(_reproducelate*Utils.scale[_growthRatio-1]) - (2 * _symmetry);
+							}
 						} else {
 							_reproduceEnergy = (40 + 3 * _segments) + (int)(_reproducelate*Utils.scale[_growthRatio-1]);
 						}
