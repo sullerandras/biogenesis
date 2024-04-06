@@ -124,7 +124,7 @@ public final class Utils {
 	 * This is the default CO to CO2 divisor,
 	 * which turns CO into CO2, divided by this value.
 	 */
-	final static int DEF_CO1_TO_CO2_DIVISOR = 10000;
+	final static int DEF_CO1_TO_CO2_DIVISOR = 20000;
 	/**
 	 * This is the default rubbing coefficient that is applied to movements. This value is
 	 * multiplied by the speed at every frame.
@@ -289,7 +289,11 @@ public final class Utils {
 	/**
 	 * This is the default energy that is consumed when an organism touches a symbiont (with rose segments).
 	 */
-	final static double DEF_SYMBIONT_ENERGY_CONSUMPTION = 0.585d;
+	final static double DEF_SYMBIONT_ENERGY_CONSUMPTION = 0.584d;
+	/**
+	 * This is the default effectivity for drift boosting plant photosynthesis.
+	 */
+	final static double DEF_BOOST_ENERGY_CONSUMPTION = 0.125d;
 	/**
 	 * This is the default energy that is consumed when a spring segment is used.
 	 */
@@ -1035,6 +1039,10 @@ public final class Utils {
 	 * This is the energy that is consumed when an organism touches a symbiont (with rose segments).
 	 */
 	static double SYMBIONT_ENERGY_CONSUMPTION = DEF_SYMBIONT_ENERGY_CONSUMPTION;
+	/**
+	 * This is the energy that is used for drift boosting plant photosynthesis
+	 */
+	static double BOOST_ENERGY_CONSUMPTION = DEF_BOOST_ENERGY_CONSUMPTION;
 	/**
 	 * This is the energy that is consumed when a spring segment is used.
 	 */
@@ -2099,6 +2107,7 @@ public final class Utils {
 			prefs.putDouble("FOREST_ENERGY_CONSUMPTION",FOREST_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			prefs.putDouble("CROWDEDFOREST_ENERGY_CONSUMPTION",CROWDEDFOREST_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			prefs.putDouble("SYMBIONT_ENERGY_CONSUMPTION",SYMBIONT_ENERGY_CONSUMPTION); //$NON-NLS-1$
+			prefs.putDouble("BOOST_ENERGY_CONSUMPTION",BOOST_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			prefs.putDouble("IVY_ENERGY_CONSUMPTION",IVY_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			prefs.putDouble("SPRING_ENERGY_CONSUMPTION",SPRING_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			prefs.putDouble("LEAF_ENERGY_CONSUMPTION",LEAF_ENERGY_CONSUMPTION); //$NON-NLS-1$
@@ -2302,6 +2311,7 @@ public final class Utils {
 			FOREST_ENERGY_CONSUMPTION = prefs.getDouble("FOREST_ENERGY_CONSUMPTION",DEF_FOREST_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			CROWDEDFOREST_ENERGY_CONSUMPTION = prefs.getDouble("CROWDEDFOREST_ENERGY_CONSUMPTION",DEF_CROWDEDFOREST_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			SYMBIONT_ENERGY_CONSUMPTION = prefs.getDouble("SYMBIONT_ENERGY_CONSUMPTION",DEF_SYMBIONT_ENERGY_CONSUMPTION); //$NON-NLS-1$
+			BOOST_ENERGY_CONSUMPTION = prefs.getDouble("BOOST_ENERGY_CONSUMPTION",DEF_BOOST_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			IVY_ENERGY_CONSUMPTION = prefs.getDouble("IVY_ENERGY_CONSUMPTION",DEF_IVY_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			SPRING_ENERGY_CONSUMPTION = prefs.getDouble("SPRING_ENERGY_CONSUMPTION",DEF_SPRING_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			LEAF_ENERGY_CONSUMPTION = prefs.getDouble("LEAF_ENERGY_CONSUMPTION",DEF_LEAF_ENERGY_CONSUMPTION); //$NON-NLS-1$

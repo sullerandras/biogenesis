@@ -162,6 +162,7 @@ public class ParamDialog extends JDialog {
 	private JTextField crowdedforestcostText = null;
 	private JTextField modleafcostText = null;
 	private JTextField symbiontcostText = null;
+	private JTextField boostcostText = null;
 	private JTextField mosquitocostText = null;
 	private JTextField experiencecostText = null;
 	private JTextField dodgecostText = null;
@@ -318,6 +319,7 @@ public class ParamDialog extends JDialog {
 		crowdedforestcostText.setText(String.valueOf(Utils.DEF_CROWDEDFOREST_ENERGY_CONSUMPTION));
 		modleafcostText.setText(String.valueOf(Utils.DEF_MODLEAF_ENERGY_CONSUMPTION));
 		symbiontcostText.setText(String.valueOf(Utils.DEF_SYMBIONT_ENERGY_CONSUMPTION));
+		boostcostText.setText(String.valueOf(Utils.DEF_BOOST_ENERGY_CONSUMPTION));
 		experiencecostText.setText(String.valueOf(Utils.DEF_EXPERIENCE_ENERGY_CONSUMPTION));
 		dodgecostText.setText(String.valueOf(Utils.DEF_DODGE_ENERGY_CONSUMPTION));
 		darkjadedelayText.setText(String.valueOf(Utils.DEF_DARKJADE_DELAY));
@@ -935,16 +937,23 @@ public class ParamDialog extends JDialog {
 		crowdedforestcostText = new JTextField(Double.toString(Utils.CROWDEDFOREST_ENERGY_CONSUMPTION),6);
 		panel.add(crowdedforestcostText);
 		metabolismPanel.add(panel);
-		// Symbiont costs - Modified leaf costs
+		// Drift plant boost costs - Modified leaf costs
+		panel = new JPanel();
+		label = new JLabel(Messages.getString("T_BOOST_ENERGY_CONSUMPTION")); //$NON-NLS-1$
+		panel.add(label);
+		boostcostText = new JTextField(Double.toString(Utils.BOOST_ENERGY_CONSUMPTION),6);
+		panel.add(boostcostText);
+		label = new JLabel(Messages.getString("T_MODLEAF_ENERGY_CONSUMPTION")); //$NON-NLS-1$
+		panel.add(label);
+		modleafcostText = new JTextField(Double.toString(Utils.MODLEAF_ENERGY_CONSUMPTION),6);
+		panel.add(modleafcostText);
+		metabolismPanel.add(panel);
+		// Symbiont costs
 		panel = new JPanel();
 		label = new JLabel(Messages.getString("T_SYMBIONT_ENERGY_CONSUMPTION")); //$NON-NLS-1$
 		panel.add(label);
 		symbiontcostText = new JTextField(Double.toString(Utils.SYMBIONT_ENERGY_CONSUMPTION),6);
 		panel.add(symbiontcostText);
-		label = new JLabel(Messages.getString("T_MODLEAF_ENERGY_CONSUMPTION")); //$NON-NLS-1$
-		panel.add(label);
-		modleafcostText = new JTextField(Double.toString(Utils.MODLEAF_ENERGY_CONSUMPTION),6);
-		panel.add(modleafcostText);
 		metabolismPanel.add(panel);
 
 		return metabolismPanel;
