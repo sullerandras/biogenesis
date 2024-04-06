@@ -73,7 +73,6 @@ public class InfoToolbar extends JToolBar {
 		_selOrganism = selectedOrganism;
 		_lID.setText(_selOrganism!=null?_nf.format(_selOrganism.getID()):"-1");
 		_lGeneration.setText(_selOrganism!=null?_nf.format(_selOrganism.getGeneticCode().getGeneration()):"0");
-		_lReproduceEnergy.setText(_selOrganism!=null?_nf.format(_selOrganism.getReproduceEnergy()):"0");
 		_lMaxAge.setText(_selOrganism!=null?_nf.format(_selOrganism.getMaxAge()):"0");
 		_lMutationRate.setText(_selOrganism!=null?_nf.format(_selOrganism.getGeneticCode().getMutationrate()):"0");
 		_lCladeID.setText(_selOrganism!=null?_selOrganism.getGeneticCode().getcladeID():"-1");
@@ -90,6 +89,7 @@ public class InfoToolbar extends JToolBar {
 	// Recalculate continuously changing parameters
 	public synchronized void recalculate() {
 		_lEnergy.setText(_selOrganism!=null?_nf.format(_selOrganism.getEnergy()):"0"); //$NON-NLS-1$
+		_lReproduceEnergy.setText(_selOrganism!=null?_nf.format(_selOrganism.getReproduceEnergy()):"0");
 		_lAge.setText(_selOrganism!=null?_nf.format(_selOrganism.getAge()>>8):"0"); //$NON-NLS-1$
 		_lMass.setText(_selOrganism!=null?_nf.format(_selOrganism.getMass()):"0"); //$NON-NLS-1$
 		_infectedgeneticCodePanel.setGeneticCode(_selOrganism!=null?_selOrganism.getInfectedGeneticCode():null);
