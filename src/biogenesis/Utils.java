@@ -119,12 +119,12 @@ public final class Utils {
 	 * This is the default detritus to CO divisor,
 	 * which turns detritus into CO, divided by this value.
 	 */
-	final static int DEF_DETRITUS_TO_CO1_DIVISOR = 500;
+	final static int DEF_DETRITUS_TO_CO2_DIVISOR = 500;
 	/**
 	 * This is the default CO to CO2 divisor,
 	 * which turns CO into CO2, divided by this value.
 	 */
-	final static int DEF_CO1_TO_CO2_DIVISOR = 800;
+	final static int DEF_CO1_TO_CO2_DIVISOR = 2000;
 	/**
 	 * This is the default rubbing coefficient that is applied to movements. This value is
 	 * multiplied by the speed at every frame.
@@ -844,7 +844,7 @@ public final class Utils {
 	 * This is the detritus to CO divisor,
 	 * which turns detritus into CO, divided by this value.
 	 */
-	static int DETRITUS_TO_CO1_DIVISOR = DEF_DETRITUS_TO_CO1_DIVISOR;
+	static int DETRITUS_TO_CO2_DIVISOR = DEF_DETRITUS_TO_CO2_DIVISOR;
 	/**
 	 * This is the CO to CO2 divisor,
 	 * which turns CO into CO2, divided by this value.
@@ -2001,7 +2001,7 @@ public final class Utils {
 			prefs.putDouble("AGE_DIVISOR",AGE_DIVISOR); //$NON-NLS-1$
 			prefs.putInt("CO2_TO_CH4_DIVISOR",CO2_TO_CH4_DIVISOR); //$NON-NLS-1$
 			prefs.putInt("CH4_TO_CO2_DIVISOR",CH4_TO_CO2_DIVISOR); //$NON-NLS-1$
-			prefs.putInt("DETRITUS_TO_CO1_DIVISOR",DETRITUS_TO_CO1_DIVISOR); //$NON-NLS-1$
+			prefs.putInt("DETRITUS_TO_CO2_DIVISOR",DETRITUS_TO_CO2_DIVISOR); //$NON-NLS-1$
 			prefs.putInt("CO1_TO_CO2_DIVISOR",CO1_TO_CO2_DIVISOR); //$NON-NLS-1$
 			prefs.putDouble("RUBBING",RUBBING); //$NON-NLS-1$
 			prefs.putInt("META_MUTATION_RATE",META_MUTATION_RATE); //$NON-NLS-1$
@@ -2199,7 +2199,7 @@ public final class Utils {
 			AGE_DIVISOR = prefs.getDouble("AGE_DIVISOR",DEF_AGE_DIVISOR); //$NON-NLS-1$
 			CO2_TO_CH4_DIVISOR = prefs.getInt("CO2_TO_CH4_DIVISOR",DEF_CO2_TO_CH4_DIVISOR); //$NON-NLS-1$
 			CH4_TO_CO2_DIVISOR = prefs.getInt("CH4_TO_CO2_DIVISOR",DEF_CH4_TO_CO2_DIVISOR); //$NON-NLS-1$
-			DETRITUS_TO_CO1_DIVISOR = prefs.getInt("DETRITUS_TO_CO1_DIVISOR",DEF_DETRITUS_TO_CO1_DIVISOR); //$NON-NLS-1$
+			DETRITUS_TO_CO2_DIVISOR = prefs.getInt("DETRITUS_TO_CO2_DIVISOR",DEF_DETRITUS_TO_CO2_DIVISOR); //$NON-NLS-1$
 			CO1_TO_CO2_DIVISOR = prefs.getInt("CO1_TO_CO2_DIVISOR",DEF_CO1_TO_CO2_DIVISOR); //$NON-NLS-1$
 			RUBBING = prefs.getDouble("RUBBING",DEF_RUBBING); //$NON-NLS-1$
 			META_MUTATION_RATE = prefs.getInt("META_MUTATION_RATE",DEF_META_MUTATION_RATE); //$NON-NLS-1$

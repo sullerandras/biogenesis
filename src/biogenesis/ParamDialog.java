@@ -85,7 +85,7 @@ public class ParamDialog extends JDialog {
 	private JTextField agedivisorText = null;
 	private JTextField CO2toCH4divisorText = null;
 	private JTextField CH4toCO2divisorText = null;
-	private JTextField detritustoCO1divisorText = null;
+	private JTextField detritustoCO2divisorText = null;
 	private JTextField CO1toCO2divisorText = null;
 	private JTextField metamutationrateText = null;
 	private JTextField maxmutationrateText = null;
@@ -286,7 +286,7 @@ public class ParamDialog extends JDialog {
 		agedivisorText.setText(String.valueOf(Utils.DEF_AGE_DIVISOR));
 		CO2toCH4divisorText.setText(String.valueOf(Utils.DEF_CO2_TO_CH4_DIVISOR));
 		CH4toCO2divisorText.setText(String.valueOf(Utils.DEF_CH4_TO_CO2_DIVISOR));
-		detritustoCO1divisorText.setText(String.valueOf(Utils.DEF_DETRITUS_TO_CO1_DIVISOR));
+		detritustoCO2divisorText.setText(String.valueOf(Utils.DEF_DETRITUS_TO_CO2_DIVISOR));
 		CO1toCO2divisorText.setText(String.valueOf(Utils.DEF_CO1_TO_CO2_DIVISOR));
 		metamutationrateText.setText(String.valueOf(Utils.DEF_META_MUTATION_RATE));
 		maxmutationrateText.setText(String.valueOf(Utils.DEF_MAX_MUTATION_RATE));
@@ -674,10 +674,10 @@ public class ParamDialog extends JDialog {
 		worldPanel.add(panel);
 		// Detritus -> CO - CO -> CO2
 		panel = new JPanel();
-		label = new JLabel(Messages.getString("T_DETRITUS_TO_CO1_DIVISOR")); //$NON-NLS-1$
+		label = new JLabel(Messages.getString("T_DETRITUS_TO_CO2_DIVISOR")); //$NON-NLS-1$
 		panel.add(label);
-		detritustoCO1divisorText = new JTextField(Integer.toString(Utils.DETRITUS_TO_CO1_DIVISOR),6);
-		panel.add(detritustoCO1divisorText);
+		detritustoCO2divisorText = new JTextField(Integer.toString(Utils.DETRITUS_TO_CO2_DIVISOR),6);
+		panel.add(detritustoCO2divisorText);
 		label = new JLabel(Messages.getString("T_CO1_TO_CO2_DIVISOR")); //$NON-NLS-1$
 		panel.add(label);
 		CO1toCO2divisorText = new JTextField(Integer.toString(Utils.CO1_TO_CO2_DIVISOR),6);
@@ -1465,8 +1465,8 @@ public class ParamDialog extends JDialog {
 			// Keep old value if there is a problem
 		}
 		try {
-			i = Integer.parseInt(detritustoCO1divisorText.getText());
-			if (i > 0) Utils.DETRITUS_TO_CO1_DIVISOR = i;
+			i = Integer.parseInt(detritustoCO2divisorText.getText());
+			if (i > 0) Utils.DETRITUS_TO_CO2_DIVISOR = i;
 		} catch (NumberFormatException ex) {
 			// Keep old value if there is a problem
 		}

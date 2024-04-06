@@ -594,7 +594,7 @@ public class World implements Serializable{
 	public double C4photosynthesis(double q) {
 		synchronized (_CO2_monitor) {
 			synchronized (_O2_monitor) {
-				q = Utils.min(q*12,q*_CO2/Utils.DRAIN_SUBS_DIVISOR,_CO2);
+				q = Utils.min(q*20,q*_CO2/Utils.DRAIN_SUBS_DIVISOR,_CO2);
 				_CO2 -= q;
 				_O2 += q;
 				return q;
@@ -621,7 +621,7 @@ public class World implements Serializable{
 	public double COphotosynthesis(double q) {
 		synchronized (_CO1_monitor) {
 			synchronized (_O2_monitor) {
-				q = Utils.min(q*12,q*_CO1/Utils.DRAIN_SUBS_DIVISOR,_CO1);
+				q = Utils.min(q*20,q*_CO1/Utils.DRAIN_SUBS_DIVISOR,_CO1);
 				_CO1 -= q;
 				_O2 += q;
 				return q;
@@ -860,9 +860,9 @@ public class World implements Serializable{
 						double y = Math.min(getCH4()/Utils.CH4_TO_CO2_DIVISOR,getCH4());
 						_CH4 -= y;
 						_CO2 += y;
-						double z = Math.min(getDetritus()/Utils.DETRITUS_TO_CO1_DIVISOR,getDetritus());
+						double z = Math.min(getDetritus()/Utils.DETRITUS_TO_CO2_DIVISOR,getDetritus());
 						_detritus -= z;
-						_CO1 += z;
+						_CO2 += z;
 						if (getCO1() > getCO2()) {
 							double v = Math.min((getCO1()+(getCO1()-getCO2()))/Utils.CO1_TO_CO2_DIVISOR,getCO1());
 							_CO1 -= v;
