@@ -755,7 +755,7 @@ public class World implements Serializable{
 			for (Iterator<Organism> it = _organisms.iterator(); it.hasNext();) {
 				b = it.next();
 				if (!b.isAlive())
-					b.useEnergy(b.getEnergy());
+					b.useBreathing(b.getEnergy());
 			}
 		}
 	}

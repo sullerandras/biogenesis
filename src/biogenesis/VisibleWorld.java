@@ -218,7 +218,7 @@ public class VisibleWorld extends JPanel implements VisibleWorldInterface {
 		public void actionPerformed(ActionEvent e) {
 			Organism b = getSelectedOrganism();
 			if (b != null && b.isAlive()) {
-				b.useEnergy(b.getEnergy()/2);
+				b.useBreathing(b.getEnergy()/2);
 			}
 		}
 	}
@@ -365,7 +365,7 @@ public class VisibleWorld extends JPanel implements VisibleWorldInterface {
 		public void actionPerformed(ActionEvent e) {
 			Organism b = getSelectedOrganism();
 			if (b != null && !b.isAlive()) {
-				b.useEnergy(b.getEnergy());
+				b.useBreathing(b.getEnergy());
 			}
 		}
 	}

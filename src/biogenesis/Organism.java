@@ -1037,7 +1037,7 @@ public class Organism extends Rectangle {
 			}
 		}
 		if (_ivyparasitism > 0) {
-			_ivyparasitism = (Math.log10(_ivyparasitism + 76))/2;
+			_ivyparasitism = (Math.log10(_ivyparasitism + 68))/2;
 		}
 		// Calculate jade delay used in restoration of the color
 		if (_jadefactor > 1) {
@@ -1347,7 +1347,7 @@ public class Organism extends Rectangle {
 		    }
 		}
 		if (_ivyparasitism > 0) {
-			_ivyparasitism = (Math.log10(_ivyparasitism + 76))/2;
+			_ivyparasitism = (Math.log10(_ivyparasitism + 68))/2;
 		}
 		// Can this organism dodge?
 		if ((_canreact) || (isspin)) {
@@ -1436,7 +1436,7 @@ public class Organism extends Rectangle {
 						int b;
 						for (b=_segments-1; b>=0; b--) {
 							if (_segColor[b].equals(Utils.ColorBLOND)) {
-								_earlyReproduceEnergy -= 3;
+								_earlyReproduceEnergy -= 4;
 							}
 						}				
 					}
@@ -2066,7 +2066,7 @@ public class Organism extends Rectangle {
 			}
 		}
 		if (_ivyparasitism > 0) {
-			_ivyparasitism = (Math.log10(_ivyparasitism + 76))/2;
+			_ivyparasitism = (Math.log10(_ivyparasitism + 68))/2;
 			if ((!_isaplant) && (_methanotrophy == 0) && (_isonlyc4 == 0) && (_isplankton == 0) && (_age == 0)) {
 				_isonlyivy = true;
 				if ((!_isaconsumer) && (!_isafungus)) {
@@ -2167,7 +2167,7 @@ public class Organism extends Rectangle {
 			_isaplant =true;
 		}
 		// Activate the boolean to allow them to do photosynthesis at the first frame
-		if (((_isaplant) || (_methanotrophy > 0)) && (_age == 0)) {
+		if (((_isaplant) || (_methanotrophy > 0)) && (_leafphoto == 0)) {
 			_candoautotrophy = true;
 		}
 		// Add the nerf for lower symmetric plants at lower CO2
@@ -2203,7 +2203,7 @@ public class Organism extends Rectangle {
 				if (_symmetry != 1) {
 					planktonfactor = 1961.329 + Math.round(6000 / ((double)_geneticCode.getNGenes() + 2)) + Math.round(6315 / (double)_symmetry);
 				} else {
-					planktonfactor = 1961.329 + Math.round(6000 / ((double)_geneticCode.getNGenes() + 2)) + 5000 + Math.round(5260 / ((double)_geneticCode.getNGenes() + 2));
+					planktonfactor = 1961.329 + Math.round(6000 / ((double)_geneticCode.getNGenes() + 2)) + 4990 + Math.round(5300 / ((double)_geneticCode.getNGenes() + 2));
 				}
 			}
 			double filtermultiplier = (planktonfactor * 0.0006) / Utils.GREEN_OBTAINED_ENERGY_DIVISOR;
@@ -2484,9 +2484,9 @@ public class Organism extends Rectangle {
 						int b;
 						for (b=_segments-1; b>=0; b--) {
 							if (_segColor[b].equals(Utils.ColorBLOND)) {
-								_earlyReproduceEnergy -= 3;
+								_earlyReproduceEnergy -= 4;
 				            	if (_age == 0) {
-				            		_reproduceEnergy -= 3;
+				            		_reproduceEnergy -= 2;
 				            	}
 							}
 						}				
@@ -5710,8 +5710,8 @@ public class Organism extends Rectangle {
 					_switchdrift = 1;
 				} else {
 					if (_photosynthesis > 0) {
-						if (_world._CO2 < 1125) {
-							if (Utils.random.nextInt(1125) < _world._CO2) {
+						if (_world._CO2 < 1150) {
+							if (Utils.random.nextInt(1150) < _world._CO2) {
 								_colonyPhotosynthesis += 0.01 * (_drift*Utils.scale[_growthRatio-1]) * _photosynthesis;
 							}
 						} else {
@@ -5719,8 +5719,8 @@ public class Organism extends Rectangle {
 						}
 					} else {
 						if (_methanotrophy > 0) {
-							if (_world._CH4 < 1125) {
-								if (Utils.random.nextInt(1125) < _world._CH4) {
+							if (_world._CH4 < 1150) {
+								if (Utils.random.nextInt(1150) < _world._CH4) {
 									_energy += _world.methanotrophy(0.00125 * (_drift*Utils.scale[_growthRatio-1]) * _methanotrophy);
 								}
 							} else {
@@ -6229,6 +6229,7 @@ public class Organism extends Rectangle {
    		_canreact = false;
    		_candoautotrophy = false;
    		_ivyparasitism = 0;
+   		_leafphoto = 0;
   		active = false;
   		hasMoved = true;
   		_isaplant = false;
@@ -6268,6 +6269,7 @@ public class Organism extends Rectangle {
    		_canreact = false;
    		_candoautotrophy = false;
    		_ivyparasitism = 0;
+   		_leafphoto = 0;
   		active = false;
   		hasMoved = true;
   		_isaplant = false;
@@ -6635,6 +6637,7 @@ public class Organism extends Rectangle {
 	    _canreact = false;
 	    _candoautotrophy = false;
    		_ivyparasitism = 0;
+   		_leafphoto = 0;
 		hasMoved = true;
 		_infectedGeneticCode = null;
 		_savedGeneticCode = null;
@@ -6958,7 +6961,7 @@ public class Organism extends Rectangle {
 			_dodge =false;
 		}
 		if (_ivyparasitism > 0) {
-			_ivyparasitism = (Math.log10(_ivyparasitism + 76))/2;
+			_ivyparasitism = (Math.log10(_ivyparasitism + 68))/2;
 		}
 		// Calculate jade delay used in restoration of the color
 		if (_jadefactor > 1) {
@@ -23368,6 +23371,9 @@ public class Organism extends Rectangle {
 			// Get chemotrophic energy from methane
 			if (_methanotrophy > 0) {
 				_methanotrophy = (_methanotrophy*Utils.scale[_growthRatio-1]);
+				if ((!_candoautotrophy) && (_leafphoto == 0)) {
+					_leafphoto = -1;
+				}
 				if ((_age & 0x07) == 0x00) {
 					if (_candoautotrophy) {
 						_energy += _world.methanotrophy(_methanotrophy);
@@ -23382,6 +23388,9 @@ public class Organism extends Rectangle {
 			//Get sun's energy
 			_photosynthesis = (addphoto*Utils.scale[_growthRatio-1]);
 			if (_photosynthesis > 0) {
+				if ((!_candoautotrophy) && (_leafphoto == 0)) {
+					_leafphoto = -1;
+				}
 				// Effective colony photosynthesis
 				if (_forestphoto > 0) {
 					_forestphoto = Utils.CROWDEDFOREST_ENERGY_CONSUMPTION * (_forestphoto*Utils.scale[_growthRatio-1]);
@@ -23875,6 +23884,9 @@ public class Organism extends Rectangle {
 			// Get chemotrophic energy from methane
 			if (_methanotrophy > 0) {
 				_methanotrophy = (_methanotrophy*Utils.scale[_growthRatio-1]);
+				if ((!_candoautotrophy) && (_leafphoto == 0)) {
+					_leafphoto = -1;
+				}
 				if ((_age & 0x07) == 0x00) {
 					if (_candoautotrophy) {
 						_energy += _world.methanotrophy(_methanotrophy);
@@ -23889,6 +23901,9 @@ public class Organism extends Rectangle {
 			//Get sun's energy
 			_photosynthesis = (addphoto*Utils.scale[_growthRatio-1]);
 			if (_photosynthesis > 0) {
+				if ((!_candoautotrophy) && (_leafphoto == 0)) {
+					_leafphoto = -1;
+				}
 				// Effective colony photosynthesis
 				if (_forestphoto > 0) {
 					_forestphoto = Utils.CROWDEDFOREST_ENERGY_CONSUMPTION * (_forestphoto*Utils.scale[_growthRatio-1]);
@@ -24587,7 +24602,7 @@ public class Organism extends Rectangle {
 								// Organisms with ochre segments push other organisms away
 								case OCHRE:
 									if ((!_isaconsumer) && (!_isafungus)) {
-										addmaintenance -= 0.875 * _m[i];
+										addmaintenance -= 0.85 * _m[i];
 									}
 									break;
 								// Organisms with olive destroy defense and killer segments
