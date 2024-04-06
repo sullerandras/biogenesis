@@ -279,6 +279,10 @@ public final class Utils {
 	 */
 	final static double DEF_FOREST_ENERGY_CONSUMPTION = 1d;
 	/**
+	 * This is the default energy that is consumed when an ivy segment is used.
+	 */
+	final static double DEF_IVY_ENERGY_CONSUMPTION = 0.333d;
+	/**
 	 * This is the default energy that is consumed when a crowded forest segment is used.
 	 */
 	final static double DEF_CROWDEDFOREST_ENERGY_CONSUMPTION = 1d;
@@ -461,7 +465,7 @@ public final class Utils {
 	/**
 	 * This is the default probability for a new segment to be cyan.
 	 */
-	final static int DEF_CYAN_PROB = 6;
+	final static int DEF_CYAN_PROB = 7;
 	/**
 	 * This is the default probability for a new segment to be white.
 	 */
@@ -502,6 +506,10 @@ public final class Utils {
 	 * This is the default probability for a new segment to be forest.
 	 */
 	final static int DEF_FOREST_PROB = 3;
+	/**
+	 * This is the default probability for a new segment to be ivy.
+	 */
+	final static int DEF_IVY_PROB = 3;
 	/**
 	 * This is the default probability for a new segment to be spring.
 	 */
@@ -549,11 +557,11 @@ public final class Utils {
 	/**
 	 * This is the default probability for a new segment to be teal.
 	 */
-	final static int DEF_TEAL_PROB = 9;
+	final static int DEF_TEAL_PROB = 7;
 	/**
 	 * This is the default probability for a new segment to be drift.
 	 */
-	final static int DEF_DRIFT_PROB = 3;
+	final static int DEF_DRIFT_PROB = 7;
 	/**
 	 * This is the default probability for a new segment to be spin.
 	 */
@@ -1020,6 +1028,10 @@ public final class Utils {
 	 */
 	static double CROWDEDFOREST_ENERGY_CONSUMPTION = DEF_CROWDEDFOREST_ENERGY_CONSUMPTION;
 	/**
+	 * This is the energy that is consumed when an ivy segment is used.
+	 */
+	static double IVY_ENERGY_CONSUMPTION = DEF_IVY_ENERGY_CONSUMPTION;
+	/**
 	 * This is the energy that is consumed when an organism touches a symbiont (with rose segments).
 	 */
 	static double SYMBIONT_ENERGY_CONSUMPTION = DEF_SYMBIONT_ENERGY_CONSUMPTION;
@@ -1239,6 +1251,10 @@ public final class Utils {
 	 * This is the probability for a new segment to be forest.
 	 */
 	static int FOREST_PROB = DEF_FOREST_PROB;
+	/**
+	 * This is the probability for a new segment to be ivy.
+	 */
+	static int IVY_PROB = DEF_IVY_PROB;
 	/**
 	 * This is the probability for a new segment to be spring.
 	 */
@@ -1662,6 +1678,10 @@ public final class Utils {
 	 */
 	public static final Color ColorFOREST = new Color(0,128,0);
 	/**
+	 * Precalculated Ivy color
+	 */
+	public static final Color ColorIVY = new Color(136,160,128);
+	/**
 	 * Precalculated bark color
 	 */
 	public static final Color ColorBARK = new Color(96,128,64);
@@ -1968,6 +1988,7 @@ public final class Utils {
 	public static final String colorToString(Color c) {
 		if (c.equals(Color.GREEN)) return Messages.getString("T_GREEN"); //$NON-NLS-1$
 		if (c.equals(Utils.ColorFOREST)) return Messages.getString("T_FOREST"); //$NON-NLS-1$
+		if (c.equals(Utils.ColorIVY)) return Messages.getString("T_IVY"); //$NON-NLS-1$
 		if (c.equals(Utils.ColorSPRING)) return Messages.getString("T_SPRING"); //$NON-NLS-1$
 		if (c.equals(Utils.ColorSUMMER)) return Messages.getString("T_SUMMER"); //$NON-NLS-1$
 		if (c.equals(Utils.ColorLIME)) return Messages.getString("T_LIME"); //$NON-NLS-1$
@@ -2078,6 +2099,7 @@ public final class Utils {
 			prefs.putDouble("FOREST_ENERGY_CONSUMPTION",FOREST_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			prefs.putDouble("CROWDEDFOREST_ENERGY_CONSUMPTION",CROWDEDFOREST_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			prefs.putDouble("SYMBIONT_ENERGY_CONSUMPTION",SYMBIONT_ENERGY_CONSUMPTION); //$NON-NLS-1$
+			prefs.putDouble("IVY_ENERGY_CONSUMPTION",IVY_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			prefs.putDouble("SPRING_ENERGY_CONSUMPTION",SPRING_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			prefs.putDouble("LEAF_ENERGY_CONSUMPTION",LEAF_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			prefs.putDouble("MODLEAF_ENERGY_CONSUMPTION",MODLEAF_ENERGY_CONSUMPTION); //$NON-NLS-1$
@@ -2132,6 +2154,7 @@ public final class Utils {
 			prefs.putInt("CORAL_PROB",CORAL_PROB); //$NON-NLS-1$
 			prefs.putInt("ORANGE_PROB",ORANGE_PROB); //$NON-NLS-1$
 			prefs.putInt("FOREST_PROB",FOREST_PROB); //$NON-NLS-1$
+			prefs.putInt("IVY_PROB",IVY_PROB); //$NON-NLS-1$
 			prefs.putInt("SPRING_PROB",SPRING_PROB); //$NON-NLS-1$
 			prefs.putInt("LEAF_PROB",LEAF_PROB); //$NON-NLS-1$
 			prefs.putInt("LIME_PROB",LIME_PROB); //$NON-NLS-1$
@@ -2279,6 +2302,7 @@ public final class Utils {
 			FOREST_ENERGY_CONSUMPTION = prefs.getDouble("FOREST_ENERGY_CONSUMPTION",DEF_FOREST_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			CROWDEDFOREST_ENERGY_CONSUMPTION = prefs.getDouble("CROWDEDFOREST_ENERGY_CONSUMPTION",DEF_CROWDEDFOREST_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			SYMBIONT_ENERGY_CONSUMPTION = prefs.getDouble("SYMBIONT_ENERGY_CONSUMPTION",DEF_SYMBIONT_ENERGY_CONSUMPTION); //$NON-NLS-1$
+			IVY_ENERGY_CONSUMPTION = prefs.getDouble("IVY_ENERGY_CONSUMPTION",DEF_IVY_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			SPRING_ENERGY_CONSUMPTION = prefs.getDouble("SPRING_ENERGY_CONSUMPTION",DEF_SPRING_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			LEAF_ENERGY_CONSUMPTION = prefs.getDouble("LEAF_ENERGY_CONSUMPTION",DEF_LEAF_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			MODLEAF_ENERGY_CONSUMPTION = prefs.getDouble("MODLEAF_ENERGY_CONSUMPTION",DEF_MODLEAF_ENERGY_CONSUMPTION); //$NON-NLS-1$
@@ -2333,6 +2357,7 @@ public final class Utils {
 			CORAL_PROB = prefs.getInt("CORAL_PROB",DEF_CORAL_PROB); //$NON-NLS-1$
 			ORANGE_PROB = prefs.getInt("ORANGE_PROB",DEF_ORANGE_PROB); //$NON-NLS-1$
 			FOREST_PROB = prefs.getInt("FOREST_PROB",DEF_FOREST_PROB); //$NON-NLS-1$
+			IVY_PROB = prefs.getInt("IVY_PROB",DEF_IVY_PROB); //$NON-NLS-1$
 			SPRING_PROB = prefs.getInt("SPRING_PROB",DEF_SPRING_PROB); //$NON-NLS-1$
 			LEAF_PROB = prefs.getInt("LEAF_PROB",DEF_LEAF_PROB); //$NON-NLS-1$
 			LIME_PROB = prefs.getInt("LIME_PROB",DEF_LIME_PROB); //$NON-NLS-1$

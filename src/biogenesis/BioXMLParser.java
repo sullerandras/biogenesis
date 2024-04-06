@@ -82,6 +82,7 @@ public class BioXMLParser implements ErrorHandler {
 		ps.println("<!ATTLIST genetic_code peaceful (yes|no) #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST genetic_code passive (yes|no) #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST genetic_code clockwise (yes|no) #REQUIRED>"); //$NON-NLS-1$
+		ps.println("<!ATTLIST genetic_code modifiesdrift (yes|no) #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST genetic_code modifiespink (yes|no) #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST genetic_code modifieslilac (yes|no) #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST genetic_code modifiessky (yes|no) #REQUIRED>"); //$NON-NLS-1$
@@ -90,7 +91,7 @@ public class BioXMLParser implements ErrorHandler {
 		ps.println("<!ELEMENT gene EMPTY>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST gene length CDATA #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST gene theta CDATA #REQUIRED>"); //$NON-NLS-1$
-		ps.println("<!ATTLIST gene color (green|forest|spring|summer|lime|leaf|c4|jade|grass|bark|purple|plankton|red|fire|orange|maroon|crimson|pink|cream|silver|spike|lilac|gray|violet|olive|sky|blue|ochre|fallow|spore|white|plague|coral|mint|lavender|magenta|rose|cyan|teal|drift|spin|yellow|auburn|indigo|blond|flower|darkgray|gold|dark|eye) #REQUIRED>"); //$NON-NLS-1$
+		ps.println("<!ATTLIST gene color (green|forest|ivy|spring|summer|lime|leaf|c4|jade|grass|bark|purple|plankton|red|fire|orange|maroon|crimson|pink|cream|silver|spike|lilac|gray|violet|olive|sky|blue|ochre|fallow|spore|white|plague|coral|mint|lavender|magenta|rose|cyan|teal|drift|spin|yellow|auburn|indigo|blond|flower|darkgray|gold|dark|eye) #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST gene branch CDATA #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST gene redreaction CDATA #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST gene greenreaction CDATA #REQUIRED>"); //$NON-NLS-1$
@@ -157,6 +158,7 @@ public class BioXMLParser implements ErrorHandler {
 				"\" peaceful=\""+(geneticCode.getPeaceful()?"yes":"no")+  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
 				"\" passive=\""+(geneticCode.getPassive()?"yes":"no")+  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
 				"\" clockwise=\""+(geneticCode.getClockwise()?"yes":"no")+  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+				"\" modifiesdrift=\""+(geneticCode.getModifiesdrift()?"yes":"no")+  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
 				"\" modifiespink=\""+(geneticCode.getModifiespink()?"yes":"no")+  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
 				"\" modifieslilac=\""+(geneticCode.getModifieslilac()?"yes":"no")+  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
 				"\" modifiessky=\""+(geneticCode.getModifiessky()?"yes":"no")+  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
@@ -225,6 +227,7 @@ public class BioXMLParser implements ErrorHandler {
 		boolean peaceful;
 		boolean passive;
 		boolean clockwise;
+		boolean modifiesdrift;
 		boolean modifiespink;
 		boolean modifieslilac;
 		boolean modifiessky;
@@ -451,6 +454,14 @@ public class BioXMLParser implements ErrorHandler {
 					clockwise = false;
 				else
 					throw new SAXException("Clockwise has not an allowed value."); //$NON-NLS-1$
+			s = geneticCode.getAttribute("modifiesdrift"); //$NON-NLS-1$
+			if (s.equals("yes")) //$NON-NLS-1$
+				modifiesdrift = true;
+			else
+				if (s.equals("no")) //$NON-NLS-1$
+					modifiesdrift = false;
+				else
+					throw new SAXException("Modifiesdrift has not an allowed value."); //$NON-NLS-1$
 			s = geneticCode.getAttribute("modifiespink"); //$NON-NLS-1$
 			if (s.equals("yes")) //$NON-NLS-1$
 				modifiespink = true;
@@ -498,7 +509,7 @@ public class BioXMLParser implements ErrorHandler {
 				genes.add(parseGene((Element)gene));
 				gene = getNextElement(gene.getNextSibling());
 			}
-			return new GeneticCode(genes, symmetry, mirror, mutationrate, clonerate, homeX, homeY, base1X, base1Y, base2X, base2Y, activity, modifiescream, modifiesfallow, modifiesspore, adaptspore, modifiesblack, adaptblack, plague, disperse, generation, sibling, altruist, familial, social, peaceful, passive, clockwise, modifiespink, modifieslilac, modifiessky, modifiesleaf, selfish);
+			return new GeneticCode(genes, symmetry, mirror, mutationrate, clonerate, homeX, homeY, base1X, base1Y, base2X, base2Y, activity, modifiescream, modifiesfallow, modifiesspore, adaptspore, modifiesblack, adaptblack, plague, disperse, generation, sibling, altruist, familial, social, peaceful, passive, clockwise, modifiesdrift, modifiespink, modifieslilac, modifiessky, modifiesleaf, selfish);
 		}
 		throw new SAXException("This file does not contain a genetic_code."); //$NON-NLS-1$
 	}
@@ -577,6 +588,7 @@ public class BioXMLParser implements ErrorHandler {
 	private static Color stringToColor(String s) throws IllegalArgumentException {
 		if (s.equals("green")) return Color.GREEN; //$NON-NLS-1$
 		if (s.equals("forest")) return Utils.ColorFOREST; //$NON-NLS-1$
+		if (s.equals("ivy")) return Utils.ColorIVY; //$NON-NLS-1$
 		if (s.equals("spring")) return Utils.ColorSPRING; //$NON-NLS-1$
 		if (s.equals("summer")) return Utils.ColorSUMMER; //$NON-NLS-1$
 		if (s.equals("lime")) return Utils.ColorLIME; //$NON-NLS-1$
@@ -631,6 +643,7 @@ public class BioXMLParser implements ErrorHandler {
 	public static String colorToString(Color c) {
 		if (c.equals(Color.GREEN)) return "green"; //$NON-NLS-1$
 		if (c.equals(Utils.ColorFOREST)) return "forest"; //$NON-NLS-1$
+		if (c.equals(Utils.ColorIVY)) return "ivy"; //$NON-NLS-1$
 		if (c.equals(Utils.ColorSPRING)) return "spring"; //$NON-NLS-1$
 		if (c.equals(Utils.ColorSUMMER)) return "summer"; //$NON-NLS-1$
 		if (c.equals(Utils.ColorLIME)) return "lime"; //$NON-NLS-1$

@@ -110,6 +110,7 @@ public class ParamDialog extends JDialog {
 	private JTextField orangecostText = null;
 	private JTextField forestcostText = null;
 	private JTextField springcostText = null;
+	private JTextField ivycostText = null;
 	private JTextField leafcostText = null;
 	private JTextField limecostText = null;
 	private JTextField summercostText = null;
@@ -179,6 +180,7 @@ public class ParamDialog extends JDialog {
 	private JTextField coralprobText = null;
 	private JTextField orangeprobText = null;
 	private JTextField forestprobText = null;
+	private JTextField ivyprobText = null;
 	private JTextField springprobText = null;
 	private JTextField leafprobText = null;
 	private JTextField limeprobText = null;
@@ -333,6 +335,7 @@ public class ParamDialog extends JDialog {
 		coralcostText.setText(String.valueOf(Utils.DEF_CORAL_ENERGY_CONSUMPTION));
 		orangecostText.setText(String.valueOf(Utils.DEF_ORANGE_ENERGY_CONSUMPTION));
 		forestcostText.setText(String.valueOf(Utils.DEF_FOREST_ENERGY_CONSUMPTION));
+		ivycostText.setText(String.valueOf(Utils.DEF_IVY_ENERGY_CONSUMPTION));
 		springcostText.setText(String.valueOf(Utils.DEF_SPRING_ENERGY_CONSUMPTION));
 		leafcostText.setText(String.valueOf(Utils.DEF_LEAF_ENERGY_CONSUMPTION));
 		summercostText.setText(String.valueOf(Utils.DEF_SUMMER_ENERGY_CONSUMPTION));
@@ -383,6 +386,7 @@ public class ParamDialog extends JDialog {
 		coralprobText.setText(String.valueOf(Utils.DEF_CORAL_PROB));
 		orangeprobText.setText(String.valueOf(Utils.DEF_ORANGE_PROB));
 		forestprobText.setText(String.valueOf(Utils.DEF_FOREST_PROB));
+		ivyprobText.setText(String.valueOf(Utils.DEF_IVY_PROB));
 		springprobText.setText(String.valueOf(Utils.DEF_SPRING_PROB));
 		leafprobText.setText(String.valueOf(Utils.DEF_LEAF_PROB));
 		summerprobText.setText(String.valueOf(Utils.DEF_SUMMER_PROB));
@@ -948,7 +952,7 @@ public class ParamDialog extends JDialog {
 
 	protected JPanel setGenesTab() {
 		JPanel genesPanel = new JPanel();
-		genesPanel.setLayout(new GridLayout(18,3));
+		genesPanel.setLayout(new GridLayout(19,3));
 		JLabel label;
 
 		genesPanel.add(new JLabel(Messages.getString("T_COLOR2"),SwingConstants.CENTER)); //$NON-NLS-1$
@@ -968,7 +972,14 @@ public class ParamDialog extends JDialog {
 		genesPanel.add(forestprobText);
 		forestcostText = new JTextField(Double.toString(Utils.FOREST_ENERGY_CONSUMPTION));
 		genesPanel.add(forestcostText);
-
+		
+		label = new JLabel(Messages.getString("T_IVY"),SwingConstants.CENTER); //$NON-NLS-1$
+		genesPanel.add(label);
+		ivyprobText = new JTextField(Integer.toString(Utils.IVY_PROB));
+		genesPanel.add(ivyprobText);
+		ivycostText = new JTextField(Double.toString(Utils.IVY_ENERGY_CONSUMPTION));
+		genesPanel.add(ivycostText);
+		
 		label = new JLabel(Messages.getString("T_SPRING"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
 		springprobText = new JTextField(Integer.toString(Utils.SPRING_PROB));
@@ -1626,6 +1637,12 @@ public class ParamDialog extends JDialog {
 			// Keep old value if there is a problem
 		}
 		try {
+			d = Double.parseDouble(ivycostText.getText());
+			if (d > 0) Utils.IVY_ENERGY_CONSUMPTION = d;
+		} catch (NumberFormatException ex) {
+			// Keep old value if there is a problem
+		}
+		try {
 			d = Double.parseDouble(springcostText.getText());
 			if (d > 0) Utils.SPRING_ENERGY_CONSUMPTION = d;
 		} catch (NumberFormatException ex) {
@@ -1922,6 +1939,12 @@ public class ParamDialog extends JDialog {
 		try {
 			i = Integer.parseInt(forestprobText.getText());
 			if (i >= 0) Utils.FOREST_PROB = i;
+		} catch (NumberFormatException ex) {
+			// Keep old value if there is a problem
+		}
+		try {
+			i = Integer.parseInt(ivyprobText.getText());
+			if (i >= 0) Utils.IVY_PROB = i;
 		} catch (NumberFormatException ex) {
 			// Keep old value if there is a problem
 		}

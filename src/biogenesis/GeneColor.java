@@ -4,6 +4,7 @@ public enum GeneColor {
   NOCOLOR(""),
   GREEN("green"),
   FOREST("forest"),
+  IVY("ivy"),
   SPRING("spring"),
   SUMMER("summer"),
   LIME("lime"),

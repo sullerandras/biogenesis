@@ -166,6 +166,10 @@ public class GeneticCode implements Cloneable, Serializable {
 	 */
 	protected boolean _clockwise;
 	/**
+	 * Modifies the function of drift, modified ones can use reactions.
+	 */
+	protected boolean _modifiesdrift;
+	/**
 	 * Modifies the function of pink
 	 */
 	protected boolean _modifiespink;
@@ -394,6 +398,14 @@ public class GeneticCode implements Cloneable, Serializable {
 	 */
 	public boolean getClockwise() {
 		return _clockwise;
+	}
+	/**
+	 * Returns if the function of drift is modified or not.
+	 * 
+	 * @return  true if the function of drift is modified, false otherwise.
+	 */
+	public boolean getModifiesdrift() {
+		return _modifiesdrift;
 	}
 	/**
 	 * Returns if the function of pink is modified or not.
@@ -801,6 +813,12 @@ public class GeneticCode implements Cloneable, Serializable {
 		_clockwise =  Utils.random.nextBoolean();
 	}
 	/**
+	 * Decide randomly if the function of drift is modified or not.
+	 */
+	private void randomModifiesdrift() {
+		_modifiesdrift =  Utils.random.nextBoolean();
+	}
+	/**
 	 * Decide randomly if the function of pink is modified or not.
 	 */
 	private void randomModifiespink() {
@@ -898,6 +916,7 @@ public class GeneticCode implements Cloneable, Serializable {
 		randomPeaceful();
 		randomPassive();
 		randomClockwise();
+		randomModifiesdrift();
 		randomModifiespink();
 		randomModifieslilac();
 		randomModifiessky();
@@ -936,6 +955,7 @@ public class GeneticCode implements Cloneable, Serializable {
 	 * @param peaceful  true if the organism is peaceful.
 	 * @param passive  true if the organism is passive.
 	 * @param clockwise  true if the organism turns clockwise.
+	 * @param modifiesdrift  true if the function of drift is modified.
 	 * @param modifiespink  true if the function of pink is modified.
 	 * @param modifieslilac  true if the function of lilac is modified.
 	 * @param modifiessky  true if the function of sky is modified.
@@ -945,7 +965,7 @@ public class GeneticCode implements Cloneable, Serializable {
 	public GeneticCode(List<Gene> genes, int symmetry, int mirror, int mutationrate, int clonerate, double homeX, double homeY, double base1X, double base1Y, double base2X,
 		double base2Y, int activity, int modifiescream, int modifiesfallow, int modifiesspore, int adaptspore, int modifiesblack, int adaptblack, boolean plague,
 		boolean disperseChildren, boolean generationBattle, boolean siblingBattle, boolean altruist, boolean familial, boolean social, boolean peaceful, boolean passive,
-		boolean clockwise, boolean modifiespink, boolean modifieslilac, boolean modifiessky, boolean modifiesleaf, boolean selfish) {
+		boolean clockwise, boolean modifiesdrift, boolean modifiespink, boolean modifieslilac, boolean modifiessky, boolean modifiesleaf, boolean selfish) {
 		int nGenes = genes.size();
 		_genes = new Gene[nGenes];
 		genes.toArray(_genes);
@@ -976,6 +996,7 @@ public class GeneticCode implements Cloneable, Serializable {
 		_peaceful = peaceful;
 		_passive = passive;
 		_clockwise = clockwise;
+		_modifiesdrift = modifiesdrift;
 		_modifiespink = modifiespink;
 		_modifieslilac = modifieslilac;
 		_modifiessky = modifiessky;
@@ -1749,6 +1770,10 @@ public class GeneticCode implements Cloneable, Serializable {
 			randomClockwise();
 		else
 			_clockwise = parentCode.getClockwise();
+		if (Utils.random.nextInt(10000) < _mutationrate)
+			randomModifiesdrift();
+		else
+			_modifiesdrift = parentCode.getModifiesdrift();
 		if (Utils.random.nextInt(10000) < _mutationrate)
 			randomModifiespink();
 		else
