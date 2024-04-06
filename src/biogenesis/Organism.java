@@ -2072,7 +2072,7 @@ public class Organism extends Rectangle {
 				if (_symmetry != 1) {
 					planktonfactor = 1961.329 + Math.round(6000 / ((double)_geneticCode.getNGenes() + 2)) + Math.round(6315 / (double)_symmetry);
 				} else {
-					planktonfactor = 1961.329 + Math.round(6000 / ((double)_geneticCode.getNGenes() + 2)) + 5052 + Math.round(5052 / ((double)_geneticCode.getNGenes() + 2));
+					planktonfactor = 1961.329 + Math.round(6000 / ((double)_geneticCode.getNGenes() + 2)) + 5000 + Math.round(5260 / ((double)_geneticCode.getNGenes() + 2));
 				}
 			}
 			double filtermultiplier = (planktonfactor * 0.0006) / Utils.GREEN_OBTAINED_ENERGY_DIVISOR;
@@ -2120,7 +2120,7 @@ public class Organism extends Rectangle {
 						}
 					}
 				} else {
-					if ((_isinfectious) || (_plagueversion > 0) || (_isprotective)) {
+					if ((_isinfectious) || (_plagueversion > 0) || (_isprotective) || (_isafungus)) {
 						if (_haseyes) {
 							int q;
 							for (q=_segments-1; q>=0; q--) {
@@ -2137,7 +2137,7 @@ public class Organism extends Rectangle {
 							}
 						}
 					} else {
-						if ((_usefriendeffects > 0) || (_isafungus)) {
+						if (_usefriendeffects > 0) {
 							if (_haseyes) {
 								int q;
 								for (q=_segments-1; q>=0; q--) {
@@ -4623,10 +4623,14 @@ public class Organism extends Rectangle {
 				if (_isblond) {
 				    if (useblondcosts) {
 					    useblondcosts =false;
-					    if ((_isonlyc4 == 2) || (_reproducelate > 0)) {
+					    if (_reproducelate > 0) {
 					    	useDetritus(Math.min(_energy, Utils.BLOND_ENERGY_CONSUMPTION));
 					    } else {
-					    	useDetritus(Math.min(_energy, Utils.BLOND_ENERGY_CONSUMPTION * (_reproduceEnergy - _earlyReproduceEnergy)));
+					    	if (_isonlyc4 == 2) {
+					    		useDetritus(Math.min(_energy, Utils.BLOND_ENERGY_CONSUMPTION * Math.sqrt(_reproduceEnergy - _earlyReproduceEnergy)));
+					    	} else {
+					    		useDetritus(Math.min(_energy, Utils.BLOND_ENERGY_CONSUMPTION * (_reproduceEnergy - _earlyReproduceEnergy)));
+					    	}
 					    }
 					}
 				}
@@ -4984,10 +4988,10 @@ public class Organism extends Rectangle {
 						if (_spin > 0) {
 							if (_world._detritus < 545) {
 								if (Utils.random.nextInt(545) < _world._detritus) {
-									_energy += _world.filterfeeding(((0.92 * (Math.abs(dx) + Math.abs(dy))) + (22.7828 * Math.abs(dtheta))) * _filterfeeding);
+									_energy += _world.filterfeeding(((0.92 * (Math.abs(dx) + Math.abs(dy))) + (22.78275 * Math.abs(dtheta))) * _filterfeeding);
 								}
 							} else {
-								_energy += _world.filterfeeding(((0.92 * (Math.abs(dx) + Math.abs(dy))) + (22.7828 * Math.abs(dtheta))) * _filterfeeding);
+								_energy += _world.filterfeeding(((0.92 * (Math.abs(dx) + Math.abs(dy))) + (22.78275 * Math.abs(dtheta))) * _filterfeeding);
 							}
 						} else {
 							_energy += _world.filterfeeding((Math.abs(dx) + Math.abs(dy)) * _filterfeeding);
@@ -22259,7 +22263,7 @@ public class Organism extends Rectangle {
 						break;
 					case PLANKTON:
 						_filterfeeding += _mphoto[i];
-						addmaintenance -= 0.3 * _m[i];
+						addmaintenance -= 0.304 * _m[i];
 						break;
 					case PURPLE:
 						_methanotrophy += _mphoto[i];
@@ -22562,7 +22566,7 @@ public class Organism extends Rectangle {
 						break;
 					case PLANKTON:
 						_filterfeeding += _mphoto[i];
-						addmaintenance -= 0.3 * _m[i];
+						addmaintenance -= 0.304 * _m[i];
 						break;
 					case PURPLE:
 						_methanotrophy += _mphoto[i];
@@ -23076,18 +23080,22 @@ public class Organism extends Rectangle {
 							switch (getTypeColor(_segColor[i])) {
 							// Organisms with spin segments rotate
 							case SPIN:
-								addmaintenance -= 0.99 * _m[i];
+								if (_isonlyc4 == 2) {
+									addmaintenance -= 0.995 * _m[i];
+								} else {
+									addmaintenance -= 0.99 * _m[i];
+								}
 								break;
 							// Organisms with yellow segments have more children
 							case YELLOW:
 								if (_isonlyc4 == 2) {
-									addmaintenance -= 0.93 * _m[i];
+									addmaintenance -= 0.94 * _m[i];
 								}
 								break;
 							// Organisms with indigo segments reduce the energy the new born virus receives
 							case INDIGO:
 								if (_isonlyc4 == 2) {
-									addmaintenance -= 0.99 * _m[i];
+									addmaintenance -= 0.995 * _m[i];
 								} else {
 									addmaintenance -= 0.8 * _m[i];
 								}
@@ -23125,7 +23133,7 @@ public class Organism extends Rectangle {
 							// Organisms with gold segments live longer
 							case GOLD:
 								if (_isonlyc4 == 2) {
-									addmaintenance -= 0.99 * _m[i];
+									addmaintenance -= 0.995 * _m[i];
 								} else {
 									addmaintenance -= 0.8715 * _m[i];
 								}
@@ -23155,7 +23163,7 @@ public class Organism extends Rectangle {
 							// is silver
 							case SILVER:
 								if (_isonlyc4 == 2) {
-									addmaintenance -= _m[i];
+									addmaintenance -= 0.995 * _m[i];
 								}
 								break;
 							}
