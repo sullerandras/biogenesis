@@ -81,6 +81,16 @@ public class GeneticCode implements Cloneable, Serializable {
 	 */
 	protected int _clonerate;
 	/**
+	 * The home X % coordinate of this organism. Possible values are
+	 * -1 (birth coordinates will be used) or 0 - 100 
+	 */
+	protected double _homeX;
+	/**
+	 * The home Y % coordinate of this organism. Possible values are
+	 * -1 (birth coordinates will be used) or 0 - 100 
+	 */
+	protected double _homeY;
+	/**
 	 * The seasons of the summer segments. Possible values are
 	 * 0 - 2. 
 	 */
@@ -220,6 +230,22 @@ public class GeneticCode implements Cloneable, Serializable {
 	 */
 	public int getClonerate() {
 		return _clonerate;
+	}
+	/**
+	 * Returns the home X % coordinate applied to organisms with this genetic code
+	 * 
+	 * @return  a value of -1 or 0 - 100
+	 */
+	public double getHomeX() {
+		return _homeX;
+	}
+	/**
+	 * Returns the home Y % coordinate applied to organisms with this genetic code
+	 * 
+	 * @return  a value of -1 or 0 - 100
+	 */
+	public double getHomeY() {
+		return _homeY;
 	}
 	/**
 	 * Returns the season activity applied to organisms with this genetic code
@@ -495,6 +521,50 @@ public class GeneticCode implements Cloneable, Serializable {
 		}
 	}
 	/**
+	 * Gives home X % coordinate a random value (-1 or 0 - 100)
+	 */
+	private void randomHomeX() {
+		if (Utils.random.nextBoolean()) {
+			_homeX = -1;
+		} else {
+			_homeX = Utils.random.nextDouble() * 100.0;
+		}
+	}
+	/**
+	 * Gives home Y % coordinate a random value (-1 or 0 - 100)
+	 */
+	private void randomHomeY() {
+		if (Utils.random.nextBoolean()) {
+			_homeY = -1;
+		} else {
+			_homeY = Utils.random.nextDouble() * 100.0;
+		}
+	}
+	/**
+	 * Increases home X % coordinate by a maximum of 1%
+	 */
+	private void increaseHomeX() {
+		_homeX = _homeX + Utils.random.nextDouble();
+	}
+	/**
+	 * Increases home Y % coordinate by a maximum of 1%
+	 */
+	private void increaseHomeY() {
+		_homeY = _homeY + Utils.random.nextDouble();
+	}
+	/**
+	 * Decreases home X % coordinate by a maximum of 1%
+	 */
+	private void decreaseHomeX() {
+		_homeX = _homeX - Utils.random.nextDouble();
+	}
+	/**
+	 * Increases home X % coordinate by a maximum of 1%
+	 */
+	private void decreaseHomeY() {
+		_homeY = _homeY - Utils.random.nextDouble();
+	}
+	/**
 	 * Gives activity a random value (0 - 2)
 	 */
 	private void randomActivity() {
@@ -665,6 +735,8 @@ public class GeneticCode implements Cloneable, Serializable {
 		randomGenes();
 		randomMutationrate();
 		randomClonerate();
+		randomHomeX();
+		randomHomeY();
 		randomActivity();
 		randomModifiescream();
 		randomModifiesfallow();
@@ -697,6 +769,8 @@ public class GeneticCode implements Cloneable, Serializable {
 	 * @param mirror  0 if the organism won't be mirrored, 1 if it will.
 	 * @param mutationrate  The mutationrate that an organism with this genetic code will have.
 	 * @param clonerate  The clonerate that an organism with this genetic code will have.
+	 * @param homeX  The X % coordinate that an organism with this genetic code will have.
+	 * @param homeY  The Y % coordinate that an organism with this genetic code will have.
 	 * @param activity  The summer activity that an organism with this genetic code will have.
 	 * @param modifiescream The specialization of an enhanced parasite.
 	 * @param modifiesfallow The specialization of fallow. 
@@ -720,10 +794,10 @@ public class GeneticCode implements Cloneable, Serializable {
 	 * @param modifiesleaf  true if the function of leaf is modified.
 	 * @param selfish  true if the organism retains half of its energy if it reproduces.
 	 */
-	public GeneticCode(List<Gene> genes, int symmetry, int mirror, int mutationrate, int clonerate, int activity, int modifiescream, int modifiesfallow, int modifiesspore,
-		int adaptspore, int modifiesblack, int adaptblack, boolean plague, boolean disperseChildren, boolean generationBattle, boolean siblingBattle, boolean altruist,
-		boolean familial, boolean social, boolean peaceful, boolean passive, boolean clockwise, boolean modifiespink, boolean modifieslilac, boolean modifiessky,
-		boolean modifiesleaf, boolean selfish) {
+	public GeneticCode(List<Gene> genes, int symmetry, int mirror, int mutationrate, int clonerate, double homeX, double homeY, int activity, int modifiescream,
+		int modifiesfallow, int modifiesspore, int adaptspore, int modifiesblack, int adaptblack, boolean plague, boolean disperseChildren, boolean generationBattle,
+		boolean siblingBattle, boolean altruist, boolean familial, boolean social, boolean peaceful, boolean passive, boolean clockwise, boolean modifiespink,
+		boolean modifieslilac, boolean modifiessky, boolean modifiesleaf, boolean selfish) {
 		int nGenes = genes.size();
 		_genes = new Gene[nGenes];
 		genes.toArray(_genes);
@@ -731,6 +805,8 @@ public class GeneticCode implements Cloneable, Serializable {
 		_symmetry = symmetry;
 		_mutationrate = mutationrate;
 		_clonerate = clonerate;
+		_homeX = homeX;
+		_homeY = homeY;
 		_activity = activity;
 		_modifiescream = modifiescream;
 		_modifiesfallow = modifiesfallow;
@@ -869,6 +945,62 @@ public class GeneticCode implements Cloneable, Serializable {
 		} else {
 			if (_clonerate < Utils.MIN_CLONE_RATE) {
 				_clonerate = Utils.MIN_CLONE_RATE;
+			}
+		}
+		_homeX = parentCode.getHomeX();
+		if (Utils.random.nextInt(1000) < _mutationrate) {
+			// mutate homeX
+			if (Utils.random.nextInt(10) < 1) {
+				// large random change
+				randomHomeX();
+			} else {
+				if (_homeX >= 0) {
+					if (Utils.random.nextBoolean()) {
+	                	// increase
+						increaseHomeX();
+					} else {
+						// decrease
+						decreaseHomeX();
+					}
+				}
+			}
+		}
+		// check if organism is inside allowed homeX % coordinates
+		if (_homeX != -1) {
+			if (_homeX > 100) {
+				_homeX = 100;
+			} else {
+				if (_homeX < 0) {
+					_homeX = 0;
+				}
+			}
+		}
+		_homeY = parentCode.getHomeY();
+		if (Utils.random.nextInt(1000) < _mutationrate) {
+			// mutate homeY
+			if (Utils.random.nextInt(10) < 1) {
+				// large random change
+				randomHomeY();
+			} else {
+				if (_homeY >= 0) {
+					if (Utils.random.nextBoolean()) {
+	                	// increase
+						increaseHomeY();
+					} else {
+						// decrease
+						decreaseHomeY();
+					}
+				}
+			}
+		}
+		// check if organism is inside allowed homeY % coordinates
+		if (_homeY != -1) {
+			if (_homeY > 100) {
+				_homeY = 100;
+			} else {
+				if (_homeY < 0) {
+					_homeY = 0;
+				}
 			}
 		}
 		if (Utils.random.nextInt(10000) < _mutationrate) {

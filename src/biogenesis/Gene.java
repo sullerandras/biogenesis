@@ -163,7 +163,7 @@ public class Gene implements Cloneable, Serializable {
 				+ Utils.MINT_PROB + Utils.CREAM_PROB + Utils.ROSE_PROB + Utils.DARK_PROB + Utils.OCHRE_PROB + Utils.SKY_PROB + Utils.LILAC_PROB + Utils.SILVER_PROB
 				+ Utils.FIRE_PROB + Utils.DARKGRAY_PROB + Utils.GOLD_PROB + Utils.BLOND_PROB + Utils.FLOWER_PROB + Utils.AUBURN_PROB + Utils.PLAGUE_PROB + Utils.SPIKE_PROB
 				+ Utils.INDIGO_PROB + Utils.LAVENDER_PROB + Utils.FALLOW_PROB + Utils.SPORE_PROB + Utils.JADE_PROB + Utils.C4_PROB + Utils.GRASS_PROB + Utils.PURPLE_PROB
-				+ Utils.PLANKTON_PROB;
+				+ Utils.PLANKTON_PROB + Utils.DRIFT_PROB;
 		int prob = Utils.random.nextInt(max_prob);
 		int ac_prob = Utils.RED_PROB;
 		if (prob < ac_prob) {
@@ -403,6 +403,11 @@ public class Gene implements Cloneable, Serializable {
 		ac_prob += Utils.PLANKTON_PROB;
 		if (prob < ac_prob) {
 			_color = Utils.ColorPLANKTON;
+			return;
+		}
+		ac_prob += Utils.DRIFT_PROB;
+		if (prob < ac_prob) {
+			_color = Utils.ColorDRIFT;
 			return;
 		}
 		_color = Color.YELLOW;

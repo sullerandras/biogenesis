@@ -343,6 +343,10 @@ public final class Utils {
 	 */
 	final static double DEF_TEAL_ENERGY_CONSUMPTION = 11.88d;
 	/**
+	 * This is the default energy that is consumed when a drift segment is used.
+	 */
+	final static double DEF_DRIFT_ENERGY_CONSUMPTION = 2d;
+	/**
 	 * This is the default energy that is consumed when a spin segment is used.
 	 */
 	final static double DEF_SPIN_ENERGY_CONSUMPTION = 13.333d;
@@ -542,6 +546,10 @@ public final class Utils {
 	 * This is the default probability for a new segment to be teal.
 	 */
 	final static int DEF_TEAL_PROB = 8;
+	/**
+	 * This is the default probability for a new segment to be drift.
+	 */
+	final static int DEF_DRIFT_PROB = 2;
 	/**
 	 * This is the default probability for a new segment to be spin.
 	 */
@@ -1068,6 +1076,10 @@ public final class Utils {
 	 */
 	static double TEAL_ENERGY_CONSUMPTION = DEF_TEAL_ENERGY_CONSUMPTION;
 	/**
+	 * This is the energy that is consumed when a drift segment is used.
+	 */
+	static double DRIFT_ENERGY_CONSUMPTION = DEF_DRIFT_ENERGY_CONSUMPTION;
+	/**
 	 * This is the energy that is consumed when a spin segment is used.
 	 */
 	static double SPIN_ENERGY_CONSUMPTION = DEF_SPIN_ENERGY_CONSUMPTION;
@@ -1267,6 +1279,10 @@ public final class Utils {
 	 * This is the probability for a new segment to be teal.
 	 */
 	static int TEAL_PROB = DEF_TEAL_PROB;
+	/**
+	 * This is the probability for a new segment to be drift.
+	 */
+	static int DRIFT_PROB = DEF_DRIFT_PROB;
 	/**
 	 * This is the probability for a new segment to be spin.
 	 */
@@ -1678,6 +1694,10 @@ public final class Utils {
 	 */
 	public static final Color ColorTEAL = new Color(0,128,128);
 	/**
+	 * Precalculated drift color
+	 */
+	public static final Color ColorDRIFT = new Color(64,160,160);
+	/**
 	 * Precalculated spin color
 	 */
 	public static final Color ColorSPIN = new Color(128,255,224);
@@ -1967,6 +1987,7 @@ public final class Utils {
 		if (c.equals(Utils.ColorROSE)) return Messages.getString("T_ROSE"); //$NON-NLS-1$
 		if (c.equals(Color.CYAN)) return Messages.getString("T_CYAN"); //$NON-NLS-1$
 		if (c.equals(Utils.ColorTEAL)) return Messages.getString("T_TEAL"); //$NON-NLS-1$
+		if (c.equals(Utils.ColorDRIFT)) return Messages.getString("T_DRIFT"); //$NON-NLS-1$
 		if (c.equals(Utils.ColorSPIN)) return Messages.getString("T_SPIN"); //$NON-NLS-1$
 		if (c.equals(Color.YELLOW)) return Messages.getString("T_YELLOW"); //$NON-NLS-1$
 		if (c.equals(Utils.ColorAUBURN)) return Messages.getString("T_AUBURN"); //$NON-NLS-1$
@@ -2053,6 +2074,7 @@ public final class Utils {
 			prefs.putDouble("C4_ENERGY_CONSUMPTION",C4_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			prefs.putDouble("VIOLET_ENERGY_CONSUMPTION",VIOLET_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			prefs.putDouble("TEAL_ENERGY_CONSUMPTION",TEAL_ENERGY_CONSUMPTION); //$NON-NLS-1$
+			prefs.putDouble("DRIFT_ENERGY_CONSUMPTION",DRIFT_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			prefs.putDouble("SPIN_ENERGY_CONSUMPTION",SPIN_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			prefs.putDouble("EYE_ENERGY_CONSUMPTION",EYE_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			prefs.putDouble("MAROON_ENERGY_CONSUMPTION",MAROON_ENERGY_CONSUMPTION); //$NON-NLS-1$
@@ -2103,6 +2125,7 @@ public final class Utils {
 			prefs.putInt("C4_PROB",C4_PROB); //$NON-NLS-1$
 			prefs.putInt("VIOLET_PROB",VIOLET_PROB); //$NON-NLS-1$
 			prefs.putInt("TEAL_PROB",TEAL_PROB); //$NON-NLS-1$
+			prefs.putInt("DRIFT_PROB",DRIFT_PROB); //$NON-NLS-1$
 			prefs.putInt("SPIN_PROB",SPIN_PROB); //$NON-NLS-1$
 			prefs.putInt("EYE_PROB",EYE_PROB); //$NON-NLS-1$
 			prefs.putInt("MAROON_PROB",MAROON_PROB); //$NON-NLS-1$
@@ -2251,6 +2274,7 @@ public final class Utils {
 			C4_ENERGY_CONSUMPTION = prefs.getDouble("C4_ENERGY_CONSUMPTION",DEF_C4_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			VIOLET_ENERGY_CONSUMPTION = prefs.getDouble("VIOLET_ENERGY_CONSUMPTION",DEF_VIOLET_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			TEAL_ENERGY_CONSUMPTION = prefs.getDouble("TEAL_ENERGY_CONSUMPTION",DEF_TEAL_ENERGY_CONSUMPTION); //$NON-NLS-1$
+			DRIFT_ENERGY_CONSUMPTION = prefs.getDouble("DRIFT_ENERGY_CONSUMPTION",DEF_DRIFT_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			SPIN_ENERGY_CONSUMPTION = prefs.getDouble("SPIN_ENERGY_CONSUMPTION",DEF_SPIN_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			EYE_ENERGY_CONSUMPTION = prefs.getDouble("EYE_ENERGY_CONSUMPTION",DEF_EYE_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			MAROON_ENERGY_CONSUMPTION = prefs.getDouble("MAROON_ENERGY_CONSUMPTION",DEF_MAROON_ENERGY_CONSUMPTION); //$NON-NLS-1$
@@ -2301,6 +2325,7 @@ public final class Utils {
 			C4_PROB = prefs.getInt("C4_PROB",DEF_C4_PROB); //$NON-NLS-1$
 			VIOLET_PROB = prefs.getInt("VIOLET_PROB",DEF_VIOLET_PROB); //$NON-NLS-1$
 			TEAL_PROB = prefs.getInt("TEAL_PROB",DEF_TEAL_PROB); //$NON-NLS-1$
+			DRIFT_PROB = prefs.getInt("DRIFT_PROB",DEF_DRIFT_PROB); //$NON-NLS-1$
 			SPIN_PROB = prefs.getInt("SPIN_PROB",DEF_SPIN_PROB); //$NON-NLS-1$
 			EYE_PROB = prefs.getInt("EYE_PROB",DEF_EYE_PROB); //$NON-NLS-1$
 			MAROON_PROB = prefs.getInt("MAROON_PROB",DEF_MAROON_PROB); //$NON-NLS-1$

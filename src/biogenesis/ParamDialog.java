@@ -145,6 +145,7 @@ public class ParamDialog extends JDialog {
 	private JTextField sporecostText = null;
 	private JTextField plaguecostText = null;
 	private JTextField spikecostText = null;
+	private JTextField driftcostText = null;
 	private JTextField segmentcostText = null;
 	private JTextField drainText = null;
 	private JTextField greenenergyText = null;
@@ -214,6 +215,7 @@ public class ParamDialog extends JDialog {
 	private JTextField sporeprobText = null;
 	private JTextField plagueprobText = null;
 	private JTextField spikeprobText = null;
+	private JTextField driftprobText = null;
 	private JTextField decayenergyText = null;
 	private JButton OKButton = null;
 	private JButton cancelButton = null;
@@ -366,6 +368,7 @@ public class ParamDialog extends JDialog {
 		sporecostText.setText(String.valueOf(Utils.DEF_SPORE_ENERGY_CONSUMPTION));
 		plaguecostText.setText(String.valueOf(Utils.DEF_PLAGUE_ENERGY_CONSUMPTION));
 		spikecostText.setText(String.valueOf(Utils.DEF_SPIKE_ENERGY_CONSUMPTION));
+		driftcostText.setText(String.valueOf(Utils.DEF_DRIFT_ENERGY_CONSUMPTION));
 		redprobText.setText(String.valueOf(Utils.DEF_RED_PROB));
 		greenprobText.setText(String.valueOf(Utils.DEF_GREEN_PROB));
 		blueprobText.setText(String.valueOf(Utils.DEF_BLUE_PROB));
@@ -415,6 +418,7 @@ public class ParamDialog extends JDialog {
 		sporeprobText.setText(String.valueOf(Utils.DEF_SPORE_PROB));
 		plagueprobText.setText(String.valueOf(Utils.DEF_PLAGUE_PROB));
 		spikeprobText.setText(String.valueOf(Utils.DEF_SPIKE_PROB));
+		driftprobText.setText(String.valueOf(Utils.DEF_DRIFT_PROB));
 		decayenergyText.setText(String.valueOf(Utils.DEF_DECAY_ENERGY));
 		switch (Utils.DEF_HARDWARE_ACCELERATION) {
 		case 0:
@@ -938,7 +942,7 @@ public class ParamDialog extends JDialog {
 
 	protected JPanel setGenesTab() {
 		JPanel genesPanel = new JPanel();
-		genesPanel.setLayout(new GridLayout(17,3));
+		genesPanel.setLayout(new GridLayout(18,3));
 		JLabel label;
 
 		genesPanel.add(new JLabel(Messages.getString("T_COLOR2"),SwingConstants.CENTER)); //$NON-NLS-1$
@@ -1049,6 +1053,13 @@ public class ParamDialog extends JDialog {
 		genesPanel.add(tealprobText);
 		tealcostText = new JTextField(Double.toString(Utils.TEAL_ENERGY_CONSUMPTION));
 		genesPanel.add(tealcostText);
+		
+		label = new JLabel(Messages.getString("T_DRIFT"),SwingConstants.CENTER); //$NON-NLS-1$
+		genesPanel.add(label);
+		driftprobText = new JTextField(Integer.toString(Utils.DRIFT_PROB));
+		genesPanel.add(driftprobText);
+		driftcostText = new JTextField(Double.toString(Utils.DRIFT_ENERGY_CONSUMPTION));
+		genesPanel.add(driftcostText);
 
 		label = new JLabel(Messages.getString("T_SPIN"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
@@ -1675,6 +1686,12 @@ public class ParamDialog extends JDialog {
 			// Keep old value if there is a problem
 		}
 		try {
+			d = Double.parseDouble(driftcostText.getText());
+			if (d >= 0) Utils.DRIFT_ENERGY_CONSUMPTION = d;
+		} catch (NumberFormatException ex) {
+			// Keep old value if there is a problem
+		}
+		try {
 			d = Double.parseDouble(spincostText.getText());
 			if (d >= 0) Utils.SPIN_ENERGY_CONSUMPTION = d;
 		} catch (NumberFormatException ex) {
@@ -1965,6 +1982,12 @@ public class ParamDialog extends JDialog {
 		try {
 			i = Integer.parseInt(tealprobText.getText());
 			if (i >= 0) Utils.TEAL_PROB = i;
+		} catch (NumberFormatException ex) {
+			// Keep old value if there is a problem
+		}
+		try {
+			i = Integer.parseInt(driftprobText.getText());
+			if (i >= 0) Utils.DRIFT_PROB = i;
 		} catch (NumberFormatException ex) {
 			// Keep old value if there is a problem
 		}

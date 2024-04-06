@@ -164,6 +164,18 @@ public class Organism extends Rectangle {
 	 */
 	protected int _spin;
 	/**
+	 * Strength of drift is determined by the total amount of drift segments length
+	 */
+	protected int _drift;
+	/**
+	 * The X coordinate used for drifting, either from the genetic code, or simply the birth place
+	 */
+	protected int _homeX=-2;
+	/**
+	 * The Y coordinate used for drifting, either from the genetic code, or simply the birth place
+	 */
+	protected int _homeY=-2;
+	/**
 	 * Indicates if this organism has jade segments and also the individual jade delay
 	 */
 	protected int _jadefactor;
@@ -942,6 +954,7 @@ public class Organism extends Rectangle {
 	final void segmentsCheckPlant() {
 		int i;
 		_spin = 0;
+		_drift = 0;
 		if (_jadefactor > 0) {
 			_jadefactor = 1;
 		}
@@ -964,6 +977,13 @@ public class Organism extends Rectangle {
 				if (_geneticCode.getGene(i%_geneticCode.getNGenes()).getColor().equals(Utils.ColorSPRING)) {
 					_spin += (int)(10 * _geneticCode.getGene(i%_geneticCode.getNGenes()).getLength());
 				}
+				break;
+			case DRIFT:
+				if (_canmove == 0) {
+					_canmove = 1;
+				}
+				_drift += Math.round(Utils.DRIFT_ENERGY_CONSUMPTION * _geneticCode.getGene(i%_geneticCode.getNGenes()).getLength());
+				_mphoto[i] = 0;
 				break;
 			case SPIN:
 				if (_canmove == 0) {
@@ -989,6 +1009,7 @@ public class Organism extends Rectangle {
 	final void segmentsRestoreEffects() {
 		int i;
 		_spin = 0;
+		_drift = 0;
 		if (_jadefactor > 0) {
 			_jadefactor = 1;
 		}
@@ -1045,6 +1066,13 @@ public class Organism extends Rectangle {
 				}
 				isspin =true;
 				_spin += (int)(Utils.SPIN_ENERGY_CONSUMPTION * _geneticCode.getGene(i%_geneticCode.getNGenes()).getLength());
+				_mphoto[i] = 0;
+				break;
+			case DRIFT:
+				if (_canmove == 0) {
+					_canmove = 1;
+				}
+				_drift += Math.round(Utils.DRIFT_ENERGY_CONSUMPTION * _geneticCode.getGene(i%_geneticCode.getNGenes()).getLength());
 				_mphoto[i] = 0;
 				break;
 			case TEAL:
@@ -1396,6 +1424,7 @@ public class Organism extends Rectangle {
 	final void segmentsCreateEffects() {
 		int i;
 		_spin = 0;
+		_drift = 0;
 		_healing = 0;
 		_antiviral = 0;
 		_createlavender = 0;
@@ -1429,6 +1458,20 @@ public class Organism extends Rectangle {
 		}
 		if (_geneticCode.getAltruist()) {
 			_altruist =true;
+		}
+		if (_homeX == -2) {
+			if (_geneticCode.getHomeX() == -1) {
+				_homeX = _centerX;
+			} else {
+				_homeX = (int)Math.round(0.01 * _geneticCode.getHomeX() * _world.getWidth());
+			}
+		}
+		if (_homeY == -2) {
+			if (_geneticCode.getHomeY() == -1) {
+				_homeY = _centerY;
+			} else {
+				_homeY = (int)Math.round(0.01 * _geneticCode.getHomeY() * _world.getHeight());
+			}
 		}
 		_methanotrophy = 0;
 		_filterfeeding = 0;
@@ -1546,6 +1589,16 @@ public class Organism extends Rectangle {
 				}
 				isspin =true;
 				_spin += (int)(Utils.SPIN_ENERGY_CONSUMPTION * _geneticCode.getGene(i%_geneticCode.getNGenes()).getLength());
+				if (_geneticCode.getClockwise()) {
+					_clockwise =true;
+				}
+				_mphoto[i] = 0;
+				break;
+			case DRIFT:
+				if (_canmove == 0) {
+					_canmove = 1;
+				}
+				_drift += Math.round(Utils.DRIFT_ENERGY_CONSUMPTION * _geneticCode.getGene(i%_geneticCode.getNGenes()).getLength());
 				_mphoto[i] = 0;
 				break;
 			case TEAL:
@@ -1936,6 +1989,16 @@ public class Organism extends Rectangle {
 				}
 			}
 		}
+		if (_drift > 0) {
+			if ((_reproducelate == 0) && (_age == 0)) {
+				int b;
+				for (b=_segments-1; b>=0; b--) {
+		            if (_segColor[b].equals(Utils.ColorDRIFT)) {
+		            	_reproduceEnergy -= 3;
+					}
+				}				
+			}
+		}
 		if (_blackversion != 0) {
 			if (((_geneticCode.getModifiesblack() == 4) || (_geneticCode.getModifiesblack() == 6)) && (_reproducelate == 0) && (_age == 0)) {
 				int b;
@@ -1991,6 +2054,7 @@ public class Organism extends Rectangle {
 								case LAVENDER:
 								case CYAN:
 								case TEAL:
+								case DRIFT:
 								case BLOND:
 								case YELLOW:
 								case GOLD:
@@ -4662,7 +4726,7 @@ public class Organism extends Rectangle {
 	}
 	/**
 	 * Makes this organism with blue or cyan spores reproduce at death.
-	 * It tries to create one child as a pore and put it in the world.
+	 * It tries to create one child as a spore and put it in the world.
 	 */
 	public void reproduceSpore() {
 		_timeToReproduce = _timeToReproduceMax;
@@ -5304,6 +5368,26 @@ public class Organism extends Rectangle {
 							segmentsFrameEffects();
 						}
 					}
+				}
+			}
+			// Move organism with Drift
+			if ((_drift > 0) && (Utils.random.nextInt(100)<8)) {
+				if ((_centerX > _homeX + 100) || (_centerX < _homeX - 100) || (_centerY > _homeY + 100) || (_centerX < _homeY - 100) || (_isplankton > 0)) {
+					double dr;
+					double phi;
+					// Drift-contribution to speed in the direction pointing from the organism's center point to its home point
+					dr = Utils.between((_drift*Utils.scale[_growthRatio-1])/_mass, -5d, 5d);
+					if (Utils.random.nextBoolean()) {
+						// Move randomly 50% of the time to make drifting look more naturally and unstuck the organisms from each other
+						phi = Utils.random.nextDouble()*2*Math.PI;
+					} else {
+						// Angle of the dr vector
+						phi = Math.atan2(_homeY - _centerY, _homeX - _centerX);
+					}
+					// Project dr onto both dx and dy
+					dx = Utils.between(dx + dr*Math.cos(phi), -5d, 5d);
+					dy = Utils.between(dy + dr*Math.sin(phi), -5d, 5d);
+					dtheta=Utils.between(dtheta+Utils.randomSign()*(_drift*Utils.scale[_growthRatio-1])*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
 				}
 			}
 			// Rotate around with Spin and Spring
@@ -6360,6 +6444,7 @@ public class Organism extends Rectangle {
 		boolean isspin =false;
 		_allfrozen =true;
 		_canmove = 0;
+		_drift = 0;
 		_canreact =false;
 		_useframemovement =false;
 		if (_skyversion > 0) {
@@ -6423,6 +6508,22 @@ public class Organism extends Rectangle {
 					_useframemovement =true;
 				}
 				break;
+			case DRIFT:
+				if (freezingOrganism.useEnergy(Utils.SKY_ENERGY_CONSUMPTION)) {
+					_segColor[i] = Utils.ColorICE;
+					_mphoto[i] = -20;
+					freeze =true;
+					_isinjured =true;
+					_isfrozen =true;
+					_updateEffects = 2;
+				} else {
+					_allfrozen =false;
+					if (_canmove == 0) {
+						_canmove = 1;
+					}
+					_drift += Math.round(Utils.DRIFT_ENERGY_CONSUMPTION * _geneticCode.getGene(i%_geneticCode.getNGenes()).getLength());
+				}
+				break;
 			case SPIN:
 				isspin =true;
 				break;
@@ -6472,7 +6573,6 @@ public class Organism extends Rectangle {
 					_spin -= (int)(10 * _geneticCode.getGene(i%_geneticCode.getNGenes()).getLength());
 				} else {
 					_allfrozen =false;
-					_spin += (int)(10 * _geneticCode.getGene(i%_geneticCode.getNGenes()).getLength());
 				}
 				break;
 			case DARKGREEN:
@@ -6483,13 +6583,13 @@ public class Organism extends Rectangle {
 					_isinjured =true;
 					_isfrozen =true;
 					_updateEffects = 2;
+					if (_geneticCode.getGene(i%_geneticCode.getNGenes()).getColor().equals(Utils.ColorSPRING)) {
+						_spin -= (int)(10 * _geneticCode.getGene(i%_geneticCode.getNGenes()).getLength());
+					}
 				} else {
 					_allfrozen =false;
 					if (_geneticCode.getGene(i%_geneticCode.getNGenes()).getColor().equals(Utils.ColorJADE)) {
 						_jadefactor = 2;
-					}
-					if (_geneticCode.getGene(i%_geneticCode.getNGenes()).getColor().equals(Utils.ColorSPRING)) {
-						_spin += (int)(10 * _geneticCode.getGene(i%_geneticCode.getNGenes()).getLength());
 					}
 				}
 				break;
@@ -6553,6 +6653,7 @@ public class Organism extends Rectangle {
 		boolean freeze =false;
 		boolean isspin =false;
 		_canmove = 0;
+		_drift = 0;
 		_canreact =false;
 		_useframemovement =false;
 		for (int i=0; i<_segments; i++) {
@@ -6587,6 +6688,22 @@ public class Organism extends Rectangle {
 					_useframemovement =true;
 				}
 				break;
+			case DRIFT:
+				if (freezingOrganism.useEnergy(Utils.SKY_ENERGY_CONSUMPTION)) {
+					_segColor[i] = Utils.ColorICE;
+					_mphoto[i] = -20;
+					freeze =true;
+					_isinjured =true;
+					_isfrozen =true;
+					_updateEffects = 2;
+				} else {
+					_allfrozen =false;
+					if (_canmove == 0) {
+						_canmove = 1;
+					}
+					_drift += Math.round(Utils.DRIFT_ENERGY_CONSUMPTION * _geneticCode.getGene(i%_geneticCode.getNGenes()).getLength());
+				}
+				break;
 			case SPIN:
 				if (freezingOrganism.useEnergy(Utils.SKY_ENERGY_CONSUMPTION)) {
 					_segColor[i] = Utils.ColorICE;
@@ -6602,7 +6719,6 @@ public class Organism extends Rectangle {
 					if (_canmove == 0) {
 						_canmove = 1;
 					}
-					_spin += (int)(Utils.SPIN_ENERGY_CONSUMPTION * _geneticCode.getGene(i%_geneticCode.getNGenes()).getLength());
 				}
 				break;
 			}
@@ -10107,6 +10223,7 @@ public class Organism extends Rectangle {
 		case PURPLE:
 		case CYAN:
 		case TEAL:
+		case DRIFT:
 		case SPIN:
 		case AUBURN:
 		case INDIGO:
@@ -10358,6 +10475,7 @@ public class Organism extends Rectangle {
 		case PURPLE:
 		case CYAN:
 		case TEAL:
+		case DRIFT:
 		case SPIN:
 		case AUBURN:
 		case INDIGO:
@@ -10603,6 +10721,7 @@ public class Organism extends Rectangle {
 			case PURPLE:
 			case TEAL:
 			case CYAN:
+			case DRIFT:
 			case SPIN:
 			case AUBURN:
 			case INDIGO:
@@ -11179,6 +11298,7 @@ public class Organism extends Rectangle {
 			case PURPLE:
 			case TEAL:
 			case CYAN:
+			case DRIFT:
 			case SPIN:
 			case AUBURN:
 			case INDIGO:
@@ -12442,6 +12562,7 @@ public class Organism extends Rectangle {
 		    	break;
 			case CYAN:
 			case TEAL:
+			case DRIFT:
 			case SPIN:
 			case YELLOW:
 			case AUBURN:
@@ -12694,6 +12815,7 @@ public class Organism extends Rectangle {
 			case PURPLE:
 			case TEAL:
 			case CYAN:
+			case DRIFT:
 			case SPIN:
 			case YELLOW:
 			case AUBURN:
@@ -13761,6 +13883,7 @@ public class Organism extends Rectangle {
 			case PURPLE:
 			case TEAL:
 			case CYAN:
+			case DRIFT:
 			case SPIN:
 			case AUBURN:
 			case INDIGO:
@@ -14569,6 +14692,7 @@ public class Organism extends Rectangle {
 			case PURPLE:
 			case TEAL:
 			case CYAN:
+			case DRIFT:
 			case SPIN:
 			case YELLOW:
 			case AUBURN:
@@ -15070,6 +15194,7 @@ public class Organism extends Rectangle {
 			case PURPLE:
 			case TEAL:
 			case CYAN:
+			case DRIFT:
 			case SPIN:
 			case YELLOW:
 			case AUBURN:
@@ -15292,6 +15417,7 @@ public class Organism extends Rectangle {
 			case PURPLE:
 			case TEAL:
 			case CYAN:
+			case DRIFT:
 			case SPIN:
 			case YELLOW:
 			case AUBURN:
@@ -15895,6 +16021,7 @@ public class Organism extends Rectangle {
 			case PURPLE:
 			case TEAL:
 			case CYAN:
+			case DRIFT:
 			case SPIN:
 			case YELLOW:
 			case AUBURN:
@@ -17164,6 +17291,7 @@ public class Organism extends Rectangle {
 				break;
 			case CYAN:
 			case TEAL:
+			case DRIFT:
 			case SPIN:
 			case YELLOW:
 			case AUBURN:
@@ -17907,6 +18035,7 @@ public class Organism extends Rectangle {
 					}
 				}
 				break;
+			case DRIFT:
 			case SPIN:
 				if ((org._dodge) && (org.useEnergy(Utils.DODGE_ENERGY_CONSUMPTION))) {
 					org.setColor(Utils.ColorTEAL);
@@ -18510,6 +18639,7 @@ public class Organism extends Rectangle {
 			case PURPLE:
 			case TEAL:
 			case CYAN:
+			case DRIFT:
 			case SPIN:
 			case YELLOW:
 			case AUBURN:
@@ -19447,6 +19577,7 @@ public class Organism extends Rectangle {
 				break;
 			case TEAL:
 			case CYAN:
+			case DRIFT:
 			case SPIN:
 			case BLOND:
 				if ((!org._isaplant) && (!org._isaconsumer)
@@ -19892,6 +20023,7 @@ public class Organism extends Rectangle {
 			case PURPLE:
 			case TEAL:
 			case CYAN:
+			case DRIFT:
 			case SPIN:
 			case YELLOW:
 			case AUBURN:
@@ -20245,6 +20377,7 @@ public class Organism extends Rectangle {
 			case PURPLE:
 			case TEAL:
 			case CYAN:
+			case DRIFT:
 			case SPIN:
 			case YELLOW:
 			case AUBURN:
@@ -20803,6 +20936,7 @@ public class Organism extends Rectangle {
 			case PURPLE:
 			case TEAL:
 			case CYAN:
+			case DRIFT:
 			case SPIN:
 			case YELLOW:
 			case AUBURN:
@@ -21633,7 +21767,7 @@ public class Organism extends Rectangle {
 	}
 
 	/*
-	 * Perd velocitat pel fregament.
+	 * Speed lost due to friction
 	 */
 	private final void rubbingFramesEffects() {
 		dx *= Utils.RUBBING;
@@ -22316,6 +22450,10 @@ public class Organism extends Rectangle {
 						if (_mphoto[i] == 0) {
 							// Manteniment
 							switch (getTypeColor(_segColor[i])) {
+							// Organisms with drift segments...drift
+							case DRIFT:
+								addmaintenance -= 0.99 * _m[i];
+								break;
 							// Organisms with spin segments rotate
 							case SPIN:
 								addmaintenance -= 0.99 * _m[i];
@@ -22719,6 +22857,10 @@ public class Organism extends Rectangle {
 						if (_mphoto[i] == 0) {
 							// Manteniment
 							switch (getTypeColor(_segColor[i])) {
+							// Organisms with drift segments...drift
+							case DRIFT:
+								addmaintenance -= 0.99 * _m[i];
+								break;
 							// Organisms with spin segments rotate
 							case SPIN:
 								addmaintenance -= 0.99 * _m[i];
@@ -23114,6 +23256,10 @@ public class Organism extends Rectangle {
 						if (_mphoto[i] >= -0.3) {
 							// Manteniment
 							switch (getTypeColor(_segColor[i])) {
+							// Organisms with drift segments...drift
+							case DRIFT:
+								addmaintenance -= 0.99 * _m[i];
+								break;
 							// Organisms with spin segments rotate
 							case SPIN:
 								if (_isonlyc4 == 2) {
@@ -23417,6 +23563,10 @@ public class Organism extends Rectangle {
 					if (_mphoto[i] >= -0.1) {
 						// Manteniment
 						switch (getTypeColor(_segColor[i])) {
+						// Organisms with drift segments...drift
+						case DRIFT:
+							addmaintenance -= 0.99 * _m[i];
+							break;
 						// Organisms with spin segments rotate
 						case SPIN:
 							addmaintenance -= 0.99 * _m[i];
@@ -23736,34 +23886,35 @@ public class Organism extends Rectangle {
 	private static final int ROSE=36;
 	private static final int CYAN=37;
 	private static final int TEAL=38;
-	private static final int SPIN=39;
-	private static final int YELLOW=40;
-	private static final int AUBURN=41;
-	private static final int INDIGO=42;
-	private static final int BLOND=43;
-	private static final int FLOWER=44;
-	private static final int DARKGRAY=45;
-	private static final int GOLD=46;
-	private static final int DARK=47;
-	private static final int EYE=48;
-	private static final int WINTER=49;
-	private static final int OLDBARK=50;
-	private static final int DARKJADE=51;
-	private static final int DARKGREEN=52;
-	private static final int DARKFIRE=53;
-	private static final int DARKLILAC=54;
-	private static final int DEEPSKY=55;
-	private static final int DARKOLIVE=56;
-	private static final int SPIKEPOINT=57;
-	private static final int FRUIT=58;
-	private static final int VISION=59;
-	private static final int ICE=60;
-	private static final int LIGHT_BLUE=61;
-	private static final int LIGHTBROWN=62;
-	private static final int GREENBROWN=63;
-	private static final int BROKEN=64;
-	private static final int DEADBARK=65;
-	private static final int BROWN=66;
+	private static final int DRIFT=39;
+	private static final int SPIN=40;
+	private static final int YELLOW=41;
+	private static final int AUBURN=42;
+	private static final int INDIGO=43;
+	private static final int BLOND=44;
+	private static final int FLOWER=45;
+	private static final int DARKGRAY=46;
+	private static final int GOLD=47;
+	private static final int DARK=48;
+	private static final int EYE=49;
+	private static final int WINTER=50;
+	private static final int OLDBARK=51;
+	private static final int DARKJADE=52;
+	private static final int DARKGREEN=53;
+	private static final int DARKFIRE=54;
+	private static final int DARKLILAC=55;
+	private static final int DEEPSKY=56;
+	private static final int DARKOLIVE=57;
+	private static final int SPIKEPOINT=58;
+	private static final int FRUIT=59;
+	private static final int VISION=60;
+	private static final int ICE=61;
+	private static final int LIGHT_BLUE=62;
+	private static final int LIGHTBROWN=63;
+	private static final int GREENBROWN=64;
+	private static final int BROKEN=65;
+	private static final int DEADBARK=66;
+	private static final int BROWN=67;
 	private static final int getTypeColor(Color c) {
 		if (c.equals(Color.GREEN))
 			return GREEN;
@@ -23843,6 +23994,8 @@ public class Organism extends Rectangle {
 			return CYAN;
 		if (c.equals(Utils.ColorTEAL))
 			return TEAL;
+		if (c.equals(Utils.ColorDRIFT))
+			return DRIFT;
 		if (c.equals(Utils.ColorSPIN))
 			return SPIN;
 		if (c.equals(Color.YELLOW))
