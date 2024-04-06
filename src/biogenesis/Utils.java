@@ -281,7 +281,7 @@ public final class Utils {
 	/**
 	 * This is the default energy that is consumed when an organism touches a symbiont (with rose segments).
 	 */
-	final static double DEF_SYMBIONT_ENERGY_CONSUMPTION = 0.58d;
+	final static double DEF_SYMBIONT_ENERGY_CONSUMPTION = 0.585d;
 	/**
 	 * This is the default energy that is consumed when a spring segment is used.
 	 */
@@ -345,7 +345,7 @@ public final class Utils {
 	/**
 	 * This is the default energy that is consumed when a drift segment is used.
 	 */
-	final static double DEF_DRIFT_ENERGY_CONSUMPTION = 2.5d;
+	final static double DEF_DRIFT_ENERGY_CONSUMPTION = 3.333d;
 	/**
 	 * This is the default energy that is consumed when a spin segment is used.
 	 */

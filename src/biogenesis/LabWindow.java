@@ -31,6 +31,8 @@ import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -220,6 +222,8 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 		JPanel generalPanel = new JPanel();
 		generalPanel.setLayout(new GridBagLayout());
 		GridBagConstraints gridBagConstraints = new GridBagConstraints();
+		DecimalFormat df = new DecimalFormat("#.###");
+		df.setRoundingMode(RoundingMode.HALF_UP);
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 0;
 		gridBagConstraints.anchor = GridBagConstraints.WEST;
@@ -286,13 +290,14 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 		generalPanel.add(new JLabel(Messages.getString("T_HOME_X_PERCENTAGE"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
 		gridBagConstraints.gridx = 11;
 		gridBagConstraints.gridy = 0;
-		homeXLabel = new JTextField(Double.toString(homeX));
-		homeXLabel.setText(Double.toString(homeX));
+		String shorthomeX = df.format(homeX);
+		homeXLabel = new JTextField(shorthomeX,4);
+		homeXLabel.setText(shorthomeX);
 		homeXLabel.addKeyListener(new KeyAdapter() {
             public void keyReleased(KeyEvent e) {
             	double d;
 				try {
-					d = Double.parseDouble(homeXLabel.getText());
+					d = Double.parseDouble(homeXLabel.getText().replace(",","."));
 					if ((d >= 0 && d <= 100) || (d == -1)) homeX = d;
 				} catch (NumberFormatException ex) {
 					// Keep old value if there is a problem
@@ -305,13 +310,14 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 		generalPanel.add(new JLabel(Messages.getString("T_HOME_Y_PERCENTAGE"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
 		gridBagConstraints.gridx = 13;
 		gridBagConstraints.gridy = 0;
-		homeYLabel = new JTextField(Double.toString(homeY));
-		homeYLabel.setText(Double.toString(homeY));
+		String shorthomeY = df.format(homeY);
+		homeYLabel = new JTextField(shorthomeY,4);
+		homeYLabel.setText(shorthomeY);
 		homeYLabel.addKeyListener(new KeyAdapter() {
             public void keyReleased(KeyEvent e) {
             	double d;
 				try {
-					d = Double.parseDouble(homeYLabel.getText());
+					d = Double.parseDouble(homeYLabel.getText().replace(",","."));
 					if ((d >= 0 && d <= 100) || (d == -1)) homeY = d;
 				} catch (NumberFormatException ex) {
 					// Keep old value if there is a problem
@@ -421,13 +427,14 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 		generalPanel.add(new JLabel(Messages.getString("T_BASE1X_PERCENTAGE"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
 		gridBagConstraints.gridx = 13;
 		gridBagConstraints.gridy = 1;
-		base1XLabel = new JTextField(Double.toString(base1X));
-		base1XLabel.setText(Double.toString(base1X));
+		String shortbase1X = df.format(base1X);
+		base1XLabel = new JTextField(shortbase1X,4);
+		base1XLabel.setText(shortbase1X);
 		base1XLabel.addKeyListener(new KeyAdapter() {
             public void keyReleased(KeyEvent e) {
             	double d;
 				try {
-					d = Double.parseDouble(base1XLabel.getText());
+					d = Double.parseDouble(base1XLabel.getText().replace(",","."));
 					if ((d >= 0 && d <= 100) || (d == -1)) base1X = d;
 				} catch (NumberFormatException ex) {
 					// Keep old value if there is a problem
@@ -528,13 +535,14 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 		generalPanel.add(new JLabel(Messages.getString("T_BASE1Y_PERCENTAGE"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
 		gridBagConstraints.gridx = 13;
 		gridBagConstraints.gridy = 2;
-		base1YLabel = new JTextField(Double.toString(base1Y));
-		base1YLabel.setText(Double.toString(base1Y));
+		String shortbase1Y = df.format(base1Y);
+		base1YLabel = new JTextField(shortbase1Y,4);
+		base1YLabel.setText(shortbase1Y);
 		base1YLabel.addKeyListener(new KeyAdapter() {
             public void keyReleased(KeyEvent e) {
             	double d;
 				try {
-					d = Double.parseDouble(base1YLabel.getText());
+					d = Double.parseDouble(base1YLabel.getText().replace(",","."));
 					if ((d >= 0 && d <= 100) || (d == -1)) base1Y = d;
 				} catch (NumberFormatException ex) {
 					// Keep old value if there is a problem
@@ -635,13 +643,14 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 		generalPanel.add(new JLabel(Messages.getString("T_BASE2X_PERCENTAGE"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
 		gridBagConstraints.gridx = 13;
 		gridBagConstraints.gridy = 3;
-		base2XLabel = new JTextField(Double.toString(base2X));
-		base2XLabel.setText(Double.toString(base2X));
+		String shortbase2X = df.format(base2X);
+		base2XLabel = new JTextField(shortbase2X,4);
+		base2XLabel.setText(shortbase2X);
 		base2XLabel.addKeyListener(new KeyAdapter() {
             public void keyReleased(KeyEvent e) {
             	double d;
 				try {
-					d = Double.parseDouble(base2XLabel.getText());
+					d = Double.parseDouble(base2XLabel.getText().replace(",","."));
 					if ((d >= 0 && d <= 100) || (d == -1)) base2X = d;
 				} catch (NumberFormatException ex) {
 					// Keep old value if there is a problem
@@ -742,13 +751,14 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 		generalPanel.add(new JLabel(Messages.getString("T_BASE2Y_PERCENTAGE"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
 		gridBagConstraints.gridx = 13;
 		gridBagConstraints.gridy = 4;
-		base2YLabel = new JTextField(Double.toString(base2Y));
-		base2YLabel.setText(Double.toString(base2Y));
+		String shortbase2Y = df.format(base2Y);
+		base2YLabel = new JTextField(shortbase2Y,4);
+		base2YLabel.setText(shortbase2Y);
 		base2YLabel.addKeyListener(new KeyAdapter() {
             public void keyReleased(KeyEvent e) {
             	double d;
 				try {
-					d = Double.parseDouble(base2YLabel.getText());
+					d = Double.parseDouble(base2YLabel.getText().replace(",","."));
 					if ((d >= 0 && d <= 100) || (d == -1)) base2Y = d;
 				} catch (NumberFormatException ex) {
 					// Keep old value if there is a problem
