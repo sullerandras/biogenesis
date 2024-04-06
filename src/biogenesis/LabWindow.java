@@ -31,6 +31,8 @@ import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -67,6 +69,12 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 	protected JLabel segmentsLabel;
 	protected JTextField mutationLabel;
 	protected JTextField cloneLabel;
+	protected JTextField homeXLabel;
+	protected JTextField homeYLabel;
+	protected JTextField base1XLabel;
+	protected JTextField base1YLabel;
+	protected JTextField base2XLabel;
+	protected JTextField base2YLabel;
 	protected JComboBox symmetryCombo;
 	protected JComboBox mirrorCombo;
 	protected JComboBox activityCombo;
@@ -86,6 +94,7 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 	protected JComboBox peacefulCombo;
 	protected JComboBox passiveCombo;
 	protected JComboBox clockwiseCombo;
+	protected JComboBox modifiesdriftCombo;
 	protected JComboBox modifiespinkCombo;
 	protected JComboBox modifieslilacCombo;
 	protected JComboBox modifiesskyCombo;
@@ -98,13 +107,19 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 	protected int mirror=0;
 	protected int mutationrate= (Utils.MIN_MUTATION_RATE + Utils.MAX_MUTATION_RATE) / 2;
 	protected int clonerate= (Utils.MIN_CLONE_RATE + Utils.MAX_CLONE_RATE) / 2;
+	protected double homeX= -1;
+	protected double homeY= -1;
+	protected double base1X= -1;
+	protected double base1Y= -1;
+	protected double base2X= -1;
+	protected double base2Y= -1;
 	protected int activity=2;
 	protected int modifiescream=2;
 	protected int modifiesfallow=2;
 	protected int modifiesspore=4;
 	protected int adaptspore=4;
-	protected int modifiesblack=1;
-	protected int adaptblack=1;
+	protected int modifiesblack=2;
+	protected int adaptblack=4;
 	protected boolean plague = false;
 	protected boolean disperseChildren = false;
 	protected boolean generationBattle = false;
@@ -115,6 +130,7 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 	protected boolean peaceful = false;
 	protected boolean passive = false;
 	protected boolean clockwise = false;
+	protected boolean modifiesdrift = false;
 	protected boolean modifiespink = false;
 	protected boolean modifieslilac = false;
 	protected boolean modifiessky = false;
@@ -149,9 +165,9 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 		okButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
             	if (genesList.size() > 0)
-            		mainWindow.getVisibleWorld().setClippedGeneticCode(new GeneticCode(genesList, symmetry, mirror, mutationrate, clonerate, activity, modifiescream,
-            		modifiesfallow, modifiesspore, adaptspore, modifiesblack, adaptblack, plague, disperseChildren, generationBattle, siblingBattle, altruist, familial,
-            		social, peaceful, passive, clockwise, modifiespink, modifieslilac, modifiessky, modifiesleaf, selfish));
+            		mainWindow.getVisibleWorld().setClippedGeneticCode(new GeneticCode(genesList, symmetry, mirror, mutationrate, clonerate, homeX, homeY, base1X, base1Y,
+            		base2X, base2Y, activity, modifiescream, modifiesfallow, modifiesspore, adaptspore, modifiesblack, adaptblack, plague, disperseChildren, generationBattle,
+            		siblingBattle, altruist, familial, social, peaceful, passive, clockwise, modifiesdrift, modifiespink, modifieslilac, modifiessky, modifiesleaf, selfish));
             	else
             		mainWindow.getVisibleWorld().removeClippedGeneticCode();
             	dispose();
@@ -166,6 +182,12 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 	private void importGeneticCode(GeneticCode g) {
 		mutationrate = g.getMutationrate();
 		clonerate = g.getClonerate();
+		homeX = g.getHomeX();
+		homeY = g.getHomeY();
+		base1X = g.getBase1X();
+		base1Y = g.getBase1Y();
+		base2X = g.getBase2X();
+		base2Y = g.getBase2Y();
 		activity = g.getActivity();
 		modifiescream = g.getModifiescream();
 		modifiesfallow = g.getModifiesfallow();
@@ -183,6 +205,7 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 		peaceful = g.getPeaceful();
 		passive = g.getPassive();
 		clockwise = g.getClockwise();
+		modifiesdrift = g.getModifiesdrift();
 		modifiespink = g.getModifiespink();
 		modifieslilac = g.getModifieslilac();
 		modifiessky = g.getModifiessky();
@@ -193,7 +216,7 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 		for (int i=0; i<g.getNGenes(); i++)
 			genesList.add((Gene)g.getGene(i).clone());
 		energy = 40 + 3 * symmetry * genesList.size();
-		life = Utils.MAX_AGE + ((genesList.size() * symmetry)/Utils.AGE_DIVISOR);
+		life = Utils.MAX_AGE + (int) ((genesList.size() * symmetry)/Utils.AGE_DIVISOR);
 	}
 
 	/* Initialize all the components of the dialog */
@@ -202,6 +225,8 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 		JPanel generalPanel = new JPanel();
 		generalPanel.setLayout(new GridBagLayout());
 		GridBagConstraints gridBagConstraints = new GridBagConstraints();
+		DecimalFormat df = new DecimalFormat("#.###");
+		df.setRoundingMode(RoundingMode.HALF_UP);
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 0;
 		gridBagConstraints.anchor = GridBagConstraints.WEST;
@@ -263,6 +288,26 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
             }
         });
 		generalPanel.add(cloneLabel, gridBagConstraints);
+		gridBagConstraints.gridx = 10;
+		gridBagConstraints.gridy = 0;
+		generalPanel.add(new JLabel(Messages.getString("T_HOME_X_PERCENTAGE"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
+		gridBagConstraints.gridx = 11;
+		gridBagConstraints.gridy = 0;
+		String shorthomeX = df.format(homeX);
+		homeXLabel = new JTextField(shorthomeX,4);
+		homeXLabel.setText(shorthomeX);
+		homeXLabel.addKeyListener(new KeyAdapter() {
+            public void keyReleased(KeyEvent e) {
+            	double d;
+				try {
+					d = Double.parseDouble(homeXLabel.getText().replace(",","."));
+					if ((d >= 0 && d <= 100) || (d == -1)) homeX = d;
+				} catch (NumberFormatException ex) {
+					// Keep old value if there is a problem
+				}
+            }
+        });
+		generalPanel.add(homeXLabel, gridBagConstraints);
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 1;
 		generalPanel.add(new JLabel(Messages.getString("T_SYMMETRY"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
@@ -277,7 +322,7 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 					symmetry = Integer.parseInt((String)symmetryCombo.getSelectedItem());
 					energy = 40 + 3 * symmetry * genesList.size();
 					energyLabel.setText(Integer.toString(energy));
-					life = Utils.MAX_AGE + ((genesList.size() * symmetry)/Utils.AGE_DIVISOR);
+					life = Utils.MAX_AGE + (int) ((genesList.size() * symmetry)/Utils.AGE_DIVISOR);
 					lifeLabel.setText(Integer.toString(life));
 					segmentsLabel.setText(Integer.toString(genesList.size() * symmetry));
 					drawPanel.repaint();
@@ -346,20 +391,24 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 		generalPanel.add(altruistCombo, gridBagConstraints);
 		gridBagConstraints.gridx = 10;
 		gridBagConstraints.gridy = 1;
-		generalPanel.add(new JLabel(Messages.getString("T_MIMICALL"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
+		generalPanel.add(new JLabel(Messages.getString("T_HOME_Y_PERCENTAGE"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
 		gridBagConstraints.gridx = 11;
 		gridBagConstraints.gridy = 1;
-		String[] modifiesblackValues = {"1","2","3","4","5","6"};  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
-		modifiesblackCombo = new JComboBox(modifiesblackValues);
-		modifiesblackCombo.setSelectedItem(Integer.toString(modifiesblack));
-		modifiesblackCombo.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent evt) {
-				if (evt.getStateChange() == ItemEvent.SELECTED) {
-					modifiesblack = Integer.parseInt((String)modifiesblackCombo.getSelectedItem());
+		String shorthomeY = df.format(homeY);
+		homeYLabel = new JTextField(shorthomeY,4);
+		homeYLabel.setText(shorthomeY);
+		homeYLabel.addKeyListener(new KeyAdapter() {
+            public void keyReleased(KeyEvent e) {
+            	double d;
+				try {
+					d = Double.parseDouble(homeYLabel.getText().replace(",","."));
+					if ((d >= 0 && d <= 100) || (d == -1)) homeY = d;
+				} catch (NumberFormatException ex) {
+					// Keep old value if there is a problem
 				}
-			}
-		});
-		generalPanel.add(modifiesblackCombo, gridBagConstraints);
+            }
+        });
+		generalPanel.add(homeYLabel, gridBagConstraints);
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 2;
 		generalPanel.add(new JLabel(Messages.getString("T_ACTIVITY"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
@@ -434,20 +483,24 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 		generalPanel.add(peacefulCombo, gridBagConstraints);
 		gridBagConstraints.gridx = 10;
 		gridBagConstraints.gridy = 2;
-		generalPanel.add(new JLabel(Messages.getString("T_ADAPTBLACK"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
+		generalPanel.add(new JLabel(Messages.getString("T_BASE1X_PERCENTAGE"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
 		gridBagConstraints.gridx = 11;
 		gridBagConstraints.gridy = 2;
-		String[] adaptblackValues = {"1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25"};  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
-		adaptblackCombo = new JComboBox(adaptblackValues);
-		adaptblackCombo.setSelectedItem(Integer.toString(adaptblack));
-		adaptblackCombo.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent evt) {
-				if (evt.getStateChange() == ItemEvent.SELECTED) {
-					adaptblack = Integer.parseInt((String)adaptblackCombo.getSelectedItem());
+		String shortbase1X = df.format(base1X);
+		base1XLabel = new JTextField(shortbase1X,4);
+		base1XLabel.setText(shortbase1X);
+		base1XLabel.addKeyListener(new KeyAdapter() {
+            public void keyReleased(KeyEvent e) {
+            	double d;
+				try {
+					d = Double.parseDouble(base1XLabel.getText().replace(",","."));
+					if ((d >= 0 && d <= 100) || (d == -1)) base1X = d;
+				} catch (NumberFormatException ex) {
+					// Keep old value if there is a problem
 				}
-			}
-		});
-		generalPanel.add(adaptblackCombo, gridBagConstraints);
+            }
+        });
+		generalPanel.add(base1XLabel, gridBagConstraints);
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 3;
 		generalPanel.add(new JLabel(Messages.getString("T_MODIFIESCREAM"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
@@ -524,18 +577,24 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 		generalPanel.add(clockwiseCombo, gridBagConstraints);
 		gridBagConstraints.gridx = 10;
 		gridBagConstraints.gridy = 3;
-		generalPanel.add(new JLabel(Messages.getString("T_MODIFIESLEAF"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
+		generalPanel.add(new JLabel(Messages.getString("T_BASE1Y_PERCENTAGE"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
 		gridBagConstraints.gridx = 11;
 		gridBagConstraints.gridy = 3;
-		modifiesleafCombo = new JComboBox(noyesValues);
-		modifiesleafCombo.setSelectedIndex(modifiesleaf==false?0:1);
-		modifiesleafCombo.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent evt) {
-				if (evt.getStateChange() == ItemEvent.SELECTED)
-					modifiesleaf = modifiesleafCombo.getSelectedIndex()==0? false: true;
-			}
-		});
-		generalPanel.add(modifiesleafCombo, gridBagConstraints);
+		String shortbase1Y = df.format(base1Y);
+		base1YLabel = new JTextField(shortbase1Y,4);
+		base1YLabel.setText(shortbase1Y);
+		base1YLabel.addKeyListener(new KeyAdapter() {
+            public void keyReleased(KeyEvent e) {
+            	double d;
+				try {
+					d = Double.parseDouble(base1YLabel.getText().replace(",","."));
+					if ((d >= 0 && d <= 100) || (d == -1)) base1Y = d;
+				} catch (NumberFormatException ex) {
+					// Keep old value if there is a problem
+				}
+            }
+        });
+		generalPanel.add(base1YLabel, gridBagConstraints);
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 4;
 		generalPanel.add(new JLabel(Messages.getString("T_MODIFIESFALLOW"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
@@ -584,18 +643,18 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 		generalPanel.add(modifiespinkCombo, gridBagConstraints);
 		gridBagConstraints.gridx = 6;
 		gridBagConstraints.gridy = 4;
-		generalPanel.add(new JLabel(Messages.getString("T_MODIFIESLILAC"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
+		generalPanel.add(new JLabel(Messages.getString("T_MODIFIESDRIFT"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
 		gridBagConstraints.gridx = 7;
 		gridBagConstraints.gridy = 4;
-		modifieslilacCombo = new JComboBox(noyesValues);
-		modifieslilacCombo.setSelectedIndex(modifieslilac==false?0:1);
-		modifieslilacCombo.addItemListener(new ItemListener() {
+		modifiesdriftCombo = new JComboBox(noyesValues);
+		modifiesdriftCombo.setSelectedIndex(modifiesdrift==false?0:1);
+		modifiesdriftCombo.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent evt) {
 				if (evt.getStateChange() == ItemEvent.SELECTED)
-					modifieslilac = modifieslilacCombo.getSelectedIndex()==0? false: true;
+					modifiesdrift = modifiesdriftCombo.getSelectedIndex()==0? false: true;
 			}
 		});
-		generalPanel.add(modifieslilacCombo, gridBagConstraints);
+		generalPanel.add(modifiesdriftCombo, gridBagConstraints);
 		gridBagConstraints.gridx = 8;
 		gridBagConstraints.gridy = 4;
 		generalPanel.add(new JLabel(Messages.getString("T_MODIFIESPLAGUE"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
@@ -612,9 +671,75 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 		generalPanel.add(plagueCombo, gridBagConstraints);
 		gridBagConstraints.gridx = 10;
 		gridBagConstraints.gridy = 4;
-		generalPanel.add(new JLabel(Messages.getString("T_MODIFIESSKY"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
+		generalPanel.add(new JLabel(Messages.getString("T_BASE2X_PERCENTAGE"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
 		gridBagConstraints.gridx = 11;
 		gridBagConstraints.gridy = 4;
+		String shortbase2X = df.format(base2X);
+		base2XLabel = new JTextField(shortbase2X,4);
+		base2XLabel.setText(shortbase2X);
+		base2XLabel.addKeyListener(new KeyAdapter() {
+            public void keyReleased(KeyEvent e) {
+            	double d;
+				try {
+					d = Double.parseDouble(base2XLabel.getText().replace(",","."));
+					if ((d >= 0 && d <= 100) || (d == -1)) base2X = d;
+				} catch (NumberFormatException ex) {
+					// Keep old value if there is a problem
+				}
+            }
+        });
+		generalPanel.add(base2XLabel, gridBagConstraints);
+		gridBagConstraints.gridx = 0;
+		gridBagConstraints.gridy = 5;
+		generalPanel.add(new JLabel(Messages.getString("T_MIMICALL"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
+		gridBagConstraints.gridx = 1;
+		gridBagConstraints.gridy = 5;
+		String[] modifiesblackValues = {"1","2","3","4","5","6"};  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+		modifiesblackCombo = new JComboBox(modifiesblackValues);
+		modifiesblackCombo.setSelectedItem(Integer.toString(modifiesblack));
+		modifiesblackCombo.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent evt) {
+				if (evt.getStateChange() == ItemEvent.SELECTED) {
+					modifiesblack = Integer.parseInt((String)modifiesblackCombo.getSelectedItem());
+				}
+			}
+		});
+		generalPanel.add(modifiesblackCombo, gridBagConstraints);
+		gridBagConstraints.gridx = 2;
+		gridBagConstraints.gridy = 5;
+		generalPanel.add(new JLabel(Messages.getString("T_ADAPTBLACK"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
+		gridBagConstraints.gridx = 3;
+		gridBagConstraints.gridy = 5;
+		String[] adaptblackValues = {"1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25"};  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+		adaptblackCombo = new JComboBox(adaptblackValues);
+		adaptblackCombo.setSelectedItem(Integer.toString(adaptblack));
+		adaptblackCombo.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent evt) {
+				if (evt.getStateChange() == ItemEvent.SELECTED) {
+					adaptblack = Integer.parseInt((String)adaptblackCombo.getSelectedItem());
+				}
+			}
+		});
+		generalPanel.add(adaptblackCombo, gridBagConstraints);
+		gridBagConstraints.gridx = 4;
+		gridBagConstraints.gridy = 5;
+		generalPanel.add(new JLabel(Messages.getString("T_MODIFIESLEAF"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
+		gridBagConstraints.gridx = 5;
+		gridBagConstraints.gridy = 5;
+		modifiesleafCombo = new JComboBox(noyesValues);
+		modifiesleafCombo.setSelectedIndex(modifiesleaf==false?0:1);
+		modifiesleafCombo.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent evt) {
+				if (evt.getStateChange() == ItemEvent.SELECTED)
+					modifiesleaf = modifiesleafCombo.getSelectedIndex()==0? false: true;
+			}
+		});
+		generalPanel.add(modifiesleafCombo, gridBagConstraints);
+		gridBagConstraints.gridx = 6;
+		gridBagConstraints.gridy = 5;
+		generalPanel.add(new JLabel(Messages.getString("T_MODIFIESSKY"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
+		gridBagConstraints.gridx = 7;
+		gridBagConstraints.gridy = 5;
 		modifiesskyCombo = new JComboBox(noyesValues);
 		modifiesskyCombo.setSelectedIndex(modifiessky==false?0:1);
 		modifiesskyCombo.addItemListener(new ItemListener() {
@@ -624,6 +749,40 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 			}
 		});
 		generalPanel.add(modifiesskyCombo, gridBagConstraints);
+		gridBagConstraints.gridx = 8;
+		gridBagConstraints.gridy = 5;
+		generalPanel.add(new JLabel(Messages.getString("T_MODIFIESLILAC"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
+		gridBagConstraints.gridx = 9;
+		gridBagConstraints.gridy = 5;
+		modifieslilacCombo = new JComboBox(noyesValues);
+		modifieslilacCombo.setSelectedIndex(modifieslilac==false?0:1);
+		modifieslilacCombo.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent evt) {
+				if (evt.getStateChange() == ItemEvent.SELECTED)
+					modifieslilac = modifieslilacCombo.getSelectedIndex()==0? false: true;
+			}
+		});
+		generalPanel.add(modifieslilacCombo, gridBagConstraints);
+		gridBagConstraints.gridx = 10;
+		gridBagConstraints.gridy = 5;
+		generalPanel.add(new JLabel(Messages.getString("T_BASE2Y_PERCENTAGE"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
+		gridBagConstraints.gridx = 11;
+		gridBagConstraints.gridy = 5;
+		String shortbase2Y = df.format(base2Y);
+		base2YLabel = new JTextField(shortbase2Y,4);
+		base2YLabel.setText(shortbase2Y);
+		base2YLabel.addKeyListener(new KeyAdapter() {
+            public void keyReleased(KeyEvent e) {
+            	double d;
+				try {
+					d = Double.parseDouble(base2YLabel.getText().replace(",","."));
+					if ((d >= 0 && d <= 100) || (d == -1)) base2Y = d;
+				} catch (NumberFormatException ex) {
+					// Keep old value if there is a problem
+				}
+            }
+        });
+		generalPanel.add(base2YLabel, gridBagConstraints);
 
 		getContentPane().add(generalPanel,BorderLayout.NORTH);
 		genesPanel = new JPanel();
@@ -661,13 +820,19 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
             	mirror=0;
             	mutationrate= (Utils.MIN_MUTATION_RATE + Utils.MAX_MUTATION_RATE) / 2;
             	clonerate= (Utils.MIN_CLONE_RATE + Utils.MAX_CLONE_RATE) / 2;
+            	homeX= -1;
+            	homeY= -1;
+            	base1X= -1;
+            	base1Y= -1;
+            	base2X= -1;
+            	base2Y= -1;
             	activity=2;
             	modifiescream=2;
             	modifiesfallow=2;
             	modifiesspore=4;
             	adaptspore=4;
-            	modifiesblack=1;
-            	adaptblack=1;
+            	modifiesblack=2;
+            	adaptblack=4;
             	plague = false;
             	disperseChildren = false;
             	generationBattle = false;
@@ -678,6 +843,7 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
             	peaceful = false;
             	passive = false;
             	clockwise = false;
+            	modifiesdrift = false;
             	modifiespink = false;
             	modifieslilac = false;
             	modifiessky = false;
@@ -685,6 +851,12 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
             	selfish = false;
             	mutationLabel.setText(Integer.toString(mutationrate));
             	cloneLabel.setText(Integer.toString(clonerate));
+            	homeXLabel.setText(Double.toString(homeX));
+            	homeYLabel.setText(Double.toString(homeY));
+            	base1XLabel.setText(Double.toString(base1X));
+            	base1YLabel.setText(Double.toString(base1Y));
+            	base2XLabel.setText(Double.toString(base2X));
+            	base2YLabel.setText(Double.toString(base2Y));
 				symmetryCombo.setSelectedItem(Integer.toString(symmetry));
 				mirrorCombo.setSelectedIndex(mirror);
 				disperseCombo.setSelectedIndex(disperseChildren==false?0:1);
@@ -699,6 +871,7 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 				modifiescreamCombo.setSelectedItem(Integer.toString(modifiescream));
 				modifiessporeCombo.setSelectedItem(Integer.toString(modifiesspore));
 				modifiesblackCombo.setSelectedItem(Integer.toString(modifiesblack));
+				modifiesdriftCombo.setSelectedIndex(modifiesdrift==false?0:1);
 				modifiespinkCombo.setSelectedIndex(modifiespink==false?0:1);
 				modifieslilacCombo.setSelectedIndex(modifieslilac==false?0:1);
 				plagueCombo.setSelectedIndex(plague==false?0:1);
@@ -731,6 +904,12 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 							refreshGenesPanel();
 							mutationLabel.setText(Integer.toString(mutationrate));
 							cloneLabel.setText(Integer.toString(clonerate));
+							homeXLabel.setText(Double.toString(homeX));
+			            	homeYLabel.setText(Double.toString(homeY));
+			            	base1XLabel.setText(Double.toString(base1X));
+			            	base1YLabel.setText(Double.toString(base1Y));
+			            	base2XLabel.setText(Double.toString(base2X));
+			            	base2YLabel.setText(Double.toString(base2Y));
 							symmetryCombo.setSelectedItem(Integer.toString(symmetry));
 							mirrorCombo.setSelectedIndex(mirror);
 							disperseCombo.setSelectedIndex(disperseChildren==false?0:1);
@@ -745,6 +924,7 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 							modifiescreamCombo.setSelectedItem(Integer.toString(modifiescream));
 							modifiessporeCombo.setSelectedItem(Integer.toString(modifiesspore));
 							modifiesblackCombo.setSelectedItem(Integer.toString(modifiesblack));
+							modifiesdriftCombo.setSelectedIndex(modifiesdrift==false?0:1);
 							modifiespinkCombo.setSelectedIndex(modifiespink==false?0:1);
 							modifieslilacCombo.setSelectedIndex(modifieslilac==false?0:1);
 							plagueCombo.setSelectedIndex(plague==false?0:1);
@@ -774,9 +954,9 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 		exportButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (genesList.size() > 0) {
-					GeneticCode exportcode = new GeneticCode(genesList, symmetry, mirror, mutationrate, clonerate, activity, modifiescream, modifiesfallow,
-		            		modifiesspore, adaptspore, modifiesblack, adaptblack, plague, disperseChildren, generationBattle, siblingBattle, altruist, familial, social,
-		            		peaceful, passive, clockwise, modifiespink, modifieslilac, modifiessky, modifiesleaf, selfish);
+					GeneticCode exportcode = new GeneticCode(genesList, symmetry, mirror, mutationrate, clonerate, homeX, homeY, base1X, base1Y, base2X, base2Y, activity,
+							modifiescream, modifiesfallow, modifiesspore, adaptspore, modifiesblack, adaptblack, plague, disperseChildren, generationBattle, siblingBattle,
+							altruist, familial, social, peaceful, passive, clockwise, modifiesdrift, modifiespink, modifieslilac, modifiessky, modifiesleaf, selfish);
 					mainWindow.saveObjectAs(LabWindow.this, exportcode);
 				}
 			}
@@ -1162,7 +1342,7 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 
 		energy = 40 + 3 * symmetry * genesList.size();
 		energyLabel.setText(Integer.toString(energy));
-		life = Utils.MAX_AGE + ((genesList.size() * symmetry)/Utils.AGE_DIVISOR);
+		life = Utils.MAX_AGE + (int) ((genesList.size() * symmetry)/Utils.AGE_DIVISOR);
 		lifeLabel.setText(Integer.toString(life));
 		segmentsLabel.setText(Integer.toString(genesList.size() * symmetry));
 
@@ -1171,7 +1351,7 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 	}
 
 	protected void draw(Graphics g) {
-		GeneticCode code = new GeneticCode(genesList, symmetry, mirror, mutationrate, clonerate, activity, modifiescream, modifiesfallow, modifiesspore, adaptspore, modifiesblack, adaptblack, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false);
+		GeneticCode code = new GeneticCode(genesList, symmetry, mirror, mutationrate, clonerate, homeX, homeY, base1X, base1Y, base2X, base2Y, activity, modifiescream, modifiesfallow, modifiesspore, adaptspore, modifiesblack, adaptblack, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false);
 		code.draw(g, drawPanel.getSize().width, drawPanel.getSize().height);
 	}
 

@@ -46,7 +46,7 @@ public class OutCorridor extends Corridor {
 		    }
 			connection.send(org.getGeneticCode());
 			travellingOrganism = org;
-			org.useEnergy(org.getEnergy());
+			org.useBreathing(org.getEnergy());
 			org.alive = false;
 			world.decreasePopulation();
 			return true;

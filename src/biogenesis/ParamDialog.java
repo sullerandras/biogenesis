@@ -85,9 +85,10 @@ public class ParamDialog extends JDialog {
 	private JTextField agedivisorText = null;
 	private JTextField CO2toCH4divisorText = null;
 	private JTextField CH4toCO2divisorText = null;
-	private JTextField detritustoCO1divisorText = null;
+	private JTextField detritustoCO2divisorText = null;
 	private JTextField CO1toCO2divisorText = null;
 	private JTextField metamutationrateText = null;
+	private JTextField xymutationrateText = null;
 	private JTextField maxmutationrateText = null;
 	private JTextField minmutationrateText = null;
 	private JTextField maxclonerateText = null;
@@ -109,6 +110,7 @@ public class ParamDialog extends JDialog {
 	private JTextField orangecostText = null;
 	private JTextField forestcostText = null;
 	private JTextField springcostText = null;
+	private JTextField ivycostText = null;
 	private JTextField leafcostText = null;
 	private JTextField limecostText = null;
 	private JTextField summercostText = null;
@@ -145,6 +147,7 @@ public class ParamDialog extends JDialog {
 	private JTextField sporecostText = null;
 	private JTextField plaguecostText = null;
 	private JTextField spikecostText = null;
+	private JTextField driftcostText = null;
 	private JTextField segmentcostText = null;
 	private JTextField drainText = null;
 	private JTextField greenenergyText = null;
@@ -159,6 +162,7 @@ public class ParamDialog extends JDialog {
 	private JTextField crowdedforestcostText = null;
 	private JTextField modleafcostText = null;
 	private JTextField symbiontcostText = null;
+	private JTextField boostcostText = null;
 	private JTextField mosquitocostText = null;
 	private JTextField experiencecostText = null;
 	private JTextField dodgecostText = null;
@@ -177,6 +181,7 @@ public class ParamDialog extends JDialog {
 	private JTextField coralprobText = null;
 	private JTextField orangeprobText = null;
 	private JTextField forestprobText = null;
+	private JTextField ivyprobText = null;
 	private JTextField springprobText = null;
 	private JTextField leafprobText = null;
 	private JTextField limeprobText = null;
@@ -214,6 +219,7 @@ public class ParamDialog extends JDialog {
 	private JTextField sporeprobText = null;
 	private JTextField plagueprobText = null;
 	private JTextField spikeprobText = null;
+	private JTextField driftprobText = null;
 	private JTextField decayenergyText = null;
 	private JButton OKButton = null;
 	private JButton cancelButton = null;
@@ -286,9 +292,10 @@ public class ParamDialog extends JDialog {
 		agedivisorText.setText(String.valueOf(Utils.DEF_AGE_DIVISOR));
 		CO2toCH4divisorText.setText(String.valueOf(Utils.DEF_CO2_TO_CH4_DIVISOR));
 		CH4toCO2divisorText.setText(String.valueOf(Utils.DEF_CH4_TO_CO2_DIVISOR));
-		detritustoCO1divisorText.setText(String.valueOf(Utils.DEF_DETRITUS_TO_CO1_DIVISOR));
+		detritustoCO2divisorText.setText(String.valueOf(Utils.DEF_DETRITUS_TO_CO2_DIVISOR));
 		CO1toCO2divisorText.setText(String.valueOf(Utils.DEF_CO1_TO_CO2_DIVISOR));
 		metamutationrateText.setText(String.valueOf(Utils.DEF_META_MUTATION_RATE));
+		xymutationrateText.setText(String.valueOf(Utils.DEF_XY_MUTATION_RATE));
 		maxmutationrateText.setText(String.valueOf(Utils.DEF_MAX_MUTATION_RATE));
 		minmutationrateText.setText(String.valueOf(Utils.DEF_MIN_MUTATION_RATE));
 		maxclonerateText.setText(String.valueOf(Utils.DEF_MAX_CLONE_RATE));
@@ -312,6 +319,7 @@ public class ParamDialog extends JDialog {
 		crowdedforestcostText.setText(String.valueOf(Utils.DEF_CROWDEDFOREST_ENERGY_CONSUMPTION));
 		modleafcostText.setText(String.valueOf(Utils.DEF_MODLEAF_ENERGY_CONSUMPTION));
 		symbiontcostText.setText(String.valueOf(Utils.DEF_SYMBIONT_ENERGY_CONSUMPTION));
+		boostcostText.setText(String.valueOf(Utils.DEF_BOOST_ENERGY_CONSUMPTION));
 		experiencecostText.setText(String.valueOf(Utils.DEF_EXPERIENCE_ENERGY_CONSUMPTION));
 		dodgecostText.setText(String.valueOf(Utils.DEF_DODGE_ENERGY_CONSUMPTION));
 		darkjadedelayText.setText(String.valueOf(Utils.DEF_DARKJADE_DELAY));
@@ -329,6 +337,7 @@ public class ParamDialog extends JDialog {
 		coralcostText.setText(String.valueOf(Utils.DEF_CORAL_ENERGY_CONSUMPTION));
 		orangecostText.setText(String.valueOf(Utils.DEF_ORANGE_ENERGY_CONSUMPTION));
 		forestcostText.setText(String.valueOf(Utils.DEF_FOREST_ENERGY_CONSUMPTION));
+		ivycostText.setText(String.valueOf(Utils.DEF_IVY_ENERGY_CONSUMPTION));
 		springcostText.setText(String.valueOf(Utils.DEF_SPRING_ENERGY_CONSUMPTION));
 		leafcostText.setText(String.valueOf(Utils.DEF_LEAF_ENERGY_CONSUMPTION));
 		summercostText.setText(String.valueOf(Utils.DEF_SUMMER_ENERGY_CONSUMPTION));
@@ -366,6 +375,7 @@ public class ParamDialog extends JDialog {
 		sporecostText.setText(String.valueOf(Utils.DEF_SPORE_ENERGY_CONSUMPTION));
 		plaguecostText.setText(String.valueOf(Utils.DEF_PLAGUE_ENERGY_CONSUMPTION));
 		spikecostText.setText(String.valueOf(Utils.DEF_SPIKE_ENERGY_CONSUMPTION));
+		driftcostText.setText(String.valueOf(Utils.DEF_DRIFT_ENERGY_CONSUMPTION));
 		redprobText.setText(String.valueOf(Utils.DEF_RED_PROB));
 		greenprobText.setText(String.valueOf(Utils.DEF_GREEN_PROB));
 		blueprobText.setText(String.valueOf(Utils.DEF_BLUE_PROB));
@@ -378,6 +388,7 @@ public class ParamDialog extends JDialog {
 		coralprobText.setText(String.valueOf(Utils.DEF_CORAL_PROB));
 		orangeprobText.setText(String.valueOf(Utils.DEF_ORANGE_PROB));
 		forestprobText.setText(String.valueOf(Utils.DEF_FOREST_PROB));
+		ivyprobText.setText(String.valueOf(Utils.DEF_IVY_PROB));
 		springprobText.setText(String.valueOf(Utils.DEF_SPRING_PROB));
 		leafprobText.setText(String.valueOf(Utils.DEF_LEAF_PROB));
 		summerprobText.setText(String.valueOf(Utils.DEF_SUMMER_PROB));
@@ -415,6 +426,7 @@ public class ParamDialog extends JDialog {
 		sporeprobText.setText(String.valueOf(Utils.DEF_SPORE_PROB));
 		plagueprobText.setText(String.valueOf(Utils.DEF_PLAGUE_PROB));
 		spikeprobText.setText(String.valueOf(Utils.DEF_SPIKE_PROB));
+		driftprobText.setText(String.valueOf(Utils.DEF_DRIFT_PROB));
 		decayenergyText.setText(String.valueOf(Utils.DEF_DECAY_ENERGY));
 		switch (Utils.DEF_HARDWARE_ACCELERATION) {
 		case 0:
@@ -674,10 +686,10 @@ public class ParamDialog extends JDialog {
 		worldPanel.add(panel);
 		// Detritus -> CO - CO -> CO2
 		panel = new JPanel();
-		label = new JLabel(Messages.getString("T_DETRITUS_TO_CO1_DIVISOR")); //$NON-NLS-1$
+		label = new JLabel(Messages.getString("T_DETRITUS_TO_CO2_DIVISOR")); //$NON-NLS-1$
 		panel.add(label);
-		detritustoCO1divisorText = new JTextField(Integer.toString(Utils.DETRITUS_TO_CO1_DIVISOR),6);
-		panel.add(detritustoCO1divisorText);
+		detritustoCO2divisorText = new JTextField(Integer.toString(Utils.DETRITUS_TO_CO2_DIVISOR),6);
+		panel.add(detritustoCO2divisorText);
 		label = new JLabel(Messages.getString("T_CO1_TO_CO2_DIVISOR")); //$NON-NLS-1$
 		panel.add(label);
 		CO1toCO2divisorText = new JTextField(Integer.toString(Utils.CO1_TO_CO2_DIVISOR),6);
@@ -725,12 +737,16 @@ public class ParamDialog extends JDialog {
 		cladecomplexityText = new JTextField(Integer.toString(Utils.CLADE_COMPLEXITY),6);
 		panel.add(cladecomplexityText);
 		organismsPanel.add(panel);
-		// Meta Mutation rate
+		// Meta Mutation rate - Coordinate Mutation rate
 		panel = new JPanel();
 		label = new JLabel(Messages.getString("T_META_MUTATION_PERCENTAGE")); //$NON-NLS-1$
 		panel.add(label);
 		metamutationrateText = new JTextField(Integer.toString(Utils.META_MUTATION_RATE),6);
 		panel.add(metamutationrateText);
+		label = new JLabel(Messages.getString("T_XY_MUTATION_PERCENTAGE")); //$NON-NLS-1$
+		panel.add(label);
+		xymutationrateText = new JTextField(Integer.toString(Utils.XY_MUTATION_RATE),6);
+		panel.add(xymutationrateText);
 		organismsPanel.add(panel);
 		// Min Mutation rate - Max Mutation rate
 		panel = new JPanel();
@@ -762,7 +778,7 @@ public class ParamDialog extends JDialog {
 		panel.add(maxageText);
 		label = new JLabel(Messages.getString("T_LIFE_EXPECTANCY_DIVISOR")); //$NON-NLS-1$
 		panel.add(label);
-		agedivisorText = new JTextField(Integer.toString(Utils.AGE_DIVISOR),6);
+		agedivisorText = new JTextField(Double.toString(Utils.AGE_DIVISOR),6);
 		panel.add(agedivisorText);
 		organismsPanel.add(panel);
 		// Spore-1 velocity factor - Spore-5 velocity factor
@@ -921,16 +937,23 @@ public class ParamDialog extends JDialog {
 		crowdedforestcostText = new JTextField(Double.toString(Utils.CROWDEDFOREST_ENERGY_CONSUMPTION),6);
 		panel.add(crowdedforestcostText);
 		metabolismPanel.add(panel);
-		// Symbiont costs - Modified leaf costs
+		// Drift plant boost costs - Modified leaf costs
+		panel = new JPanel();
+		label = new JLabel(Messages.getString("T_BOOST_ENERGY_CONSUMPTION")); //$NON-NLS-1$
+		panel.add(label);
+		boostcostText = new JTextField(Double.toString(Utils.BOOST_ENERGY_CONSUMPTION),6);
+		panel.add(boostcostText);
+		label = new JLabel(Messages.getString("T_MODLEAF_ENERGY_CONSUMPTION")); //$NON-NLS-1$
+		panel.add(label);
+		modleafcostText = new JTextField(Double.toString(Utils.MODLEAF_ENERGY_CONSUMPTION),6);
+		panel.add(modleafcostText);
+		metabolismPanel.add(panel);
+		// Symbiont costs
 		panel = new JPanel();
 		label = new JLabel(Messages.getString("T_SYMBIONT_ENERGY_CONSUMPTION")); //$NON-NLS-1$
 		panel.add(label);
 		symbiontcostText = new JTextField(Double.toString(Utils.SYMBIONT_ENERGY_CONSUMPTION),6);
 		panel.add(symbiontcostText);
-		label = new JLabel(Messages.getString("T_MODLEAF_ENERGY_CONSUMPTION")); //$NON-NLS-1$
-		panel.add(label);
-		modleafcostText = new JTextField(Double.toString(Utils.MODLEAF_ENERGY_CONSUMPTION),6);
-		panel.add(modleafcostText);
 		metabolismPanel.add(panel);
 
 		return metabolismPanel;
@@ -938,7 +961,7 @@ public class ParamDialog extends JDialog {
 
 	protected JPanel setGenesTab() {
 		JPanel genesPanel = new JPanel();
-		genesPanel.setLayout(new GridLayout(17,3));
+		genesPanel.setLayout(new GridLayout(19,3));
 		JLabel label;
 
 		genesPanel.add(new JLabel(Messages.getString("T_COLOR2"),SwingConstants.CENTER)); //$NON-NLS-1$
@@ -958,6 +981,13 @@ public class ParamDialog extends JDialog {
 		genesPanel.add(forestprobText);
 		forestcostText = new JTextField(Double.toString(Utils.FOREST_ENERGY_CONSUMPTION));
 		genesPanel.add(forestcostText);
+
+		label = new JLabel(Messages.getString("T_IVY"),SwingConstants.CENTER); //$NON-NLS-1$
+		genesPanel.add(label);
+		ivyprobText = new JTextField(Integer.toString(Utils.IVY_PROB));
+		genesPanel.add(ivyprobText);
+		ivycostText = new JTextField(Double.toString(Utils.IVY_ENERGY_CONSUMPTION));
+		genesPanel.add(ivycostText);
 
 		label = new JLabel(Messages.getString("T_SPRING"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
@@ -1049,6 +1079,13 @@ public class ParamDialog extends JDialog {
 		genesPanel.add(tealprobText);
 		tealcostText = new JTextField(Double.toString(Utils.TEAL_ENERGY_CONSUMPTION));
 		genesPanel.add(tealcostText);
+
+		label = new JLabel(Messages.getString("T_DRIFT"),SwingConstants.CENTER); //$NON-NLS-1$
+		genesPanel.add(label);
+		driftprobText = new JTextField(Integer.toString(Utils.DRIFT_PROB));
+		genesPanel.add(driftprobText);
+		driftcostText = new JTextField(Double.toString(Utils.DRIFT_ENERGY_CONSUMPTION));
+		genesPanel.add(driftcostText);
 
 		label = new JLabel(Messages.getString("T_SPIN"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
@@ -1447,8 +1484,8 @@ public class ParamDialog extends JDialog {
 			// Keep old value if there is a problem
 		}
 		try {
-			i = Integer.parseInt(agedivisorText.getText());
-			if (i > 0) Utils.AGE_DIVISOR = i;
+			d = Double.parseDouble(agedivisorText.getText());
+			if (d > 0) Utils.AGE_DIVISOR = d;
 		} catch (NumberFormatException ex) {
 			// Keep old value if there is a problem
 		}
@@ -1465,8 +1502,8 @@ public class ParamDialog extends JDialog {
 			// Keep old value if there is a problem
 		}
 		try {
-			i = Integer.parseInt(detritustoCO1divisorText.getText());
-			if (i > 0) Utils.DETRITUS_TO_CO1_DIVISOR = i;
+			i = Integer.parseInt(detritustoCO2divisorText.getText());
+			if (i > 0) Utils.DETRITUS_TO_CO2_DIVISOR = i;
 		} catch (NumberFormatException ex) {
 			// Keep old value if there is a problem
 		}
@@ -1479,6 +1516,12 @@ public class ParamDialog extends JDialog {
 		try {
 			i = Integer.parseInt(metamutationrateText.getText());
 			if (i >= 0 && i <= 10000) Utils.META_MUTATION_RATE = i;
+		} catch (NumberFormatException ex) {
+			// Keep old value if there is a problem
+		}
+		try {
+			i = Integer.parseInt(xymutationrateText.getText());
+			if (i >= 0 && i <= 10000) Utils.XY_MUTATION_RATE = i;
 		} catch (NumberFormatException ex) {
 			// Keep old value if there is a problem
 		}
@@ -1603,6 +1646,12 @@ public class ParamDialog extends JDialog {
 			// Keep old value if there is a problem
 		}
 		try {
+			d = Double.parseDouble(ivycostText.getText());
+			if (d > 0) Utils.IVY_ENERGY_CONSUMPTION = d;
+		} catch (NumberFormatException ex) {
+			// Keep old value if there is a problem
+		}
+		try {
 			d = Double.parseDouble(springcostText.getText());
 			if (d > 0) Utils.SPRING_ENERGY_CONSUMPTION = d;
 		} catch (NumberFormatException ex) {
@@ -1671,6 +1720,12 @@ public class ParamDialog extends JDialog {
 		try {
 			d = Double.parseDouble(tealcostText.getText());
 			if (d >= 0) Utils.TEAL_ENERGY_CONSUMPTION = d;
+		} catch (NumberFormatException ex) {
+			// Keep old value if there is a problem
+		}
+		try {
+			d = Double.parseDouble(driftcostText.getText());
+			if (d >= 0) Utils.DRIFT_ENERGY_CONSUMPTION = d;
 		} catch (NumberFormatException ex) {
 			// Keep old value if there is a problem
 		}
@@ -1897,6 +1952,12 @@ public class ParamDialog extends JDialog {
 			// Keep old value if there is a problem
 		}
 		try {
+			i = Integer.parseInt(ivyprobText.getText());
+			if (i >= 0) Utils.IVY_PROB = i;
+		} catch (NumberFormatException ex) {
+			// Keep old value if there is a problem
+		}
+		try {
 			i = Integer.parseInt(springprobText.getText());
 			if (i >= 0) Utils.SPRING_PROB = i;
 		} catch (NumberFormatException ex) {
@@ -1965,6 +2026,12 @@ public class ParamDialog extends JDialog {
 		try {
 			i = Integer.parseInt(tealprobText.getText());
 			if (i >= 0) Utils.TEAL_PROB = i;
+		} catch (NumberFormatException ex) {
+			// Keep old value if there is a problem
+		}
+		try {
+			i = Integer.parseInt(driftprobText.getText());
+			if (i >= 0) Utils.DRIFT_PROB = i;
 		} catch (NumberFormatException ex) {
 			// Keep old value if there is a problem
 		}

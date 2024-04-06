@@ -14,6 +14,7 @@ package biogenesis;
 import java.awt.Desktop;
 import java.lang.reflect.Method;
 import java.net.URI;
+
 import javax.swing.JOptionPane;
 
 public class BareBonesBrowserLaunch {

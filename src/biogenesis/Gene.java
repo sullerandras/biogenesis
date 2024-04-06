@@ -158,12 +158,12 @@ public class Gene implements Cloneable, Serializable {
 
 	public void randomizeColor() {
 		int max_prob = Utils.RED_PROB + Utils.GREEN_PROB + Utils.BLUE_PROB + Utils.CYAN_PROB + Utils.WHITE_PROB + Utils.GRAY_PROB + Utils.YELLOW_PROB + Utils.MAGENTA_PROB
-				+ Utils.PINK_PROB + Utils.CORAL_PROB + Utils.ORANGE_PROB + Utils.FOREST_PROB + Utils.SPRING_PROB + Utils.LEAF_PROB + Utils.SUMMER_PROB + Utils.LIME_PROB
-				+ Utils.BARK_PROB + Utils.VIOLET_PROB + Utils.TEAL_PROB + Utils.SPIN_PROB + Utils.EYE_PROB + Utils.MAROON_PROB + Utils.CRIMSON_PROB + Utils.OLIVE_PROB
-				+ Utils.MINT_PROB + Utils.CREAM_PROB + Utils.ROSE_PROB + Utils.DARK_PROB + Utils.OCHRE_PROB + Utils.SKY_PROB + Utils.LILAC_PROB + Utils.SILVER_PROB
-				+ Utils.FIRE_PROB + Utils.DARKGRAY_PROB + Utils.GOLD_PROB + Utils.BLOND_PROB + Utils.FLOWER_PROB + Utils.AUBURN_PROB + Utils.PLAGUE_PROB + Utils.SPIKE_PROB
-				+ Utils.INDIGO_PROB + Utils.LAVENDER_PROB + Utils.FALLOW_PROB + Utils.SPORE_PROB + Utils.JADE_PROB + Utils.C4_PROB + Utils.GRASS_PROB + Utils.PURPLE_PROB
-				+ Utils.PLANKTON_PROB;
+				+ Utils.PINK_PROB + Utils.CORAL_PROB + Utils.ORANGE_PROB + Utils.FOREST_PROB + Utils.IVY_PROB + Utils.SPRING_PROB + Utils.LEAF_PROB + Utils.SUMMER_PROB
+				+ Utils.LIME_PROB + Utils.BARK_PROB + Utils.VIOLET_PROB + Utils.TEAL_PROB + Utils.SPIN_PROB + Utils.EYE_PROB + Utils.MAROON_PROB + Utils.CRIMSON_PROB
+				+ Utils.OLIVE_PROB + Utils.MINT_PROB + Utils.CREAM_PROB + Utils.ROSE_PROB + Utils.DARK_PROB + Utils.OCHRE_PROB + Utils.SKY_PROB + Utils.LILAC_PROB
+				+ Utils.SILVER_PROB + Utils.FIRE_PROB + Utils.DARKGRAY_PROB + Utils.GOLD_PROB + Utils.BLOND_PROB + Utils.FLOWER_PROB + Utils.AUBURN_PROB + Utils.PLAGUE_PROB
+				+ Utils.SPIKE_PROB + Utils.INDIGO_PROB + Utils.LAVENDER_PROB + Utils.FALLOW_PROB + Utils.SPORE_PROB + Utils.JADE_PROB + Utils.C4_PROB + Utils.GRASS_PROB
+				+ Utils.PURPLE_PROB + Utils.PLANKTON_PROB + Utils.DRIFT_PROB;
 		int prob = Utils.random.nextInt(max_prob);
 		int ac_prob = Utils.RED_PROB;
 		if (prob < ac_prob) {
@@ -218,6 +218,11 @@ public class Gene implements Cloneable, Serializable {
 		ac_prob += Utils.FOREST_PROB;
 		if (prob < ac_prob) {
 			_color = Utils.ColorFOREST;
+			return;
+		}
+		ac_prob += Utils.IVY_PROB;
+		if (prob < ac_prob) {
+			_color = Utils.ColorIVY;
 			return;
 		}
 		ac_prob += Utils.SPRING_PROB;
@@ -403,6 +408,11 @@ public class Gene implements Cloneable, Serializable {
 		ac_prob += Utils.PLANKTON_PROB;
 		if (prob < ac_prob) {
 			_color = Utils.ColorPLANKTON;
+			return;
+		}
+		ac_prob += Utils.DRIFT_PROB;
+		if (prob < ac_prob) {
+			_color = Utils.ColorDRIFT;
 			return;
 		}
 		_color = Color.YELLOW;

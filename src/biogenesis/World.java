@@ -29,10 +29,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
-import java.util.concurrent.Semaphore;
 import java.util.stream.Collectors;
 
 import javax.swing.JViewport;
@@ -585,13 +582,13 @@ public class World implements Serializable{
 	 * CO in the atmosphere and divided by another parameter that indicates
 	 * the concentration of CO needed to absorb it. The result is the total
 	 * amount of CO that the organism can get. This value can't be greater than
-	 * the total amount of CO in the atmosphere, nor the effectiveness of the
+	 * the total amount of CO in the atmosphere, nor the 8* effectiveness of the
 	 * initial length.
 	 *
 	 * @param q  The total length of the organism's C4 segments.
 	 * @return  The amount of CO obtained.
 	 */
-	public double C4photosynthesis(double q) {
+	public double COphotosynthesis(double q) {
 		synchronized (_CO1_monitor) {
 			synchronized (_O2_monitor) {
 				q = Utils.min(q,q*_CO1/Utils.DRAIN_SUBS_DIVISOR,_CO1);
@@ -657,16 +654,20 @@ public class World implements Serializable{
 	 * @param visibleWorld  A reference to the visual representation of this world.
 	 */
 	public void init(VisibleWorldInterface visibleWorld) {
+		VisibleWorld.zoomFactor = 1;
 		_visibleWorld = visibleWorld;
-		_visibleWorld.setPreferredSize(new Dimension(getWidth(), getHeight()));
+		Dimension d = new Dimension(getWidth(), getHeight());
+		VisibleWorld.originalPreferredSize = d;
+		_visibleWorld.setPreferredSize(d);
 	}
 	/**
 	 * Populate the word with a new set of organisms.
 	 * This is used to destroy a world and create a new one.
 	 */
 	public void genesis() {
-		// Reset atributs
+		// Reset attributes
 		nFrames = 0;
+		VisibleWorld.zoomFactor = 1;
 		_O2 = Utils.INITIAL_O2;
 		_CO2 = Utils.INITIAL_CO2;
 		_CH4 = Utils.INITIAL_CH4;
@@ -680,7 +681,9 @@ public class World implements Serializable{
 		// Initialize size
 		_width = Utils.WORLD_WIDTH;
 		_height = Utils.WORLD_HEIGHT;
-		_visibleWorld.setPreferredSize(new Dimension(Utils.WORLD_WIDTH, Utils.WORLD_HEIGHT));
+		Dimension d = new Dimension(_width, _height);
+		VisibleWorld.originalPreferredSize = d;
+		_visibleWorld.setPreferredSize(d);
 		// Create statistics
 		worldStatistics = new WorldStatistics(_visibleWorld.getMainWindow());
 		// Create organisms
@@ -701,7 +704,7 @@ public class World implements Serializable{
 			for (Iterator<Organism> it = _organisms.iterator(); it.hasNext();) {
 				b = it.next();
 				if (!b.isAlive())
-					b.useEnergy(b.getEnergy());
+					b.useBreathing(b.getEnergy());
 			}
 		}
 	}
@@ -723,6 +726,7 @@ public class World implements Serializable{
 	 * This includes organisms and corridors. Called from {@link biogenesis.VisibleWorld.paintComponents}.
 	 *
 	 * @param g  The graphic context to draw to.
+	 * @param fullRedraw True if a full redraw is required.
 	 */
 	public void draw(Graphics g, boolean fullRedraw) {
 		Organism b;
@@ -743,15 +747,22 @@ public class World implements Serializable{
 		}
 		synchronized (_organisms) {
 			if (organismBuckets != null && !fullRedraw) {
-				final JViewport viewPort = (JViewport) SwingUtilities.getAncestorOfClass(JViewport.class, (VisibleWorld) _visibleWorld);
-				final Rectangle view = viewPort.getViewRect();
-				final int bucketSize = organismBuckets.getBucketSize();
-
-				final int minx = Math.max(0, (int) (view.x / (double) bucketSize));
-				final int miny = Math.max(0, (int) (view.y / (double) bucketSize));
-				final int maxx = Math.min(organismBuckets.getMaxWidth(), (int) ((view.x + view.width) / (double) bucketSize));
-				final int maxy = Math.min(organismBuckets.getMaxHeight(), (int) ((view.y + view.height) / (double) bucketSize));
-
+				final JViewport viewport = (JViewport) SwingUtilities.getAncestorOfClass(JViewport.class, (VisibleWorld) _visibleWorld);
+				final Rectangle view = viewport.getViewRect();
+				final double zoomFactor = VisibleWorld.zoomFactor;
+				final double bucketSize = (double)organismBuckets.getBucketSize();
+				int minx; int miny; int maxx; int maxy;
+				if (zoomFactor == 1) {
+					minx = Math.max(0, (int)(view.x / bucketSize));
+					miny = Math.max(0, (int)(view.y / bucketSize));
+					maxx = Math.min(organismBuckets.getMaxWidth(), (int)((view.x + view.width) / bucketSize));
+					maxy = Math.min(organismBuckets.getMaxHeight(), (int)((view.y + view.height) / bucketSize));
+				} else {
+					minx = (int)Math.max(0, ((double)view.x / zoomFactor) / bucketSize);
+					miny = (int)Math.max(0, ((double)view.y / zoomFactor) / bucketSize);
+					maxx = (int)Math.min((double)organismBuckets.getMaxWidth(), ((((double)view.x + (double)view.width)) / zoomFactor) / bucketSize);
+					maxy = (int)Math.min((double)organismBuckets.getMaxHeight(), ((((double)view.y + (double)view.height)) / zoomFactor) / bucketSize);
+				}
 				for (int y = miny; y <= maxy; y++) {
 					for (int x = minx; x <= maxx; x++) {
 						Collection<Organism> bucket = organismBuckets.getBucket(x, y);
@@ -794,7 +805,6 @@ public class World implements Serializable{
 			}
 		}
 		ParallelExecutor.progressAllOrganisms(_organisms, organismBuckets, _visibleWorld);
-
 		// Reactions turning CO2 and CH4 into each other, detritus into CO, and CO into CO2
 		synchronized (_CH4_monitor) {
 			synchronized (_CO2_monitor) {
@@ -806,9 +816,9 @@ public class World implements Serializable{
 						double y = Math.min(getCH4()/Utils.CH4_TO_CO2_DIVISOR,getCH4());
 						_CH4 -= y;
 						_CO2 += y;
-						double z = Math.min(getDetritus()/Utils.DETRITUS_TO_CO1_DIVISOR,getDetritus());
+						double z = Math.min(getDetritus()/Utils.DETRITUS_TO_CO2_DIVISOR,getDetritus());
 						_detritus -= z;
-						_CO1 += z;
+						_CO2 += z;
 						if (getCO1() > getCO2()) {
 							double v = Math.min((getCO1()+(getCO1()-getCO2()))/Utils.CO1_TO_CO2_DIVISOR,getCO1());
 							_CO1 -= v;

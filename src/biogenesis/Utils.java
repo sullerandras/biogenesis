@@ -104,7 +104,7 @@ public final class Utils {
 	 * This is the default age divisor,
 	 * which adds the number of segments to the maximum age, divided by this value.
 	 */
-	final static int DEF_AGE_DIVISOR = 4;
+	final static double DEF_AGE_DIVISOR = 4;
 	/**
 	 * This is the default CO2 to CH4 divisor,
 	 * which turns CO2 into CH4, divided by this value.
@@ -119,12 +119,12 @@ public final class Utils {
 	 * This is the default detritus to CO divisor,
 	 * which turns detritus into CO, divided by this value.
 	 */
-	final static int DEF_DETRITUS_TO_CO1_DIVISOR = 600;
+	final static int DEF_DETRITUS_TO_CO2_DIVISOR = 500;
 	/**
 	 * This is the default CO to CO2 divisor,
 	 * which turns CO into CO2, divided by this value.
 	 */
-	final static int DEF_CO1_TO_CO2_DIVISOR = 100;
+	final static int DEF_CO1_TO_CO2_DIVISOR = 20000;
 	/**
 	 * This is the default rubbing coefficient that is applied to movements. This value is
 	 * multiplied by the speed at every frame.
@@ -135,6 +135,10 @@ public final class Utils {
 	 * that the individual mutation rate of an organism changes.
 	 */
 	final static int DEF_META_MUTATION_RATE = 1000;
+	/**
+	 * This is the default coordinate mutation rate of an organism.
+	 */
+	final static int DEF_XY_MUTATION_RATE = 1000;
 	/**
 	 * This is the default maximal mutation rate of an organism.
 	 */
@@ -275,13 +279,21 @@ public final class Utils {
 	 */
 	final static double DEF_FOREST_ENERGY_CONSUMPTION = 1d;
 	/**
+	 * This is the default energy that is consumed when an ivy segment is used.
+	 */
+	final static double DEF_IVY_ENERGY_CONSUMPTION = 0.333d;
+	/**
 	 * This is the default energy that is consumed when a crowded forest segment is used.
 	 */
 	final static double DEF_CROWDEDFOREST_ENERGY_CONSUMPTION = 1d;
 	/**
 	 * This is the default energy that is consumed when an organism touches a symbiont (with rose segments).
 	 */
-	final static double DEF_SYMBIONT_ENERGY_CONSUMPTION = 0.59d;
+	final static double DEF_SYMBIONT_ENERGY_CONSUMPTION = 0.584d;
+	/**
+	 * This is the default effectivity for drift boosting plant photosynthesis.
+	 */
+	final static double DEF_BOOST_ENERGY_CONSUMPTION = 0.125d;
 	/**
 	 * This is the default energy that is consumed when a spring segment is used.
 	 */
@@ -343,6 +355,10 @@ public final class Utils {
 	 */
 	final static double DEF_TEAL_ENERGY_CONSUMPTION = 11.88d;
 	/**
+	 * This is the default energy that is consumed when a drift segment is used.
+	 */
+	final static double DEF_DRIFT_ENERGY_CONSUMPTION = 4.5d;
+	/**
 	 * This is the default energy that is consumed when a spin segment is used.
 	 */
 	final static double DEF_SPIN_ENERGY_CONSUMPTION = 13.333d;
@@ -357,7 +373,7 @@ public final class Utils {
 	/**
 	 * This is the default energy that is consumed when a crimson segment is used.
 	 */
-	final static double DEF_CRIMSON_ENERGY_CONSUMPTION = 3.2d;
+	final static double DEF_CRIMSON_ENERGY_CONSUMPTION = 3.16d;
 	/**
 	 * This is the default energy that is consumed when a olive segment is used.
 	 */
@@ -453,7 +469,7 @@ public final class Utils {
 	/**
 	 * This is the default probability for a new segment to be cyan.
 	 */
-	final static int DEF_CYAN_PROB = 8;
+	final static int DEF_CYAN_PROB = 7;
 	/**
 	 * This is the default probability for a new segment to be white.
 	 */
@@ -494,6 +510,10 @@ public final class Utils {
 	 * This is the default probability for a new segment to be forest.
 	 */
 	final static int DEF_FOREST_PROB = 3;
+	/**
+	 * This is the default probability for a new segment to be ivy.
+	 */
+	final static int DEF_IVY_PROB = 3;
 	/**
 	 * This is the default probability for a new segment to be spring.
 	 */
@@ -541,7 +561,11 @@ public final class Utils {
 	/**
 	 * This is the default probability for a new segment to be teal.
 	 */
-	final static int DEF_TEAL_PROB = 8;
+	final static int DEF_TEAL_PROB = 7;
+	/**
+	 * This is the default probability for a new segment to be drift.
+	 */
+	final static int DEF_DRIFT_PROB = 7;
 	/**
 	 * This is the default probability for a new segment to be spin.
 	 */
@@ -829,7 +853,7 @@ public final class Utils {
 	 * This is the age divisor,
 	 * which adds the number of segments to the maximum age, divided by this value.
 	 */
-	static int AGE_DIVISOR = DEF_AGE_DIVISOR;
+	static double AGE_DIVISOR = DEF_AGE_DIVISOR;
 	/**
 	 * This is the CO2 to CH4 divisor,
 	 * which turns CO2 into CH4, divided by this value.
@@ -844,7 +868,7 @@ public final class Utils {
 	 * This is the detritus to CO divisor,
 	 * which turns detritus into CO, divided by this value.
 	 */
-	static int DETRITUS_TO_CO1_DIVISOR = DEF_DETRITUS_TO_CO1_DIVISOR;
+	static int DETRITUS_TO_CO2_DIVISOR = DEF_DETRITUS_TO_CO2_DIVISOR;
 	/**
 	 * This is the CO to CO2 divisor,
 	 * which turns CO into CO2, divided by this value.
@@ -860,6 +884,10 @@ public final class Utils {
 	 * that the individual mutation rate of an organism changes.
 	 */
 	static int META_MUTATION_RATE = DEF_META_MUTATION_RATE;
+	/**
+	 * This is the coordinate mutation rate of an organism.
+	 */
+	static int XY_MUTATION_RATE = DEF_XY_MUTATION_RATE;
 	/**
 	 * This is the maximal mutation rate of an organism.
 	 */
@@ -1004,9 +1032,17 @@ public final class Utils {
 	 */
 	static double CROWDEDFOREST_ENERGY_CONSUMPTION = DEF_CROWDEDFOREST_ENERGY_CONSUMPTION;
 	/**
+	 * This is the energy that is consumed when an ivy segment is used.
+	 */
+	static double IVY_ENERGY_CONSUMPTION = DEF_IVY_ENERGY_CONSUMPTION;
+	/**
 	 * This is the energy that is consumed when an organism touches a symbiont (with rose segments).
 	 */
 	static double SYMBIONT_ENERGY_CONSUMPTION = DEF_SYMBIONT_ENERGY_CONSUMPTION;
+	/**
+	 * This is the energy that is used for drift boosting plant photosynthesis
+	 */
+	static double BOOST_ENERGY_CONSUMPTION = DEF_BOOST_ENERGY_CONSUMPTION;
 	/**
 	 * This is the energy that is consumed when a spring segment is used.
 	 */
@@ -1067,6 +1103,10 @@ public final class Utils {
 	 * This is the energy that is consumed when a teal segment is used.
 	 */
 	static double TEAL_ENERGY_CONSUMPTION = DEF_TEAL_ENERGY_CONSUMPTION;
+	/**
+	 * This is the energy that is consumed when a drift segment is used.
+	 */
+	static double DRIFT_ENERGY_CONSUMPTION = DEF_DRIFT_ENERGY_CONSUMPTION;
 	/**
 	 * This is the energy that is consumed when a spin segment is used.
 	 */
@@ -1220,6 +1260,10 @@ public final class Utils {
 	 */
 	static int FOREST_PROB = DEF_FOREST_PROB;
 	/**
+	 * This is the probability for a new segment to be ivy.
+	 */
+	static int IVY_PROB = DEF_IVY_PROB;
+	/**
 	 * This is the probability for a new segment to be spring.
 	 */
 	static int SPRING_PROB = DEF_SPRING_PROB;
@@ -1267,6 +1311,10 @@ public final class Utils {
 	 * This is the probability for a new segment to be teal.
 	 */
 	static int TEAL_PROB = DEF_TEAL_PROB;
+	/**
+	 * This is the probability for a new segment to be drift.
+	 */
+	static int DRIFT_PROB = DEF_DRIFT_PROB;
 	/**
 	 * This is the probability for a new segment to be spin.
 	 */
@@ -1638,6 +1686,10 @@ public final class Utils {
 	 */
 	public static final Color ColorFOREST = new Color(0,128,0);
 	/**
+	 * Precalculated Ivy color
+	 */
+	public static final Color ColorIVY = new Color(136,164,128);
+	/**
 	 * Precalculated bark color
 	 */
 	public static final Color ColorBARK = new Color(96,128,64);
@@ -1677,6 +1729,10 @@ public final class Utils {
 	 * Precalculated teal color
 	 */
 	public static final Color ColorTEAL = new Color(0,128,128);
+	/**
+	 * Precalculated drift color
+	 */
+	public static final Color ColorDRIFT = new Color(64,160,160);
 	/**
 	 * Precalculated spin color
 	 */
@@ -1922,6 +1978,16 @@ public final class Utils {
 		return false;
 	}
 	/**
+	 * Check if the coordinate mutation rate changed or not, using a random number.
+	 *
+	 * @return  true if the coordinate mutation rate changed and false otherwise
+	 */
+	public static final boolean coordinateMutation() {
+		if (random.nextInt(10000) < XY_MUTATION_RATE)
+			return true;
+		return false;
+	}
+	/**
 	 * Return the localized name of a color.
 	 *
 	 * @param c  A color
@@ -1930,6 +1996,7 @@ public final class Utils {
 	public static final String colorToString(Color c) {
 		if (c.equals(Color.GREEN)) return Messages.getString("T_GREEN"); //$NON-NLS-1$
 		if (c.equals(Utils.ColorFOREST)) return Messages.getString("T_FOREST"); //$NON-NLS-1$
+		if (c.equals(Utils.ColorIVY)) return Messages.getString("T_IVY"); //$NON-NLS-1$
 		if (c.equals(Utils.ColorSPRING)) return Messages.getString("T_SPRING"); //$NON-NLS-1$
 		if (c.equals(Utils.ColorSUMMER)) return Messages.getString("T_SUMMER"); //$NON-NLS-1$
 		if (c.equals(Utils.ColorLIME)) return Messages.getString("T_LIME"); //$NON-NLS-1$
@@ -1967,6 +2034,7 @@ public final class Utils {
 		if (c.equals(Utils.ColorROSE)) return Messages.getString("T_ROSE"); //$NON-NLS-1$
 		if (c.equals(Color.CYAN)) return Messages.getString("T_CYAN"); //$NON-NLS-1$
 		if (c.equals(Utils.ColorTEAL)) return Messages.getString("T_TEAL"); //$NON-NLS-1$
+		if (c.equals(Utils.ColorDRIFT)) return Messages.getString("T_DRIFT"); //$NON-NLS-1$
 		if (c.equals(Utils.ColorSPIN)) return Messages.getString("T_SPIN"); //$NON-NLS-1$
 		if (c.equals(Color.YELLOW)) return Messages.getString("T_YELLOW"); //$NON-NLS-1$
 		if (c.equals(Utils.ColorAUBURN)) return Messages.getString("T_AUBURN"); //$NON-NLS-1$
@@ -1998,13 +2066,14 @@ public final class Utils {
 			prefs.putInt("WORLD_WIDTH",WORLD_WIDTH); //$NON-NLS-1$
 			prefs.putInt("WORLD_HEIGHT",WORLD_HEIGHT); //$NON-NLS-1$
 			prefs.putInt("MAX_AGE",MAX_AGE); //$NON-NLS-1$
-			prefs.putInt("AGE_DIVISOR",AGE_DIVISOR); //$NON-NLS-1$
+			prefs.putDouble("AGE_DIVISOR",AGE_DIVISOR); //$NON-NLS-1$
 			prefs.putInt("CO2_TO_CH4_DIVISOR",CO2_TO_CH4_DIVISOR); //$NON-NLS-1$
 			prefs.putInt("CH4_TO_CO2_DIVISOR",CH4_TO_CO2_DIVISOR); //$NON-NLS-1$
-			prefs.putInt("DETRITUS_TO_CO1_DIVISOR",DETRITUS_TO_CO1_DIVISOR); //$NON-NLS-1$
+			prefs.putInt("DETRITUS_TO_CO2_DIVISOR",DETRITUS_TO_CO2_DIVISOR); //$NON-NLS-1$
 			prefs.putInt("CO1_TO_CO2_DIVISOR",CO1_TO_CO2_DIVISOR); //$NON-NLS-1$
 			prefs.putDouble("RUBBING",RUBBING); //$NON-NLS-1$
 			prefs.putInt("META_MUTATION_RATE",META_MUTATION_RATE); //$NON-NLS-1$
+			prefs.putInt("XY_MUTATION_RATE",XY_MUTATION_RATE); //$NON-NLS-1$
 			prefs.putInt("MAX_MUTATION_RATE",MAX_MUTATION_RATE); //$NON-NLS-1$
 			prefs.putInt("MIN_MUTATION_RATE",MIN_MUTATION_RATE); //$NON-NLS-1$
 			prefs.putInt("MAX_CLONE_RATE",MAX_CLONE_RATE); //$NON-NLS-1$
@@ -2038,6 +2107,8 @@ public final class Utils {
 			prefs.putDouble("FOREST_ENERGY_CONSUMPTION",FOREST_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			prefs.putDouble("CROWDEDFOREST_ENERGY_CONSUMPTION",CROWDEDFOREST_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			prefs.putDouble("SYMBIONT_ENERGY_CONSUMPTION",SYMBIONT_ENERGY_CONSUMPTION); //$NON-NLS-1$
+			prefs.putDouble("BOOST_ENERGY_CONSUMPTION",BOOST_ENERGY_CONSUMPTION); //$NON-NLS-1$
+			prefs.putDouble("IVY_ENERGY_CONSUMPTION",IVY_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			prefs.putDouble("SPRING_ENERGY_CONSUMPTION",SPRING_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			prefs.putDouble("LEAF_ENERGY_CONSUMPTION",LEAF_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			prefs.putDouble("MODLEAF_ENERGY_CONSUMPTION",MODLEAF_ENERGY_CONSUMPTION); //$NON-NLS-1$
@@ -2053,6 +2124,7 @@ public final class Utils {
 			prefs.putDouble("C4_ENERGY_CONSUMPTION",C4_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			prefs.putDouble("VIOLET_ENERGY_CONSUMPTION",VIOLET_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			prefs.putDouble("TEAL_ENERGY_CONSUMPTION",TEAL_ENERGY_CONSUMPTION); //$NON-NLS-1$
+			prefs.putDouble("DRIFT_ENERGY_CONSUMPTION",DRIFT_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			prefs.putDouble("SPIN_ENERGY_CONSUMPTION",SPIN_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			prefs.putDouble("EYE_ENERGY_CONSUMPTION",EYE_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			prefs.putDouble("MAROON_ENERGY_CONSUMPTION",MAROON_ENERGY_CONSUMPTION); //$NON-NLS-1$
@@ -2091,6 +2163,7 @@ public final class Utils {
 			prefs.putInt("CORAL_PROB",CORAL_PROB); //$NON-NLS-1$
 			prefs.putInt("ORANGE_PROB",ORANGE_PROB); //$NON-NLS-1$
 			prefs.putInt("FOREST_PROB",FOREST_PROB); //$NON-NLS-1$
+			prefs.putInt("IVY_PROB",IVY_PROB); //$NON-NLS-1$
 			prefs.putInt("SPRING_PROB",SPRING_PROB); //$NON-NLS-1$
 			prefs.putInt("LEAF_PROB",LEAF_PROB); //$NON-NLS-1$
 			prefs.putInt("LIME_PROB",LIME_PROB); //$NON-NLS-1$
@@ -2103,6 +2176,7 @@ public final class Utils {
 			prefs.putInt("C4_PROB",C4_PROB); //$NON-NLS-1$
 			prefs.putInt("VIOLET_PROB",VIOLET_PROB); //$NON-NLS-1$
 			prefs.putInt("TEAL_PROB",TEAL_PROB); //$NON-NLS-1$
+			prefs.putInt("DRIFT_PROB",DRIFT_PROB); //$NON-NLS-1$
 			prefs.putInt("SPIN_PROB",SPIN_PROB); //$NON-NLS-1$
 			prefs.putInt("EYE_PROB",EYE_PROB); //$NON-NLS-1$
 			prefs.putInt("MAROON_PROB",MAROON_PROB); //$NON-NLS-1$
@@ -2196,13 +2270,14 @@ public final class Utils {
 			WORLD_WIDTH = prefs.getInt("WORLD_WIDTH",DEF_WORLD_WIDTH); //$NON-NLS-1$
 			WORLD_HEIGHT = prefs.getInt("WORLD_HEIGHT",DEF_WORLD_HEIGHT); //$NON-NLS-1$
 			MAX_AGE = prefs.getInt("MAX_AGE",DEF_MAX_AGE); //$NON-NLS-1$
-			AGE_DIVISOR = prefs.getInt("AGE_DIVISOR",DEF_AGE_DIVISOR); //$NON-NLS-1$
+			AGE_DIVISOR = prefs.getDouble("AGE_DIVISOR",DEF_AGE_DIVISOR); //$NON-NLS-1$
 			CO2_TO_CH4_DIVISOR = prefs.getInt("CO2_TO_CH4_DIVISOR",DEF_CO2_TO_CH4_DIVISOR); //$NON-NLS-1$
 			CH4_TO_CO2_DIVISOR = prefs.getInt("CH4_TO_CO2_DIVISOR",DEF_CH4_TO_CO2_DIVISOR); //$NON-NLS-1$
-			DETRITUS_TO_CO1_DIVISOR = prefs.getInt("DETRITUS_TO_CO1_DIVISOR",DEF_DETRITUS_TO_CO1_DIVISOR); //$NON-NLS-1$
+			DETRITUS_TO_CO2_DIVISOR = prefs.getInt("DETRITUS_TO_CO2_DIVISOR",DEF_DETRITUS_TO_CO2_DIVISOR); //$NON-NLS-1$
 			CO1_TO_CO2_DIVISOR = prefs.getInt("CO1_TO_CO2_DIVISOR",DEF_CO1_TO_CO2_DIVISOR); //$NON-NLS-1$
 			RUBBING = prefs.getDouble("RUBBING",DEF_RUBBING); //$NON-NLS-1$
 			META_MUTATION_RATE = prefs.getInt("META_MUTATION_RATE",DEF_META_MUTATION_RATE); //$NON-NLS-1$
+			XY_MUTATION_RATE = prefs.getInt("XY_MUTATION_RATE",DEF_XY_MUTATION_RATE); //$NON-NLS-1$
 			MAX_MUTATION_RATE = prefs.getInt("MAX_MUTATION_RATE",DEF_MAX_MUTATION_RATE); //$NON-NLS-1$
 			MIN_MUTATION_RATE = prefs.getInt("MIN_MUTATION_RATE",DEF_MIN_MUTATION_RATE); //$NON-NLS-1$
 			MAX_CLONE_RATE = prefs.getInt("MAX_CLONE_RATE",DEF_MAX_CLONE_RATE); //$NON-NLS-1$
@@ -2236,6 +2311,8 @@ public final class Utils {
 			FOREST_ENERGY_CONSUMPTION = prefs.getDouble("FOREST_ENERGY_CONSUMPTION",DEF_FOREST_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			CROWDEDFOREST_ENERGY_CONSUMPTION = prefs.getDouble("CROWDEDFOREST_ENERGY_CONSUMPTION",DEF_CROWDEDFOREST_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			SYMBIONT_ENERGY_CONSUMPTION = prefs.getDouble("SYMBIONT_ENERGY_CONSUMPTION",DEF_SYMBIONT_ENERGY_CONSUMPTION); //$NON-NLS-1$
+			BOOST_ENERGY_CONSUMPTION = prefs.getDouble("BOOST_ENERGY_CONSUMPTION",DEF_BOOST_ENERGY_CONSUMPTION); //$NON-NLS-1$
+			IVY_ENERGY_CONSUMPTION = prefs.getDouble("IVY_ENERGY_CONSUMPTION",DEF_IVY_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			SPRING_ENERGY_CONSUMPTION = prefs.getDouble("SPRING_ENERGY_CONSUMPTION",DEF_SPRING_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			LEAF_ENERGY_CONSUMPTION = prefs.getDouble("LEAF_ENERGY_CONSUMPTION",DEF_LEAF_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			MODLEAF_ENERGY_CONSUMPTION = prefs.getDouble("MODLEAF_ENERGY_CONSUMPTION",DEF_MODLEAF_ENERGY_CONSUMPTION); //$NON-NLS-1$
@@ -2251,6 +2328,7 @@ public final class Utils {
 			C4_ENERGY_CONSUMPTION = prefs.getDouble("C4_ENERGY_CONSUMPTION",DEF_C4_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			VIOLET_ENERGY_CONSUMPTION = prefs.getDouble("VIOLET_ENERGY_CONSUMPTION",DEF_VIOLET_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			TEAL_ENERGY_CONSUMPTION = prefs.getDouble("TEAL_ENERGY_CONSUMPTION",DEF_TEAL_ENERGY_CONSUMPTION); //$NON-NLS-1$
+			DRIFT_ENERGY_CONSUMPTION = prefs.getDouble("DRIFT_ENERGY_CONSUMPTION",DEF_DRIFT_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			SPIN_ENERGY_CONSUMPTION = prefs.getDouble("SPIN_ENERGY_CONSUMPTION",DEF_SPIN_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			EYE_ENERGY_CONSUMPTION = prefs.getDouble("EYE_ENERGY_CONSUMPTION",DEF_EYE_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			MAROON_ENERGY_CONSUMPTION = prefs.getDouble("MAROON_ENERGY_CONSUMPTION",DEF_MAROON_ENERGY_CONSUMPTION); //$NON-NLS-1$
@@ -2289,6 +2367,7 @@ public final class Utils {
 			CORAL_PROB = prefs.getInt("CORAL_PROB",DEF_CORAL_PROB); //$NON-NLS-1$
 			ORANGE_PROB = prefs.getInt("ORANGE_PROB",DEF_ORANGE_PROB); //$NON-NLS-1$
 			FOREST_PROB = prefs.getInt("FOREST_PROB",DEF_FOREST_PROB); //$NON-NLS-1$
+			IVY_PROB = prefs.getInt("IVY_PROB",DEF_IVY_PROB); //$NON-NLS-1$
 			SPRING_PROB = prefs.getInt("SPRING_PROB",DEF_SPRING_PROB); //$NON-NLS-1$
 			LEAF_PROB = prefs.getInt("LEAF_PROB",DEF_LEAF_PROB); //$NON-NLS-1$
 			LIME_PROB = prefs.getInt("LIME_PROB",DEF_LIME_PROB); //$NON-NLS-1$
@@ -2301,6 +2380,7 @@ public final class Utils {
 			C4_PROB = prefs.getInt("C4_PROB",DEF_C4_PROB); //$NON-NLS-1$
 			VIOLET_PROB = prefs.getInt("VIOLET_PROB",DEF_VIOLET_PROB); //$NON-NLS-1$
 			TEAL_PROB = prefs.getInt("TEAL_PROB",DEF_TEAL_PROB); //$NON-NLS-1$
+			DRIFT_PROB = prefs.getInt("DRIFT_PROB",DEF_DRIFT_PROB); //$NON-NLS-1$
 			SPIN_PROB = prefs.getInt("SPIN_PROB",DEF_SPIN_PROB); //$NON-NLS-1$
 			EYE_PROB = prefs.getInt("EYE_PROB",DEF_EYE_PROB); //$NON-NLS-1$
 			MAROON_PROB = prefs.getInt("MAROON_PROB",DEF_MAROON_PROB); //$NON-NLS-1$
