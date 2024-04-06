@@ -1037,7 +1037,11 @@ public class Organism extends Rectangle {
 			}
 		}
 		if (_ivyparasitism > 0) {
-			_ivyparasitism = (Math.log10(_ivyparasitism + 68))/2;
+			if ((_isonlyivy) || (_isonlyc4 > 0)) {
+				_ivyparasitism = (Math.log10(_ivyparasitism + 76))/2;
+			} else {
+				_ivyparasitism = (Math.log10(_ivyparasitism + 52))/2;
+			}
 		}
 		// Calculate jade delay used in restoration of the color
 		if (_jadefactor > 1) {
@@ -1074,7 +1078,7 @@ public class Organism extends Rectangle {
 			_gold = 0;
 			_max_age = Utils.MAX_AGE + (int) (_segments/Utils.AGE_DIVISOR);
 		}
-		boolean isspin =false;
+		boolean alsododges =false;
 		_canreact =false;
 		_isreproductive =false;
 		if (_skyversion > 0) {
@@ -1113,7 +1117,7 @@ public class Organism extends Rectangle {
 				if (_canmove == 0) {
 					_canmove = 1;
 				}
-				isspin =true;
+				alsododges =true;
 				_spin += (int)(Utils.SPIN_ENERGY_CONSUMPTION * _geneticCode.getGene(i%_geneticCode.getNGenes()).getLength());
 				_mphoto[i] = 0;
 				break;
@@ -1138,6 +1142,7 @@ public class Organism extends Rectangle {
 					_mphoto[i] = -22;
 				} else {
 					_mphoto[i] = -21;
+					alsododges =true;
 				}
 				break;
 			case CYAN:
@@ -1347,12 +1352,16 @@ public class Organism extends Rectangle {
 		    }
 		}
 		if (_ivyparasitism > 0) {
-			_ivyparasitism = (Math.log10(_ivyparasitism + 68))/2;
+			if ((_isonlyivy) || (_isonlyc4 > 0)) {
+				_ivyparasitism = (Math.log10(_ivyparasitism + 76))/2;
+			} else {
+				_ivyparasitism = (Math.log10(_ivyparasitism + 52))/2;
+			}
 		}
 		// Can this organism dodge?
-		if ((_canreact) || (isspin)) {
+		if ((_canreact) || (alsododges)) {
 			if ((!_isaconsumer) && (!_isafungus) && (_isplankton == 0) && (!_isakiller) && (_blackversion >= -1)
-				&& (((!_isinfectious) && (!_iscoral) && (_plagueversion == 0) && (!_isprotective)) || ((!_isaplant) && ((_geneticCode.getPassive()) || (_spin > 0))))) {
+				&& (((!_isinfectious) && (!_iscoral) && (_plagueversion == 0) && (!_isprotective)) || ((!_isaplant) && (alsododges)))) {
 				_candodge =true;
 			} else {
 				if (_isonlyc4 != 2) {
@@ -1436,7 +1445,7 @@ public class Organism extends Rectangle {
 						int b;
 						for (b=_segments-1; b>=0; b--) {
 							if (_segColor[b].equals(Utils.ColorBLOND)) {
-								_earlyReproduceEnergy -= 4;
+								_earlyReproduceEnergy -= 2;
 							}
 						}				
 					}
@@ -1497,7 +1506,7 @@ public class Organism extends Rectangle {
 	/*
 	 * Creates segment dependent booleans
 	 */
-	final void segmentsCreateEffects() {
+	final void segmentsCreateEffects(boolean createall) {
 		int i;
 		_spin = 0;
 		_drift = 0;
@@ -1516,7 +1525,7 @@ public class Organism extends Rectangle {
 		_haseyes =false;
 		boolean enhancedconsumer =false;
 		boolean ispink =false;
-		boolean isspin =false;
+		boolean alsododges =false;
 		_updateEffects = 2;
 		if (_geneticCode.getSiblingBattle()) {
 			_siblingbattle =true;
@@ -1621,7 +1630,9 @@ public class Organism extends Rectangle {
 				_jadefactor = 2;
 				break;
 			case C4:
-				_mphoto[i] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * (10 + _geneticCode.getGene(i%_geneticCode.getNGenes()).getLength());
+				if (createall) {
+					_mphoto[i] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * (10 + _geneticCode.getGene(i%_geneticCode.getNGenes()).getLength());
+				}
 				_isonlyc4 = 1;
 				break;
 			case SPRING:
@@ -1641,7 +1652,7 @@ public class Organism extends Rectangle {
 				}
 				break;
 			case PURPLE:
-				if (_age == 0) {
+				if (createall) {
 					_mphoto[i] = Utils.PURPLE_ENERGY_CONSUMPTION * photomultiplier * _geneticCode.getGene(i%_geneticCode.getNGenes()).getLength();
 				}
 				_methanotrophy += 1;
@@ -1654,7 +1665,7 @@ public class Organism extends Rectangle {
 				if (_canmove == 0) {
 					_canmove = 1;
 				}
-				isspin =true;
+				alsododges =true;
 				_spin += (int)(Utils.SPIN_ENERGY_CONSUMPTION * _geneticCode.getGene(i%_geneticCode.getNGenes()).getLength());
 				if (_geneticCode.getClockwise()) {
 					_clockwise =true;
@@ -1682,6 +1693,7 @@ public class Organism extends Rectangle {
 					_mphoto[i] = -22;
 				} else {
 					_mphoto[i] = -21;
+					alsododges =true;
 				}
 				break;
 			case CYAN:
@@ -2065,16 +2077,6 @@ public class Organism extends Rectangle {
 				}
 			}
 		}
-		if (_ivyparasitism > 0) {
-			_ivyparasitism = (Math.log10(_ivyparasitism + 68))/2;
-			if ((!_isaplant) && (_methanotrophy == 0) && (_isonlyc4 == 0) && (_isplankton == 0) && (_age == 0)) {
-				_isonlyivy = true;
-				if ((!_isaconsumer) && (!_isafungus)) {
-					_jadefactor = -1;
-				}
-			}
-			_isaplant = true;
-		}
 		if (_blackversion != 0) {
 			if (((_geneticCode.getModifiesblack() == 4) || (_geneticCode.getModifiesblack() == 6)) && (_reproducelate == 0) && (_age == 0)) {
 				int b;
@@ -2085,7 +2087,7 @@ public class Organism extends Rectangle {
 				}
 			}
 		}
-		if (_isonlyc4 > 0) {
+		if ((_isonlyc4 > 0) && (createall)) {
 			if ((!_isaplant) && (_methanotrophy == 0) && (_isplankton == 0)) {
 				if ((!_isaconsumer) && (!_isafungus) && (_blackversion >= -1)) {
 					if ((!_isakiller) && (!_isinfectious) && (_plagueversion == 0) && (!_isprotective)) {
@@ -2124,6 +2126,7 @@ public class Organism extends Rectangle {
 										}
 									}
 									break;
+								case IVY:
 								case LAVENDER:
 								case CYAN:
 								case TEAL:
@@ -2166,6 +2169,21 @@ public class Organism extends Rectangle {
 			}
 			_isaplant =true;
 		}
+		// Ivy parasitism settings
+		if (_ivyparasitism > 0) {
+			if ((!_isaplant) && (_methanotrophy == 0) && (_isplankton == 0) && (_age == 0)) {
+				_isonlyivy = true;
+				if ((!_isaconsumer) && (!_isafungus)) {
+					_jadefactor = -1;
+				}
+			}
+			if ((_isonlyivy) || (_isonlyc4 > 0)) {
+				_ivyparasitism = (Math.log10(_ivyparasitism + 76))/2;
+			} else {
+				_ivyparasitism = (Math.log10(_ivyparasitism + 52))/2;
+			}
+			_isaplant = true;
+		}
 		// Activate the boolean to allow them to do photosynthesis at the first frame
 		if (((_isaplant) || (_methanotrophy > 0)) && (_leafphoto == 0)) {
 			_candoautotrophy = true;
@@ -2195,7 +2213,7 @@ public class Organism extends Rectangle {
 			}
 		}
 		// Give non green filterfeeders the ability of jade during virus hatching, then make them count as plants and lower effectivity for mixed organisms
-		if (_isplankton > 0) {
+		if ((_isplankton > 0) && (createall)) {
 			double planktonfactor = 0;
 			if (_symmetry == 8) {
 				planktonfactor = 1961 + Math.round(6000 / ((double)_geneticCode.getNGenes() + 2)) + Math.round(6315 / (double)_symmetry);
@@ -2212,7 +2230,7 @@ public class Organism extends Rectangle {
 					_jadefactor = -1;
 				}
 			}
-			if ((_isaplant) || (_isaconsumer) || (_methanotrophy > 0)) {
+			if ((_isaplant) || (_isaconsumer) || (_methanotrophy > 0) || (_blackversion <= -2)) {
 				int q;
 				double filterfactor = 0;
 				if (_isaplant) {
@@ -2325,28 +2343,26 @@ public class Organism extends Rectangle {
 					_jadefactor = -1;
 				}
 			}
-			if ((_isaplant) || (_isplankton > 0)) {
-				if (_age == 0) {
-					int p;
-					double methanefactor = 0;
-					if (_geneticCode.getNGenes() > 1) {
-						methanefactor = (0.5 + ((_methanotrophy / _symmetry) / (10 * (_geneticCode.getNGenes() - 1))));
-					} else {
-						methanefactor = (0.5 + ((_methanotrophy / _symmetry) / (10 * _geneticCode.getNGenes())));
-					}
-					for (p=_segments-1; p>=0; p--) {
-			            if (_segColor[p].equals(Utils.ColorPURPLE)) {
-			            	_mphoto[p] = methanefactor * Utils.PURPLE_ENERGY_CONSUMPTION * photomultiplier * _geneticCode.getGene(p%_geneticCode.getNGenes()).getLength();
-						}
+			if (((_isaplant) || (_isplankton > 0)) && (createall)) {
+				int p;
+				double methanefactor = 0;
+				if (_geneticCode.getNGenes() > 1) {
+					methanefactor = (0.5 + ((_methanotrophy / _symmetry) / (10 * (_geneticCode.getNGenes() - 1))));
+				} else {
+					methanefactor = (0.5 + ((_methanotrophy / _symmetry) / (10 * _geneticCode.getNGenes())));
+				}
+				for (p=_segments-1; p>=0; p--) {
+		            if (_segColor[p].equals(Utils.ColorPURPLE)) {
+		            	_mphoto[p] = methanefactor * Utils.PURPLE_ENERGY_CONSUMPTION * photomultiplier * _geneticCode.getGene(p%_geneticCode.getNGenes()).getLength();
 					}
 				}
 			}
 			_isaplant =true;
 		}
 		// Can this organism dodge?
-		if ((_canreact) || (isspin)) {
+		if ((_canreact) || (alsododges)) {
 			if ((!_isaconsumer) && (!_isafungus) && (_isplankton == 0) && (!_isakiller) && (_blackversion >= -1)
-				&& (((!_isinfectious) && (!_iscoral) && (_plagueversion == 0) && (!_isprotective)) || ((!_isaplant) && ((_geneticCode.getPassive()) || (_spin > 0))))) {
+				&& (((!_isinfectious) && (!_iscoral) && (_plagueversion == 0) && (!_isprotective)) || ((!_isaplant) && (alsododges)))) {
 				_candodge =true;
 			} else {
 				_candodge =false;
@@ -2484,7 +2500,7 @@ public class Organism extends Rectangle {
 						int b;
 						for (b=_segments-1; b>=0; b--) {
 							if (_segColor[b].equals(Utils.ColorBLOND)) {
-								_earlyReproduceEnergy -= 4;
+								_earlyReproduceEnergy -= 2;
 				            	if (_age == 0) {
 				            		_reproduceEnergy -= 2;
 				            	}
@@ -2882,7 +2898,7 @@ public class Organism extends Rectangle {
             	}
     		} else {
     			// Initialize effects
-    			segmentsCreateEffects();
+    			segmentsCreateEffects(true);
     			// Inherit drifting to the base of the parent
     			if (_drift > 0) {
     				if (inheritGeneticCode == parent._geneticCode) {
@@ -3007,7 +3023,7 @@ public class Organism extends Rectangle {
 	        							dy = 2 * dy;
 	    							}
 	    						}
-    							if ((_isaconsumer) || (_isafungus)) {
+    							if ((_isaconsumer) || (_isafungus) || (_isblond)) {
     								_isenhanced = false;
     								for (int i=0; i<_segments; i++) {
     									 _segColor[i] = Utils.ColorVISION;
@@ -3483,7 +3499,7 @@ public class Organism extends Rectangle {
         			}
         		}
 				// Initialize effects
-				segmentsCreateEffects();
+				segmentsCreateEffects(true);
 				// Create spores
 				if (_sporetime > 0) {
 				    if (_sporeversion == 1) {
@@ -3561,7 +3577,7 @@ public class Organism extends Rectangle {
 		                    		}
 								}
 							} else {
-								if ((_isaconsumer) || (_isafungus)) {
+								if ((_isaconsumer) || (_isafungus) || (_isblond)) {
 									_isenhanced = false;
 									for (int i=0; i<_segments; i++) {
 										 _segColor[i] = Utils.ColorVISION;
@@ -4040,7 +4056,7 @@ public class Organism extends Rectangle {
         			}
         		}
 				// Initialize effects
-				segmentsCreateEffects();
+				segmentsCreateEffects(true);
 				return true;
 			}
 		}}
@@ -4306,7 +4322,7 @@ public class Organism extends Rectangle {
         			}
         		}
 				// Initialize effects
-				segmentsCreateEffects();
+				segmentsCreateEffects(true);
 				return true;
 			}
 		}
@@ -5710,8 +5726,8 @@ public class Organism extends Rectangle {
 					_switchdrift = 1;
 				} else {
 					if (_photosynthesis > 0) {
-						if (_world._CO2 < 1150) {
-							if (Utils.random.nextInt(1150) < _world._CO2) {
+						if (_world._CO2 < 1133) {
+							if (Utils.random.nextInt(1133) < _world._CO2) {
 								_colonyPhotosynthesis += 0.01 * (_drift*Utils.scale[_growthRatio-1]) * _photosynthesis;
 							}
 						} else {
@@ -5719,8 +5735,8 @@ public class Organism extends Rectangle {
 						}
 					} else {
 						if (_methanotrophy > 0) {
-							if (_world._CH4 < 1150) {
-								if (Utils.random.nextInt(1150) < _world._CH4) {
+							if (_world._CH4 < 1133) {
+								if (Utils.random.nextInt(1133) < _world._CH4) {
 									_energy += _world.methanotrophy(0.00125 * (_drift*Utils.scale[_growthRatio-1]) * _methanotrophy);
 								}
 							} else {
@@ -5982,7 +5998,7 @@ public class Organism extends Rectangle {
 								active = true;
 								hasMoved = true;
 								_age = 1;
-								segmentsCreateEffects();
+								segmentsCreateEffects(true);
 								if (_haseyes) {
 	                       			symmetric();
 	                       		}
@@ -6037,7 +6053,7 @@ public class Organism extends Rectangle {
 											hasMoved = true;
 											_gold = 0;
 											_age = 1;
-											segmentsCreateEffects();
+											segmentsCreateEffects(true);
 											if (_haseyes) {
 				                       			symmetric();
 				                       		}
@@ -6117,7 +6133,7 @@ public class Organism extends Rectangle {
 								active = true;
 								hasMoved = true;
 								_age = 1;
-								segmentsCreateEffects();
+								segmentsCreateEffects(true);
 								if (_haseyes) {
 	                       			symmetric();
 	                       		}
@@ -6308,7 +6324,7 @@ public class Organism extends Rectangle {
 			active = true;
 			hasMoved = true;
 			_age++;
-			segmentsCreateEffects();
+			segmentsCreateEffects(true);
 			if (_haseyes) {
        			symmetric();
        		}
@@ -6961,7 +6977,11 @@ public class Organism extends Rectangle {
 			_dodge =false;
 		}
 		if (_ivyparasitism > 0) {
-			_ivyparasitism = (Math.log10(_ivyparasitism + 68))/2;
+			if ((_isonlyivy) || (_isonlyc4 > 0)) {
+				_ivyparasitism = (Math.log10(_ivyparasitism + 76))/2;
+			} else {
+				_ivyparasitism = (Math.log10(_ivyparasitism + 52))/2;
+			}
 		}
 		// Calculate jade delay used in restoration of the color
 		if (_jadefactor > 1) {
@@ -8095,7 +8115,7 @@ public class Organism extends Rectangle {
 						    _segsickReaction[seg] = org._segsickReaction[oseg];
 						    _segfriendReaction[seg] = org._segfriendReaction[oseg];
 						}
-						segmentsCreateEffects();
+						segmentsCreateEffects(false);
 					}
 					break;
 				}
@@ -23210,11 +23230,7 @@ public class Organism extends Rectangle {
 						break;
 					case IVY:
 						addphoto += _mphoto[i];
-						if (_isonlyivy) {
-							addmaintenance -= 0.99 * _m[i];
-						} else {
-							addmaintenance -= 0.98 * _m[i];
-						}
+						addmaintenance -= 0.99 * _m[i];
 						break;
 					case PLANKTON:
 						_filterfeeding += _mphoto[i];
@@ -23543,11 +23559,7 @@ public class Organism extends Rectangle {
 						break;
 					case IVY:
 						addphoto += _mphoto[i];
-						if (_isonlyivy) {
-							addmaintenance -= 0.99 * _m[i];
-						} else {
-							addmaintenance -= 0.98 * _m[i];
-						}
+						addmaintenance -= 0.99 * _m[i];
 						break;
 					case GRASS:
 						addphoto += _mphoto[i];
@@ -24086,6 +24098,10 @@ public class Organism extends Rectangle {
 					// Photosynthesis
 					case C4:
 						addphoto += _mphoto[i];
+						break;
+					case IVY:
+						addphoto += _mphoto[i];
+						addmaintenance -= 0.99 * _m[i];
 						break;
 					// Healing
 					case GREENBROWN:

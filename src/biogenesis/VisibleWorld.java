@@ -21,6 +21,7 @@ package biogenesis;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -156,6 +157,15 @@ public class VisibleWorld extends JPanel implements VisibleWorldInterface {
 	 * A reference to the {@link InfoWindow}, that is created from this class.
 	 */
 	//transient protected InfoWindow _infoWindow = null;
+	/**
+	 * The zoom factor of the viewport.
+	 * Default: zoomFactor = 1, Zoom in: zoomFactor > 1, Zoom out: 0 < zoomFactor < 1.
+	 */
+	protected static double zoomFactor;
+	/**
+	 * The original un-zoomed dimension of the visible world component.
+	 */
+    protected static Dimension originalPreferredSize;
 
 	public MainWindow getMainWindow() {
 		return _mainWindow;
@@ -349,7 +359,7 @@ public class VisibleWorld extends JPanel implements VisibleWorldInterface {
 				b._allfrozen = false;
 				b._isinjured = false;
 				b.symmetric();
-				b.segmentsCreateEffects();
+				b.segmentsCreateEffects(true);
 				_mainWindow.getWorld().increasePopulation();
 				showAliveToolbar();
 			}
@@ -423,7 +433,7 @@ public class VisibleWorld extends JPanel implements VisibleWorldInterface {
 				boolean processState = _mainWindow._isProcessActive;
 				// Stop time
 	    		_mainWindow._isProcessActive = false;
-				pasteGeneticCode(clippedGeneticCode, mouseX, mouseY);
+				pasteGeneticCode(clippedGeneticCode, (int)((double)mouseX / zoomFactor), (int)((double)mouseY / zoomFactor));
 				_mainWindow._isProcessActive = processState;
 			}
 		}
@@ -438,7 +448,7 @@ public class VisibleWorld extends JPanel implements VisibleWorldInterface {
 		public void actionPerformed(ActionEvent e) {
 			GeneticCode g = new GeneticCode();
 			Organism newBiot = new Organism(_mainWindow.getWorld(), g);
-			if (newBiot.pasteOrganism(mouseX, mouseY))
+			if (newBiot.pasteOrganism((int)((double)mouseX / zoomFactor), (int)((double)mouseY / zoomFactor)))
 				_mainWindow.getWorld().addOrganism(newBiot, null);
 		}
 	}
@@ -465,7 +475,7 @@ public class VisibleWorld extends JPanel implements VisibleWorldInterface {
 						g = parser.parseGeneticCode(chooser.getSelectedFile());
 						// Create organism
     					newBiot = new Organism(_mainWindow.getWorld(), g);
-    					if (newBiot.pasteOrganism(mouseX, mouseY))
+    					if (newBiot.pasteOrganism((int)((double)mouseX / zoomFactor), (int)((double)mouseY / zoomFactor)))
     						_mainWindow.getWorld().addOrganism(newBiot, null);
     				} catch (SAXException ex) {
     					ex.printStackTrace();
@@ -511,6 +521,7 @@ public class VisibleWorld extends JPanel implements VisibleWorldInterface {
 				_mainWindow.createToolBar();
 		}
 	}
+	
 	/**
 	 * Return the selected organism.
 	 *
@@ -519,6 +530,7 @@ public class VisibleWorld extends JPanel implements VisibleWorldInterface {
 	public Organism getSelectedOrganism() {
 		return _selectedOrganism;
 	}
+	
 	/**
 	 * Set a genetic code as the clipped genetic code, that will be used when
 	 * pasting a new organism or in the genetic lab as the staring genetic code.
@@ -529,6 +541,7 @@ public class VisibleWorld extends JPanel implements VisibleWorldInterface {
 		if (gc != null)
 			clippedGeneticCode = gc;
 	}
+	
 	/**
 	 * Remove a genetic code as the clipped genetic code, that will be used when
 	 * pasting a new organism or in the genetic lab as the staring genetic code.
@@ -538,6 +551,7 @@ public class VisibleWorld extends JPanel implements VisibleWorldInterface {
 	public void removeClippedGeneticCode() {
 			clippedGeneticCode = null;
 	}
+	
 	/**
 	 * Creates a new VisibleWorld associated with a {@link MainWindow}.
 	 * Creates the menus and the MouseAdapter.
@@ -546,19 +560,19 @@ public class VisibleWorld extends JPanel implements VisibleWorldInterface {
 	 */
 	public VisibleWorld(MainWindow mainWindow) {
 		_mainWindow = mainWindow;
-		setPreferredSize(new Dimension(Utils.WORLD_WIDTH,Utils.WORLD_HEIGHT));
 		setBackground(Color.BLACK);
 		createActions();
 		createPopupMenu();
 		addMouseListener(new MouseAdapter() {
 			private boolean isPopupTrigger = false;
 			private Point mousePressedAt = new Point(0, 0);
-
+			
 			@Override
 			public void mousePressed(MouseEvent e) {
 				isPopupTrigger = e.isPopupTrigger();
 				mousePressedAt = e.getLocationOnScreen();
 			}
+			
 			@Override
 			public void mouseReleased(MouseEvent e) {
 				// If the mouse is released at the same position where it was pressed
@@ -570,7 +584,7 @@ public class VisibleWorld extends JPanel implements VisibleWorldInterface {
 					if (isPopupTrigger || e.isPopupTrigger()) {
 						showPopupMenu(e);
 					} else if (e.getButton() == MouseEvent.BUTTON1) {
-						setSelectedOrganism(findOrganismFromPosition(e.getX(), e.getY()));
+						setSelectedOrganism(findOrganismFromPosition((int)(e.getX() / zoomFactor), (int)(e.getY() / zoomFactor)));
 					}
 				}
 			}
@@ -579,7 +593,7 @@ public class VisibleWorld extends JPanel implements VisibleWorldInterface {
 		// From https://stackoverflow.com/questions/31171502/scroll-jscrollpane-by-dragging-mouse-java-swing
 		MouseAdapter mousePanHandler = new MouseAdapter() {
 			private Point origin;
-
+			
 			@Override
 			public void mousePressed(MouseEvent e) {
 				if (e.getButton() == MouseEvent.BUTTON1) {
@@ -588,12 +602,12 @@ public class VisibleWorld extends JPanel implements VisibleWorldInterface {
 					origin = new Point(e.getPoint());
 				}
 			}
-
+			
 			@Override
 			public void mouseDragged(MouseEvent e) {
 				if (origin != null) {
 					JViewport viewPort = (JViewport) SwingUtilities.getAncestorOfClass(JViewport.class, VisibleWorld.this);
-					if (viewPort != null) {
+					if ((viewPort != null) && (_mainWindow.zoomTimer == null)) {
 						int deltaX = origin.x - e.getX();
 						int deltaY = origin.y - e.getY();
 
@@ -625,6 +639,87 @@ public class VisibleWorld extends JPanel implements VisibleWorldInterface {
 	Organism findOrganismFromPosition(int x, int y) {
 		return _mainWindow.getWorld().findOrganismFromPosition(x, y);
 	}
+	
+	/**
+	 * Zooms in the visible world component.
+	 */
+	public void zoomIn() {
+		if (zoomFactor < 2) {
+			zoomFactor *= 1.04;
+			adjustSizeAndPosition();
+	        revalidate();
+	        repaint();
+		} else if (zoomFactor > 2) {
+			zoomFactor = 2;
+			adjustSizeAndPosition();
+	        revalidate();
+	        repaint();
+		}
+    }
+	
+	/**
+	 * Override zooms in the visible world component, thus ignoring the 4x limit.
+	 */
+	public void zoomInOverride() {
+		zoomFactor *= 1.04;
+        adjustSizeAndPosition();
+        revalidate();
+        repaint();
+    }
+	
+	/**
+	 * Zooms out the visible world component.
+	 * @param zoomOutLimitFlag True when fully zoomed out.
+	 */
+    public void zoomOut(boolean zoomOutLimitFlag) {
+    	if (!zoomOutLimitFlag) {
+    		zoomFactor *= 0.96;
+    	} else {
+    		zoomFactor = Math.min(1, Math.min(
+    				(double)_mainWindow.scrollPane.getViewport().getWidth() / (double)originalPreferredSize.width,
+    				(double)_mainWindow.scrollPane.getViewport().getHeight() / (double)originalPreferredSize.height
+    				));
+    	}
+    	adjustSizeAndPosition();
+    	revalidate();
+        repaint();
+    }
+    
+    /**
+	 * Resets the visible world component's zoom factor.
+	 */
+    public void resetZoom() {
+        zoomFactor = 1;
+        adjustSizeAndPosition();
+        revalidate();
+        repaint();
+    }
+    
+    /**
+	 * Sets the visible world component's size, as well as the viewport's position
+	 * within the newly scaled component. Called by the zoom functions.
+	 */
+    private void adjustSizeAndPosition() {
+        // Calculate the new preferred size after zooming
+        double newWidth = zoomFactor * (double)originalPreferredSize.width;
+        double newHeight = zoomFactor * (double)originalPreferredSize.height;
+        // Calculate the new view position after zooming, such that it appears to scale with respect to the view's center
+        JViewport viewport = _mainWindow.scrollPane.getViewport();
+        double viewCenterX = ((double)viewport.getViewPosition().x + (double)viewport.getWidth() / 2) / (double)getWidth();
+        double viewCenterY = ((double)viewport.getViewPosition().y + (double)viewport.getHeight() / 2) / (double)getHeight();
+        double viewOffsetX = newWidth * viewCenterX - (double)viewport.getWidth() / 2;
+        double viewOffsetY = newHeight * viewCenterY - (double)viewport.getHeight() / 2;
+        // Ensure the new view position is properly bounded
+        viewOffsetX = Math.max(0, Math.min(viewOffsetX, newWidth - (double)viewport.getWidth()));
+        viewOffsetY = Math.max(0, Math.min(viewOffsetY, newHeight - (double)viewport.getHeight()));
+        // Adjust the view's size and position
+        setPreferredSize(new Dimension((int)newWidth, (int)newHeight));
+        if (zoomFactor == 1) {
+        	viewport.doLayout();
+        }
+        viewport.setViewPosition(new Point((int)viewOffsetX, (int)viewOffsetY));
+    }
+    
 	/**
 	 * Calls World.draw to draw all world elements and paints the bounding rectangle
 	 * of the selected organism.
@@ -634,29 +729,63 @@ public class VisibleWorld extends JPanel implements VisibleWorldInterface {
 	@Override
 	public void paintComponent (Graphics g) {
 		super.paintComponent(g);
-		if (_mainWindow._isProcessActive) {
-			_mainWindow.getWorld().draw(g, false);
-		} else {
-			_mainWindow.getWorld().draw(g, true);
-		}
-		if (getSelectedOrganism() != null) {
-			if (getSelectedOrganism()._infectedGeneticCode != null) {
-				if (((getSelectedOrganism()._timeToReproduce > getSelectedOrganism()._timeToReproduceMax) && ((getSelectedOrganism().active) || (getSelectedOrganism()._sporeversion >= 5)))
-						|| (getSelectedOrganism()._fallowinhibition > 1) || (getSelectedOrganism()._sporetime < 0)) {
-					g.setColor(Utils.ColorFLOWER);
-				} else {
-					g.setColor(Color.WHITE);
-				}
+		if (zoomFactor == 1) {
+			// To guarantee vanilla/default zoom retains peak performance, draw normally when not zoomed in/out
+			if (_mainWindow._isProcessActive) {
+				_mainWindow.getWorld().draw(g, false);
 			} else {
-				if (((getSelectedOrganism()._timeToReproduce > getSelectedOrganism()._timeToReproduceMax) && ((getSelectedOrganism().active) || (getSelectedOrganism()._sporeversion >= 5)))
-						|| (getSelectedOrganism()._fallowinhibition > 1) || (getSelectedOrganism()._sporetime < 0)) {
-					g.setColor(Utils.ColorFALLOW);
-				} else {
-					g.setColor(Color.ORANGE);
-				}
+				_mainWindow.getWorld().draw(g, true);
 			}
-			g.drawRect(_selectedOrganism.x, _selectedOrganism.y,
-					_selectedOrganism.width-1, _selectedOrganism.height-1);
+			if (getSelectedOrganism() != null) {
+				if (getSelectedOrganism()._infectedGeneticCode != null) {
+					if (((getSelectedOrganism()._timeToReproduce > getSelectedOrganism()._timeToReproduceMax) && ((getSelectedOrganism().active) || (getSelectedOrganism()._sporeversion >= 5)))
+							|| (getSelectedOrganism()._fallowinhibition > 1) || (getSelectedOrganism()._sporetime < 0)) {
+						g.setColor(Utils.ColorFLOWER);
+					} else {
+						g.setColor(Color.WHITE);
+					}
+				} else {
+					if (((getSelectedOrganism()._timeToReproduce > getSelectedOrganism()._timeToReproduceMax) && ((getSelectedOrganism().active) || (getSelectedOrganism()._sporeversion >= 5)))
+							|| (getSelectedOrganism()._fallowinhibition > 1) || (getSelectedOrganism()._sporetime < 0)) {
+						g.setColor(Utils.ColorFALLOW);
+					} else {
+						g.setColor(Color.ORANGE);
+					}
+				}
+				g.drawRect(_selectedOrganism.x, _selectedOrganism.y,
+						_selectedOrganism.width-1, _selectedOrganism.height-1);
+			}
+		} else {
+			Graphics2D g2d = (Graphics2D) g.create();
+		    // Apply zoom transformation
+		    g2d.scale(zoomFactor, zoomFactor);
+		    // Perform drawing operations here with the transformed graphics context
+		    if (_mainWindow._isProcessActive) {
+		    	_mainWindow.getWorld().draw(g2d, false);
+			} else {
+				_mainWindow.getWorld().draw(g2d, true);
+			}
+		    if (getSelectedOrganism() != null) {
+		        if (getSelectedOrganism()._infectedGeneticCode != null) {
+		            if (((getSelectedOrganism()._timeToReproduce > getSelectedOrganism()._timeToReproduceMax) && ((getSelectedOrganism().active) || (getSelectedOrganism()._sporeversion >= 5)))
+		                    || (getSelectedOrganism()._fallowinhibition > 1) || (getSelectedOrganism()._sporetime < 0)) {
+		                g2d.setColor(Utils.ColorFLOWER);
+		            } else {
+		                g2d.setColor(Color.WHITE);
+		            }
+		        } else {
+		            if (((getSelectedOrganism()._timeToReproduce > getSelectedOrganism()._timeToReproduceMax) && ((getSelectedOrganism().active) || (getSelectedOrganism()._sporeversion >= 5)))
+		                    || (getSelectedOrganism()._fallowinhibition > 1) || (getSelectedOrganism()._sporetime < 0)) {
+		                g2d.setColor(Utils.ColorFALLOW);
+		            } else {
+		                g2d.setColor(Color.ORANGE);
+		            }
+		        }
+		        g2d.drawRect(_selectedOrganism.x, _selectedOrganism.y,
+		                _selectedOrganism.width - 1, _selectedOrganism.height - 1);
+		    }
+		    // Dispose of the rescaled graphics context
+		    g2d.dispose();
 		}
     }
 
@@ -758,6 +887,7 @@ public class VisibleWorld extends JPanel implements VisibleWorldInterface {
 			saveImageAction.setEnabled(false);
 		}
 	}
+	
 	/**
 	 * Called from MainWindow when the locale is changed in order to update the menu
 	 * entries to the new language.
@@ -779,6 +909,7 @@ public class VisibleWorld extends JPanel implements VisibleWorldInterface {
 	    importAction.changeLocale();
 	    createPopupMenu();
 	}
+	
 	/**
 	 * Creates a new organism with the given genetic code and puts it in the world,
 	 * at the specified position.
@@ -796,6 +927,7 @@ public class VisibleWorld extends JPanel implements VisibleWorldInterface {
 		}
 		return false;
 	}
+	
 	/**
 	 * This method is called when a mouse event occurs. If the mouse event is
 	 * a popup trigger, this method decide which popup menu is shown, based on
@@ -806,7 +938,7 @@ public class VisibleWorld extends JPanel implements VisibleWorldInterface {
 	void showPopupMenu(MouseEvent e) {
 		mouseX = e.getX();
 		mouseY = e.getY();
-		Organism b = findOrganismFromPosition(mouseX,mouseY);
+		Organism b = findOrganismFromPosition((int)((double)e.getX() / zoomFactor), (int)((double)e.getY() / zoomFactor));
 		if (b != null) {
 			setSelectedOrganism(b);
 			if (b.isAlive()) {

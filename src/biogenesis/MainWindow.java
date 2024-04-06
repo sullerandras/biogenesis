@@ -23,13 +23,18 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.EventQueue;
+import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.KeyEventDispatcher;
+import java.awt.KeyboardFocusManager;
+import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
@@ -55,6 +60,7 @@ import javax.imageio.ImageIO;
 import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -63,11 +69,11 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.JViewport;
 import javax.swing.KeyStroke;
+import javax.swing.Timer;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.border.EtchedBorder;
@@ -86,6 +92,18 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 	protected JFileChooser worldChooser = new JFileChooserWithRemember();
 	protected JFileChooser geneticCodeChooser = new JFileChooserForOrganisms();
 	protected BioFile _gameFile = null;
+	
+	private boolean zoomInKeyPressed;
+	private boolean zoomOutKeyPressed;
+	private boolean zoomInOverrideKeyPressed;
+	private boolean panUpKeyPressed;
+	private boolean panLeftKeyPressed;
+	private boolean panDownKeyPressed;
+	private boolean panRightKeyPressed;
+	private boolean panSprintKeyPressed;
+	protected Timer zoomTimer;
+	private Timer panTimer;
+	private Timer trackingTimer;
 
 	protected JScrollPane scrollPane;
 	protected StdAction newGameAction;
@@ -193,7 +211,7 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 		_world.genesis();
 		scrollPane.setViewportView(_visibleWorld);
 		worldChooser = setUpdateUI(worldChooser);
-
+		
 		this.addWindowListener(new AppFocusWindowAdapter());
 		this.addWindowFocusListener(new WindowFocusListener() {
 			@Override
@@ -206,8 +224,171 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 				Utils.setMainWindowInFocus(false);
 			}
 		});
+
+		// Create a global key event dispatcher to listen for key events across specific components
+		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(new KeyEventDispatcher() {
+		    @Override
+		    public boolean dispatchKeyEvent(KeyEvent e) {
+		        // Check if a JDialog is active
+		        Window[] windows = Window.getWindows();
+		        for (Window window : windows) {
+		            if ((window instanceof JDialog) && !(window instanceof StatisticsWindow)) {
+		                if (window.isVisible()) {
+		                    // If a JDialog is active and visible, return false to allow further dispatching of the event.
+		                    // However, we exclude the Statistics Window from this check because otherwise that would be annoying!
+		                    // This is mostly to prevent unwanted hotkey triggers when typing in dialogues
+		                	// such as parameters or when naming world/organism save files.
+		                    return false;
+		                }
+		            }
+		        }
+		        if (e.getID() == KeyEvent.KEY_PRESSED) {
+		            // Start zooming in when the relevant key is pressed
+		            if (e.getKeyCode() == KeyEvent.VK_Q) {
+		            	zoomInKeyPressed = true;
+		            	startZoomTimer();
+		            }
+		            // Manually override the zoom in limit of 4x zoom factor
+		            // Must do "ctrl + zoomInKey"
+		            if (e.isControlDown()) {
+		            	zoomInOverrideKeyPressed = true;
+		            }
+		            // Start zooming out when the relevant key is pressed
+		            if (e.getKeyCode() == KeyEvent.VK_E) {
+		                zoomOutKeyPressed = true;
+		                startZoomTimer();
+		            }
+		            // Reset zoom to original when the relevant key is pressed
+		            if (e.getKeyCode() == KeyEvent.VK_R) {
+		                _visibleWorld.resetZoom();
+		            }
+		            // Start panning the camera up
+		            if (e.getKeyCode() == KeyEvent.VK_W) {
+		                panUpKeyPressed = true;
+		                startPanTimer();
+		            }
+		            // Start panning the camera up
+		            if (e.getKeyCode() == KeyEvent.VK_A) {
+		                panLeftKeyPressed = true;
+		                startPanTimer();
+		            }
+		            // Start panning the camera up
+		            if (e.getKeyCode() == KeyEvent.VK_S) {
+		                panDownKeyPressed = true;
+		                startPanTimer();
+		            }
+		            // Start panning the camera up
+		            if (e.getKeyCode() == KeyEvent.VK_D) {
+		                panRightKeyPressed = true;
+		                startPanTimer();
+		            }
+		            // Sprint mode for key panning
+		            // Must do "shift + pan"
+		            if (e.isShiftDown()) {
+		            	panSprintKeyPressed = true;
+		            }
+		        } else if (e.getID() == KeyEvent.KEY_RELEASED) {
+		            // Stop zooming when the relevant key is released
+		            if (e.getKeyCode() == KeyEvent.VK_Q) {
+		                zoomInKeyPressed = false;
+		                stopZoomTimer();
+		            }
+		            if (!e.isControlDown()) {
+		            	zoomInOverrideKeyPressed = false;
+		            }
+		            if (e.getKeyCode() == KeyEvent.VK_E) {
+		                zoomOutKeyPressed = false;
+		                stopZoomTimer();
+		            }
+		            // Stop panning when the relavant key is released
+		            if (e.getKeyCode() == KeyEvent.VK_W) {
+		                panUpKeyPressed = false;
+		                stopPanTimer();
+		            }
+		            if (e.getKeyCode() == KeyEvent.VK_A) {
+		                panLeftKeyPressed = false;
+		                stopPanTimer();
+		            }
+		            if (e.getKeyCode() == KeyEvent.VK_S) {
+		                panDownKeyPressed = false;
+		                stopPanTimer();
+		            }
+		            if (e.getKeyCode() == KeyEvent.VK_D) {
+		                panRightKeyPressed = false;
+		                stopPanTimer();
+		            }
+		            if (!e.isShiftDown()) {
+		            	panSprintKeyPressed = false;
+		            }
+		        }
+		        // Return false to allow further dispatching of the event
+		        return false;
+		    }
+		});
+	}
+	
+	private void startZoomTimer() {
+	    if (zoomTimer == null) {
+	        zoomTimer = new Timer(20, new ActionListener() {
+	        	boolean zoomOutLimitFlag = false;
+	            @Override
+	            public void actionPerformed(ActionEvent e) {
+	                // Perform the appropriate zoom action based on the pressed keys
+	                if (zoomInKeyPressed && (VisibleWorld.zoomFactor < 4.2) && !zoomInOverrideKeyPressed && !zoomOutKeyPressed) {
+	                	_visibleWorld.zoomIn();
+	                }
+	                if (zoomInOverrideKeyPressed && zoomInKeyPressed && !zoomOutKeyPressed) {
+	                	_visibleWorld.zoomInOverride();
+	                }
+	                if (zoomOutKeyPressed && !zoomInKeyPressed) {
+	                	if (!scrollPane.getVerticalScrollBar().isVisible() && !scrollPane.getHorizontalScrollBar().isVisible()) {
+	                		zoomOutLimitFlag = true;
+	                	}
+	                	_visibleWorld.zoomOut(zoomOutLimitFlag);
+	                }
+	            }
+	        });
+	    }
+	    int FPS = (int)(nFrames - historicalFrames.get(0));
+	    if (FPS < 20) {
+	    	zoomTimer.setDelay(Math.max(1, FPS));
+	    }
+	    zoomTimer.start();
 	}
 
+	private void stopZoomTimer() {
+	    if (zoomTimer != null && !zoomInKeyPressed && !(zoomInKeyPressed && zoomInOverrideKeyPressed) && !zoomOutKeyPressed) {
+	        zoomTimer.stop();
+	        zoomTimer = null;
+	    }
+	}
+
+	private void startPanTimer() {
+	    if (panTimer == null) {
+	        panTimer = new Timer(20, new ActionListener() {
+	            @Override
+	            public void actionPerformed(ActionEvent e) {
+	                // Perform the appropriate pan action based on the pressed keys
+	                int xCommand = 0;
+	                int yCommand = 0;
+	                yCommand -= panUpKeyPressed ? 1 : 0;
+	                xCommand -= panLeftKeyPressed ? 1 : 0;
+	                yCommand += panDownKeyPressed ? 1 : 0;
+	                xCommand += panRightKeyPressed ? 1 : 0;
+	                keyPan(xCommand, yCommand);
+	            }
+	        });
+	    }
+	    panTimer.start();
+	}
+
+	private void stopPanTimer() {
+	    if (panTimer != null && !panUpKeyPressed && !panLeftKeyPressed && !panDownKeyPressed && !panRightKeyPressed) {
+	        panTimer.stop();
+	        panTimer = null;
+	    }
+	}
+	
 	@Override
 	public Frame getFrame() {
 		return this;
@@ -711,6 +892,7 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 		}
 
 		public void actionPerformed(ActionEvent e) {
+			stopTrackingTimer();
 			setTrackedOrganism(null);
 		}
 	}
@@ -724,6 +906,7 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 
 		public void actionPerformed(ActionEvent e) {
 			// Stop time while asking for a file name
+			_visibleWorld.resetZoom();
 			_isProcessActive = false;
 			startStopAction.setActive(false);
 			_menuStartStopGame.setIcon(null);
@@ -1240,33 +1423,64 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 
 	public void updateStatusLabel() {
 		statusLabelText.setLength(0);
+		Dimension size = _statusLabel.getPreferredSize();
+	    size.height = 20;
+	    _statusLabel.setPreferredSize(size);
+		Font font = _statusLabel.getFont();
+	    _statusLabel.setFont(new Font(font.getName(), font.getStyle(), 12));
 		statusLabelText.append(Messages.getString("T_FPS")); //$NON-NLS-1$
 		statusLabelText.append(nFrames - historicalFrames.get(0));
-		statusLabelText.append("     "); //$NON-NLS-1$
+		statusLabelText.append("      "); //$NON-NLS-1$
 		statusLabelText.append(Messages.getString("T_TIME")); //$NON-NLS-1$
 		statusLabelText.append(_world.getTime());
-		statusLabelText.append("     "); //$NON-NLS-1$
+		statusLabelText.append("      "); //$NON-NLS-1$
 		statusLabelText.append(Messages.getString("T_CURRENT_POPULATION")); //$NON-NLS-1$
 		statusLabelText.append(_world.getPopulation());
-		statusLabelText.append("     "); //$NON-NLS-1$
+		statusLabelText.append("      "); //$NON-NLS-1$
 		statusLabelText.append(Messages.getString("T_CLADES2")); //$NON-NLS-1$
 		statusLabelText.append(_world.getDistinctCladeIDCount());
-		statusLabelText.append("     "); //$NON-NLS-1$
+		statusLabelText.append("      "); //$NON-NLS-1$
 		statusLabelText.append(Messages.getString("T_O2")); //$NON-NLS-1$
 		statusLabelText.append(_nf.format(_world.getO2()));
-		statusLabelText.append("     "); //$NON-NLS-1$
+		statusLabelText.append("      "); //$NON-NLS-1$
 		statusLabelText.append(Messages.getString("T_CO2")); //$NON-NLS-1$
 		statusLabelText.append(_nf.format(_world.getCO2()));
-		statusLabelText.append("     "); //$NON-NLS-1$
+		statusLabelText.append("      "); //$NON-NLS-1$
 		statusLabelText.append(Messages.getString("T_CO1")); //$NON-NLS-1$
 		statusLabelText.append(_nf.format(_world.getCO1()));
-		statusLabelText.append("     "); //$NON-NLS-1$
+		statusLabelText.append("      "); //$NON-NLS-1$
 		statusLabelText.append(Messages.getString("T_CH4")); //$NON-NLS-1$
 		statusLabelText.append(_nf.format(_world.getCH4()));
-		statusLabelText.append("     "); //$NON-NLS-1$
+		statusLabelText.append("      "); //$NON-NLS-1$
 		statusLabelText.append(Messages.getString("T_DETRITUS2")); //$NON-NLS-1$
 		statusLabelText.append(_nf.format(_world.getDetritus()));
-		statusLabelText.append("     "); //$NON-NLS-1$
+		if ((VisibleWorld.zoomFactor != 1) || panUpKeyPressed || panLeftKeyPressed || panDownKeyPressed || panRightKeyPressed) {
+		    _statusLabel.setFont(new Font(font.getName(), font.getStyle(), 11));
+			statusLabelText.append("      "); //$NON-NLS-1$
+			statusLabelText.append("X = "); //$NON-NLS-1$
+			double xPos = 100 * ((double)scrollPane.getViewport().getViewPosition().x + (double)scrollPane.getViewport().getWidth() / 2)
+					/ (VisibleWorld.zoomFactor * VisibleWorld.originalPreferredSize.width);
+			statusLabelText.append((double)Math.round(xPos * 10d) / 10d);
+			statusLabelText.append("% Y = "); //$NON-NLS-1$
+			double yPos = 100 * ((double)scrollPane.getViewport().getViewPosition().y + (double)scrollPane.getViewport().getHeight() / 2)
+					/ (VisibleWorld.zoomFactor * VisibleWorld.originalPreferredSize.height);
+			statusLabelText.append((double)Math.round(yPos * 10d) / 10d);
+			statusLabelText.append("%  | \"WASD\" ⟹ ↑←↓→ | \"shift + WASD\" ⟹ 🏃 |"); //$NON-NLS-1$
+			statusLabelText.append("      "); //$NON-NLS-1$
+			statusLabelText.append(Messages.getString("T_ZOOM")); //$NON-NLS-1$
+			statusLabelText.append("x"); //$NON-NLS-1$
+			if (VisibleWorld.zoomFactor >= 1) {
+				statusLabelText.append((double)Math.round(VisibleWorld.zoomFactor * 100d) / 100d);
+			} else {
+				statusLabelText.append((double)Math.round(VisibleWorld.zoomFactor * 10000d) / 10000d);
+			}
+			statusLabelText.append("  | \"Q\" ⟹ +🔍 | \"E\" ⟹ -🔍 | \"R\" ⟹ 🔍x1.0 |"); //$NON-NLS-1$
+			if (VisibleWorld.zoomFactor >= 2) {
+				_statusLabel.setFont(new Font(font.getName(), font.getStyle(), 10));
+				statusLabelText.append(" \"ctrl + Q\" ⟹ +++🔍 |"); //$NON-NLS-1$
+			}
+		}
+		statusLabelText.append("      "); //$NON-NLS-1$
 		statusLabelText.append(getStatusMessage());
 		_statusLabel.setText(statusLabelText.toString());
 	}
@@ -1286,15 +1500,73 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 					_trackedOrganism = null;
 					abortTrackingAction.setEnabled(false);
 				} else {
-					JScrollBar bar = scrollPane.getHorizontalScrollBar();
-					bar.setValue(Utils.between(_trackedOrganism._centerX - scrollPane.getWidth() / 2,
-							bar.getValue() - 2 * (int) Utils.MAX_VEL, bar.getValue() + 2 * (int) Utils.MAX_VEL));
-					bar = scrollPane.getVerticalScrollBar();
-					bar.setValue(Utils.between(_trackedOrganism._centerY - scrollPane.getHeight() / 2,
-							bar.getValue() - 2 * (int) Utils.MAX_VEL, bar.getValue() + 2 * (int) Utils.MAX_VEL));
+					startTrackingTimer();
 				}
 			}
 		});
+	}
+
+	/**
+	 * Create and start the organism tracking timer.
+	 * At most once per 20 millisecond interval, do linear interpolation to smoothly pan the camera towards the tracked organism.
+	 * Called by executeOneFrame(), but only when actively tracking an organism.
+	 */
+	public void startTrackingTimer() {
+		if (trackingTimer == null) {
+		    trackingTimer = new Timer(20, new ActionListener() {
+		        @Override
+		        public void actionPerformed(ActionEvent e) {
+		        	if (_trackedOrganism != null) {
+		        		// If the tracked organisms exists, smoothly track it via linear interpolation
+			        	double zoomFactor = VisibleWorld.zoomFactor;
+						double _dCenterX = _trackedOrganism._dCenterX;
+						double _dCenterY = _trackedOrganism._dCenterY;
+						double viewWidth = (double)scrollPane.getViewport().getWidth();
+						double viewHeight = (double)scrollPane.getViewport().getHeight();
+						double worldWidth = (double)VisibleWorld.originalPreferredSize.width;
+						double worldHeight = (double)VisibleWorld.originalPreferredSize.height;
+						double currentViewX = (double)scrollPane.getViewport().getViewPosition().x;
+						double currentViewY = (double)scrollPane.getViewport().getViewPosition().y;
+						double targetViewX = zoomFactor * _dCenterX - viewWidth / 2;
+						double targetViewY = zoomFactor * _dCenterY - viewHeight / 2;
+						double cameraSmoothness = 0.99;
+						scrollPane.getViewport().setViewPosition(new Point(
+								// x interpolation
+								(int)Utils.between(
+										currentViewX + cameraSmoothness * (targetViewX - currentViewX),
+										0,
+										zoomFactor * worldWidth - viewWidth
+										),
+								// y interpolation
+								(int)Utils.between(
+										currentViewY + cameraSmoothness * (targetViewY - currentViewY),
+										0,
+										zoomFactor * worldHeight - viewHeight
+										)
+								));
+		        	} else {
+		        		stopTrackingTimer();
+		        	}
+		        }
+		    });
+		    int FPS = (int)(nFrames - historicalFrames.get(0));
+		    if (FPS < 20) {
+		    	trackingTimer.setDelay(Math.max(1, FPS));
+		    }
+		    // Start the timer
+		    trackingTimer.start();
+		}
+	}
+	
+	/**
+	 * Turn the organism tracking timer off.
+	 * Called by abortTrackingAction() and startTrackingTimer().
+	 */
+	public void stopTrackingTimer() {
+		if (trackingTimer != null) {
+			trackingTimer.stop();
+			trackingTimer = null;
+		}
 	}
 
 	/**
@@ -1304,9 +1576,37 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 		if (o == null) {
 			return;
 		}
-
-		scrollPane.getHorizontalScrollBar().setValue(o._centerX - scrollPane.getWidth() / 2);
-		scrollPane.getVerticalScrollBar().setValue(o._centerY - scrollPane.getHeight() / 2);
+		scrollPane.getHorizontalScrollBar().setValue((int)(VisibleWorld.zoomFactor * (double)o._centerX - (double)scrollPane.getWidth() / 2));
+		scrollPane.getVerticalScrollBar().setValue((int)(VisibleWorld.zoomFactor * (double)o._centerY - (double)scrollPane.getHeight() / 2));
+	}
+	
+	/**
+	 * Scrolls the world according to the pan key inputs.
+	 * @param xCommand The net horizontal pan command.
+	 * @param yCommand The net vertical pan command.
+	 */
+	public void keyPan(int xCommand, int yCommand) {
+		double zoomFactor = VisibleWorld.zoomFactor;
+		double viewWidth = (double)scrollPane.getViewport().getWidth();
+		double viewHeight = (double)scrollPane.getViewport().getHeight();
+		double worldWidth = (double)VisibleWorld.originalPreferredSize.width;
+		double worldHeight = (double)VisibleWorld.originalPreferredSize.height;
+		double currentViewX = (double)scrollPane.getViewport().getViewPosition().x;
+		double currentViewY = (double)scrollPane.getViewport().getViewPosition().y;
+		scrollPane.getViewport().setViewPosition(new Point(
+				// horizontal translation
+				(int)Utils.between(
+						currentViewX + 13 * (panSprintKeyPressed ? 3 : 1) * xCommand,
+						0,
+						zoomFactor * worldWidth - viewWidth
+						),
+				// vertical translation
+				(int)Utils.between(
+						currentViewY + 13 * (panSprintKeyPressed ? 3 : 1) * yCommand,
+						0,
+						zoomFactor * worldHeight - viewHeight
+						)
+				));
 	}
 
 	/**
