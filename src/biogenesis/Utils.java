@@ -124,7 +124,7 @@ public final class Utils {
 	 * This is the default CO to CO2 divisor,
 	 * which turns CO into CO2, divided by this value.
 	 */
-	final static int DEF_CO1_TO_CO2_DIVISOR = 2000;
+	final static int DEF_CO1_TO_CO2_DIVISOR = 10000;
 	/**
 	 * This is the default rubbing coefficient that is applied to movements. This value is
 	 * multiplied by the speed at every frame.
@@ -281,7 +281,7 @@ public final class Utils {
 	/**
 	 * This is the default energy that is consumed when an organism touches a symbiont (with rose segments).
 	 */
-	final static double DEF_SYMBIONT_ENERGY_CONSUMPTION = 0.59d;
+	final static double DEF_SYMBIONT_ENERGY_CONSUMPTION = 0.58d;
 	/**
 	 * This is the default energy that is consumed when a spring segment is used.
 	 */
