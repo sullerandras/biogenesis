@@ -273,6 +273,7 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 		netConfigAction = new NetConfigAction("T_CONFIGURE_NETWORK", null, "T_CONFIGURE_NETWORK"); //$NON-NLS-1$ //$NON-NLS-2$
 
 		toggleRepaintWorld = new JCheckBox(Messages.getString("T_RENDER_WORLD"));
+		toggleRepaintWorld.setToolTipText(Messages.getString("T_RENDER_WORLD_TOOLTIP"));
 		toggleRepaintWorld.setSelected(Utils.isRepaintWorld());
 		toggleRepaintWorld.setAlignmentY(100);
 		toggleRepaintWorld.addActionListener(arg0 -> Utils.setRepaintWorld(!Utils.isRepaintWorld()));
@@ -553,7 +554,7 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 			putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(Messages.getString("T_BACKUP_ACCELERATOR")));
 		}
 
-		public void actionPerformed(ActionEvent e) {
+		public void actionPerformed(ActionEvent ev) {
 			try {
 				if (_gameFile != null) {
 					saveObject(_world, _gameFile.getFileForTime(_world.getTime(), BioFile.Type.REGULAR));
@@ -581,9 +582,9 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 				} else {
 					java.awt.EventQueue.invokeAndWait(() -> saveGameAs());
 				}
-			} catch (InvocationTargetException | InterruptedException e1) {
+			} catch (InvocationTargetException | InterruptedException e) {
 				System.out.println("Error saving game: " + e);
-				e1.printStackTrace();
+				e.printStackTrace();
 			}
 		}
 
@@ -617,7 +618,7 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 			_world.decreaseCO2(1000);
 		}
 	}
-	
+
 	class IncreaseCO1Action extends StdAction {
 		private static final long serialVersionUID = 1L;
 
@@ -1224,7 +1225,7 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 				quit();
 			}
 		});
-		setTitle(Messages.getString("T_BIOGENESIS")); //$NON-NLS-1$
+		setTitle(Messages.getString("T_BIOGENESIS") + (Version.VERSION.length() > 0 ? " - " + Version.VERSION : "")); //$NON-NLS-1$
 		UIManager.put("OptionPane.yesButtonText", Messages.getString("T_YES"));
 		UIManager.put("OptionPane.noButtonText", Messages.getString("T_NO"));
 		UIManager.put("OptionPane.cancelButtonText", Messages.getString("T_CANCEL"));

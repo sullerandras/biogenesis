@@ -39,6 +39,8 @@ import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
 
 import com.google.gson.annotations.Expose;
+
+import biogenesis.parallel_executor.ParallelExecutor;
 /**
  * This class contains all the information needed to run a world:
  * the organisms, the substances and the biological corridors. It
@@ -767,19 +769,19 @@ public class World implements Serializable{
 			}
 		}
 		synchronized (_organisms) {
-			if (colDetTree != null && !fullRedraw) {
+			if (organismBuckets != null && !fullRedraw) {
 				final JViewport viewPort = (JViewport) SwingUtilities.getAncestorOfClass(JViewport.class, (VisibleWorld) _visibleWorld);
 				final Rectangle view = viewPort.getViewRect();
-				final int bucketSize = colDetTree.getBucketSize();
+				final int bucketSize = organismBuckets.getBucketSize();
 
 				final int minx = Math.max(0, (int) (view.x / (double) bucketSize));
 				final int miny = Math.max(0, (int) (view.y / (double) bucketSize));
-				final int maxx = Math.min(colDetTree.getMaxWidth(), (int) ((view.x + view.width) / (double) bucketSize));
-				final int maxy = Math.min(colDetTree.getMaxHeight(), (int) ((view.y + view.height) / (double) bucketSize));
+				final int maxx = Math.min(organismBuckets.getMaxWidth(), (int) ((view.x + view.width) / (double) bucketSize));
+				final int maxy = Math.min(organismBuckets.getMaxHeight(), (int) ((view.y + view.height) / (double) bucketSize));
 
 				for (int y = miny; y <= maxy; y++) {
 					for (int x = minx; x <= maxx; x++) {
-						Collection<Organism> bucket = colDetTree.getBucket(x, y);
+						Collection<Organism> bucket = organismBuckets.getBucket(x, y);
 						for (Organism o : bucket) {
 							o.draw(g);
 						}
@@ -803,7 +805,7 @@ public class World implements Serializable{
 	 * and every 256 frames the time counter is increased by 1.
 	 */
 	public synchronized void time() {
-		colDetTree = new OrganismBuckets(_width, _height, 70);
+		organismBuckets = new OrganismBuckets(_width, _height, 70);
 		if (_corridorexists) {
 			InCorridor c;
 			synchronized (inCorridors) {
@@ -815,10 +817,10 @@ public class World implements Serializable{
 		}
 		synchronized (_organisms) {
 			for (Organism o: _organisms) {
-				colDetTree.insert(o);
+				organismBuckets.insert(o);
 			}
 		}
-		progressAllOrganisms();
+		ParallelExecutor.progressAllOrganisms(_organisms, organismBuckets, _visibleWorld);
 
 		// Reactions turning CO2 and CH4 into each other, detritus into CO, and CO into CO2
 		synchronized (_CH4_monitor) {
@@ -854,229 +856,6 @@ public class World implements Serializable{
 			worldStatistics.eventTime(_population, getDistinctCladeIDCount(1), getDistinctCladeIDCount(10), getDistinctCladeIDCount(100), _O2, _CO2, _CO1, _CH4, _detritus, _organisms);
 			_isbackuped = false;
 			_issaved = false;
-		}
-	}
-
-	private transient Collection<Organism> checkedOrganisms = Collections.synchronizedSet(new HashSet<>());
-
-	private void progressAllOrganisms() {
-		final int organismCount = _organisms.size();
-		final int threadCount = Utils.between(Utils.THREAD_COUNT, 1, 100);
-
-		if (threadCount > 1) {
-			progressAllOrganismsInParallel(organismCount, threadCount);
-		} else {
-			progressAllOrganismsInSerial(organismCount);
-		}
-	}
-
-	private void progressAllOrganismsInSerial(int organismCount) {
-		for (Organism b : _organisms.toArray(new Organism[0])) {
-			if (!b.move()) {
-				_organisms.remove(b);
-				if (_visibleWorld.getSelectedOrganism() == b) {
-					_visibleWorld.setSelectedOrganism(null);
-				}
-			}
-		}
-	}
-
-	transient List<WorkerThread> workerThreads = new ArrayList<>();
-	transient LinesLocker linesLocker;
-
-	private void progressAllOrganismsInParallel(int organismCount, int threadCount) {
-		// System.out.println("========================================================================================== in thread "+Thread.currentThread().getName());
-		if (checkedOrganisms == null) {
-			checkedOrganisms = new HashSet<>();
-		}
-		checkedOrganisms.clear();
-
-		int lineCount = colDetTree.getMaxWidth() + 1;
-		if (threadCount * 5 > lineCount) { // not enough gap between threads
-			progressAllOrganismsInSerial(organismCount);
-			return;
-		}
-
-		if (workerThreads == null) {
-			workerThreads = new ArrayList<>();
-		}
-		if (workerThreads.size() != threadCount) {
-			// stop all worker threads
-			for (WorkerThread workerThread : workerThreads) {
-				workerThread.interrupt();
-			}
-
-			// create new worker threads
-			workerThreads.clear();
-			for (int i = 0; i < threadCount; i++) {
-				WorkerThread workerThread = new WorkerThread();
-				workerThread.start();
-				workerThreads.add(workerThread);
-			}
-		}
-		if (linesLocker == null || linesLocker.semaphores.length != lineCount) {
-			linesLocker = new LinesLocker(lineCount);
-		}
-
-		// Split the buckets into vertical lines.
-		// Do one line per thread.
-		// Do it until all lines are done.
-		int[] startIndexes = new int[threadCount]; // index where the thead starts
-		int[] endIndexes = new int[threadCount]; // index where the thead ends, inclusive
-		for (int i = 0; i < threadCount; i++) {
-			startIndexes[i] = lineCount * i / threadCount;
-			if (i > 0) {
-				endIndexes[i - 1] = startIndexes[i] - 1;
-			}
-		}
-		endIndexes[threadCount - 1] = lineCount - 1;
-
-		// do one line per thread
-		for (int i = 0; i < threadCount; i++) {
-			workerThreads.get(i).addJob(new WorkerJob(startIndexes[i], endIndexes[i]));
-		}
-
-		// wait till all jobs finish
-		for (int i = 0; i < threadCount; i++) {
-			// System.out.println("======> waiting for thread " + workerThreads.get(i).getName() + " to finish");
-			workerThreads.get(i).waitTillDone();
-			// System.out.println("======> waiting for thread " + workerThreads.get(i).getName() + " to finish done");
-		}
-	}
-
-	class LinesLocker {
-		Semaphore[] semaphores;
-
-		LinesLocker(int lineCount) {
-			// System.out.println("======> create LinesLocker with " + lineCount + " lines");
-			semaphores = new Semaphore[lineCount];
-			for (int i = 0; i < lineCount; i++) {
-				semaphores[i] = new Semaphore(1);
-			}
-		}
-
-		void lock(int index) {
-			if (index >= 0 && index < semaphores.length) {
-				// System.out.println("======> lock line " + index + " by thread " + Thread.currentThread().getName());
-				semaphores[index].acquireUninterruptibly();
-				// System.out.println("======> lock line " + index + " by thread " + Thread.currentThread().getName() + " done");
-			}
-		}
-
-		void unlock(int index) {
-			if (index >= 0 && index < semaphores.length) {
-				// System.out.println("======> unlock line " + index + " by thread " + Thread.currentThread().getName());
-				semaphores[index].release();
-				// System.out.println("======> unlock line " + index + " by thread " + Thread.currentThread().getName() + " done");
-			}
-		}
-
-		void lockRange(int from, int to) {
-			for (int i = from; i <= to; i++) {
-				lock(i);
-			}
-		}
-
-		void unlockRange(int from, int to) {
-			for (int i = from; i <= to; i++) {
-				unlock(i);
-			}
-		}
-	}
-
-	private static int nextWorkerThreadId = 0;
-	class WorkerThread extends Thread {
-		Queue<WorkerJob> jobs = new LinkedList<>();
-		Semaphore doneSemaphore = new Semaphore(1);
-
-		WorkerThread() {
-			super("WorkerThread-" + nextWorkerThreadId++);
-			doneSemaphore.acquireUninterruptibly();
-		}
-
-		public void run() {
-			while (!isInterrupted()) {
-				WorkerJob job = null;
-				synchronized (jobs) {
-					if (jobs.size() > 0) {
-						job = jobs.remove();
-					}
-				}
-				if (job != null) {
-					job.run();
-				} else {
-					// wait for a job
-					// System.out.println("=====> gonna wait for a job in thread " + Thread.currentThread().getName() + "");
-					try {
-						synchronized (jobs) {
-							// System.out.println("=======> notifying thread " + Thread.currentThread().getName() + " done");
-							doneSemaphore.release();
-							jobs.wait();
-						}
-					} catch (InterruptedException e) {
-						// System.out.println("=====> thread " + Thread.currentThread().getName() + " interrupted");
-						break;
-					}
-				}
-			}
-		}
-
-		public void addJob(WorkerJob job) {
-			// System.out.println("======> adding a job in thread " + Thread.currentThread().getName() + " to process lines " + job.startIndex + " to " + job.endIndex + "");
-			synchronized (jobs) {
-				jobs.add(job);
-			}
-			doneSemaphore.acquireUninterruptibly();
-			synchronized (jobs) {
-				jobs.notify();
-			}
-		}
-
-		public void waitTillDone() {
-			doneSemaphore.acquireUninterruptibly();
-			doneSemaphore.release();
-		}
-	}
-
-	class WorkerJob {
-		final int startIndex;
-		final int endIndex;
-
-		public WorkerJob(int startIndex, int endIndex) {
-			this.startIndex = startIndex;
-			this.endIndex = endIndex;
-		}
-
-		public void run() {
-			linesLocker.lockRange(startIndex - 4, startIndex + 4);
-			int index = startIndex;
-			while (index <= endIndex) {
-				progressLineInBucket(index);
-				linesLocker.unlock(index - 4);
-				index++;
-				linesLocker.lock(index + 4);
-			}
-			linesLocker.unlockRange(index - 4, index + 4);
-			// System.out.println("=====> job done in thread " + Thread.currentThread().getName());
-		}
-	}
-
-	private void progressLineInBucket(final int index) {
-		for (int y = 0; y <= colDetTree.getMaxHeight(); y++) {
-			Collection<Organism> bucket = colDetTree.getBucket(index, y);
-			for (Organism o : bucket) {
-				synchronized (checkedOrganisms) {
-					if (!checkedOrganisms.add(o)) {
-						continue;
-					}
-				}
-				if (!o.move()) {
-					_organisms.remove(o);
-					if (_visibleWorld.getSelectedOrganism() == o) {
-						_visibleWorld.setSelectedOrganism(null);
-					}
-				}
-			}
 		}
 	}
 
@@ -1157,7 +936,7 @@ public class World implements Serializable{
 		return null;
 	}
 
-	public transient OrganismBuckets colDetTree = new OrganismBuckets(_width, _height, 70);
+	public transient OrganismBuckets organismBuckets = new OrganismBuckets(_width, _height, 70);
 
 	/**
 	 * Checks if an organism has a high probability of being in touch with
@@ -1169,7 +948,7 @@ public class World implements Serializable{
 	 * rectangle of {@code b1} or null if there is no such organism.
 	 */
 	public Organism fastCheckHit(Organism b1) {
-		return colDetTree.findFirst(b1, org -> {
+		return organismBuckets.findFirst(b1, org -> {
 			if (b1 != org) {
 				if (b1.intersects(org)) {
 					return true;
@@ -1191,7 +970,7 @@ public class World implements Serializable{
 	 */
 
 	public Organism transformCheckHit(Organism b1) {
-		return colDetTree.findFirst(b1, org -> {
+		return organismBuckets.findFirst(b1, org -> {
 			if ((b1 != org) && (b1._ID != org._parentID) && (b1._parentID != org._ID)) {
 				if (b1.intersects(org)) {
 					return true;
@@ -1208,7 +987,7 @@ public class World implements Serializable{
 	 * organism exists.
 	 */
 	public Organism checkHit(Organism org1) {
-		return colDetTree.findFirst(org1, collidingOrganism -> {
+		return organismBuckets.findFirst(org1, collidingOrganism -> {
 			if (collidingOrganism != org1) {
 				// First check if the bounding boxes intersect
 				if (org1.intersects(collidingOrganism)) {

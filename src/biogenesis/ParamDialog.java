@@ -491,7 +491,7 @@ public class ParamDialog extends JDialog {
 		generalPanel.add(panel);
 		//World repaint
 		panel = new JPanel();
-		panel.setBorder(BorderFactory.createTitledBorder(Messages.getString("T_RENDER_WORLD")));
+		panel.setBorder(BorderFactory.createTitledBorder(Messages.getString("T_RENDER_WORLD_BORDER_TITLE")));
 		panel.setLayout(new GridLayout(3,1));
 		repaintWorldStrategyRadio1 = new JRadioButton(Messages.getString("T_ALWAYS"));
 		repaintWorldStrategyRadio2 = new JRadioButton(Messages.getString("T_ONLY_WHEN_MAIN_WINDOW_IS_IN_FOCUS"));
@@ -1049,7 +1049,7 @@ public class ParamDialog extends JDialog {
 		genesPanel.add(tealprobText);
 		tealcostText = new JTextField(Double.toString(Utils.TEAL_ENERGY_CONSUMPTION));
 		genesPanel.add(tealcostText);
-		
+
 		label = new JLabel(Messages.getString("T_SPIN"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
 		spinprobText = new JTextField(Integer.toString(Utils.SPIN_PROB));
@@ -1096,7 +1096,7 @@ public class ParamDialog extends JDialog {
 		genesPanel.add(maroonprobText);
 		marooncostText = new JTextField(Double.toString(Utils.MAROON_ENERGY_CONSUMPTION));
 		genesPanel.add(marooncostText);
-		
+
 		label = new JLabel(Messages.getString("T_CRIMSON"),SwingConstants.CENTER); //$NON-NLS-1$
 		genesPanel.add(label);
 		crimsonprobText = new JTextField(Integer.toString(Utils.CRIMSON_PROB));

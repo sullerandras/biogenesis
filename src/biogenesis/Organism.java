@@ -2003,7 +2003,7 @@ public class Organism extends Rectangle {
 								switch (getTypeColor(_segColor[j])) {
 								case C4:
 									if ((_sporetime == 0) || (_geneticCode.getModifiesspore() <= 6)) {
-										_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * 1.03 * (10.75 + _geneticCode.getGene(j%_geneticCode.getNGenes()).getLength());
+										_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * 1.03 * (11 + _geneticCode.getGene(j%_geneticCode.getNGenes()).getLength());
 									}
 									break;
 								}
@@ -2999,7 +2999,7 @@ public class Organism extends Rectangle {
 		                   				}
 		                    		}
 									if (largeenough) {
-										_photosynthesis = (3 * _mass)/Utils.GREEN_OBTAINED_ENERGY_DIVISOR;
+										_photosynthesis = (2.5 * _mass)/Utils.GREEN_OBTAINED_ENERGY_DIVISOR;
 									}
 								}
 							}
@@ -3535,7 +3535,7 @@ public class Organism extends Rectangle {
 		                   				}
 		                    		}
 									if (largeenough) {
-										_photosynthesis = (3 * _mass)/Utils.GREEN_OBTAINED_ENERGY_DIVISOR;
+										_photosynthesis = (2.5 * _mass)/Utils.GREEN_OBTAINED_ENERGY_DIVISOR;
 									}
 								}
 							}
