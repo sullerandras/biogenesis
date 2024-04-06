@@ -119,12 +119,12 @@ public final class Utils {
 	 * This is the default detritus to CO divisor,
 	 * which turns detritus into CO, divided by this value.
 	 */
-	final static int DEF_DETRITUS_TO_CO1_DIVISOR = 600;
+	final static int DEF_DETRITUS_TO_CO1_DIVISOR = 500;
 	/**
 	 * This is the default CO to CO2 divisor,
 	 * which turns CO into CO2, divided by this value.
 	 */
-	final static int DEF_CO1_TO_CO2_DIVISOR = 1000;
+	final static int DEF_CO1_TO_CO2_DIVISOR = 800;
 	/**
 	 * This is the default rubbing coefficient that is applied to movements. This value is
 	 * multiplied by the speed at every frame.
@@ -357,7 +357,7 @@ public final class Utils {
 	/**
 	 * This is the default energy that is consumed when a crimson segment is used.
 	 */
-	final static double DEF_CRIMSON_ENERGY_CONSUMPTION = 3.15d;
+	final static double DEF_CRIMSON_ENERGY_CONSUMPTION = 3.16d;
 	/**
 	 * This is the default energy that is consumed when a olive segment is used.
 	 */

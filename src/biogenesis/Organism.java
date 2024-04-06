@@ -1979,7 +1979,7 @@ public class Organism extends Rectangle {
 									break;
 								case DARKGRAY:
 									if ((_sporetime == 0) || ((_geneticCode.getModifiesspore() >= 3) && (_geneticCode.getModifiesspore() <= 5))) {
-										if ((_reproducelate == 0) && (_age == 0)) {
+										if ((!_isblond) && (_reproducelate == 0) && (_age == 0)) {
 											_reproduceEnergy -= 3;
 										}
 									}
@@ -2005,7 +2005,7 @@ public class Organism extends Rectangle {
 								switch (getTypeColor(_segColor[j])) {
 								case C4:
 									if ((_sporetime == 0) || (_geneticCode.getModifiesspore() <= 6)) {
-										_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * (10.4 + _geneticCode.getGene(j%_geneticCode.getNGenes()).getLength());
+										_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * (10.5 + _geneticCode.getGene(j%_geneticCode.getNGenes()).getLength());
 									}
 									break;
 								}
@@ -2562,8 +2562,8 @@ public class Organism extends Rectangle {
 					if (parent._fallowinhibition > 0) {
 						if ((parent._reproducelate > 0) && (!parent._isinfectious)) {
 							if (Utils.random.nextBoolean()) {
-								parent._energy += _energy * 0.75;
-								_energy -= _energy * 0.75;
+								parent._energy += _energy * 0.875;
+								_energy -= _energy * 0.875;
 								inheritReproduceEnergy = 0;
 							}
 						} else {
@@ -2820,7 +2820,7 @@ public class Organism extends Rectangle {
 			                   			for (int i=0; i<_segments; i++) {
 			                   				_segColor[i] = Utils.ColorPURPLE;
 			                   				_mphoto[i] = 0;
-			                   				if (_m[i]>=1) {
+			                   				if (_m[i]>=1.368) {
 			                   					largeenough = true;
 			                   				}
 			                    		}
@@ -2832,7 +2832,7 @@ public class Organism extends Rectangle {
 											for (int i=0; i<_segments; i++) {
 				                  			    _segColor[i] = Utils.ColorC4;
 				                  			    _mphoto[i] = 0;
-				                  			    if (_m[i]>=1) {
+				                  			    if (_m[i]>=1.368) {
 				                   					largeenough = true;
 				                   				}
 				                  		    }
@@ -2847,7 +2847,7 @@ public class Organism extends Rectangle {
 				                   			for (int i=0; i<_segments; i++) {
 				                  			    _segColor[i] = Utils.ColorLEAF;
 				                  			    _mphoto[i] = 0;
-				                  			    if (_m[i]>=1) {
+				                  			    if (_m[i]>=1.368) {
 				                   					largeenough = true;
 				                   				}
 				                  		    }
@@ -2861,7 +2861,7 @@ public class Organism extends Rectangle {
 			                   			for (int i=0; i<_segments; i++) {
 			                   				_segColor[i] = Utils.ColorPURPLE;
 			                   				_mphoto[i] = 0;
-			                   				if (_m[i]>=1) {
+			                   				if (_m[i]>=1.368) {
 			                   					largeenough = true;
 			                   				}
 			                    		}
@@ -2873,7 +2873,7 @@ public class Organism extends Rectangle {
 											for (int i=0; i<_segments; i++) {
 				                  			    _segColor[i] = Utils.ColorC4;
 				                  			    _mphoto[i] = 0;
-				                  			    if (_m[i]>=1) {
+				                  			    if (_m[i]>=1.368) {
 				                   					largeenough = true;
 				                   				}
 				                  		    }
@@ -2886,7 +2886,7 @@ public class Organism extends Rectangle {
 					                   			for (int i=0; i<_segments; i++) {
 					                   				_segColor[i] = Utils.ColorWINTER;
 					                   				_mphoto[i] = 0;
-					                   				if (_m[i]>=1) {
+					                   				if (_m[i]>=1.368) {
 					                   					largeenough = true;
 					                   				}
 					                    		}
@@ -2899,7 +2899,7 @@ public class Organism extends Rectangle {
 						                   			for (int i=0; i<_segments; i++) {
 						                   				_segColor[i] = Utils.ColorSUMMER;
 						                   				_mphoto[i] = 0;
-						                   				if (_m[i]>=1) {
+						                   				if (_m[i]>=1.368) {
 						                   					largeenough = true;
 						                   				}
 						                    		}
@@ -2911,7 +2911,7 @@ public class Organism extends Rectangle {
 														for (int i=0; i<_segments; i++) {
 							                   				_segColor[i] = Utils.ColorLIME;
 							                   				_mphoto[i] = 0;
-							                   				if (_m[i]>=1) {
+							                   				if (_m[i]>=1.368) {
 							                   					largeenough = true;
 							                   				}
 							                    		}
@@ -2924,7 +2924,7 @@ public class Organism extends Rectangle {
 								                   			for (int i=0; i<_segments; i++) {
 								                   				_segColor[i] = Utils.ColorFOREST;
 								                   				_mphoto[i] = 1;
-								                   				if (_m[i]>=1) {
+								                   				if (_m[i]>=1.368) {
 								                   					largeenough = true;
 								                   				}
 								                    		}
@@ -2938,7 +2938,7 @@ public class Organism extends Rectangle {
 									                   			for (int i=0; i<_segments; i++) {
 									                   				_segColor[i] = Utils.ColorGRASS;
 									                   				_mphoto[i] = 0;
-									                   				if (_m[i]>=1) {
+									                   				if (_m[i]>=1.368) {
 									                   					largeenough = true;
 									                   				}
 									                    		}
@@ -2950,7 +2950,7 @@ public class Organism extends Rectangle {
 										                   			for (int i=0; i<_segments; i++) {
 										                   				_segColor[i] = Utils.ColorJADE;
 										                   				_mphoto[i] = 0;
-										                   				if (_m[i]>=1) {
+										                   				if (_m[i]>=1.368) {
 										                   					largeenough = true;
 										                   				}
 										                    		}
@@ -2961,7 +2961,7 @@ public class Organism extends Rectangle {
 										                   			for (int i=0; i<_segments; i++) {
 										                   				_segColor[i] = Color.GREEN;
 										                   				_mphoto[i] = 0;
-										                   				if (_m[i]>=1) {
+										                   				if (_m[i]>=1.368) {
 										                   					largeenough = true;
 										                   				}
 										                    		}
@@ -2983,7 +2983,7 @@ public class Organism extends Rectangle {
 		                   			for (int i=0; i<_segments; i++) {
 		                   				_segColor[i] = Utils.ColorSPRING;
 		                   				_mphoto[i] = 0;
-		                   				if (_m[i]>=1) {
+		                   				if (_m[i]>=1.368) {
 		                   					largeenough = true;
 		                   				}
 		                  		    }
@@ -2996,7 +2996,7 @@ public class Organism extends Rectangle {
 									for (int i=0; i<_segments; i++) {
 										_segColor[i] = Utils.ColorC4;
 		                   				_mphoto[i] = 0;
-		                   				if (_m[i]>=1) {
+		                   				if (_m[i]>=1.368) {
 		                   					largeenough = true;
 		                   				}
 		                    		}
@@ -3356,7 +3356,7 @@ public class Organism extends Rectangle {
 			                   			for (int i=0; i<_segments; i++) {
 			                   				_segColor[i] = Utils.ColorPURPLE;
 			                   				_mphoto[i] = 0;
-			                   				if (_m[i]>=1) {
+			                   				if (_m[i]>=1.368) {
 			                   					largeenough = true;
 			                   				}
 			                    		}
@@ -3368,7 +3368,7 @@ public class Organism extends Rectangle {
 											for (int i=0; i<_segments; i++) {
 				                  			    _segColor[i] = Utils.ColorC4;
 				                  			    _mphoto[i] = 0;
-				                  			    if (_m[i]>=1) {
+				                  			    if (_m[i]>=1.368) {
 				                   					largeenough = true;
 				                   				}
 				                  		    }
@@ -3383,7 +3383,7 @@ public class Organism extends Rectangle {
 				                   			for (int i=0; i<_segments; i++) {
 				                  			    _segColor[i] = Utils.ColorLEAF;
 				                  			    _mphoto[i] = 0;
-				                  			    if (_m[i]>=1) {
+				                  			    if (_m[i]>=1.368) {
 				                   					largeenough = true;
 				                   				}
 				                  		    }
@@ -3397,7 +3397,7 @@ public class Organism extends Rectangle {
 			                   			for (int i=0; i<_segments; i++) {
 			                   				_segColor[i] = Utils.ColorPURPLE;
 			                   				_mphoto[i] = 0;
-			                   				if (_m[i]>=1) {
+			                   				if (_m[i]>=1.368) {
 			                   					largeenough = true;
 			                   				}
 			                    		}
@@ -3409,7 +3409,7 @@ public class Organism extends Rectangle {
 											for (int i=0; i<_segments; i++) {
 				                  			    _segColor[i] = Utils.ColorC4;
 				                  			    _mphoto[i] = 0;
-				                  			    if (_m[i]>=1) {
+				                  			    if (_m[i]>=1.368) {
 				                   					largeenough = true;
 				                   				}
 				                  		    }
@@ -3422,7 +3422,7 @@ public class Organism extends Rectangle {
 					                   			for (int i=0; i<_segments; i++) {
 					                   				_segColor[i] = Utils.ColorWINTER;
 					                   				_mphoto[i] = 0;
-					                   				if (_m[i]>=1) {
+					                   				if (_m[i]>=1.368) {
 					                   					largeenough = true;
 					                   				}
 					                    		}
@@ -3435,7 +3435,7 @@ public class Organism extends Rectangle {
 						                   			for (int i=0; i<_segments; i++) {
 						                   				_segColor[i] = Utils.ColorSUMMER;
 						                   				_mphoto[i] = 0;
-						                   				if (_m[i]>=1) {
+						                   				if (_m[i]>=1.368) {
 						                   					largeenough = true;
 						                   				}
 						                    		}
@@ -3447,7 +3447,7 @@ public class Organism extends Rectangle {
 														for (int i=0; i<_segments; i++) {
 							                   				_segColor[i] = Utils.ColorLIME;
 							                   				_mphoto[i] = 0;
-							                   				if (_m[i]>=1) {
+							                   				if (_m[i]>=1.368) {
 							                   					largeenough = true;
 							                   				}
 							                    		}
@@ -3460,7 +3460,7 @@ public class Organism extends Rectangle {
 								                   			for (int i=0; i<_segments; i++) {
 								                   				_segColor[i] = Utils.ColorFOREST;
 								                   				_mphoto[i] = 1;
-								                   				if (_m[i]>=1) {
+								                   				if (_m[i]>=1.368) {
 								                   					largeenough = true;
 								                   				}
 								                    		}
@@ -3474,7 +3474,7 @@ public class Organism extends Rectangle {
 									                   			for (int i=0; i<_segments; i++) {
 									                   				_segColor[i] = Utils.ColorGRASS;
 									                   				_mphoto[i] = 0;
-									                   				if (_m[i]>=1) {
+									                   				if (_m[i]>=1.368) {
 									                   					largeenough = true;
 									                   				}
 									                    		}
@@ -3486,7 +3486,7 @@ public class Organism extends Rectangle {
 										                   			for (int i=0; i<_segments; i++) {
 										                   				_segColor[i] = Utils.ColorJADE;
 										                   				_mphoto[i] = 0;
-										                   				if (_m[i]>=1) {
+										                   				if (_m[i]>=1.368) {
 										                   					largeenough = true;
 										                   				}
 										                    		}
@@ -3497,7 +3497,7 @@ public class Organism extends Rectangle {
 										                   			for (int i=0; i<_segments; i++) {
 										                   				_segColor[i] = Color.GREEN;
 										                   				_mphoto[i] = 0;
-										                   				if (_m[i]>=1) {
+										                   				if (_m[i]>=1.368) {
 										                   					largeenough = true;
 										                   				}
 										                    		}
@@ -3519,7 +3519,7 @@ public class Organism extends Rectangle {
 		                   			for (int i=0; i<_segments; i++) {
 		                   				_segColor[i] = Utils.ColorSPRING;
 		                   				_mphoto[i] = 0;
-		                   				if (_m[i]>=1) {
+		                   				if (_m[i]>=1.368) {
 		                   					largeenough = true;
 		                   				}
 		                  		    }
@@ -3532,7 +3532,7 @@ public class Organism extends Rectangle {
 									for (int i=0; i<_segments; i++) {
 										_segColor[i] = Utils.ColorC4;
 		                   				_mphoto[i] = 0;
-		                   				if (_m[i]>=1) {
+		                   				if (_m[i]>=1.368) {
 		                   					largeenough = true;
 		                   				}
 		                    		}
@@ -4906,16 +4906,16 @@ public class Organism extends Rectangle {
 				if (_filterfeeding > 0) {
 					if ((!_haseyes) || (dx == dxbak)) {
 						if (_spin > 0) {
-							if (_world._detritus < 500) {
-								if (Utils.random.nextInt(500) < _world._detritus) {
+							if (_world._detritus < 520) {
+								if (Utils.random.nextInt(520) < _world._detritus) {
 									_energy += _world.filterfeeding(((0.9235 * (Math.abs(dx) + Math.abs(dy))) + (22.78 * Math.abs(dtheta))) * _filterfeeding);
 								}
 							} else {
 								_energy += _world.filterfeeding(((0.9235 * (Math.abs(dx) + Math.abs(dy))) + (22.78 * Math.abs(dtheta))) * _filterfeeding);
 							}
 						} else {
-							if ((_symmetry == 1) && (_world._detritus < 500)) {
-								if (Utils.random.nextInt(500) < _world._detritus) {
+							if ((_symmetry == 1) && (_world._detritus < 520)) {
+								if (Utils.random.nextInt(520) < _world._detritus) {
 									_energy += _world.filterfeeding((Math.abs(dx) + Math.abs(dy)) * _filterfeeding);
 								}
 							} else {
@@ -22363,7 +22363,7 @@ public class Organism extends Rectangle {
 										if (!_isakiller) {
 											addmaintenance -= _m[i] - (Utils.ROSE_ENERGY_CONSUMPTION * _m[i]);
 										} else {
-											addmaintenance -= (0.75 * _m[i]) - (Utils.ROSE_ENERGY_CONSUMPTION * _m[i]);
+											addmaintenance -= (0.7 * _m[i]) - (Utils.ROSE_ENERGY_CONSUMPTION * _m[i]);
 										}
 										break;
 									// Organisms with dark segments mimic other segments
@@ -22834,7 +22834,7 @@ public class Organism extends Rectangle {
 										if (!_isakiller) {
 											addmaintenance -= _m[i] - (Utils.ROSE_ENERGY_CONSUMPTION * _m[i]);
 										} else {
-											addmaintenance -= (0.75 * _m[i]) - (Utils.ROSE_ENERGY_CONSUMPTION * _m[i]);
+											addmaintenance -= (0.7 * _m[i]) - (Utils.ROSE_ENERGY_CONSUMPTION * _m[i]);
 										}
 										break;
 									// Organisms with dark segments mimic other segments
@@ -23271,7 +23271,7 @@ public class Organism extends Rectangle {
 										if (!_isakiller) {
 											addmaintenance -= _m[i] - (Utils.ROSE_ENERGY_CONSUMPTION * _m[i]);
 										} else {
-											addmaintenance -= (0.75 * _m[i]) - (Utils.ROSE_ENERGY_CONSUMPTION * _m[i]);
+											addmaintenance -= (0.7 * _m[i]) - (Utils.ROSE_ENERGY_CONSUMPTION * _m[i]);
 										}
 										break;
 									// Organisms with dark segments mimic other segments
@@ -23558,7 +23558,7 @@ public class Organism extends Rectangle {
 									if (!_isakiller) {
 										addmaintenance -= _m[i] - (Utils.ROSE_ENERGY_CONSUMPTION * _m[i]);
 									} else {
-										addmaintenance -= (0.75 * _m[i]) - (Utils.ROSE_ENERGY_CONSUMPTION * _m[i]);
+										addmaintenance -= (0.7 * _m[i]) - (Utils.ROSE_ENERGY_CONSUMPTION * _m[i]);
 									}
 									break;
 								// Organisms with dark segments mimic other segments
