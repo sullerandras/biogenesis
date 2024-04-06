@@ -2376,7 +2376,7 @@ public class Organism extends Rectangle {
 					    	}
 						}
 					}
-					if ((_createlavender > 0) && (_isinfectious) && (_isblond) && (_age == 0)) {
+					if ((_createlavender > 0) && (_isblond) && (_age == 0)) {
 						_lavender = 0;
 					}
 				}
@@ -4627,7 +4627,7 @@ public class Organism extends Rectangle {
 					    	useDetritus(Math.min(_energy, Utils.BLOND_ENERGY_CONSUMPTION));
 					    } else {
 					    	if (_isonlyc4 == 2) {
-					    		useDetritus(Math.min(_energy, Utils.BLOND_ENERGY_CONSUMPTION * Math.sqrt(_reproduceEnergy - _earlyReproduceEnergy)));
+					    		useDetritus(Math.min(_energy, Utils.BLOND_ENERGY_CONSUMPTION * Math.sqrt(Math.sqrt(_reproduceEnergy - _earlyReproduceEnergy))));
 					    	} else {
 					    		useDetritus(Math.min(_energy, Utils.BLOND_ENERGY_CONSUMPTION * (_reproduceEnergy - _earlyReproduceEnergy)));
 					    	}
@@ -19333,7 +19333,8 @@ public class Organism extends Rectangle {
 			case PLAGUE:
 				if ((!org._isaplant) && (!org._isaconsumer)
 						&& ((!org._isafungus) || (((_isenhanced) || ((org._timeToReproduce > org._timeToReproduceMax) && (_fallowversion > 0))) && (!org._issilver)))) {
-					if ((!org._transfersenergy) || (org._isinfectious) || (org._iscoral) || (org._isafungus)) {
+					if ((!org._transfersenergy) || (org._isinfectious) || (org._iscoral) || (org._isafungus)
+							|| ((_isauburn) && (!_isaplant) && (!_isaconsumer) && (!_isafungus))) {
 						if ((org._indigo > 0) && (!org._isafungus) && (!org._isblond) && (org._timeToReproduce <= org._timeToReproduceMax)) {
 							if (useEnergy((Utils.CORAL_ENERGY_CONSUMPTION + 0.01)/Utils.INDIGO_ENERGY_CONSUMPTION)) {
 						        org.setColor(Utils.ColorINDIGO);
@@ -19424,7 +19425,8 @@ public class Organism extends Rectangle {
 			case BLOND:
 				if ((!org._isaplant) && (!org._isaconsumer)
 						&& ((!org._isafungus) || (((_isenhanced) || ((org._timeToReproduce > org._timeToReproduceMax) && (_fallowversion > 0))) && (!org._issilver)))) {
-					if ((!org._transfersenergy) || (org._isinfectious) || (org._iscoral) || (org._isafungus)) {
+					if ((!org._transfersenergy) || (org._isinfectious) || (org._iscoral) || (org._isafungus)
+							|| ((_isauburn) && (!_isaplant) && (!_isaconsumer) && (!_isafungus))) {
 						if ((org._dodge) && (org.useEnergy(Utils.DODGE_ENERGY_CONSUMPTION))) {
 							org.setColor(Utils.ColorTEAL);
 							setColor(Utils.ColorCORAL);
@@ -19498,7 +19500,8 @@ public class Organism extends Rectangle {
 			case VIOLET:
 				if ((!org._isaplant) && (!org._isaconsumer)
 						&& ((!org._isafungus) || (((_isenhanced) || ((org._timeToReproduce > org._timeToReproduceMax) && (_fallowversion > 0))) && (!org._issilver)))) {
-					if ((!org._transfersenergy) || (org._isinfectious) || (org._iscoral) || (org._isafungus)) {
+					if ((!org._transfersenergy) || (org._isinfectious) || (org._iscoral) || (org._isafungus)
+							|| ((_isauburn) && (!_isaplant) && (!_isaconsumer) && (!_isafungus))) {
 						if (org._antiviral > 0) {
 							virusneutralized();
 						}
@@ -19528,7 +19531,8 @@ public class Organism extends Rectangle {
 			case SPORE:
 				if ((!org._isaplant) && (!org._isaconsumer)
 						&& ((!org._isafungus) || (((_isenhanced) || ((org._timeToReproduce > org._timeToReproduceMax) && (_fallowversion > 0))) && (!org._issilver)))) {
-					if ((!org._transfersenergy) || (org._isinfectious) || (org._iscoral) || (org._isafungus)) {
+					if ((!org._transfersenergy) || (org._isinfectious) || (org._iscoral) || (org._isafungus)
+							|| ((_isauburn) && (!_isaplant) && (!_isaconsumer) && (!_isafungus))) {
 						if (org._antiviral > 0) {
 							virusneutralized();
 						}
@@ -19565,7 +19569,8 @@ public class Organism extends Rectangle {
 				if (org.active) {
 					if ((!org._isaplant) && (!org._isaconsumer)
 							&& ((!org._isafungus) || (((_isenhanced) || ((org._timeToReproduce > org._timeToReproduceMax) && (_fallowversion > 0))) && (!org._issilver)))) {
-						if ((!org._transfersenergy) || (org._isinfectious) || (org._iscoral) || (org._isafungus)) {
+						if ((!org._transfersenergy) || (org._isinfectious) || (org._iscoral) || (org._isafungus)
+								|| ((_isauburn) && (!_isaplant) && (!_isaconsumer) && (!_isafungus))) {
 							if (useEnergy(Utils.CORAL_ENERGY_CONSUMPTION)) {
 								setColor(Utils.ColorCORAL);
 								org.infectedBy(this);
@@ -19594,7 +19599,8 @@ public class Organism extends Rectangle {
 				} else {
 					if ((!org._isaplant) && (!org._isaconsumer)
 							&& ((!org._isafungus) || (((_isenhanced) || ((org._timeToReproduce > org._timeToReproduceMax) && (_fallowversion > 0))) && (!org._issilver)))) {
-						if ((!org._transfersenergy) || (org._isinfectious) || (org._iscoral) || (org._isafungus)) {
+						if ((!org._transfersenergy) || (org._isinfectious) || (org._iscoral) || (org._isafungus)
+								|| ((_isauburn) && (!_isaplant) && (!_isaconsumer) && (!_isafungus))) {
 							if ((org._dodge) && (org.useEnergy(Utils.DODGE_ENERGY_CONSUMPTION))) {
 								org.setColor(Utils.ColorTEAL);
 								setColor(Utils.ColorCORAL);
@@ -19630,7 +19636,8 @@ public class Organism extends Rectangle {
 			case LAVENDER:
 				if ((!org._isaplant) && (!org._isaconsumer)
 						&& ((!org._isafungus) || (((_isenhanced) || ((org._timeToReproduce > org._timeToReproduceMax) && (_fallowversion > 0))) && (!org._issilver)))) {
-					if ((!org._transfersenergy) || (org._isinfectious) || (org._iscoral) || (org._isafungus)) {
+					if ((!org._transfersenergy) || (org._isinfectious) || (org._iscoral) || (org._isafungus)
+							|| ((_isauburn) && (!_isaplant) && (!_isaconsumer) && (!_isafungus))) {
 						if (org._antiviral > 0) {
 							virusneutralized();
 						}
@@ -19676,7 +19683,8 @@ public class Organism extends Rectangle {
 			case MINT:
 				if ((!org._isaplant) && (!org._isaconsumer)
 						&& ((!org._isafungus) || (((_isenhanced) || (org._timeToReproduce > org._timeToReproduceMax)) && (!org._issilver))) && (org.active)) {
-					if ((!org._transfersenergy) || (org._isinfectious) || (org._iscoral) || (org._isafungus)) {
+					if ((!org._transfersenergy) || (org._isinfectious) || (org._iscoral) || (org._isafungus)
+							|| ((_isauburn) && (!_isaplant) && (!_isaconsumer) && (!_isafungus))) {
 						if (org._antiviral > 0) {
 							virusneutralized();
 						}
@@ -19720,7 +19728,8 @@ public class Organism extends Rectangle {
 					} else {
 						if ((!org._isaplant) && (!org._isaconsumer)
 								&& ((!org._isafungus) || (((_isenhanced) || ((org._timeToReproduce > org._timeToReproduceMax) && (_fallowversion > 0))) && (!org._issilver)))) {
-							if ((!org._transfersenergy) || (org._isinfectious) || (org._iscoral) || (org._isafungus)) {
+							if ((!org._transfersenergy) || (org._isinfectious) || (org._iscoral) || (org._isafungus)
+									|| ((_isauburn) && (!_isaplant) && (!_isaconsumer) && (!_isafungus))) {
 								if (org._antiviral > 0) {
 									virusneutralized();
 								}
@@ -19753,7 +19762,8 @@ public class Organism extends Rectangle {
 				if (org.active) {
 					if ((!org._isaplant) && (!org._isaconsumer)
 							&& ((!org._isafungus) || (((_isenhanced) || ((org._timeToReproduce > org._timeToReproduceMax) && (_fallowversion > 0))) && (!org._issilver)))) {
-						if ((!org._transfersenergy) || (org._isinfectious) || (org._iscoral) || (org._isafungus)) {
+						if ((!org._transfersenergy) || (org._isinfectious) || (org._iscoral) || (org._isafungus)
+								|| ((_isauburn) && (!_isaplant) && (!_isaconsumer) && (!_isafungus))) {
 							if (org._antiviral > 0) {
 								virusneutralized();
 							}
@@ -23546,7 +23556,7 @@ public class Organism extends Rectangle {
 									break;
 								// Organisms with violet poison other segments and make them useless
 								case VIOLET:
-									if ((!_isaconsumer) && (!_isafungus)) {
+									if ((!_isaconsumer) && (!_isafungus) && (_plagueversion == 0)) {
 										addmaintenance -= 0.95 * _m[i];
 									}
 									break;
