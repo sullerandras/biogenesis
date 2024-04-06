@@ -1680,7 +1680,7 @@ public final class Utils {
 	/**
 	 * Precalculated Ivy color
 	 */
-	public static final Color ColorIVY = new Color(136,160,128);
+	public static final Color ColorIVY = new Color(136,164,128);
 	/**
 	 * Precalculated bark color
 	 */

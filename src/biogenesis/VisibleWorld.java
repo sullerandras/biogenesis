@@ -348,6 +348,7 @@ public class VisibleWorld extends JPanel implements VisibleWorldInterface {
 				b._isfrozen = false;
 				b._allfrozen = false;
 				b._isinjured = false;
+				b.symmetric();
 				b.segmentsCreateEffects();
 				_mainWindow.getWorld().increasePopulation();
 				showAliveToolbar();

@@ -352,6 +352,10 @@ public class Organism extends Rectangle {
 	 */
 	protected int _isonlyc4;
 	/**
+	 * Indicates if this organism is a plant with only ivy segments.
+	 */
+	protected boolean _isonlyivy;
+	/**
 	 * Indicates if this organism has rose segments.
 	 */
 	protected boolean _transfersenergy;
@@ -1033,7 +1037,7 @@ public class Organism extends Rectangle {
 			}
 		}
 		if (_ivyparasitism > 0) {
-			_ivyparasitism = (Math.log10(_ivyparasitism))/2;
+			_ivyparasitism = (Math.log10(_ivyparasitism + 28))/2;
 		}
 		// Calculate jade delay used in restoration of the color
 		if (_jadefactor > 1) {
@@ -1343,7 +1347,7 @@ public class Organism extends Rectangle {
 		    }
 		}
 		if (_ivyparasitism > 0) {
-			_ivyparasitism = (Math.log10(_ivyparasitism))/2;
+			_ivyparasitism = (Math.log10(_ivyparasitism + 28))/2;
 		}
 		// Can this organism dodge?
 		if ((_canreact) || (isspin)) {
@@ -1592,7 +1596,6 @@ public class Organism extends Rectangle {
 			case IVY:
 				_mphoto[i] = Utils.IVY_ENERGY_CONSUMPTION * photomultiplier * _geneticCode.getGene(i%_geneticCode.getNGenes()).getLength();
 				_ivyparasitism += _geneticCode.getGene(i%_geneticCode.getNGenes()).getLength();
-				_isaplant =true;
 				break;
 			case LIME:
 				_mphoto[i] = Utils.LIME_ENERGY_CONSUMPTION * photomultiplier * _geneticCode.getGene(i%_geneticCode.getNGenes()).getLength();
@@ -2079,7 +2082,11 @@ public class Organism extends Rectangle {
 			}
 		}
 		if (_ivyparasitism > 0) {
-			_ivyparasitism = (Math.log10(_ivyparasitism))/2;
+			_ivyparasitism = (Math.log10(_ivyparasitism + 28))/2;
+			if ((!_isaplant) && (_methanotrophy == 0) && (_isonlyc4 == 0) && (_isplankton == 0) && (_age == 0)) {
+				_isonlyivy = true;
+			}
+			_isaplant = true;
 		}
 		if (_blackversion != 0) {
 			if (((_geneticCode.getModifiesblack() == 4) || (_geneticCode.getModifiesblack() == 6)) && (_reproducelate == 0) && (_age == 0)) {
@@ -2187,7 +2194,7 @@ public class Organism extends Rectangle {
 					if (_symmetry >= 2) {
 						_lowersymmetric = 800;
 					} else {
-						_lowersymmetric = 1150;
+						_lowersymmetric = 1125;
 					}
 				}
 			}
@@ -5198,7 +5205,13 @@ public class Organism extends Rectangle {
 									_energy += _world.filterfeeding(((0.92 * (Math.abs(dx) + Math.abs(dy))) + (22.78275 * Math.abs(dtheta))) * _filterfeeding);
 								}
 							} else {
-								_energy += _world.filterfeeding((Math.abs(dx) + Math.abs(dy)) * _filterfeeding);
+								if ((_drift > 0) && (_world._detritus < 545)) {
+									if (Utils.random.nextInt(545) < _world._detritus) {
+										_energy += _world.filterfeeding((Math.abs(dx) + Math.abs(dy)) * _filterfeeding);
+									}
+								} else {
+									_energy += _world.filterfeeding((Math.abs(dx) + Math.abs(dy)) * _filterfeeding);
+								}
 							}
 						}
 					}
@@ -5663,8 +5676,8 @@ public class Organism extends Rectangle {
 					_switchdrift = 1;
 				} else {
 					if (_photosynthesis > 0) {
-						if (_world._CO2 < 1150) {
-							if (Utils.random.nextInt(1150) < _world._CO2) {
+						if (_world._CO2 < 1125) {
+							if (Utils.random.nextInt(1125) < _world._CO2) {
 								_colonyPhotosynthesis += 0.01 * (_drift*Utils.scale[_growthRatio-1]) * _photosynthesis;
 							}
 						} else {
@@ -5672,8 +5685,8 @@ public class Organism extends Rectangle {
 						}
 					} else {
 						if (_methanotrophy > 0) {
-							if (_world._CH4 < 1150) {
-								if (Utils.random.nextInt(1150) < _world._CH4) {
+							if (_world._CH4 < 1125) {
+								if (Utils.random.nextInt(1125) < _world._CH4) {
 									_energy += _world.methanotrophy(0.00125 * (_drift*Utils.scale[_growthRatio-1]) * _methanotrophy);
 								}
 							} else {
@@ -6776,8 +6789,13 @@ public class Organism extends Rectangle {
 					_updateEffects = 2;
 				} else {
 					_allfrozen =false;
-					if (_canmove == 0) {
-						_canmove = 1;
+					if (_geneticCode.getModifiesdrift() == false) {
+						if (_canmove == 0) {
+							_canmove = 1;
+						}
+					} else {
+						_canmove = 2;
+						_canreact =true;
 					}
 					_drift += Math.round(Utils.DRIFT_ENERGY_CONSUMPTION * _geneticCode.getGene(i%_geneticCode.getNGenes()).getLength());
 				}
@@ -6906,7 +6924,7 @@ public class Organism extends Rectangle {
 			_dodge =false;
 		}
 		if (_ivyparasitism > 0) {
-			_ivyparasitism = (Math.log10(_ivyparasitism))/2;
+			_ivyparasitism = (Math.log10(_ivyparasitism + 28))/2;
 		}
 		// Calculate jade delay used in restoration of the color
 		if (_jadefactor > 1) {
@@ -6972,8 +6990,13 @@ public class Organism extends Rectangle {
 					_updateEffects = 2;
 				} else {
 					_allfrozen =false;
-					if (_canmove == 0) {
-						_canmove = 1;
+					if (_geneticCode.getModifiesdrift() == false) {
+						if (_canmove == 0) {
+							_canmove = 1;
+						}
+					} else {
+						_canmove = 2;
+						_canreact =true;
 					}
 					_drift += Math.round(Utils.DRIFT_ENERGY_CONSUMPTION * _geneticCode.getGene(i%_geneticCode.getNGenes()).getLength());
 				}
@@ -7525,7 +7548,7 @@ public class Organism extends Rectangle {
 											if (_mphoto[i] == -4) {
 											    touchEffects2(org,i,j);
 											}
-											if ((_ivyparasitism > 0) && (org._candoautotrophy) && (_candoautotrophy)) {
+											if ((_ivyparasitism > 0) && (org._candoautotrophy) && (_candoautotrophy) && ((!org._isonlyivy) || (!org.active))) {
 												ivyEffects(org,i,j);
 											}
 										}
@@ -7565,7 +7588,7 @@ public class Organism extends Rectangle {
 											if (org._mphoto[j] == -4) {
 											    org.touchEffects2(this,j,i);
 											}
-											if ((org._ivyparasitism > 0) && (_candoautotrophy) && (org._candoautotrophy)) {
+											if ((org._ivyparasitism > 0) && (_candoautotrophy) && (org._candoautotrophy) && ((!_isonlyivy) || (!active))) {
 												org.ivyEffects(this,j,i);
 											}
 										}
@@ -7726,7 +7749,7 @@ public class Organism extends Rectangle {
 										if (_mphoto[i] == -4) {
 										    touchEffects2(org,i,j);
 										}
-										if ((_ivyparasitism > 0) && (org._candoautotrophy) && (_candoautotrophy)) {
+										if ((_ivyparasitism > 0) && (org._candoautotrophy) && (_candoautotrophy) && ((!org._isonlyivy) || (!org.active))) {
 											ivyEffects(org,i,j);
 										}
 									}
@@ -7766,7 +7789,7 @@ public class Organism extends Rectangle {
 										if (org._mphoto[j] == -4) {
 										    org.touchEffects2(this,j,i);
 										}
-										if ((org._ivyparasitism > 0) && (_candoautotrophy) && (org._candoautotrophy)) {
+										if ((org._ivyparasitism > 0) && (_candoautotrophy) && (org._candoautotrophy) && ((!_isonlyivy) || (!active))) {
 											org.ivyEffects(this,j,i);
 										}
 									}
@@ -8333,13 +8356,8 @@ public class Organism extends Rectangle {
 		case BLUE:
 		case SKY:
 		case DEEPSKY:
-		case OLIVE:
-		case DARKOLIVE:
-		case OCHRE:
-		case VIOLET:
 			switch (getTypeColor(org._segColor[oseg])) {
 			case BLUE:
-			case IVY:
 			case SPIKEPOINT:
 			case GRAY:
 			case LILAC:
@@ -8353,7 +8371,7 @@ public class Organism extends Rectangle {
 					break;
 				} else {
 					if (org._methanotrophy > 0) {
-						_energy += _world.methanotrophy(0.5 * _ivyparasitism * org._methanotrophy);
+						_energy += _world.methanotrophy(0.75 * _ivyparasitism * org._methanotrophy);
 						org._candoautotrophy = false;
 						if (org._leafphoto == 0) {
 							org._leafphoto = -1;
@@ -8377,7 +8395,7 @@ public class Organism extends Rectangle {
 				break;
 			default:
 				if (org._methanotrophy > 0) {
-					_energy += _world.methanotrophy(0.5 * _ivyparasitism * org._methanotrophy);
+					_energy += _world.methanotrophy(0.75 * _ivyparasitism * org._methanotrophy);
 					org._candoautotrophy = false;
 					if (org._leafphoto == 0) {
 						org._leafphoto = -1;
@@ -8402,36 +8420,6 @@ public class Organism extends Rectangle {
 			break;
 		default:
 			switch (getTypeColor(org._segColor[oseg])) {
-			case BLUE:
-			case IVY:
-				if (_mphoto[seg] > 0) {
-					if (_segColor[seg].equals(Utils.ColorBARK)) {
-						break;
-					} else {
-						if (org._methanotrophy > 0) {
-							_energy += _world.methanotrophy(0.5 * _ivyparasitism * org._methanotrophy);
-							org._candoautotrophy = false;
-							if (org._leafphoto == 0) {
-								org._leafphoto = -1;
-							}
-							if (org._framesColor < 10) {
-								org.setColor(Utils.ColorDARKGREEN);
-							}
-						} else {
-							if (org._photosynthesis > 0) {
-								_colonyPhotosynthesis += _ivyparasitism * org._photosynthesis;
-								org._candoautotrophy = false;
-								if (org._leafphoto == 0) {
-									org._leafphoto = -1;
-								}
-								if (org._framesColor < 10) {
-									org.setColor(Utils.ColorDARKGREEN);
-								}
-							}
-						}
-					}
-				}
-				break;
 			case MINT:
 			case LAVENDER:
 			case MAGENTA:
@@ -8440,7 +8428,7 @@ public class Organism extends Rectangle {
 					break;
 				} else {
 					if (org._methanotrophy > 0) {
-						_energy += _world.methanotrophy(0.5 * _ivyparasitism * org._methanotrophy);
+						_energy += _world.methanotrophy(0.75 * _ivyparasitism * org._methanotrophy);
 						org._candoautotrophy = false;
 						if (org._leafphoto == 0) {
 							org._leafphoto = -1;
@@ -8464,7 +8452,7 @@ public class Organism extends Rectangle {
 				break;
 			default:
 				if (org._methanotrophy > 0) {
-					_energy += _world.methanotrophy(0.5 * _ivyparasitism * org._methanotrophy);
+					_energy += _world.methanotrophy(0.75 * _ivyparasitism * org._methanotrophy);
 					org._candoautotrophy = false;
 					if (org._leafphoto == 0) {
 						org._leafphoto = -1;
@@ -23152,7 +23140,7 @@ public class Organism extends Rectangle {
 						break;
 					case IVY:
 						addphoto += _mphoto[i];
-						addmaintenance -= 0.95 * _m[i];
+						addmaintenance -= 0.99 * _m[i];
 						break;
 					case PLANKTON:
 						_filterfeeding += _mphoto[i];
@@ -23232,7 +23220,7 @@ public class Organism extends Rectangle {
 										addmaintenance -= 0.95 * _m[i];
 									} else {
 										// is modified drift
-										addmaintenance -= 0.6 * _m[i];
+										addmaintenance -= 0.625 * _m[i];
 									}
 								} else {
 									if (Utils.random.nextInt(100)<8) {
@@ -23284,7 +23272,7 @@ public class Organism extends Rectangle {
 										if (!_isakiller) {
 											addmaintenance -= _m[i] - (Utils.ROSE_ENERGY_CONSUMPTION * _m[i]);
 										} else {
-											addmaintenance -= (0.69 * _m[i]) - (Utils.ROSE_ENERGY_CONSUMPTION * _m[i]);
+											addmaintenance -= (0.7 * _m[i]) - (Utils.ROSE_ENERGY_CONSUMPTION * _m[i]);
 										}
 										break;
 									// Organisms with dark segments mimic other segments
@@ -23475,7 +23463,7 @@ public class Organism extends Rectangle {
 						break;
 					case IVY:
 						addphoto += _mphoto[i];
-						addmaintenance -= 0.95 * _m[i];
+						addmaintenance -= 0.99 * _m[i];
 						break;
 					case GRASS:
 						addphoto += _mphoto[i];
@@ -23667,7 +23655,7 @@ public class Organism extends Rectangle {
 										addmaintenance -= 0.95 * _m[i];
 									} else {
 										// is modified drift
-										addmaintenance -= 0.6 * _m[i];
+										addmaintenance -= 0.625 * _m[i];
 									}
 								} else {
 									if (Utils.random.nextInt(100)<8) {
@@ -23787,7 +23775,7 @@ public class Organism extends Rectangle {
 										if (!_isakiller) {
 											addmaintenance -= _m[i] - (Utils.ROSE_ENERGY_CONSUMPTION * _m[i]);
 										} else {
-											addmaintenance -= (0.69 * _m[i]) - (Utils.ROSE_ENERGY_CONSUMPTION * _m[i]);
+											addmaintenance -= (0.7 * _m[i]) - (Utils.ROSE_ENERGY_CONSUMPTION * _m[i]);
 										}
 										break;
 									// Organisms with dark segments mimic other segments
@@ -24132,7 +24120,7 @@ public class Organism extends Rectangle {
 										addmaintenance -= 0.95 * _m[i];
 									} else {
 										// is modified drift
-										addmaintenance -= 0.6 * _m[i];
+										addmaintenance -= 0.625 * _m[i];
 									}
 								} else {
 									if (Utils.random.nextInt(100)<8) {
@@ -24262,7 +24250,7 @@ public class Organism extends Rectangle {
 										if (!_isakiller) {
 											addmaintenance -= _m[i] - (Utils.ROSE_ENERGY_CONSUMPTION * _m[i]);
 										} else {
-											addmaintenance -= (0.69 * _m[i]) - (Utils.ROSE_ENERGY_CONSUMPTION * _m[i]);
+											addmaintenance -= (0.7 * _m[i]) - (Utils.ROSE_ENERGY_CONSUMPTION * _m[i]);
 										}
 										break;
 									// Organisms with dark segments mimic other segments
@@ -24410,7 +24398,7 @@ public class Organism extends Rectangle {
 									addmaintenance -= 0.95 * _m[i];
 								} else {
 									// is modified drift
-									addmaintenance -= 0.6 * _m[i];
+									addmaintenance -= 0.625 * _m[i];
 								}
 							} else {
 								if (Utils.random.nextInt(100)<8) {
@@ -24524,7 +24512,7 @@ public class Organism extends Rectangle {
 								// Organisms with ochre segments push other organisms away
 								case OCHRE:
 									if ((!_isaconsumer) && (!_isafungus)) {
-										addmaintenance -= 0.8 * _m[i];
+										addmaintenance -= 0.875 * _m[i];
 									}
 									break;
 								// Organisms with olive destroy defense and killer segments
@@ -24564,7 +24552,7 @@ public class Organism extends Rectangle {
 									if (!_isakiller) {
 										addmaintenance -= _m[i] - (Utils.ROSE_ENERGY_CONSUMPTION * _m[i]);
 									} else {
-										addmaintenance -= (0.69 * _m[i]) - (Utils.ROSE_ENERGY_CONSUMPTION * _m[i]);
+										addmaintenance -= (0.7 * _m[i]) - (Utils.ROSE_ENERGY_CONSUMPTION * _m[i]);
 									}
 									break;
 								// Organisms with dark segments mimic other segments
