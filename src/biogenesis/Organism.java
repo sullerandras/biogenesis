@@ -2877,7 +2877,7 @@ public class Organism extends Rectangle {
 				                   				}
 				                  		    }
 				                   			if (largeenough) {
-				                   				_photosynthesis = ((10 * _mass) + (19.6 * (double)_symmetry))/Utils.GREEN_OBTAINED_ENERGY_DIVISOR;
+				                   				_photosynthesis = ((7.5 * _mass) + (19.6 * (double)_symmetry))/Utils.GREEN_OBTAINED_ENERGY_DIVISOR;
 											}
 										} else {
 											if (_blackversion < 0) {
@@ -3413,7 +3413,7 @@ public class Organism extends Rectangle {
 				                   				}
 				                  		    }
 				                   			if (largeenough) {
-				                   				_photosynthesis = ((10 * _mass) + (19.6 * (double)_symmetry))/Utils.GREEN_OBTAINED_ENERGY_DIVISOR;
+				                   				_photosynthesis = ((7.5 * _mass) + (19.6 * (double)_symmetry))/Utils.GREEN_OBTAINED_ENERGY_DIVISOR;
 											}
 										} else {
 											if (_blackversion < 0) {
@@ -14222,7 +14222,7 @@ public class Organism extends Rectangle {
 			case SILVER:
 				if ((org._infectedGeneticCode != _geneticCode) && (org._nTotalInfected < _nTotalInfected)) {
 					if ((org._isaplant) || (org._isaconsumer) || ((org._isafungus) && (org._nTotalKills > 0))) {
-						if (useEnergy(Utils.SILVER_ENERGY_CONSUMPTION)) {
+						if (useBreathing(Utils.SILVER_ENERGY_CONSUMPTION)) {
 					        org.infectedBy(this);
 					        org.setColor(Utils.ColorBLOND);
 					        setColor(Color.LIGHT_GRAY);
@@ -14231,7 +14231,7 @@ public class Organism extends Rectangle {
 				}
 				if ((org._indigo > 0) && (_nTotalInfected > 0) && (!org._isaplant) && (!org._isaconsumer) && (!org._isafungus) && (!_hasgoodvision)) {
 					if ((_indigo == 0) || (_isaplant) || (_isaconsumer) || (_isafungus)) {
-						if (useEnergy((Utils.SILVER_ENERGY_CONSUMPTION + 0.01)/Utils.INDIGO_ENERGY_CONSUMPTION)) {
+						if (useBreathing((Utils.SILVER_ENERGY_CONSUMPTION + 0.01)/Utils.INDIGO_ENERGY_CONSUMPTION)) {
 			    			org.setColor(Utils.ColorINDIGO);
 			    			setColor(Color.LIGHT_GRAY);
 			    		}
@@ -14263,7 +14263,7 @@ public class Organism extends Rectangle {
 			case PLAGUE:
 				if ((org._infectedGeneticCode != _geneticCode) && (org._nTotalInfected < _nTotalInfected)) {
 					if ((org._isaplant) || (org._isaconsumer)) {
-						if (useEnergy(Utils.SILVER_ENERGY_CONSUMPTION)) {
+						if (useBreathing(Utils.SILVER_ENERGY_CONSUMPTION)) {
 					        org.infectedBy(this);
 					        org.setColor(Utils.ColorBLOND);
 					        setColor(Color.LIGHT_GRAY);
@@ -14272,7 +14272,7 @@ public class Organism extends Rectangle {
 				}
 				if ((org._indigo > 0) && (_nTotalInfected > 0) && (!org._isaplant) && (!org._isaconsumer) && (!org._isafungus) && (!_hasgoodvision)) {
 					if ((_indigo == 0) || (_isaplant) || (_isaconsumer) || (_isafungus)) {
-						if (useEnergy((Utils.SILVER_ENERGY_CONSUMPTION + 0.01)/Utils.INDIGO_ENERGY_CONSUMPTION)) {
+						if (useBreathing((Utils.SILVER_ENERGY_CONSUMPTION + 0.01)/Utils.INDIGO_ENERGY_CONSUMPTION)) {
 			    			org.setColor(Utils.ColorINDIGO);
 			    			setColor(Color.LIGHT_GRAY);
 			    		}
@@ -14314,7 +14314,7 @@ public class Organism extends Rectangle {
 			case INDIGO:
 				if ((_nTotalInfected > 0) && (!_hasgoodvision)) {
 					if ((_indigo == 0) || (_isaplant) || (_isaconsumer) || (_isafungus)) {
-						if (useEnergy((Utils.SILVER_ENERGY_CONSUMPTION + 0.01)/Utils.INDIGO_ENERGY_CONSUMPTION)) {
+						if (useBreathing((Utils.SILVER_ENERGY_CONSUMPTION + 0.01)/Utils.INDIGO_ENERGY_CONSUMPTION)) {
 			    			org.setColor(Utils.ColorINDIGO);
 			    			setColor(Color.LIGHT_GRAY);
 			    		}
@@ -14349,7 +14349,7 @@ public class Organism extends Rectangle {
 							org._hasdodged =true;
 							org._useextraeffects =true;
 				    	} else {
-				    		if (useEnergy(Utils.SILVER_ENERGY_CONSUMPTION)) {
+				    		if (useBreathing(Utils.SILVER_ENERGY_CONSUMPTION)) {
 						        org.infectedBy(this);
 						        org.setColor(Utils.ColorBLOND);
 						        setColor(Color.LIGHT_GRAY);
@@ -14386,7 +14386,7 @@ public class Organism extends Rectangle {
 							org._hasdodged =true;
 							org._useextraeffects =true;
 				    	} else {
-				    		if (useEnergy(Utils.SILVER_ENERGY_CONSUMPTION)) {
+				    		if (useBreathing(Utils.SILVER_ENERGY_CONSUMPTION)) {
 						        org.infectedBy(this);
 						        org.setColor(Utils.ColorBLOND);
 						        setColor(Color.LIGHT_GRAY);
@@ -14455,7 +14455,7 @@ public class Organism extends Rectangle {
 							org._hasdodged =true;
 							org._useextraeffects =true;
 				    	} else {
-				    		if (useEnergy(Utils.SILVER_ENERGY_CONSUMPTION)) {
+				    		if (useBreathing(Utils.SILVER_ENERGY_CONSUMPTION)) {
 						        org.infectedBy(this);
 						        org.setColor(Utils.ColorBLOND);
 						        setColor(Color.LIGHT_GRAY);
@@ -14505,7 +14505,7 @@ public class Organism extends Rectangle {
 							org.setColor(Utils.ColorTEAL);
 							setColor(Color.LIGHT_GRAY);
 						} else {
-							if (useEnergy(Utils.SILVER_ENERGY_CONSUMPTION)) {
+							if (useBreathing(Utils.SILVER_ENERGY_CONSUMPTION)) {
 						        org.infectedBy(this);
 						        org.setColor(Utils.ColorBLOND);
 						        setColor(Color.LIGHT_GRAY);
@@ -14531,7 +14531,7 @@ public class Organism extends Rectangle {
 				break;
 			case RED:
 			    if ((org._infectedGeneticCode != _geneticCode) && (org._nTotalInfected < _nTotalInfected)) {
-			    	if (useEnergy(Utils.SILVER_ENERGY_CONSUMPTION)) {
+			    	if (useBreathing(Utils.SILVER_ENERGY_CONSUMPTION)) {
 				        org.infectedBy(this);
 				        org.setColor(Utils.ColorBLOND);
 				        setColor(Color.LIGHT_GRAY);
@@ -14550,7 +14550,7 @@ public class Organism extends Rectangle {
 				break;
 			case FIRE:
 				if ((org._infectedGeneticCode != _geneticCode) && (org._nTotalInfected < _nTotalInfected)) {
-					if (useEnergy(Utils.SILVER_ENERGY_CONSUMPTION)) {
+					if (useBreathing(Utils.SILVER_ENERGY_CONSUMPTION)) {
 				        org.infectedBy(this);
 				        org.setColor(Utils.ColorBLOND);
 				        setColor(Color.LIGHT_GRAY);
@@ -14569,7 +14569,7 @@ public class Organism extends Rectangle {
 				break;
 			case ORANGE:
 				if ((org._infectedGeneticCode != _geneticCode) && (org._nTotalInfected < _nTotalInfected)) {
-					if (useEnergy(Utils.SILVER_ENERGY_CONSUMPTION)) {
+					if (useBreathing(Utils.SILVER_ENERGY_CONSUMPTION)) {
 				        org.infectedBy(this);
 				        org.setColor(Utils.ColorBLOND);
 				        setColor(Color.LIGHT_GRAY);
@@ -14589,7 +14589,7 @@ public class Organism extends Rectangle {
 			case PINK:
 				if ((org._infectedGeneticCode != _geneticCode) && (org._nTotalInfected < _nTotalInfected)) {
 					if (org._modifiespink) {
-						if (useEnergy(Utils.SILVER_ENERGY_CONSUMPTION)) {
+						if (useBreathing(Utils.SILVER_ENERGY_CONSUMPTION)) {
 					        org.infectedBy(this);
 					        org.setColor(Utils.ColorBLOND);
 					        setColor(Color.LIGHT_GRAY);
@@ -14610,7 +14610,7 @@ public class Organism extends Rectangle {
 			case SPIKE:
 				if ((org._infectedGeneticCode != _geneticCode) && (org._nTotalInfected < _nTotalInfected)) {
 					if ((org._isaplant) || (org._isaconsumer)) {
-						if (useEnergy(Utils.SILVER_ENERGY_CONSUMPTION)) {
+						if (useBreathing(Utils.SILVER_ENERGY_CONSUMPTION)) {
 					        org.infectedBy(this);
 					        org.setColor(Utils.ColorBLOND);
 					        setColor(Color.LIGHT_GRAY);
@@ -14723,7 +14723,7 @@ public class Organism extends Rectangle {
 								org.setColor(Utils.ColorTEAL);
 								setColor(Color.LIGHT_GRAY);
 							} else {
-								if (useEnergy(Utils.SILVER_ENERGY_CONSUMPTION)) {
+								if (useBreathing(Utils.SILVER_ENERGY_CONSUMPTION)) {
 							        org.infectedBy(this);
 							        org.setColor(Utils.ColorBLOND);
 							        setColor(Color.LIGHT_GRAY);
@@ -14758,7 +14758,7 @@ public class Organism extends Rectangle {
 			case BLUE:
 				if ((org._infectedGeneticCode != _geneticCode) && (org._nTotalInfected < _nTotalInfected)) {
 					if ((org._isaplant) || (org._isaconsumer)) {
-						if (useEnergy(Utils.SILVER_ENERGY_CONSUMPTION)) {
+						if (useBreathing(Utils.SILVER_ENERGY_CONSUMPTION)) {
 					        org.infectedBy(this);
 					        org.setColor(Utils.ColorBLOND);
 					        setColor(Color.LIGHT_GRAY);
@@ -14792,7 +14792,7 @@ public class Organism extends Rectangle {
 			case CREAM:
 				if ((org._infectedGeneticCode != _geneticCode) && (org._nTotalInfected < _nTotalInfected)) {
 			    	if (org._isaplant) {
-			    		if (useEnergy(Utils.SILVER_ENERGY_CONSUMPTION)) {
+			    		if (useBreathing(Utils.SILVER_ENERGY_CONSUMPTION)) {
 					        org.infectedBy(this);
 					        org.setColor(Utils.ColorBLOND);
 					        setColor(Color.LIGHT_GRAY);
@@ -14809,7 +14809,7 @@ public class Organism extends Rectangle {
 			case FALLOW:
 				if ((org._infectedGeneticCode != _geneticCode) && (org._nTotalInfected < _nTotalInfected)) {
 					if ((org._isaplant) || (org._isaconsumer)) {
-						if (useEnergy(Utils.SILVER_ENERGY_CONSUMPTION)) {
+						if (useBreathing(Utils.SILVER_ENERGY_CONSUMPTION)) {
 					        org.infectedBy(this);
 					        org.setColor(Utils.ColorBLOND);
 					        setColor(Color.LIGHT_GRAY);
@@ -14825,7 +14825,7 @@ public class Organism extends Rectangle {
 				}
 				if ((org._infectedGeneticCode != _geneticCode) && (org._nTotalInfected < _nTotalInfected)) {
 					if ((!_isaplant) && (!_isaconsumer) && (!_isafungus)) {
-						if (useEnergy(Utils.SILVER_ENERGY_CONSUMPTION)) {
+						if (useBreathing(Utils.SILVER_ENERGY_CONSUMPTION)) {
 						    org.infectedBy(this);
 						    org.setColor(Utils.ColorBLOND);
 						    setColor(Color.LIGHT_GRAY);
@@ -14851,7 +14851,7 @@ public class Organism extends Rectangle {
 								org.setColor(Utils.ColorTEAL);
 								setColor(Color.LIGHT_GRAY);
 							} else {
-								if (useEnergy(Utils.SILVER_ENERGY_CONSUMPTION)) {
+								if (useBreathing(Utils.SILVER_ENERGY_CONSUMPTION)) {
 							        org.infectedBy(this);
 							        org.setColor(Utils.ColorBLOND);
 							        setColor(Color.LIGHT_GRAY);
@@ -14881,7 +14881,7 @@ public class Organism extends Rectangle {
 			default:
 				if ((org._infectedGeneticCode != _geneticCode) && (org._nTotalInfected < _nTotalInfected)) {
 					if ((org._isaplant) || (org._isaconsumer)) {
-						if (useEnergy(Utils.SILVER_ENERGY_CONSUMPTION)) {
+						if (useBreathing(Utils.SILVER_ENERGY_CONSUMPTION)) {
 					        org.infectedBy(this);
 					        org.setColor(Utils.ColorBLOND);
 					        setColor(Color.LIGHT_GRAY);
@@ -15645,7 +15645,7 @@ public class Organism extends Rectangle {
 				if (org._infectedGeneticCode != _geneticCode) {
 					if ((org._isaplant) || (org._isaconsumer)) {
 						if (_isaplant) {
-							if (useEnergy(Utils.WHITE_ENERGY_CONSUMPTION)) {
+							if (useBreathing(Utils.WHITE_ENERGY_CONSUMPTION)) {
 						        org.infectedBy(this);
 						        org.setColor(Utils.ColorBLOND);
 						        setColor(Color.WHITE);
@@ -15660,7 +15660,7 @@ public class Organism extends Rectangle {
 					} else {
 						if ((org._indigo > 0) && (!org._isafungus) && (!_hasgoodvision)) {
 							if (_isaplant) {
-								if (useEnergy((Utils.WHITE_ENERGY_CONSUMPTION + 0.01)/Utils.INDIGO_ENERGY_CONSUMPTION)) {
+								if (useBreathing((Utils.WHITE_ENERGY_CONSUMPTION + 0.01)/Utils.INDIGO_ENERGY_CONSUMPTION)) {
 						    	    org.setColor(Utils.ColorINDIGO);
 						    	    setColor(Color.WHITE);
 								}
@@ -15681,7 +15681,7 @@ public class Organism extends Rectangle {
 					if ((org._isaplant) || (org._isaconsumer) || ((org._isafungus) && (org._nTotalKills > 0))) {
 						if ((org._isenhanced) || (_nTotalInfected >= org._nTotalInfected)) {
 							if (_isaplant) {
-								if (useEnergy(Utils.WHITE_ENERGY_CONSUMPTION)) {
+								if (useBreathing(Utils.WHITE_ENERGY_CONSUMPTION)) {
 							        org.infectedBy(this);
 							        org.setColor(Utils.ColorBLOND);
 							        setColor(Color.WHITE);
@@ -15697,7 +15697,7 @@ public class Organism extends Rectangle {
 					} else {
 						if ((org._indigo > 0) && (!org._isafungus) && (!_hasgoodvision)) {
 							if (_isaplant) {
-								if (useEnergy((Utils.WHITE_ENERGY_CONSUMPTION + 0.01)/Utils.INDIGO_ENERGY_CONSUMPTION)) {
+								if (useBreathing((Utils.WHITE_ENERGY_CONSUMPTION + 0.01)/Utils.INDIGO_ENERGY_CONSUMPTION)) {
 						    	    org.setColor(Utils.ColorINDIGO);
 						    	    setColor(Color.WHITE);
 								}
@@ -15717,7 +15717,7 @@ public class Organism extends Rectangle {
 				if (org._infectedGeneticCode != _geneticCode) {
 					if ((org._isaplant) || (org._isaconsumer)) {
 						if (_isaplant) {
-							if (useEnergy(Utils.WHITE_ENERGY_CONSUMPTION)) {
+							if (useBreathing(Utils.WHITE_ENERGY_CONSUMPTION)) {
 						        org.infectedBy(this);
 						        org.setColor(Utils.ColorBLOND);
 						        setColor(Color.WHITE);
@@ -15738,7 +15738,7 @@ public class Organism extends Rectangle {
 					} else {
 						if ((org._indigo > 0) && (!org._isafungus) && (!_hasgoodvision)) {
 							if (_isaplant) {
-								if (useEnergy((Utils.WHITE_ENERGY_CONSUMPTION + 0.01)/Utils.INDIGO_ENERGY_CONSUMPTION)) {
+								if (useBreathing((Utils.WHITE_ENERGY_CONSUMPTION + 0.01)/Utils.INDIGO_ENERGY_CONSUMPTION)) {
 						    	    org.setColor(Utils.ColorINDIGO);
 						    	    setColor(Color.WHITE);
 								}
@@ -15757,7 +15757,7 @@ public class Organism extends Rectangle {
 			case INDIGO:
 				if (!_hasgoodvision) {
 					if (_isaplant) {
-						if (useEnergy((Utils.WHITE_ENERGY_CONSUMPTION + 0.01)/Utils.INDIGO_ENERGY_CONSUMPTION)) {
+						if (useBreathing((Utils.WHITE_ENERGY_CONSUMPTION + 0.01)/Utils.INDIGO_ENERGY_CONSUMPTION)) {
 				    	    org.setColor(Utils.ColorINDIGO);
 				    	    setColor(Color.WHITE);
 						}
@@ -15811,7 +15811,7 @@ public class Organism extends Rectangle {
 							}
 				    	} else {
 				    		if (_isaplant) {
-								if (useEnergy(Utils.WHITE_ENERGY_CONSUMPTION)) {
+								if (useBreathing(Utils.WHITE_ENERGY_CONSUMPTION)) {
 							        org.infectedBy(this);
 							        org.setColor(Utils.ColorBLOND);
 							        setColor(Color.WHITE);
@@ -15853,7 +15853,7 @@ public class Organism extends Rectangle {
 					        setColor(Color.WHITE);
 						} else {
 							if (_isaplant) {
-								if (useEnergy(Utils.WHITE_ENERGY_CONSUMPTION)) {
+								if (useBreathing(Utils.WHITE_ENERGY_CONSUMPTION)) {
 							        org.infectedBy(this);
 							        org.setColor(Utils.ColorBLOND);
 							        setColor(Color.WHITE);
@@ -15885,7 +15885,7 @@ public class Organism extends Rectangle {
 						        setColor(Color.WHITE);
 							} else {
 								if (_isaplant) {
-									if (useEnergy(Utils.WHITE_ENERGY_CONSUMPTION)) {
+									if (useBreathing(Utils.WHITE_ENERGY_CONSUMPTION)) {
 								        org.infectedBy(this);
 								        org.setColor(Utils.ColorBLOND);
 								        setColor(Color.WHITE);
@@ -15928,7 +15928,7 @@ public class Organism extends Rectangle {
 					        org._hasdodged =true;
 				        } else {
 				        	if (_isaplant) {
-				        		if (useEnergy(Utils.WHITE_ENERGY_CONSUMPTION)) {
+				        		if (useBreathing(Utils.WHITE_ENERGY_CONSUMPTION)) {
 							        org.infectedBy(this);
 							        org.setColor(Utils.ColorBLOND);
 							        setColor(Color.WHITE);
@@ -15953,7 +15953,7 @@ public class Organism extends Rectangle {
 						    org._hasdodged =true;
 					    } else {
 					    	if (_isaplant) {
-					    		if (useEnergy(Utils.WHITE_ENERGY_CONSUMPTION)) {
+					    		if (useBreathing(Utils.WHITE_ENERGY_CONSUMPTION)) {
 							        org.infectedBy(this);
 							        org.setColor(Utils.ColorBLOND);
 							        setColor(Color.WHITE);
@@ -15983,7 +15983,7 @@ public class Organism extends Rectangle {
 				        } else {
 				        	if (org._infectedGeneticCode != _geneticCode) {
 				        		if (_isaplant) {
-				        			if (useEnergy(Utils.WHITE_ENERGY_CONSUMPTION)) {
+				        			if (useBreathing(Utils.WHITE_ENERGY_CONSUMPTION)) {
 								        org.infectedBy(this);
 								        org.setColor(Utils.ColorBLOND);
 								        setColor(Color.WHITE);
@@ -16007,7 +16007,7 @@ public class Organism extends Rectangle {
 						if ((_isenhanced) && (org._isaplant) && (!_isakiller) && (org._antiviral == 0)) {
 							if (org._infectedGeneticCode != _geneticCode) {
 								if (_isaplant) {
-									if (useEnergy(Utils.WHITE_ENERGY_CONSUMPTION)) {
+									if (useBreathing(Utils.WHITE_ENERGY_CONSUMPTION)) {
 								        org.infectedBy(this);
 								        org.setColor(Utils.ColorBLOND);
 								        setColor(Color.WHITE);
@@ -16034,7 +16034,7 @@ public class Organism extends Rectangle {
 					if ((org._isaplant) || (org._isaconsumer)) {
 					    if (_isaplant) {
 					    	if ((_isenhanced) && (org._isaplant) && (!_isakiller) && (org._antiviral == 0)) {
-					    		if (useEnergy(Utils.WHITE_ENERGY_CONSUMPTION)) {
+					    		if (useBreathing(Utils.WHITE_ENERGY_CONSUMPTION)) {
 							        org.infectedBy(this);
 							        org.setColor(Utils.ColorBLOND);
 							        setColor(Color.WHITE);
@@ -16055,7 +16055,7 @@ public class Organism extends Rectangle {
 					if ((org._isaplant) || (org._isaconsumer)) {
 					    if (_isaplant) {
 					    	if ((org._isaconsumer) || ((_isenhanced) && (!_isakiller) && (org._antiviral == 0))) {
-					    		if (useEnergy(Utils.WHITE_ENERGY_CONSUMPTION)) {
+					    		if (useBreathing(Utils.WHITE_ENERGY_CONSUMPTION)) {
 							        org.infectedBy(this);
 							        org.setColor(Utils.ColorBLOND);
 							        setColor(Color.WHITE);
@@ -16085,7 +16085,7 @@ public class Organism extends Rectangle {
 				if (org._infectedGeneticCode != _geneticCode) {
 					if ((org._isaplant) || (org._isaconsumer)) {
 					    if (_isaplant) {
-					    	if (useEnergy(Utils.WHITE_ENERGY_CONSUMPTION)) {
+					    	if (useBreathing(Utils.WHITE_ENERGY_CONSUMPTION)) {
 						        org.infectedBy(this);
 						        org.setColor(Utils.ColorBLOND);
 						        setColor(Color.WHITE);
@@ -16116,7 +16116,7 @@ public class Organism extends Rectangle {
 					if ((org._isaplant) || (org._isaconsumer)) {
 					    if (_isaplant) {
 					    	if ((org._isaconsumer) || ((_isenhanced) && (!_isakiller))) {
-					    		if (useEnergy(Utils.WHITE_ENERGY_CONSUMPTION)) {
+					    		if (useBreathing(Utils.WHITE_ENERGY_CONSUMPTION)) {
 							        org.infectedBy(this);
 							        org.setColor(Utils.ColorBLOND);
 							        setColor(Color.WHITE);
@@ -16191,7 +16191,7 @@ public class Organism extends Rectangle {
 					        setColor(Color.WHITE);
 						} else {
 							if (_isaplant) {
-								if (useEnergy(Utils.WHITE_ENERGY_CONSUMPTION)) {
+								if (useBreathing(Utils.WHITE_ENERGY_CONSUMPTION)) {
 							        org.infectedBy(this);
 							        org.setColor(Utils.ColorBLOND);
 							        setColor(Color.WHITE);
@@ -16211,7 +16211,7 @@ public class Organism extends Rectangle {
 				if ((org._modifiespink) || ((org._timeToReproduce > org._timeToReproduceMax) && ((org._reproducelate == 0) || (org._isinfectious)))) {
 				    if (org._infectedGeneticCode != _geneticCode) {
 					    if (_isaplant) {
-					    	if (useEnergy(Utils.WHITE_ENERGY_CONSUMPTION)) {
+					    	if (useBreathing(Utils.WHITE_ENERGY_CONSUMPTION)) {
 						        org.infectedBy(this);
 						        org.setColor(Utils.ColorBLOND);
 						        setColor(Color.WHITE);
@@ -16241,7 +16241,7 @@ public class Organism extends Rectangle {
 				    if (org._infectedGeneticCode != _geneticCode) {
 					    if (_isaplant) {
 					    	if ((_isenhanced) && (!_isakiller) && (org._indigo == 0)) {
-					    		if (useEnergy(Utils.WHITE_ENERGY_CONSUMPTION)) {
+					    		if (useBreathing(Utils.WHITE_ENERGY_CONSUMPTION)) {
 							        org.infectedBy(this);
 							        org.setColor(Utils.ColorBLOND);
 							        setColor(Color.WHITE);
@@ -16273,7 +16273,7 @@ public class Organism extends Rectangle {
 				if (org._infectedGeneticCode != _geneticCode) {
 					if ((org._isaplant) || (org._isenhanced)) {
 					    if (_isaplant) {
-					    	if (useEnergy(Utils.WHITE_ENERGY_CONSUMPTION)) {
+					    	if (useBreathing(Utils.WHITE_ENERGY_CONSUMPTION)) {
 						        org.infectedBy(this);
 						        org.setColor(Utils.ColorBLOND);
 						        setColor(Color.WHITE);
@@ -16293,7 +16293,7 @@ public class Organism extends Rectangle {
 					if (((org._isaplant) && (org._antiviral == 0)) || (org._isenhanced)) {
 					    if (org._infectedGeneticCode != _geneticCode) {
 						    if (_isaplant) {
-						    	if (useEnergy(Utils.WHITE_ENERGY_CONSUMPTION)) {
+						    	if (useBreathing(Utils.WHITE_ENERGY_CONSUMPTION)) {
 							        org.infectedBy(this);
 							        org.setColor(Utils.ColorBLOND);
 							        setColor(Color.WHITE);
@@ -16313,7 +16313,7 @@ public class Organism extends Rectangle {
 				if (org._infectedGeneticCode != _geneticCode) {
 					if ((org._isaplant) || (org._isaconsumer)) {
 					    if (_isaplant) {
-					    	if (useEnergy(Utils.WHITE_ENERGY_CONSUMPTION)) {
+					    	if (useBreathing(Utils.WHITE_ENERGY_CONSUMPTION)) {
 						        org.infectedBy(this);
 						        org.setColor(Utils.ColorBLOND);
 						        setColor(Color.WHITE);
@@ -16356,7 +16356,7 @@ public class Organism extends Rectangle {
 						if (org._infectedGeneticCode != _geneticCode) {
 							if ((org._isaplant) || (org._isaconsumer)) {
 							    if (_isaplant) {
-							    	if (useEnergy(Utils.WHITE_ENERGY_CONSUMPTION)) {
+							    	if (useBreathing(Utils.WHITE_ENERGY_CONSUMPTION)) {
 								        org.infectedBy(this);
 								        org.setColor(Utils.ColorBLOND);
 								        setColor(Color.WHITE);
@@ -16389,7 +16389,7 @@ public class Organism extends Rectangle {
 				if (org._infectedGeneticCode != _geneticCode) {
 					if ((org._isaplant) || (org._isaconsumer)) {
 					    if (_isaplant) {
-					    	if (useEnergy(Utils.WHITE_ENERGY_CONSUMPTION)) {
+					    	if (useBreathing(Utils.WHITE_ENERGY_CONSUMPTION)) {
 						        org.infectedBy(this);
 						        org.setColor(Utils.ColorBLOND);
 						        setColor(Color.WHITE);
