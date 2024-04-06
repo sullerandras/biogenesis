@@ -1971,14 +1971,14 @@ public class Organism extends Rectangle {
 									}
 									break;
 								case SPORE:
-									if ((_geneticCode.getModifiesspore() >= 3) && (_geneticCode.getModifiesspore() <= 6)) {
+									if ((_geneticCode.getModifiesspore() >= 3) && (_geneticCode.getModifiesspore() <= 5)) {
 										if ((_reproducelate == 0) && (_age == 0)) {
 											_reproduceEnergy -= 3;
 										}
 									}
 									break;
 								case DARKGRAY:
-									if ((_sporetime == 0) || ((_geneticCode.getModifiesspore() >= 3) && (_geneticCode.getModifiesspore() <= 6))) {
+									if ((_sporetime == 0) || ((_geneticCode.getModifiesspore() >= 3) && (_geneticCode.getModifiesspore() <= 5))) {
 										if ((_reproducelate == 0) && (_age == 0)) {
 											_reproduceEnergy -= 3;
 										}
@@ -2561,8 +2561,8 @@ public class Organism extends Rectangle {
 					if (parent._fallowinhibition > 0) {
 						if ((parent._reproducelate > 0) && (!parent._isinfectious)) {
 							if (Utils.random.nextBoolean()) {
-								parent._energy += _energy/1.5;
-								_energy -= _energy/1.5;
+								parent._energy += _energy * 0.75;
+								_energy -= _energy * 0.75;
 								inheritReproduceEnergy = 0;
 							}
 						} else {
@@ -3000,7 +3000,7 @@ public class Organism extends Rectangle {
 		                   				}
 		                    		}
 									if (largeenough) {
-										_photosynthesis = (2.4 * _mass)/Utils.GREEN_OBTAINED_ENERGY_DIVISOR;
+										_photosynthesis = (2.3 * _mass)/Utils.GREEN_OBTAINED_ENERGY_DIVISOR;
 									}
 								}
 							}
@@ -3536,7 +3536,7 @@ public class Organism extends Rectangle {
 		                   				}
 		                    		}
 									if (largeenough) {
-										_photosynthesis = (2.4 * _mass)/Utils.GREEN_OBTAINED_ENERGY_DIVISOR;
+										_photosynthesis = (2.3 * _mass)/Utils.GREEN_OBTAINED_ENERGY_DIVISOR;
 									}
 								}
 							}
