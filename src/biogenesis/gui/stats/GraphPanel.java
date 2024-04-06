@@ -36,6 +36,8 @@ public class GraphPanel extends JPanel {
 	private int height;
 	private JPanel centralPanel;
 	private JPanel legendPanel;
+	private long minTime;
+	private long maxTime;
 	private JLabel fromLabel;
 	private JLabel toLabel;
 	private int hoveredIndex = -1;
@@ -44,8 +46,9 @@ public class GraphPanel extends JPanel {
 	 * Creates a new instance of GraphPanel.
 	 * @param w Width of the graph in pixels.
 	 * @param h Height of the graph in pixels.
+	 * @param xAxisName Name of the X axis. Used in hover tooltips.
 	 */
-	public GraphPanel(int w, int h, NumberFormat nf) {
+	public GraphPanel(int w, int h, NumberFormat nf, String xAxisName) {
 		this.nf = nf;
 		setBackground(Color.BLACK);
 		width = w;
@@ -90,6 +93,7 @@ public class GraphPanel extends JPanel {
 				}
 				hoveredIndex = index;
 
+				tooltip.setXAxis(xAxisName, minTime + index);
 				for (GraphInfo graph : graphList) {
 					if (h == 105) {
 						tooltip.addAtmosphereValue(graph.getName(), graph.getPointAt(index));
@@ -148,6 +152,7 @@ public class GraphPanel extends JPanel {
 	 * Sets the minimum time to show in the legend.
 	 */
 	public void setMinTime(long minTime) {
+		this.minTime = minTime;
 		fromLabel.setText(nf.format(minTime));
 	}
 
@@ -155,6 +160,7 @@ public class GraphPanel extends JPanel {
 	 * Sets the maximum time to show in the legend.
 	 */
 	public void setMaxTime(long maxTime) {
+		this.maxTime = maxTime;
 		toLabel.setText(nf.format(maxTime));
 	}
 

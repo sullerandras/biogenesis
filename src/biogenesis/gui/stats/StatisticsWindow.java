@@ -173,7 +173,7 @@ public class StatisticsWindow extends JDialog {
 		birthsGraph = new GraphInfo(0, 0, 100, 104, Color.GREEN, Messages.getString("T_BIRTHS")); //$NON-NLS-1$
 		populationGraph = new GraphInfo(0, 0, 100, 104, Color.WHITE, Messages.getString("T_POPULATION")); //$NON-NLS-1$
 		cladesGraph = new GraphInfo(0, 0, 100, 104, Color.ORANGE, Messages.getString("T_CLADES")); //$NON-NLS-1$
-		populationGraphPanel = new GraphPanel(100, 104, nf);
+		populationGraphPanel = new GraphPanel(100, 104, nf, Messages.getString("T_TIME")); //$NON-NLS-1$
 		populationGraphPanel.addGraph(deathsGraph);
 		populationGraphPanel.addGraph(birthsGraph);
 		populationGraphPanel.addGraph(populationGraph);
@@ -183,7 +183,7 @@ public class StatisticsWindow extends JDialog {
 		// Population graph is added here too to make both clade graphs align
 		populationGraph2 = new GraphInfo(0, 0, 100, 104, Color.BLACK, Messages.getString("T_POPULATION")); //$NON-NLS-1$
 		cladesGraph2 = new GraphInfo(0, 0, 100, 104, Color.ORANGE, Messages.getString("T_CLADES")); //$NON-NLS-1$
-		cladesGraphPanel = new GraphPanel(100, 52, nf);
+		cladesGraphPanel = new GraphPanel(100, 52, nf, Messages.getString("T_TIME")); //$NON-NLS-1$
 		cladesGraphPanel.addGraph(populationGraph2);
 		cladesGraphPanel.addGraph(cladesGraph2);
 
@@ -217,7 +217,7 @@ public class StatisticsWindow extends JDialog {
 		carbonMonoxideGraph = new GraphInfo(0, 0, 100, 104, Color.GRAY, Messages.getString("T_CARBON_MONOXIDE")); //$NON-NLS-1$
 		methaneGraph = new GraphInfo(0, 0, 100, 104, Color.MAGENTA, Messages.getString("T_METHANE")); //$NON-NLS-1$
 		detritusGraph = new GraphInfo(0, 0, 100, 104, Color.YELLOW, Messages.getString("T_DETRITUS")); //$NON-NLS-1$
-		atmosphereGraphPanel = new GraphPanel(100, 105, nf);
+		atmosphereGraphPanel = new GraphPanel(100, 105, nf, Messages.getString("T_TIME")); //$NON-NLS-1$
 		atmosphereGraphPanel.addGraph(oxygenGraph);
 		atmosphereGraphPanel.addGraph(carbonDioxideGraph);
 		atmosphereGraphPanel.addGraph(carbonMonoxideGraph);
@@ -501,7 +501,7 @@ public class StatisticsWindow extends JDialog {
 
 		// Generation histogram
 		generationHistogram = new GraphInfo(0, 0, 0, 104, Color.WHITE, Messages.getString("T_POPULATION")); //$NON-NLS-1$
-		generationHistogramPanel = new GraphPanel(100, 104, nf);
+		generationHistogramPanel = new GraphPanel(100, 104, nf, Messages.getString("T_GENERATION")); //$NON-NLS-1$
 		generationHistogramPanel.addGraph(generationHistogram);
 		JPanel generationHistogramWrapper = new JPanel(new GridLayout(1, 1));
 		generationHistogramWrapper.add(generationHistogramPanel);
@@ -589,7 +589,7 @@ public class StatisticsWindow extends JDialog {
 		colorCounter[37] = new InfoAndColor(0, Utils.ColorROSE);
 		colorCounter[38] = new InfoAndColor(0, Color.CYAN);
 		colorCounter[39] = new InfoAndColor(0, Utils.ColorTEAL);
-		colorCounter[40] = new InfoAndColor(0, Utils.ColorDRIFT);		
+		colorCounter[40] = new InfoAndColor(0, Utils.ColorDRIFT);
 		colorCounter[41] = new InfoAndColor(0, Utils.ColorSPIN);
 		colorCounter[42] = new InfoAndColor(0, Color.YELLOW);
 		colorCounter[43] = new InfoAndColor(0, Utils.ColorAUBURN);
