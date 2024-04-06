@@ -1960,7 +1960,7 @@ public class Organism extends Rectangle {
 							for (j=_segments-1; j>=0; j--) {
 								switch (getTypeColor(_segColor[j])) {
 								case C4:
-									_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * 1.04 * (11 + _geneticCode.getGene(j%_geneticCode.getNGenes()).getLength());
+									_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * 1.0415 * (11 + _geneticCode.getGene(j%_geneticCode.getNGenes()).getLength());
 									break;
 								case MINT:
 								case MAGENTA:
@@ -2003,7 +2003,7 @@ public class Organism extends Rectangle {
 								switch (getTypeColor(_segColor[j])) {
 								case C4:
 									if ((_sporetime == 0) || (_geneticCode.getModifiesspore() <= 6)) {
-										_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * 1.03 * (11 + _geneticCode.getGene(j%_geneticCode.getNGenes()).getLength());
+										_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * (11 + _geneticCode.getGene(j%_geneticCode.getNGenes()).getLength());
 									}
 									break;
 								}
@@ -2015,7 +2015,7 @@ public class Organism extends Rectangle {
 								switch (getTypeColor(_segColor[j])) {
 								case C4:
 									if ((_sporetime == 0) || (_geneticCode.getModifiesspore() <= 6)) {
-										_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * 1.04 * (11 + _geneticCode.getGene(j%_geneticCode.getNGenes()).getLength());
+										_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * 1.0415 * (11 + _geneticCode.getGene(j%_geneticCode.getNGenes()).getLength());
 									}
 									break;
 								}
@@ -4905,16 +4905,16 @@ public class Organism extends Rectangle {
 				if (_filterfeeding > 0) {
 					if ((!_haseyes) || (dx == dxbak)) {
 						if (_spin > 0) {
-							if (_world._detritus < 450) {
-								if (Utils.random.nextInt(450) < _world._detritus) {
-									_energy += _world.filterfeeding(((0.9375 * (Math.abs(dx) + Math.abs(dy))) + (22.74 * Math.abs(dtheta))) * _filterfeeding);
+							if (_world._detritus < 475) {
+								if (Utils.random.nextInt(475) < _world._detritus) {
+									_energy += _world.filterfeeding(((0.93 * (Math.abs(dx) + Math.abs(dy))) + (22.768 * Math.abs(dtheta))) * _filterfeeding);
 								}
 							} else {
-								_energy += _world.filterfeeding(((0.9375 * (Math.abs(dx) + Math.abs(dy))) + (22.74 * Math.abs(dtheta))) * _filterfeeding);
+								_energy += _world.filterfeeding(((0.93 * (Math.abs(dx) + Math.abs(dy))) + (22.768 * Math.abs(dtheta))) * _filterfeeding);
 							}
 						} else {
-							if ((_symmetry == 1) && (_world._detritus < 450)) {
-								if (Utils.random.nextInt(450) < _world._detritus) {
+							if ((_symmetry == 1) && (_world._detritus < 475)) {
+								if (Utils.random.nextInt(475) < _world._detritus) {
 									_energy += _world.filterfeeding((Math.abs(dx) + Math.abs(dy)) * _filterfeeding);
 								}
 							} else {
@@ -22220,7 +22220,7 @@ public class Organism extends Rectangle {
 						break;
 					case PLANKTON:
 						_filterfeeding += _mphoto[i];
-						addmaintenance -= 0.31 * _m[i];
+						addmaintenance -= 0.3125 * _m[i];
 						break;
 					case PURPLE:
 						_methanotrophy += _mphoto[i];
@@ -22523,7 +22523,7 @@ public class Organism extends Rectangle {
 						break;
 					case PLANKTON:
 						_filterfeeding += _mphoto[i];
-						addmaintenance -= 0.31 * _m[i];
+						addmaintenance -= 0.3125 * _m[i];
 						break;
 					case PURPLE:
 						_methanotrophy += _mphoto[i];
