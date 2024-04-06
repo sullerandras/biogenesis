@@ -735,6 +735,13 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					int canWrite = JOptionPane.YES_OPTION;
 					File f = chooser.getSelectedFile();
+					String filename = f.getName().toLowerCase();
+					BioFileFilter bff = (BioFileFilter) chooser.getFileFilter();
+					boolean fullFilename = filename.endsWith(bff.getValidExtension()) ||
+							(!bff.getValidExtension2().equals("") && filename.endsWith(bff.getValidExtension2()));
+					if (!fullFilename) {
+						f = new File(f.getAbsolutePath() + "." + bff.getValidExtension());
+					}
 					// Check if file already exists and ask for confirmation
 					if (f.exists()) {
 						canWrite = JOptionPane.showConfirmDialog(null, Messages.getString("T_CONFIRM_FILE_OVERRIDE"), //$NON-NLS-1$
@@ -1113,7 +1120,7 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 				boolean fullFilename = filename.endsWith(bff.getValidExtension()) ||
 						(!bff.getValidExtension2().equals("") && filename.endsWith(bff.getValidExtension2()));
 				if (!fullFilename) {
-					if (Utils.COMPRESS_BACKUPS) {
+					if ((Utils.COMPRESS_BACKUPS) && (bff.getValidExtension() == BioFileFilter.WORLD_EXTENSION)) {
 						f = new File(f.getAbsolutePath() + "." + bff.getValidExtension() + ".gz");
 					} else {
 						f = new File(f.getAbsolutePath() + "." + bff.getValidExtension());
