@@ -84,7 +84,7 @@ public class GraphPanel extends JPanel {
 				}
 
 				final int elementCount = graphList.get(0).getPointsSize();
-				final int index = (int) Math.round(e.getX() * WorldStatistics.MAX_STATS_COUNT / (double) centralPanel.getWidth());
+				final int index = (int) Math.round(e.getX() * graphList.get(0).getActualCapacity() / (double) centralPanel.getWidth());
 				if (index < 0 || index >= elementCount) {
 					return;
 				}
