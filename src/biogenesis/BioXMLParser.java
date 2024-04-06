@@ -60,6 +60,10 @@ public class BioXMLParser implements ErrorHandler {
 		ps.println("<!ATTLIST genetic_code clonerate CDATA #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST genetic_code homeX CDATA #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST genetic_code homeY CDATA #REQUIRED>"); //$NON-NLS-1$
+		ps.println("<!ATTLIST genetic_code base1X CDATA #REQUIRED>"); //$NON-NLS-1$
+		ps.println("<!ATTLIST genetic_code base1Y CDATA #REQUIRED>"); //$NON-NLS-1$
+		ps.println("<!ATTLIST genetic_code base2X CDATA #REQUIRED>"); //$NON-NLS-1$
+		ps.println("<!ATTLIST genetic_code base2Y CDATA #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST genetic_code activity (0|1|2) #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST genetic_code modifiescream (1|2|3) #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST genetic_code modifiesfallow (1|2|3|4) #REQUIRED>"); //$NON-NLS-1$
@@ -131,6 +135,10 @@ public class BioXMLParser implements ErrorHandler {
 				"\" clonerate=\""+Integer.toString(geneticCode.getClonerate())+ //$NON-NLS-1$
 				"\" homeX=\""+Double.toString(geneticCode.getHomeX())+ //$NON-NLS-1$
 				"\" homeY=\""+Double.toString(geneticCode.getHomeY())+ //$NON-NLS-1$
+				"\" base1X=\""+Double.toString(geneticCode.getBase1X())+ //$NON-NLS-1$
+				"\" base1Y=\""+Double.toString(geneticCode.getBase1Y())+ //$NON-NLS-1$
+				"\" base2X=\""+Double.toString(geneticCode.getBase2X())+ //$NON-NLS-1$
+				"\" base2Y=\""+Double.toString(geneticCode.getBase2Y())+ //$NON-NLS-1$
 				"\" activity=\""+Integer.toString(geneticCode.getActivity())+ //$NON-NLS-1$
 				"\" modifiescream=\""+Integer.toString(geneticCode.getModifiescream())+ //$NON-NLS-1$
 				"\" modifiesfallow=\""+Integer.toString(geneticCode.getModifiesfallow())+ //$NON-NLS-1$
@@ -206,7 +214,7 @@ public class BioXMLParser implements ErrorHandler {
 
 	public GeneticCode parseGeneticCode(File f) throws SAXException, IOException {
 		int symmetry, mirror, mutationrate, clonerate, activity, modifiescream, modifiesfallow, modifiesspore, adaptspore, modifiesblack, adaptblack;
-		double homeX, homeY;
+		double homeX, homeY, base1X, base1Y, base2X, base2Y;
 		boolean plague;
 		boolean disperse;
 		boolean generation;
@@ -275,6 +283,38 @@ public class BioXMLParser implements ErrorHandler {
 			}
 			if (homeY<-1 || homeY>100)
 				throw new SAXException("HomeY has not an allowed value."); //$NON-NLS-1$
+			s = geneticCode.getAttribute("base1X"); //$NON-NLS-1$
+			try {
+				base1X = Double.parseDouble(s); //$NON-NLS-1$
+			} catch (NumberFormatException e) {
+				throw new SAXException("Base1X has not an allowed value."); //$NON-NLS-1$
+			}
+			if (base1X<-1 || base1X>100)
+				throw new SAXException("Base1X has not an allowed value."); //$NON-NLS-1$
+			s = geneticCode.getAttribute("base1Y"); //$NON-NLS-1$
+			try {
+				base1Y = Double.parseDouble(s); //$NON-NLS-1$
+			} catch (NumberFormatException e) {
+				throw new SAXException("Base1Y has not an allowed value."); //$NON-NLS-1$
+			}
+			if (base1Y<-1 || base1Y>100)
+				throw new SAXException("Base1Y has not an allowed value."); //$NON-NLS-1$
+			s = geneticCode.getAttribute("base2X"); //$NON-NLS-1$
+			try {
+				base2X = Double.parseDouble(s); //$NON-NLS-1$
+			} catch (NumberFormatException e) {
+				throw new SAXException("Base2X has not an allowed value."); //$NON-NLS-1$
+			}
+			if (base2X<-1 || base2X>100)
+				throw new SAXException("Base2X has not an allowed value."); //$NON-NLS-1$
+			s = geneticCode.getAttribute("base2Y"); //$NON-NLS-1$
+			try {
+				base2Y = Double.parseDouble(s); //$NON-NLS-1$
+			} catch (NumberFormatException e) {
+				throw new SAXException("Base2Y has not an allowed value."); //$NON-NLS-1$
+			}
+			if (base2Y<-1 || base2Y>100)
+				throw new SAXException("Base2Y has not an allowed value."); //$NON-NLS-1$
 			s = geneticCode.getAttribute("activity"); //$NON-NLS-1$
 			try {
 				activity = Integer.parseInt(s); //$NON-NLS-1$
@@ -458,7 +498,7 @@ public class BioXMLParser implements ErrorHandler {
 				genes.add(parseGene((Element)gene));
 				gene = getNextElement(gene.getNextSibling());
 			}
-			return new GeneticCode(genes, symmetry, mirror, mutationrate, clonerate, homeX, homeY, activity, modifiescream, modifiesfallow, modifiesspore, adaptspore, modifiesblack, adaptblack, plague, disperse, generation, sibling, altruist, familial, social, peaceful, passive, clockwise, modifiespink, modifieslilac, modifiessky, modifiesleaf, selfish);
+			return new GeneticCode(genes, symmetry, mirror, mutationrate, clonerate, homeX, homeY, base1X, base1Y, base2X, base2Y, activity, modifiescream, modifiesfallow, modifiesspore, adaptspore, modifiesblack, adaptblack, plague, disperse, generation, sibling, altruist, familial, social, peaceful, passive, clockwise, modifiespink, modifieslilac, modifiessky, modifiesleaf, selfish);
 		}
 		throw new SAXException("This file does not contain a genetic_code."); //$NON-NLS-1$
 	}

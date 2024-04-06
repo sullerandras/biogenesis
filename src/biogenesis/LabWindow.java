@@ -69,6 +69,10 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 	protected JTextField cloneLabel;
 	protected JTextField homeXLabel;
 	protected JTextField homeYLabel;
+	protected JTextField base1XLabel;
+	protected JTextField base1YLabel;
+	protected JTextField base2XLabel;
+	protected JTextField base2YLabel;
 	protected JComboBox symmetryCombo;
 	protected JComboBox mirrorCombo;
 	protected JComboBox activityCombo;
@@ -102,6 +106,10 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 	protected int clonerate= (Utils.MIN_CLONE_RATE + Utils.MAX_CLONE_RATE) / 2;
 	protected double homeX= -1;
 	protected double homeY= -1;
+	protected double base1X= -1;
+	protected double base1Y= -1;
+	protected double base2X= -1;
+	protected double base2Y= -1;
 	protected int activity=2;
 	protected int modifiescream=2;
 	protected int modifiesfallow=2;
@@ -153,9 +161,9 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 		okButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
             	if (genesList.size() > 0)
-            		mainWindow.getVisibleWorld().setClippedGeneticCode(new GeneticCode(genesList, symmetry, mirror, mutationrate, clonerate, homeX, homeY, activity, modifiescream,
-            		modifiesfallow, modifiesspore, adaptspore, modifiesblack, adaptblack, plague, disperseChildren, generationBattle, siblingBattle, altruist, familial,
-            		social, peaceful, passive, clockwise, modifiespink, modifieslilac, modifiessky, modifiesleaf, selfish));
+            		mainWindow.getVisibleWorld().setClippedGeneticCode(new GeneticCode(genesList, symmetry, mirror, mutationrate, clonerate, homeX, homeY, base1X, base1Y,
+            		base2X, base2Y, activity, modifiescream, modifiesfallow, modifiesspore, adaptspore, modifiesblack, adaptblack, plague, disperseChildren, generationBattle,
+            		siblingBattle, altruist, familial, social, peaceful, passive, clockwise, modifiespink, modifieslilac, modifiessky, modifiesleaf, selfish));
             	else
             		mainWindow.getVisibleWorld().removeClippedGeneticCode();
             	dispose();
@@ -172,6 +180,10 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 		clonerate = g.getClonerate();
 		homeX = g.getHomeX();
 		homeY = g.getHomeY();
+		base1X = g.getBase1X();
+		base1Y = g.getBase1Y();
+		base2X = g.getBase2X();
+		base2Y = g.getBase2Y();
 		activity = g.getActivity();
 		modifiescream = g.getModifiescream();
 		modifiesfallow = g.getModifiesfallow();
@@ -404,6 +416,25 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 			}
 		});
 		generalPanel.add(modifiesblackCombo, gridBagConstraints);
+		gridBagConstraints.gridx = 12;
+		gridBagConstraints.gridy = 1;
+		generalPanel.add(new JLabel(Messages.getString("T_BASE1X_PERCENTAGE"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
+		gridBagConstraints.gridx = 13;
+		gridBagConstraints.gridy = 1;
+		base1XLabel = new JTextField(Double.toString(base1X));
+		base1XLabel.setText(Double.toString(base1X));
+		base1XLabel.addKeyListener(new KeyAdapter() {
+            public void keyReleased(KeyEvent e) {
+            	double d;
+				try {
+					d = Double.parseDouble(base1XLabel.getText());
+					if ((d >= 0 && d <= 100) || (d == -1)) base1X = d;
+				} catch (NumberFormatException ex) {
+					// Keep old value if there is a problem
+				}
+            }
+        });
+		generalPanel.add(base1XLabel, gridBagConstraints);
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 2;
 		generalPanel.add(new JLabel(Messages.getString("T_ACTIVITY"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
@@ -492,6 +523,25 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 			}
 		});
 		generalPanel.add(adaptblackCombo, gridBagConstraints);
+		gridBagConstraints.gridx = 12;
+		gridBagConstraints.gridy = 2;
+		generalPanel.add(new JLabel(Messages.getString("T_BASE1Y_PERCENTAGE"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
+		gridBagConstraints.gridx = 13;
+		gridBagConstraints.gridy = 2;
+		base1YLabel = new JTextField(Double.toString(base1Y));
+		base1YLabel.setText(Double.toString(base1Y));
+		base1YLabel.addKeyListener(new KeyAdapter() {
+            public void keyReleased(KeyEvent e) {
+            	double d;
+				try {
+					d = Double.parseDouble(base1YLabel.getText());
+					if ((d >= 0 && d <= 100) || (d == -1)) base1Y = d;
+				} catch (NumberFormatException ex) {
+					// Keep old value if there is a problem
+				}
+            }
+        });
+		generalPanel.add(base1YLabel, gridBagConstraints);
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 3;
 		generalPanel.add(new JLabel(Messages.getString("T_MODIFIESCREAM"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
@@ -580,6 +630,25 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 			}
 		});
 		generalPanel.add(modifiesleafCombo, gridBagConstraints);
+		gridBagConstraints.gridx = 12;
+		gridBagConstraints.gridy = 3;
+		generalPanel.add(new JLabel(Messages.getString("T_BASE2X_PERCENTAGE"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
+		gridBagConstraints.gridx = 13;
+		gridBagConstraints.gridy = 3;
+		base2XLabel = new JTextField(Double.toString(base2X));
+		base2XLabel.setText(Double.toString(base2X));
+		base2XLabel.addKeyListener(new KeyAdapter() {
+            public void keyReleased(KeyEvent e) {
+            	double d;
+				try {
+					d = Double.parseDouble(base2XLabel.getText());
+					if ((d >= 0 && d <= 100) || (d == -1)) base2X = d;
+				} catch (NumberFormatException ex) {
+					// Keep old value if there is a problem
+				}
+            }
+        });
+		generalPanel.add(base2XLabel, gridBagConstraints);
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 4;
 		generalPanel.add(new JLabel(Messages.getString("T_MODIFIESFALLOW"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
@@ -668,6 +737,25 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 			}
 		});
 		generalPanel.add(modifiesskyCombo, gridBagConstraints);
+		gridBagConstraints.gridx = 12;
+		gridBagConstraints.gridy = 4;
+		generalPanel.add(new JLabel(Messages.getString("T_BASE2Y_PERCENTAGE"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
+		gridBagConstraints.gridx = 13;
+		gridBagConstraints.gridy = 4;
+		base2YLabel = new JTextField(Double.toString(base2Y));
+		base2YLabel.setText(Double.toString(base2Y));
+		base2YLabel.addKeyListener(new KeyAdapter() {
+            public void keyReleased(KeyEvent e) {
+            	double d;
+				try {
+					d = Double.parseDouble(base2YLabel.getText());
+					if ((d >= 0 && d <= 100) || (d == -1)) base2Y = d;
+				} catch (NumberFormatException ex) {
+					// Keep old value if there is a problem
+				}
+            }
+        });
+		generalPanel.add(base2YLabel, gridBagConstraints);
 
 		getContentPane().add(generalPanel,BorderLayout.NORTH);
 		genesPanel = new JPanel();
@@ -707,6 +795,10 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
             	clonerate= (Utils.MIN_CLONE_RATE + Utils.MAX_CLONE_RATE) / 2;
             	homeX= -1;
             	homeY= -1;
+            	base1X= -1;
+            	base1Y= -1;
+            	base2X= -1;
+            	base2Y= -1;
             	activity=2;
             	modifiescream=2;
             	modifiesfallow=2;
@@ -733,6 +825,10 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
             	cloneLabel.setText(Integer.toString(clonerate));
             	homeXLabel.setText(Double.toString(homeX));
             	homeYLabel.setText(Double.toString(homeY));
+            	base1XLabel.setText(Double.toString(base1X));
+            	base1YLabel.setText(Double.toString(base1Y));
+            	base2XLabel.setText(Double.toString(base2X));
+            	base2YLabel.setText(Double.toString(base2Y));
 				symmetryCombo.setSelectedItem(Integer.toString(symmetry));
 				mirrorCombo.setSelectedIndex(mirror);
 				disperseCombo.setSelectedIndex(disperseChildren==false?0:1);
@@ -781,6 +877,10 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 							cloneLabel.setText(Integer.toString(clonerate));
 							homeXLabel.setText(Double.toString(homeX));
 			            	homeYLabel.setText(Double.toString(homeY));
+			            	base1XLabel.setText(Double.toString(base1X));
+			            	base1YLabel.setText(Double.toString(base1Y));
+			            	base2XLabel.setText(Double.toString(base2X));
+			            	base2YLabel.setText(Double.toString(base2Y));
 							symmetryCombo.setSelectedItem(Integer.toString(symmetry));
 							mirrorCombo.setSelectedIndex(mirror);
 							disperseCombo.setSelectedIndex(disperseChildren==false?0:1);
@@ -824,9 +924,9 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 		exportButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (genesList.size() > 0) {
-					GeneticCode exportcode = new GeneticCode(genesList, symmetry, mirror, mutationrate, clonerate, homeX, homeY, activity, modifiescream, modifiesfallow,
-		            		modifiesspore, adaptspore, modifiesblack, adaptblack, plague, disperseChildren, generationBattle, siblingBattle, altruist, familial, social,
-		            		peaceful, passive, clockwise, modifiespink, modifieslilac, modifiessky, modifiesleaf, selfish);
+					GeneticCode exportcode = new GeneticCode(genesList, symmetry, mirror, mutationrate, clonerate, homeX, homeY, base1X, base1Y, base2X, base2Y, activity,
+							modifiescream, modifiesfallow, modifiesspore, adaptspore, modifiesblack, adaptblack, plague, disperseChildren, generationBattle, siblingBattle,
+							altruist, familial, social, peaceful, passive, clockwise, modifiespink, modifieslilac, modifiessky, modifiesleaf, selfish);
 					mainWindow.saveObjectAs(LabWindow.this, exportcode);
 				}
 			}
@@ -1221,7 +1321,7 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 	}
 
 	protected void draw(Graphics g) {
-		GeneticCode code = new GeneticCode(genesList, symmetry, mirror, mutationrate, clonerate, homeX, homeY, activity, modifiescream, modifiesfallow, modifiesspore, adaptspore, modifiesblack, adaptblack, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false);
+		GeneticCode code = new GeneticCode(genesList, symmetry, mirror, mutationrate, clonerate, homeX, homeY, base1X, base1Y, base2X, base2Y, activity, modifiescream, modifiesfallow, modifiesspore, adaptspore, modifiesblack, adaptblack, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false);
 		code.draw(g, drawPanel.getSize().width, drawPanel.getSize().height);
 	}
 

@@ -91,6 +91,26 @@ public class GeneticCode implements Cloneable, Serializable {
 	 */
 	protected double _homeY;
 	/**
+	 * The base1 X % coordinate of this organism. Possible values are
+	 * -1 (base is not used) or 0 - 100 
+	 */
+	protected double _base1X;
+	/**
+	 * The base1 Y % coordinate of this organism. Possible values are
+	 * -1 (base is not used) or 0 - 100 
+	 */
+	protected double _base1Y;
+	/**
+	 * The base2 X % coordinate of this organism. Possible values are
+	 * -1 (base is not used) or 0 - 100 
+	 */
+	protected double _base2X;
+	/**
+	 * The base2 Y % coordinate of this organism. Possible values are
+	 * -1 (base is not used) or 0 - 100 
+	 */
+	protected double _base2Y;
+	/**
 	 * The seasons of the summer segments. Possible values are
 	 * 0 - 2. 
 	 */
@@ -246,6 +266,38 @@ public class GeneticCode implements Cloneable, Serializable {
 	 */
 	public double getHomeY() {
 		return _homeY;
+	}
+	/**
+	 * Returns the base1 X % coordinate applied to organisms with this genetic code
+	 * 
+	 * @return  a value of -1 or 0 - 100
+	 */
+	public double getBase1X() {
+		return _base1X;
+	}
+	/**
+	 * Returns the base1 Y % coordinate applied to organisms with this genetic code
+	 * 
+	 * @return  a value of -1 or 0 - 100
+	 */
+	public double getBase1Y() {
+		return _base1Y;
+	}
+	/**
+	 * Returns the base2 X % coordinate applied to organisms with this genetic code
+	 * 
+	 * @return  a value of -1 or 0 - 100
+	 */
+	public double getBase2X() {
+		return _base2X;
+	}
+	/**
+	 * Returns the base2 Y % coordinate applied to organisms with this genetic code
+	 * 
+	 * @return  a value of -1 or 0 - 100
+	 */
+	public double getBase2Y() {
+		return _base2Y;
 	}
 	/**
 	 * Returns the season activity applied to organisms with this genetic code
@@ -541,6 +593,46 @@ public class GeneticCode implements Cloneable, Serializable {
 		}
 	}
 	/**
+	 * Gives base1 X % coordinate a random value (-1 or 0 - 100)
+	 */
+	private void randomBase1X() {
+		if (Utils.random.nextInt(4)<1) {
+			_base1X = -1;
+		} else {
+			_base1X = Utils.random.nextDouble() * 100.0;
+		}
+	}
+	/**
+	 * Gives base1 Y % coordinate a random value (-1 or 0 - 100)
+	 */
+	private void randomBase1Y() {
+		if (Utils.random.nextInt(4)<1) {
+			_base1Y = -1;
+		} else {
+			_base1Y = Utils.random.nextDouble() * 100.0;
+		}
+	}
+	/**
+	 * Gives base2 X % coordinate a random value (-1 or 0 - 100)
+	 */
+	private void randomBase2X() {
+		if (Utils.random.nextInt(7)<1) {
+			_base2X = -1;
+		} else {
+			_base2X = Utils.random.nextDouble() * 100.0;
+		}
+	}
+	/**
+	 * Gives base2 Y % coordinate a random value (-1 or 0 - 100)
+	 */
+	private void randomBase2Y() {
+		if (Utils.random.nextInt(7)<1) {
+			_base2Y = -1;
+		} else {
+			_base2Y = Utils.random.nextDouble() * 100.0;
+		}
+	}
+	/**
 	 * Increases home X % coordinate by a maximum of 1%
 	 */
 	private void increaseHomeX() {
@@ -553,16 +645,64 @@ public class GeneticCode implements Cloneable, Serializable {
 		_homeY = _homeY + Utils.random.nextDouble();
 	}
 	/**
+	 * Increases base1 X % coordinate by a maximum of 1%
+	 */
+	private void increaseBase1X() {
+		_base1X = _base1X + Utils.random.nextDouble();
+	}
+	/**
+	 * Increases base1 Y % coordinate by a maximum of 1%
+	 */
+	private void increaseBase1Y() {
+		_base1Y = _base1Y + Utils.random.nextDouble();
+	}
+	/**
+	 * Increases base2 X % coordinate by a maximum of 1%
+	 */
+	private void increaseBase2X() {
+		_base2X = _base2X + Utils.random.nextDouble();
+	}
+	/**
+	 * Increases base2 Y % coordinate by a maximum of 1%
+	 */
+	private void increaseBase2Y() {
+		_base2Y = _base2Y + Utils.random.nextDouble();
+	}
+	/**
 	 * Decreases home X % coordinate by a maximum of 1%
 	 */
 	private void decreaseHomeX() {
 		_homeX = _homeX - Utils.random.nextDouble();
 	}
 	/**
-	 * Increases home X % coordinate by a maximum of 1%
+	 * Decreases home Y % coordinate by a maximum of 1%
 	 */
 	private void decreaseHomeY() {
 		_homeY = _homeY - Utils.random.nextDouble();
+	}
+	/**
+	 * Decreases base1 X % coordinate by a maximum of 1%
+	 */
+	private void decreaseBase1X() {
+		_base1X = _base1X - Utils.random.nextDouble();
+	}
+	/**
+	 * Decreases base1 Y % coordinate by a maximum of 1%
+	 */
+	private void decreaseBase1Y() {
+		_base1Y = _base1Y - Utils.random.nextDouble();
+	}
+	/**
+	 * Decreases base2 X % coordinate by a maximum of 1%
+	 */
+	private void decreaseBase2X() {
+		_base2X = _base2X - Utils.random.nextDouble();
+	}
+	/**
+	 * Decreases base2 Y % coordinate by a maximum of 1%
+	 */
+	private void decreaseBase2Y() {
+		_base2Y = _base2Y - Utils.random.nextDouble();
 	}
 	/**
 	 * Gives activity a random value (0 - 2)
@@ -737,6 +877,10 @@ public class GeneticCode implements Cloneable, Serializable {
 		randomClonerate();
 		randomHomeX();
 		randomHomeY();
+		randomBase1X();
+		randomBase1Y();
+		randomBase2X();
+		randomBase2Y();
 		randomActivity();
 		randomModifiescream();
 		randomModifiesfallow();
@@ -771,6 +915,10 @@ public class GeneticCode implements Cloneable, Serializable {
 	 * @param clonerate  The clonerate that an organism with this genetic code will have.
 	 * @param homeX  The X % coordinate that an organism with this genetic code will have.
 	 * @param homeY  The Y % coordinate that an organism with this genetic code will have.
+	 * @param base1X  The X % coordinate that an organism with this genetic code will have.
+	 * @param base1Y  The Y % coordinate that an organism with this genetic code will have.
+	 * @param base2X  The X % coordinate that an organism with this genetic code will have.
+	 * @param base2Y  The Y % coordinate that an organism with this genetic code will have.
 	 * @param activity  The summer activity that an organism with this genetic code will have.
 	 * @param modifiescream The specialization of an enhanced parasite.
 	 * @param modifiesfallow The specialization of fallow. 
@@ -794,10 +942,10 @@ public class GeneticCode implements Cloneable, Serializable {
 	 * @param modifiesleaf  true if the function of leaf is modified.
 	 * @param selfish  true if the organism retains half of its energy if it reproduces.
 	 */
-	public GeneticCode(List<Gene> genes, int symmetry, int mirror, int mutationrate, int clonerate, double homeX, double homeY, int activity, int modifiescream,
-		int modifiesfallow, int modifiesspore, int adaptspore, int modifiesblack, int adaptblack, boolean plague, boolean disperseChildren, boolean generationBattle,
-		boolean siblingBattle, boolean altruist, boolean familial, boolean social, boolean peaceful, boolean passive, boolean clockwise, boolean modifiespink,
-		boolean modifieslilac, boolean modifiessky, boolean modifiesleaf, boolean selfish) {
+	public GeneticCode(List<Gene> genes, int symmetry, int mirror, int mutationrate, int clonerate, double homeX, double homeY, double base1X, double base1Y, double base2X,
+		double base2Y, int activity, int modifiescream, int modifiesfallow, int modifiesspore, int adaptspore, int modifiesblack, int adaptblack, boolean plague,
+		boolean disperseChildren, boolean generationBattle, boolean siblingBattle, boolean altruist, boolean familial, boolean social, boolean peaceful, boolean passive,
+		boolean clockwise, boolean modifiespink, boolean modifieslilac, boolean modifiessky, boolean modifiesleaf, boolean selfish) {
 		int nGenes = genes.size();
 		_genes = new Gene[nGenes];
 		genes.toArray(_genes);
@@ -807,6 +955,10 @@ public class GeneticCode implements Cloneable, Serializable {
 		_clonerate = clonerate;
 		_homeX = homeX;
 		_homeY = homeY;
+		_base1X = base1X;
+		_base1Y = base1Y;
+		_base2X = base2X;
+		_base2Y = base2Y;
 		_activity = activity;
 		_modifiescream = modifiescream;
 		_modifiesfallow = modifiesfallow;
@@ -1000,6 +1152,118 @@ public class GeneticCode implements Cloneable, Serializable {
 			} else {
 				if (_homeY < 0) {
 					_homeY = 0;
+				}
+			}
+		}
+		_base1X = parentCode.getBase1X();
+		if (Utils.random.nextInt(1000) < _mutationrate) {
+			// mutate base1X
+			if (Utils.random.nextInt(10) < 1) {
+				// large random change
+				randomBase1X();
+			} else {
+				if (_base1X >= 0) {
+					if (Utils.random.nextBoolean()) {
+	                	// increase
+						increaseBase1X();
+					} else {
+						// decrease
+						decreaseBase1X();
+					}
+				}
+			}
+		}
+		// check if organism is inside allowed base1X % coordinates
+		if (_base1X != -1) {
+			if (_base1X > 100) {
+				_base1X = 100;
+			} else {
+				if (_base1X < 0) {
+					_base1X = 0;
+				}
+			}
+		}
+		_base1Y = parentCode.getBase1Y();
+		if (Utils.random.nextInt(1000) < _mutationrate) {
+			// mutate base1Y
+			if (Utils.random.nextInt(10) < 1) {
+				// large random change
+				randomBase1Y();
+			} else {
+				if (_base1Y >= 0) {
+					if (Utils.random.nextBoolean()) {
+	                	// increase
+						increaseBase1Y();
+					} else {
+						// decrease
+						decreaseBase1Y();
+					}
+				}
+			}
+		}
+		// check if organism is inside allowed base1Y % coordinates
+		if (_base1Y != -1) {
+			if (_base1Y > 100) {
+				_base1Y = 100;
+			} else {
+				if (_base1Y < 0) {
+					_base1Y = 0;
+				}
+			}
+		}
+		_base2X = parentCode.getBase2X();
+		if (Utils.random.nextInt(1000) < _mutationrate) {
+			// mutate base2X
+			if (Utils.random.nextInt(10) < 1) {
+				// large random change
+				randomBase2X();
+			} else {
+				if (_base2X >= 0) {
+					if (Utils.random.nextBoolean()) {
+	                	// increase
+						increaseBase2X();
+					} else {
+						// decrease
+						decreaseBase2X();
+					}
+				}
+			}
+		}
+		// check if organism is inside allowed base2X % coordinates
+		if (_base2X != -1) {
+			if (_base2X > 100) {
+				_base2X = 100;
+			} else {
+				if (_base2X < 0) {
+					_base2X = 0;
+				}
+			}
+		}
+		_base2Y = parentCode.getBase2Y();
+		if (Utils.random.nextInt(1000) < _mutationrate) {
+			// mutate base2Y
+			if (Utils.random.nextInt(10) < 1) {
+				// large random change
+				randomBase2Y();
+			} else {
+				if (_base2Y >= 0) {
+					if (Utils.random.nextBoolean()) {
+	                	// increase
+						increaseBase2Y();
+					} else {
+						// decrease
+						decreaseBase2Y();
+					}
+				}
+			}
+		}
+		// check if organism is inside allowed base2Y % coordinates
+		if (_base2Y != -1) {
+			if (_base2Y > 100) {
+				_base2Y = 100;
+			} else {
+				if (_base2Y < 0) {
+					_base2Y = 0;
 				}
 			}
 		}
