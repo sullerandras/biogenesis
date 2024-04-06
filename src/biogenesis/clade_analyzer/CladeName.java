@@ -16,11 +16,12 @@ public class CladeName {
   private final String primaryColors;
   private final String secondaryColors;
   private final String tertiaryColors;
+  private final String quaternaryColors;
 
   private Color cachedColor;
 
   public CladeName(boolean isVirus, boolean isConsumer, boolean isPlant, boolean isOther, int symmetry, boolean mirror,
-      ColorCounter primaryColors, ColorCounter secondaryColors, ColorCounter tertiaryColors) {
+      ColorCounter primaryColors, ColorCounter secondaryColors, ColorCounter tertiaryColors, ColorCounter quaternaryColors) {
         this.isVirus = isVirus;
         this.isConsumer = isConsumer;
         this.isPlant = isPlant;
@@ -30,6 +31,7 @@ public class CladeName {
         this.primaryColors = primaryColors.toString();
         this.secondaryColors = secondaryColors.toString();
         this.tertiaryColors = tertiaryColors.toString();
+        this.quaternaryColors = quaternaryColors.toString();
   }
 
   public String toString() {
@@ -76,6 +78,14 @@ public class CladeName {
       // tertiary colors
       sb.append(tertiaryColors);
     }
+    
+    if (quaternaryColors.length() > 0) {
+        // separator
+        sb.append(" - ");
+
+        // quaternary colors
+        sb.append(quaternaryColors);
+      }
 
     return sb.toString();
   }

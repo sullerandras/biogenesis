@@ -29,6 +29,7 @@ CREATE INDEX IF NOT EXISTS CLADE_SUMMARIES_CLADEID_INDEX ON clade_summaries(CLAD
 
 INSERT OR IGNORE INTO colors(name, color) VALUES ('green', '{"r":0,"g":255,"b":0,"a":255}');
 INSERT OR IGNORE INTO colors(name, color) VALUES ('forest', '{"r":0,"g":128,"b":0,"a":255}');
+INSERT OR IGNORE INTO colors(name, color) VALUES ('ivy', '{"r":136,"g":164,"b":128,"a":255}');
 INSERT OR IGNORE INTO colors(name, color) VALUES ('spring', '{"r":0,"g":255,"b":128,"a":255}');
 INSERT OR IGNORE INTO colors(name, color) VALUES ('summer', '{"r":128,"g":255,"b":64,"a":255}');
 INSERT OR IGNORE INTO colors(name, color) VALUES ('lime', '{"r":176,"g":255,"b":0,"a":255}');
@@ -38,10 +39,12 @@ INSERT OR IGNORE INTO colors(name, color) VALUES ('jade', '{"r":0,"g":168,"b":10
 INSERT OR IGNORE INTO colors(name, color) VALUES ('grass', '{"r":144,"g":176,"b":64,"a":255}');
 INSERT OR IGNORE INTO colors(name, color) VALUES ('bark', '{"r":96,"g":128,"b":64,"a":255}');
 INSERT OR IGNORE INTO colors(name, color) VALUES ('purple', '{"r":168,"g":0,"b":84,"a":255}');
+INSERT OR IGNORE INTO colors(name, color) VALUES ('plankton', '{"r":96,"g":192,"b":192,"a":255}');
 INSERT OR IGNORE INTO colors(name, color) VALUES ('red', '{"r":255,"g":0,"b":0,"a":255}');
 INSERT OR IGNORE INTO colors(name, color) VALUES ('fire', '{"r":255,"g":100,"b":0,"a":255}');
 INSERT OR IGNORE INTO colors(name, color) VALUES ('orange', '{"r":255,"g":200,"b":0,"a":255}');
 INSERT OR IGNORE INTO colors(name, color) VALUES ('maroon', '{"r":128,"g":0,"b":0,"a":255}');
+INSERT OR IGNORE INTO colors(name, color) VALUES ('crimson', '{"r":220,"g":40,"b":60,"a":255}');
 INSERT OR IGNORE INTO colors(name, color) VALUES ('pink', '{"r":255,"g":175,"b":175,"a":255}');
 INSERT OR IGNORE INTO colors(name, color) VALUES ('cream', '{"r":208,"g":192,"b":140,"a":255}');
 INSERT OR IGNORE INTO colors(name, color) VALUES ('silver', '{"r":192,"g":192,"b":192,"a":255}');
@@ -64,6 +67,8 @@ INSERT OR IGNORE INTO colors(name, color) VALUES ('magenta', '{"r":255,"g":0,"b"
 INSERT OR IGNORE INTO colors(name, color) VALUES ('rose', '{"r":255,"g":0,"b":128,"a":255}');
 INSERT OR IGNORE INTO colors(name, color) VALUES ('cyan', '{"r":0,"g":255,"b":255,"a":255}');
 INSERT OR IGNORE INTO colors(name, color) VALUES ('teal', '{"r":0,"g":128,"b":128,"a":255}');
+INSERT OR IGNORE INTO colors(name, color) VALUES ('drift', '{"r":64,"g":160,"b":160,"a":255}');
+INSERT OR IGNORE INTO colors(name, color) VALUES ('spin', '{"r":128,"g":255,"b":224,"a":255}');
 INSERT OR IGNORE INTO colors(name, color) VALUES ('yellow', '{"r":255,"g":255,"b":0,"a":255}');
 INSERT OR IGNORE INTO colors(name, color) VALUES ('auburn', '{"r":128,"g":48,"b":48,"a":255}');
 INSERT OR IGNORE INTO colors(name, color) VALUES ('indigo', '{"r":111,"g":0,"b":255,"a":255}');

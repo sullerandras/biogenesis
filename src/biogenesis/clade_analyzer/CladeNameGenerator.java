@@ -31,6 +31,7 @@ public class CladeNameGenerator {
     ColorCounter primaryColors = new ColorCounter();
     ColorCounter secondaryColors = new ColorCounter();
     ColorCounter tertiaryColors = new ColorCounter();
+    ColorCounter quaternaryColors = new ColorCounter();
 
     for (int i = 0; i < geneticCode.getNGenes(); i++) {
       Gene gene = geneticCode.getGene(i);
@@ -43,6 +44,10 @@ public class CladeNameGenerator {
           primaryColors.add(type);
           break;
         case FOREST:
+          isPlant = true;
+          primaryColors.add(type);
+          break;
+        case IVY:
           isPlant = true;
           primaryColors.add(type);
           break;
@@ -75,13 +80,15 @@ public class CladeNameGenerator {
           primaryColors.add(type);
           break;
         case BARK:
+          isPlant = true;
+          primaryColors.add(type);
           break;
         case PURPLE:
           isPlant = true;
           primaryColors.add(type);
           break;
         case PLANKTON:
-          isConsumer = true;
+          isPlant = true;
           primaryColors.add(type);
           break;
         case RED:
@@ -100,6 +107,10 @@ public class CladeNameGenerator {
           isConsumer = true;
           primaryColors.add(type);
           break;
+        case CRIMSON:
+          isConsumer = true;
+          primaryColors.add(type);
+          break;
         case PINK:
           isConsumer = true;
           primaryColors.add(type);
@@ -109,8 +120,10 @@ public class CladeNameGenerator {
           primaryColors.add(type);
           break;
         case SILVER:
+          primaryColors.add(type);
           break;
         case SPIKE:
+          secondaryColors.add(type);
           break;
         case LILAC:
           secondaryColors.add(type);
@@ -137,6 +150,7 @@ public class CladeNameGenerator {
           secondaryColors.add(type);
           break;
         case SPORE:
+          tertiaryColors.add(type);
           break;
         case WHITE:
           isVirus = true;
@@ -146,6 +160,7 @@ public class CladeNameGenerator {
           secondaryColors.add(type);
           break;
         case CORAL:
+          isVirus = true;
           primaryColors.add(type);
           break;
         case MINT:
@@ -158,12 +173,19 @@ public class CladeNameGenerator {
           tertiaryColors.add(type);
           break;
         case ROSE:
+          tertiaryColors.add(type);
           break;
         case CYAN:
-          secondaryColors.add(type);
+          quaternaryColors.add(type);
           break;
         case TEAL:
-          secondaryColors.add(type);
+          quaternaryColors.add(type);
+          break;
+        case DRIFT:
+          quaternaryColors.add(type);
+          break;
+        case SPIN:
+          quaternaryColors.add(type);
           break;
         case YELLOW:
           tertiaryColors.add(type);
@@ -187,9 +209,10 @@ public class CladeNameGenerator {
           tertiaryColors.add(type);
           break;
         case DARK:
+          secondaryColors.add(type);
           break;
         case EYE:
-          secondaryColors.add(type);
+          quaternaryColors.add(type);
           break;
         case WINTER:
           break;
@@ -235,6 +258,6 @@ public class CladeNameGenerator {
     }
 
     return new CladeName(isVirus, isConsumer, isPlant, isOther, geneticCode.getSymmetry(), geneticCode.getMirror() == 1,
-        primaryColors, secondaryColors, tertiaryColors);
+        primaryColors, secondaryColors, tertiaryColors, quaternaryColors);
   }
 }

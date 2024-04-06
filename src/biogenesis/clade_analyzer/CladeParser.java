@@ -55,8 +55,8 @@ public class CladeParser {
     int symmetry = o.get("_symmetry").getAsInt();
     int mirror = o.get("_mirror").getAsInt();
 
-    GeneticCode x = new GeneticCode(genes, symmetry, mirror, 0, 0, 0, 0, 0, 0, 0, 0, 0, false, false, false, false,
-        false, false, false, false, false, false, false, false, false, false, false);
+    GeneticCode x = new GeneticCode(genes, symmetry, mirror, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false);
 
     synchronized (geneticCodeCache) {
       geneticCodeCache.put(str, new SoftReference<GeneticCode>(x));
