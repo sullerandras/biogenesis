@@ -2004,15 +2004,7 @@ public class Organism extends Rectangle {
 								}
 							}
 						} else if (_isinfectious) {
-							_isonlyc4 = 4;
-							int j;
-							for (j=_segments-1; j>=0; j--) {
-								switch (getTypeColor(_segColor[j])) {
-								case C4:
-									_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * (10.5 + _geneticCode.getGene(j%_geneticCode.getNGenes()).getLength());
-									break;
-								}
-							}
+							_isonlyc4 = 3;
 						} else {
 							_isonlyc4 = 3;
 							int j;
