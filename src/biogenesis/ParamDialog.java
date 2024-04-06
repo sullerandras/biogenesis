@@ -88,6 +88,7 @@ public class ParamDialog extends JDialog {
 	private JTextField detritustoCO2divisorText = null;
 	private JTextField CO1toCO2divisorText = null;
 	private JTextField metamutationrateText = null;
+	private JTextField xymutationrateText = null;
 	private JTextField maxmutationrateText = null;
 	private JTextField minmutationrateText = null;
 	private JTextField maxclonerateText = null;
@@ -291,6 +292,7 @@ public class ParamDialog extends JDialog {
 		detritustoCO2divisorText.setText(String.valueOf(Utils.DEF_DETRITUS_TO_CO2_DIVISOR));
 		CO1toCO2divisorText.setText(String.valueOf(Utils.DEF_CO1_TO_CO2_DIVISOR));
 		metamutationrateText.setText(String.valueOf(Utils.DEF_META_MUTATION_RATE));
+		xymutationrateText.setText(String.valueOf(Utils.DEF_XY_MUTATION_RATE));
 		maxmutationrateText.setText(String.valueOf(Utils.DEF_MAX_MUTATION_RATE));
 		minmutationrateText.setText(String.valueOf(Utils.DEF_MIN_MUTATION_RATE));
 		maxclonerateText.setText(String.valueOf(Utils.DEF_MAX_CLONE_RATE));
@@ -729,12 +731,16 @@ public class ParamDialog extends JDialog {
 		cladecomplexityText = new JTextField(Integer.toString(Utils.CLADE_COMPLEXITY),6);
 		panel.add(cladecomplexityText);
 		organismsPanel.add(panel);
-		// Meta Mutation rate
+		// Meta Mutation rate - Coordinate Mutation rate
 		panel = new JPanel();
 		label = new JLabel(Messages.getString("T_META_MUTATION_PERCENTAGE")); //$NON-NLS-1$
 		panel.add(label);
 		metamutationrateText = new JTextField(Integer.toString(Utils.META_MUTATION_RATE),6);
 		panel.add(metamutationrateText);
+		label = new JLabel(Messages.getString("T_XY_MUTATION_PERCENTAGE")); //$NON-NLS-1$
+		panel.add(label);
+		xymutationrateText = new JTextField(Integer.toString(Utils.XY_MUTATION_RATE),6);
+		panel.add(xymutationrateText);
 		organismsPanel.add(panel);
 		// Min Mutation rate - Max Mutation rate
 		panel = new JPanel();
@@ -1490,6 +1496,12 @@ public class ParamDialog extends JDialog {
 		try {
 			i = Integer.parseInt(metamutationrateText.getText());
 			if (i >= 0 && i <= 10000) Utils.META_MUTATION_RATE = i;
+		} catch (NumberFormatException ex) {
+			// Keep old value if there is a problem
+		}
+		try {
+			i = Integer.parseInt(xymutationrateText.getText());
+			if (i >= 0 && i <= 10000) Utils.XY_MUTATION_RATE = i;
 		} catch (NumberFormatException ex) {
 			// Keep old value if there is a problem
 		}

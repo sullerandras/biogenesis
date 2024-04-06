@@ -170,7 +170,7 @@ public class Organism extends Rectangle {
 	/**
 	 * Switch between bases for drifting
 	 */
-	protected int _switchdrift;
+	protected int _switchdrift=-2;
 	/**
 	 * The X coordinate used for drifting, either from the genetic code, or simply the birth place
 	 */
@@ -1485,20 +1485,6 @@ public class Organism extends Rectangle {
 		if (_geneticCode.getAltruist()) {
 			_altruist =true;
 		}
-		if (_homeX == -2) {
-			if (_geneticCode.getHomeX() == -1) {
-				_homeX = _centerX;
-			} else {
-				_homeX = (int)Math.round(0.01 * _geneticCode.getHomeX() * _world.getWidth());
-			}
-		}
-		if (_homeY == -2) {
-			if (_geneticCode.getHomeY() == -1) {
-				_homeY = _centerY;
-			} else {
-				_homeY = (int)Math.round(0.01 * _geneticCode.getHomeY() * _world.getHeight());
-			}
-		}
 		_methanotrophy = 0;
 		_filterfeeding = 0;
 		double photofactor = 0;
@@ -1921,7 +1907,10 @@ public class Organism extends Rectangle {
 					_mphoto[i] = -8;
 				} else {
 					if (_geneticCode.getModifiesblack() >= 5) {
-						_blackversion = -1;
+						if (_blackversion == 0) {
+							_blackversion = -1;
+							_timeToReproduceMax -= 6;
+						}
 						_mphoto[i] = -4;
 					} else {
 						if (_geneticCode.getAdaptblack() == 25) {
@@ -2015,7 +2004,25 @@ public class Organism extends Rectangle {
 				}
 			}
 		}
+		if (_homeX == -2) {
+			if (_geneticCode.getHomeX() == -1) {
+				_homeX = _centerX;
+			} else {
+				_homeX = (int)Math.round(0.01 * _geneticCode.getHomeX() * _world.getWidth());
+			}
+		}
+		if (_homeY == -2) {
+			if (_geneticCode.getHomeY() == -1) {
+				_homeY = _centerY;
+			} else {
+				_homeY = (int)Math.round(0.01 * _geneticCode.getHomeY() * _world.getHeight());
+			}
+		}
 		if (_drift > 0) {
+			if (_switchdrift < 0) {
+				_switchdrift = 0;
+				_timeToReproduceMax -= 6;
+			}
 			if ((_geneticCode.getBase1X() >= 0) && (_geneticCode.getBase1Y() >= 0)) {
 				_base1X = (int)Math.round(0.01 * _geneticCode.getBase1X() * _world.getWidth());
 				_base1Y = (int)Math.round(0.01 * _geneticCode.getBase1Y() * _world.getHeight());
@@ -2023,14 +2030,6 @@ public class Organism extends Rectangle {
 					_base2X = (int)Math.round(0.01 * _geneticCode.getBase2X() * _world.getWidth());
 					_base2Y = (int)Math.round(0.01 * _geneticCode.getBase2Y() * _world.getHeight());
 				}
-			}
-			if ((_reproducelate == 0) && (_age == 0)) {
-				int b;
-				for (b=_segments-1; b>=0; b--) {
-		            if (_segColor[b].equals(Utils.ColorDRIFT)) {
-		            	_reproduceEnergy -= 3;
-					}
-				}				
 			}
 		}
 		if (_blackversion != 0) {
@@ -2058,9 +2057,9 @@ public class Organism extends Rectangle {
 								switch (getTypeColor(_segColor[j])) {
 								case C4:
 									if ((_canmove < 2) && ((_sporetime == 0) || (_geneticCode.getModifiesspore() >= 3))) {
-										_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * 1.04125 * (11 + _geneticCode.getGene(j%_geneticCode.getNGenes()).getLength());
+									   _mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * 1.057 * (10.75 + _geneticCode.getGene(j%_geneticCode.getNGenes()).getLength());
 									} else {
-										_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * (11 + _geneticCode.getGene(j%_geneticCode.getNGenes()).getLength());
+									   _mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * 1.019 * (10.75 + _geneticCode.getGene(j%_geneticCode.getNGenes()).getLength());
 									}
 									break;
 								case MINT:
@@ -2105,9 +2104,9 @@ public class Organism extends Rectangle {
 								switch (getTypeColor(_segColor[j])) {
 								case C4:
 									if ((_canmove < 2) && ((_sporetime == 0) || (_geneticCode.getModifiesspore() >= 3))) {
-										_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * 1.04125 * (11 + _geneticCode.getGene(j%_geneticCode.getNGenes()).getLength());
+									   _mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * 1.057 * (10.75 + _geneticCode.getGene(j%_geneticCode.getNGenes()).getLength());
 									} else {
-										_mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * (11 + _geneticCode.getGene(j%_geneticCode.getNGenes()).getLength());
+									   _mphoto[j] = Utils.C4_ENERGY_CONSUMPTION * photomultiplier * 1.019 * (10.75 + _geneticCode.getGene(j%_geneticCode.getNGenes()).getLength());
 									}
 									break;
 								}
@@ -2469,6 +2468,14 @@ public class Organism extends Rectangle {
 					}
 					if ((_createlavender > 0) && (_isblond) && (_age == 0)) {
 						_lavender = 0;
+					}
+					if ((_drift > 0) && (_isblond) && (_reproducelate == 0) && (_age == 0)) {
+						int b;
+						for (b=_segments-1; b>=0; b--) {
+				            if (_segColor[b].equals(Utils.ColorDRIFT)) {
+				            	_reproduceEnergy -= 3;
+							}
+						}				
 					}
 				}
 		    }
@@ -5076,6 +5083,10 @@ public class Organism extends Rectangle {
 					}
 				}
 			}
+			// Move organism with Drift
+			if ((_drift > 0) && (active) && (Utils.random.nextInt(100)<8)) {
+				drift();
+			}
 			// Collision detection with other organisms.
 			if (_world.checkHit(this) != null)
 				collision = true;
@@ -5114,6 +5125,10 @@ public class Organism extends Rectangle {
 				}
 			}
 		} else {
+			// Move organism with Drift
+			if ((_drift > 0) && (active) && (Utils.random.nextInt(100)<8)) {
+				drift();
+			}
 			if (hasMoved == true) {
 				hasMoved = false;
 			}
@@ -5427,86 +5442,6 @@ public class Organism extends Rectangle {
 					}
 				}
 			}
-			// Move organism with Drift
-			if ((_drift > 0) && (Utils.random.nextInt(100)<8)) {
-				if (_switchdrift == 0) {
-					if ((_centerX > _homeX + 100) || (_centerX < _homeX - 100) || (_centerY > _homeY + 100) || (_centerY < _homeY - 100)) {
-						double dr;
-						double phi;
-						// Drift-contribution to speed in the direction pointing from the organism's center point to its home point
-						dr = Utils.between((_drift*Utils.scale[_growthRatio-1])/_mass, -5d, 5d);
-						if (Utils.random.nextBoolean()) {
-							// Move randomly 50% of the time to make drifting look more naturally and unstuck the organisms from each other
-							phi = Utils.random.nextDouble()*2*Math.PI;
-						} else {
-							// Angle of the dr vector
-							phi = Math.atan2(_homeY - _centerY, _homeX - _centerX);
-						}
-						// Project dr onto both dx and dy
-						dx = Utils.between(dx + dr*Math.cos(phi), -5d, 5d);
-						dy = Utils.between(dy + dr*Math.sin(phi), -5d, 5d);
-						dtheta=Utils.between(dtheta+Utils.randomSign()*(_drift*Utils.scale[_growthRatio-1])*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
-					} else {
-						if (_base1X >= 0) {
-							_switchdrift = 1;
-						} else {
-							if (_photosynthesis > 0) {
-								_colonyPhotosynthesis += 0.0025 * (_drift*Utils.scale[_growthRatio-1]) * _photosynthesis;
-							} else {
-								if (_methanotrophy > 0) {
-									_energy += _world.methanotrophy(0.0003125 * (_drift*Utils.scale[_growthRatio-1]) * _methanotrophy);
-								}
-							}
-						}
-					}
-				} else {
-					if (_switchdrift == 1) {
-						if ((_centerX > _base1X + 100) || (_centerX < _base1X - 100) || (_centerY > _base1Y + 100) || (_centerY < _base1Y - 100)) {
-							double dr;
-							double phi;
-							// Drift-contribution to speed in the direction pointing from the organism's center point to its base1 point
-							dr = Utils.between((_drift*Utils.scale[_growthRatio-1])/_mass, -5d, 5d);
-							if (Utils.random.nextBoolean()) {
-								// Move randomly 50% of the time to make drifting look more naturally and unstuck the organisms from each other
-								phi = Utils.random.nextDouble()*2*Math.PI;
-							} else {
-								// Angle of the dr vector
-								phi = Math.atan2(_base1Y - _centerY, _base1X - _centerX);
-							}
-							// Project dr onto both dx and dy
-							dx = Utils.between(dx + dr*Math.cos(phi), -5d, 5d);
-							dy = Utils.between(dy + dr*Math.sin(phi), -5d, 5d);
-							dtheta=Utils.between(dtheta+Utils.randomSign()*(_drift*Utils.scale[_growthRatio-1])*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
-						} else {
-							if (_base2X >= 0) {
-								_switchdrift = 2;
-							} else {
-								_switchdrift = 0;
-							}
-						}
-					} else {
-						if ((_centerX > _base2X + 100) || (_centerX < _base2X - 100) || (_centerY > _base2Y + 100) || (_centerY < _base2Y - 100)) {
-							double dr;
-							double phi;
-							// Drift-contribution to speed in the direction pointing from the organism's center point to its base2 point
-							dr = Utils.between((_drift*Utils.scale[_growthRatio-1])/_mass, -5d, 5d);
-							if (Utils.random.nextBoolean()) {
-								// Move randomly 50% of the time to make drifting look more naturally and unstuck the organisms from each other
-								phi = Utils.random.nextDouble()*2*Math.PI;
-							} else {
-								// Angle of the dr vector
-								phi = Math.atan2(_base2Y - _centerY, _base2X - _centerX);
-							}
-							// Project dr onto both dx and dy
-							dx = Utils.between(dx + dr*Math.cos(phi), -5d, 5d);
-							dy = Utils.between(dy + dr*Math.sin(phi), -5d, 5d);
-							dtheta=Utils.between(dtheta+Utils.randomSign()*(_drift*Utils.scale[_growthRatio-1])*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
-						} else {
-							_switchdrift = 0;
-						}
-					}
-				}
-			}
 			// Rotate around with Spin and Spring
 			if (_spin > 0) {
 				if (_clockwise) {
@@ -5613,6 +5548,89 @@ public class Organism extends Rectangle {
 		}
 		// Check that the organism has energy after this frame
 		return _energy > Utils.tol;
+	}
+	/**
+	 * Drift/Move to 1-3 bases defined by X/Y coordinates.
+	 * Idle autotrophs may boost photosynthesis and methanotrophy too.
+	 */
+	public void drift() {
+		if (_switchdrift <= 0) {
+			if ((_centerX > _homeX + 90) || (_centerX < _homeX - 90) || (_centerY > _homeY + 90) || (_centerY < _homeY - 90) || ((_isplankton > 0) && (_base1X < 0))) {
+				double dr;
+				double phi;
+				// Drift-contribution to speed in the direction pointing from the organism's center point to its home point
+				dr = Utils.between((_drift*Utils.scale[_growthRatio-1])/_mass, -5d, 5d);
+				if (Utils.random.nextBoolean()) {
+					// Move randomly 50% of the time to make drifting look more naturally and unstuck the organisms from each other
+					phi = Utils.random.nextDouble()*2*Math.PI;
+				} else {
+					// Angle of the dr vector
+					phi = Math.atan2(_homeY - _centerY, _homeX - _centerX);
+				}
+				// Project dr onto both dx and dy
+				dx = Utils.between(dx + dr*Math.cos(phi), -5d, 5d);
+				dy = Utils.between(dy + dr*Math.sin(phi), -5d, 5d);
+				dtheta=Utils.between(dtheta+Utils.randomSign()*(_drift*Utils.scale[_growthRatio-1])*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
+			} else {
+				if (_base1X >= 0) {
+					_switchdrift = 1;
+				} else {
+					if (_photosynthesis > 0) {
+						_colonyPhotosynthesis += 0.01 * (_drift*Utils.scale[_growthRatio-1]) * _photosynthesis;
+					} else {
+						if (_methanotrophy > 0) {
+							_energy += _world.methanotrophy(0.00125 * (_drift*Utils.scale[_growthRatio-1]) * _methanotrophy);
+						}
+					}
+				}
+			}
+		} else {
+			if (_switchdrift == 1) {
+				if ((_centerX > _base1X + 90) || (_centerX < _base1X - 90) || (_centerY > _base1Y + 90) || (_centerY < _base1Y - 90)) {
+					double dr;
+					double phi;
+					// Drift-contribution to speed in the direction pointing from the organism's center point to its base1 point
+					dr = Utils.between((_drift*Utils.scale[_growthRatio-1])/_mass, -5d, 5d);
+					if (Utils.random.nextBoolean()) {
+						// Move randomly 50% of the time to make drifting look more naturally and unstuck the organisms from each other
+						phi = Utils.random.nextDouble()*2*Math.PI;
+					} else {
+						// Angle of the dr vector
+						phi = Math.atan2(_base1Y - _centerY, _base1X - _centerX);
+					}
+					// Project dr onto both dx and dy
+					dx = Utils.between(dx + dr*Math.cos(phi), -5d, 5d);
+					dy = Utils.between(dy + dr*Math.sin(phi), -5d, 5d);
+					dtheta=Utils.between(dtheta+Utils.randomSign()*(_drift*Utils.scale[_growthRatio-1])*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
+				} else {
+					if (_base2X >= 0) {
+						_switchdrift = 2;
+					} else {
+						_switchdrift = 0;
+					}
+				}
+			} else {
+				if ((_centerX > _base2X + 90) || (_centerX < _base2X - 90) || (_centerY > _base2Y + 90) || (_centerY < _base2Y - 90)) {
+					double dr;
+					double phi;
+					// Drift-contribution to speed in the direction pointing from the organism's center point to its base2 point
+					dr = Utils.between((_drift*Utils.scale[_growthRatio-1])/_mass, -5d, 5d);
+					if (Utils.random.nextBoolean()) {
+						// Move randomly 50% of the time to make drifting look more naturally and unstuck the organisms from each other
+						phi = Utils.random.nextDouble()*2*Math.PI;
+					} else {
+						// Angle of the dr vector
+						phi = Math.atan2(_base2Y - _centerY, _base2X - _centerX);
+					}
+					// Project dr onto both dx and dy
+					dx = Utils.between(dx + dr*Math.cos(phi), -5d, 5d);
+					dy = Utils.between(dy + dr*Math.sin(phi), -5d, 5d);
+					dtheta=Utils.between(dtheta+Utils.randomSign()*(_drift*Utils.scale[_growthRatio-1])*Math.PI/_I, -Utils.MAX_ROT, Utils.MAX_ROT);
+				} else {
+					_switchdrift = 0;
+				}
+			}
+		}		
 	}
 	/**
 	 * Makes the organism decay an amount of energy using the
@@ -22861,7 +22879,7 @@ public class Organism extends Rectangle {
 										if (!_isakiller) {
 											addmaintenance -= _m[i] - (Utils.ROSE_ENERGY_CONSUMPTION * _m[i]);
 										} else {
-											addmaintenance -= (0.67 * _m[i]) - (Utils.ROSE_ENERGY_CONSUMPTION * _m[i]);
+											addmaintenance -= (0.69 * _m[i]) - (Utils.ROSE_ENERGY_CONSUMPTION * _m[i]);
 										}
 										break;
 									// Organisms with dark segments mimic other segments
@@ -23336,7 +23354,7 @@ public class Organism extends Rectangle {
 										if (!_isakiller) {
 											addmaintenance -= _m[i] - (Utils.ROSE_ENERGY_CONSUMPTION * _m[i]);
 										} else {
-											addmaintenance -= (0.67 * _m[i]) - (Utils.ROSE_ENERGY_CONSUMPTION * _m[i]);
+											addmaintenance -= (0.69 * _m[i]) - (Utils.ROSE_ENERGY_CONSUMPTION * _m[i]);
 										}
 										break;
 									// Organisms with dark segments mimic other segments
@@ -23576,7 +23594,7 @@ public class Organism extends Rectangle {
 							// Organisms with yellow segments have more children
 							case YELLOW:
 								if (_isonlyc4 == 2) {
-									addmaintenance -= 0.945 * _m[i];
+									addmaintenance -= 0.94 * _m[i];
 								}
 								break;
 							// Organisms with indigo segments reduce the energy the new born virus receives
@@ -23787,7 +23805,7 @@ public class Organism extends Rectangle {
 										if (!_isakiller) {
 											addmaintenance -= _m[i] - (Utils.ROSE_ENERGY_CONSUMPTION * _m[i]);
 										} else {
-											addmaintenance -= (0.67 * _m[i]) - (Utils.ROSE_ENERGY_CONSUMPTION * _m[i]);
+											addmaintenance -= (0.69 * _m[i]) - (Utils.ROSE_ENERGY_CONSUMPTION * _m[i]);
 										}
 										break;
 									// Organisms with dark segments mimic other segments
@@ -24078,7 +24096,7 @@ public class Organism extends Rectangle {
 									if (!_isakiller) {
 										addmaintenance -= _m[i] - (Utils.ROSE_ENERGY_CONSUMPTION * _m[i]);
 									} else {
-										addmaintenance -= (0.67 * _m[i]) - (Utils.ROSE_ENERGY_CONSUMPTION * _m[i]);
+										addmaintenance -= (0.69 * _m[i]) - (Utils.ROSE_ENERGY_CONSUMPTION * _m[i]);
 									}
 									break;
 								// Organisms with dark segments mimic other segments

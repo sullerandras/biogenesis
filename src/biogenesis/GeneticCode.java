@@ -1100,7 +1100,7 @@ public class GeneticCode implements Cloneable, Serializable {
 			}
 		}
 		_homeX = parentCode.getHomeX();
-		if (Utils.random.nextInt(1000) < _mutationrate) {
+		if (Utils.coordinateMutation()) {
 			// mutate homeX
 			if (Utils.random.nextInt(10) < 1) {
 				// large random change
@@ -1128,7 +1128,7 @@ public class GeneticCode implements Cloneable, Serializable {
 			}
 		}
 		_homeY = parentCode.getHomeY();
-		if (Utils.random.nextInt(1000) < _mutationrate) {
+		if (Utils.coordinateMutation()) {
 			// mutate homeY
 			if (Utils.random.nextInt(10) < 1) {
 				// large random change
@@ -1156,7 +1156,7 @@ public class GeneticCode implements Cloneable, Serializable {
 			}
 		}
 		_base1X = parentCode.getBase1X();
-		if (Utils.random.nextInt(1000) < _mutationrate) {
+		if (Utils.coordinateMutation()) {
 			// mutate base1X
 			if (Utils.random.nextInt(10) < 1) {
 				// large random change
@@ -1184,7 +1184,7 @@ public class GeneticCode implements Cloneable, Serializable {
 			}
 		}
 		_base1Y = parentCode.getBase1Y();
-		if (Utils.random.nextInt(1000) < _mutationrate) {
+		if (Utils.coordinateMutation()) {
 			// mutate base1Y
 			if (Utils.random.nextInt(10) < 1) {
 				// large random change
@@ -1212,7 +1212,7 @@ public class GeneticCode implements Cloneable, Serializable {
 			}
 		}
 		_base2X = parentCode.getBase2X();
-		if (Utils.random.nextInt(1000) < _mutationrate) {
+		if (Utils.coordinateMutation()) {
 			// mutate base2X
 			if (Utils.random.nextInt(10) < 1) {
 				// large random change
@@ -1240,7 +1240,7 @@ public class GeneticCode implements Cloneable, Serializable {
 			}
 		}
 		_base2Y = parentCode.getBase2Y();
-		if (Utils.random.nextInt(1000) < _mutationrate) {
+		if (Utils.coordinateMutation()) {
 			// mutate base2Y
 			if (Utils.random.nextInt(10) < 1) {
 				// large random change

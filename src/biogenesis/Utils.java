@@ -136,6 +136,10 @@ public final class Utils {
 	 */
 	final static int DEF_META_MUTATION_RATE = 1000;
 	/**
+	 * This is the default coordinate mutation rate of an organism.
+	 */
+	final static int DEF_XY_MUTATION_RATE = 1000;
+	/**
 	 * This is the default maximal mutation rate of an organism.
 	 */
 	final static int DEF_MAX_MUTATION_RATE = 100;
@@ -345,7 +349,7 @@ public final class Utils {
 	/**
 	 * This is the default energy that is consumed when a drift segment is used.
 	 */
-	final static double DEF_DRIFT_ENERGY_CONSUMPTION = 3.5d;
+	final static double DEF_DRIFT_ENERGY_CONSUMPTION = 4.5d;
 	/**
 	 * This is the default energy that is consumed when a spin segment is used.
 	 */
@@ -868,6 +872,10 @@ public final class Utils {
 	 * that the individual mutation rate of an organism changes.
 	 */
 	static int META_MUTATION_RATE = DEF_META_MUTATION_RATE;
+	/**
+	 * This is the coordinate mutation rate of an organism.
+	 */
+	static int XY_MUTATION_RATE = DEF_XY_MUTATION_RATE;
 	/**
 	 * This is the maximal mutation rate of an organism.
 	 */
@@ -1942,6 +1950,16 @@ public final class Utils {
 		return false;
 	}
 	/**
+	 * Check if the coordinate mutation rate changed or not, using a random number.
+	 *
+	 * @return  true if the coordinate mutation rate changed and false otherwise
+	 */
+	public static final boolean coordinateMutation() {
+		if (random.nextInt(10000) < XY_MUTATION_RATE)
+			return true;
+		return false;
+	}
+	/**
 	 * Return the localized name of a color.
 	 *
 	 * @param c  A color
@@ -2026,6 +2044,7 @@ public final class Utils {
 			prefs.putInt("CO1_TO_CO2_DIVISOR",CO1_TO_CO2_DIVISOR); //$NON-NLS-1$
 			prefs.putDouble("RUBBING",RUBBING); //$NON-NLS-1$
 			prefs.putInt("META_MUTATION_RATE",META_MUTATION_RATE); //$NON-NLS-1$
+			prefs.putInt("XY_MUTATION_RATE",XY_MUTATION_RATE); //$NON-NLS-1$
 			prefs.putInt("MAX_MUTATION_RATE",MAX_MUTATION_RATE); //$NON-NLS-1$
 			prefs.putInt("MIN_MUTATION_RATE",MIN_MUTATION_RATE); //$NON-NLS-1$
 			prefs.putInt("MAX_CLONE_RATE",MAX_CLONE_RATE); //$NON-NLS-1$
@@ -2226,6 +2245,7 @@ public final class Utils {
 			CO1_TO_CO2_DIVISOR = prefs.getInt("CO1_TO_CO2_DIVISOR",DEF_CO1_TO_CO2_DIVISOR); //$NON-NLS-1$
 			RUBBING = prefs.getDouble("RUBBING",DEF_RUBBING); //$NON-NLS-1$
 			META_MUTATION_RATE = prefs.getInt("META_MUTATION_RATE",DEF_META_MUTATION_RATE); //$NON-NLS-1$
+			XY_MUTATION_RATE = prefs.getInt("XY_MUTATION_RATE",DEF_XY_MUTATION_RATE); //$NON-NLS-1$
 			MAX_MUTATION_RATE = prefs.getInt("MAX_MUTATION_RATE",DEF_MAX_MUTATION_RATE); //$NON-NLS-1$
 			MIN_MUTATION_RATE = prefs.getInt("MIN_MUTATION_RATE",DEF_MIN_MUTATION_RATE); //$NON-NLS-1$
 			MAX_CLONE_RATE = prefs.getInt("MAX_CLONE_RATE",DEF_MAX_CLONE_RATE); //$NON-NLS-1$
