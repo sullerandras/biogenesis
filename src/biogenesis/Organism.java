@@ -5663,10 +5663,22 @@ public class Organism extends Rectangle {
 					_switchdrift = 1;
 				} else {
 					if (_photosynthesis > 0) {
-						_colonyPhotosynthesis += 0.015 * (_drift*Utils.scale[_growthRatio-1]) * _photosynthesis;
+						if (_world._CO2 < 1150) {
+							if (Utils.random.nextInt(1150) < _world._CO2) {
+								_colonyPhotosynthesis += 0.01 * (_drift*Utils.scale[_growthRatio-1]) * _photosynthesis;
+							}
+						} else {
+							_colonyPhotosynthesis += 0.01 * (_drift*Utils.scale[_growthRatio-1]) * _photosynthesis;
+						}
 					} else {
 						if (_methanotrophy > 0) {
-							_energy += _world.methanotrophy(0.001875 * (_drift*Utils.scale[_growthRatio-1]) * _methanotrophy);
+							if (_world._CH4 < 1150) {
+								if (Utils.random.nextInt(1150) < _world._CH4) {
+									_energy += _world.methanotrophy(0.00125 * (_drift*Utils.scale[_growthRatio-1]) * _methanotrophy);
+								}
+							} else {
+								_energy += _world.methanotrophy(0.00125 * (_drift*Utils.scale[_growthRatio-1]) * _methanotrophy);
+							}
 						}
 					}
 				}
