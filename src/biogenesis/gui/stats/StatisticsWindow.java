@@ -27,6 +27,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.text.NumberFormat;
@@ -328,8 +329,8 @@ public class StatisticsWindow extends JDialog {
 						.addGroup(currentStatePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
 								.addComponent(currentStateTotalMassLabel)
 								.addComponent(currentStateDetritusLabel))
-		                .addGroup(currentStatePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-		                		.addComponent(currentStateTotalEnergyLabel))
+						.addGroup(currentStatePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+								.addComponent(currentStateTotalEnergyLabel))
 						.addComponent(colorPanelWrapper));
 
 		title = BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED),
@@ -724,6 +725,36 @@ class ColorPanel extends JPanel {
 	public ColorPanel() {
 		setPreferredSize(new Dimension(300, 25));
 		setMinimumSize(new Dimension(100, 25));
+		addMouseMotionListener(new MouseMotionAdapter() {
+			@Override
+			public void mouseMoved(MouseEvent e) {
+				if (total > 0) {
+					double lastX = 0;
+					int width = getSize().width;
+					for (Iterator<InfoAndColor> it = infoList.iterator(); it.hasNext();) {
+						InfoAndColor infoAndColor = it.next();
+						double x = width * infoAndColor.info / (double) total;
+						if (e.getX() >= lastX && e.getX() < lastX + x) {
+							setToolTipText(
+								"<html><body>"+
+								"<table><tr><td>"+
+								"<div style='width: 20px; height: 20px; background-color: #"+
+								String.format("%06X", infoAndColor.color.getRGB() & 0xFFFFFF)+
+								"; display: inline; border: 1px solid black;'></div>"+
+								"</td><td>"+
+								Utils.colorToString(infoAndColor.color)+
+								"</td></tr><tr><td colspan='2'>"+
+								"Count: "+infoAndColor.info+
+								"</td></tr></table>"+
+								"</body></html>"
+								);
+							return;
+						}
+						lastX += x;
+					}
+				}
+			}
+		});
 	}
 
 	public void setColors(List<InfoAndColor> infoList) {
