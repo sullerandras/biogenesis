@@ -2551,7 +2551,7 @@ public class Organism extends Rectangle {
 							if (_segColor[b].equals(Utils.ColorBLOND)) {
 								_earlyReproduceEnergy -= 3;
 				            	if (_age == 0) {
-				            		_reproduceEnergy -= 3;
+				            		_reproduceEnergy -= 4;
 				            	}
 							}
 						}				
@@ -2613,8 +2613,8 @@ public class Organism extends Rectangle {
 		if (_drift > 0) {
 			if (_switchdrift < 0) {
 				_switchdrift = 0;
-				if (_geneticCode.getNGenes() <= 4) {
-					_timeToReproduceMax -= ((_geneticCode.getNGenes() - 2) * 2);
+				if (_geneticCode.getNGenes() <= 8) {
+					_timeToReproduceMax -= (_geneticCode.getNGenes() - 2);
 				} else {
 					_timeToReproduceMax -= 6;
 				}
