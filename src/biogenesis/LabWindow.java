@@ -78,6 +78,7 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 	protected JComboBox symmetryCombo;
 	protected JComboBox mirrorCombo;
 	protected JComboBox activityCombo;
+	protected JComboBox modifiesmaroonCombo;
 	protected JComboBox modifiescreamCombo;
 	protected JComboBox modifiesfallowCombo;
 	protected JComboBox modifiessporeCombo;
@@ -114,6 +115,7 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 	protected double base2X= -1;
 	protected double base2Y= -1;
 	protected int activity=2;
+	protected int modifiesmaroon=0;
 	protected int modifiescream=2;
 	protected int modifiesfallow=2;
 	protected int modifiesspore=4;
@@ -166,8 +168,9 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
             public void actionPerformed(ActionEvent evt) {
             	if (genesList.size() > 0)
             		mainWindow.getVisibleWorld().setClippedGeneticCode(new GeneticCode(genesList, symmetry, mirror, mutationrate, clonerate, homeX, homeY, base1X, base1Y,
-            		base2X, base2Y, activity, modifiescream, modifiesfallow, modifiesspore, adaptspore, modifiesblack, adaptblack, plague, disperseChildren, generationBattle,
-            		siblingBattle, altruist, familial, social, peaceful, passive, clockwise, modifiesdrift, modifiespink, modifieslilac, modifiessky, modifiesleaf, selfish));
+            		base2X, base2Y, activity, modifiesmaroon, modifiescream, modifiesfallow, modifiesspore, adaptspore, modifiesblack, adaptblack, plague, disperseChildren,
+            		generationBattle, siblingBattle, altruist, familial, social, peaceful, passive, clockwise, modifiesdrift, modifiespink, modifieslilac, modifiessky,
+            		modifiesleaf, selfish));
             	else
             		mainWindow.getVisibleWorld().removeClippedGeneticCode();
             	dispose();
@@ -189,6 +192,7 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 		base2X = g.getBase2X();
 		base2Y = g.getBase2Y();
 		activity = g.getActivity();
+		modifiesmaroon = g.getModifiesmaroon();
 		modifiescream = g.getModifiescream();
 		modifiesfallow = g.getModifiesfallow();
 		modifiesspore = g.getModifiesspore();
@@ -783,6 +787,22 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
             }
         });
 		generalPanel.add(base2YLabel, gridBagConstraints);
+		gridBagConstraints.gridx = 0;
+		gridBagConstraints.gridy = 6;
+		generalPanel.add(new JLabel(Messages.getString("T_MODIFIESMAROON"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
+		gridBagConstraints.gridx = 1;
+		gridBagConstraints.gridy = 6;
+		String[] modifiesmaroonValues = {"0","1","2","3","4","5","6","7","8","9"};  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+		modifiesmaroonCombo = new JComboBox(modifiesmaroonValues);
+		modifiesmaroonCombo.setSelectedItem(Integer.toString(modifiesmaroon));
+		modifiesmaroonCombo.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent evt) {
+				if (evt.getStateChange() == ItemEvent.SELECTED) {
+					modifiesmaroon = Integer.parseInt((String)modifiesmaroonCombo.getSelectedItem());
+				}
+			}
+		});
+		generalPanel.add(modifiesmaroonCombo, gridBagConstraints);
 
 		getContentPane().add(generalPanel,BorderLayout.NORTH);
 		genesPanel = new JPanel();
@@ -827,6 +847,7 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
             	base2X= -1;
             	base2Y= -1;
             	activity=2;
+            	modifiesmaroon=0;
             	modifiescream=2;
             	modifiesfallow=2;
             	modifiesspore=4;
@@ -868,6 +889,7 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 				siblingCombo.setSelectedIndex(siblingBattle==false?0:1);
 				socialCombo.setSelectedIndex(social==false?0:1);
 				peacefulCombo.setSelectedIndex(peaceful==false?0:1);
+				modifiesmaroonCombo.setSelectedItem(Integer.toString(modifiesmaroon));
 				modifiescreamCombo.setSelectedItem(Integer.toString(modifiescream));
 				modifiessporeCombo.setSelectedItem(Integer.toString(modifiesspore));
 				modifiesblackCombo.setSelectedItem(Integer.toString(modifiesblack));
@@ -921,6 +943,7 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 							siblingCombo.setSelectedIndex(siblingBattle==false?0:1);
 							socialCombo.setSelectedIndex(social==false?0:1);
 							peacefulCombo.setSelectedIndex(peaceful==false?0:1);
+							modifiesmaroonCombo.setSelectedItem(Integer.toString(modifiesmaroon));
 							modifiescreamCombo.setSelectedItem(Integer.toString(modifiescream));
 							modifiessporeCombo.setSelectedItem(Integer.toString(modifiesspore));
 							modifiesblackCombo.setSelectedItem(Integer.toString(modifiesblack));
@@ -955,8 +978,9 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 			public void actionPerformed(ActionEvent e) {
 				if (genesList.size() > 0) {
 					GeneticCode exportcode = new GeneticCode(genesList, symmetry, mirror, mutationrate, clonerate, homeX, homeY, base1X, base1Y, base2X, base2Y, activity,
-							modifiescream, modifiesfallow, modifiesspore, adaptspore, modifiesblack, adaptblack, plague, disperseChildren, generationBattle, siblingBattle,
-							altruist, familial, social, peaceful, passive, clockwise, modifiesdrift, modifiespink, modifieslilac, modifiessky, modifiesleaf, selfish);
+							modifiesmaroon, modifiescream, modifiesfallow, modifiesspore, adaptspore, modifiesblack, adaptblack, plague, disperseChildren, generationBattle,
+							siblingBattle, altruist, familial, social, peaceful, passive, clockwise, modifiesdrift, modifiespink, modifieslilac, modifiessky, modifiesleaf,
+							selfish);
 					mainWindow.saveObjectAs(LabWindow.this, exportcode);
 				}
 			}
@@ -1351,7 +1375,7 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 	}
 
 	protected void draw(Graphics g) {
-		GeneticCode code = new GeneticCode(genesList, symmetry, mirror, mutationrate, clonerate, homeX, homeY, base1X, base1Y, base2X, base2Y, activity, modifiescream, modifiesfallow, modifiesspore, adaptspore, modifiesblack, adaptblack, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false);
+		GeneticCode code = new GeneticCode(genesList, symmetry, mirror, mutationrate, clonerate, homeX, homeY, base1X, base1Y, base2X, base2Y, activity, modifiesmaroon, modifiescream, modifiesfallow, modifiesspore, adaptspore, modifiesblack, adaptblack, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false);
 		code.draw(g, drawPanel.getSize().width, drawPanel.getSize().height);
 	}
 

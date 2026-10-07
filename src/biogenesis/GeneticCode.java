@@ -174,6 +174,10 @@ public class GeneticCode implements Cloneable, Serializable {
 	 */
 	protected boolean _modifiespink;
 	/**
+	 * Modifies the function of maroon
+	 */
+	protected int _modifiesmaroon;
+	/**
 	 * Modifies the function of enhanced cream 
 	 */
 	protected int _modifiescream;
@@ -414,6 +418,14 @@ public class GeneticCode implements Cloneable, Serializable {
 	 */
 	public boolean getModifiespink() {
 		return _modifiespink;
+	}
+	/**
+	 * Returns the specialization of maroon
+	 * 
+	 * @return  a value of 0 - 9.
+	 */
+	public int getModifiesmaroon() {
+		return _modifiesmaroon;
 	}
 	/**
 	 * Returns the specialization of enhanced parasites
@@ -825,6 +837,12 @@ public class GeneticCode implements Cloneable, Serializable {
 		_modifiespink =  Utils.random.nextBoolean();
 	}
 	/**
+	 * Gives modifiesmaroon a random value (0 - 9)
+	 */
+	private void randomModifiesmaroon() {
+		_modifiesmaroon = Utils.random.nextInt(10);
+	}
+	/**
 	 * Gives modifiescream a random value (1 - 3)
 	 */
 	private void randomModifiescream() {
@@ -900,6 +918,7 @@ public class GeneticCode implements Cloneable, Serializable {
 		randomBase2X();
 		randomBase2Y();
 		randomActivity();
+		randomModifiesmaroon();
 		randomModifiescream();
 		randomModifiesfallow();
 		randomModifiesspore();
@@ -939,6 +958,7 @@ public class GeneticCode implements Cloneable, Serializable {
 	 * @param base2X  The X % coordinate that an organism with this genetic code will have.
 	 * @param base2Y  The Y % coordinate that an organism with this genetic code will have.
 	 * @param activity  The summer activity that an organism with this genetic code will have.
+	 * @param modifiesmaroon The specialization of maroon.
 	 * @param modifiescream The specialization of an enhanced parasite.
 	 * @param modifiesfallow The specialization of fallow. 
 	 * @param modifiesspore The specialization of spores.
@@ -963,9 +983,9 @@ public class GeneticCode implements Cloneable, Serializable {
 	 * @param selfish  true if the organism retains half of its energy if it reproduces.
 	 */
 	public GeneticCode(List<Gene> genes, int symmetry, int mirror, int mutationrate, int clonerate, double homeX, double homeY, double base1X, double base1Y, double base2X,
-		double base2Y, int activity, int modifiescream, int modifiesfallow, int modifiesspore, int adaptspore, int modifiesblack, int adaptblack, boolean plague,
-		boolean disperseChildren, boolean generationBattle, boolean siblingBattle, boolean altruist, boolean familial, boolean social, boolean peaceful, boolean passive,
-		boolean clockwise, boolean modifiesdrift, boolean modifiespink, boolean modifieslilac, boolean modifiessky, boolean modifiesleaf, boolean selfish) {
+		double base2Y, int activity, int modifiesmaroon, int modifiescream, int modifiesfallow, int modifiesspore, int adaptspore, int modifiesblack, int adaptblack,
+		boolean plague, boolean disperseChildren, boolean generationBattle, boolean siblingBattle, boolean altruist, boolean familial, boolean social, boolean peaceful,
+		boolean passive, boolean clockwise, boolean modifiesdrift, boolean modifiespink, boolean modifieslilac, boolean modifiessky, boolean modifiesleaf, boolean selfish) {
 		int nGenes = genes.size();
 		_genes = new Gene[nGenes];
 		genes.toArray(_genes);
@@ -980,6 +1000,7 @@ public class GeneticCode implements Cloneable, Serializable {
 		_base2X = base2X;
 		_base2Y = base2Y;
 		_activity = activity;
+		_modifiesmaroon = modifiesmaroon;
 		_modifiescream = modifiescream;
 		_modifiesfallow = modifiesfallow;
 		_modifiesspore = modifiesspore;
@@ -1706,6 +1727,10 @@ public class GeneticCode implements Cloneable, Serializable {
 			randomActivity();
 		else
 			_activity = parentCode.getActivity();
+		if (Utils.random.nextInt(10000) < _mutationrate)
+			randomModifiesmaroon();
+		else
+			_modifiesmaroon = parentCode.getModifiesmaroon();
 		if (Utils.random.nextInt(10000) < _mutationrate)
 			randomModifiescream();
 		else
