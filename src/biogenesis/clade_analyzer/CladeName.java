@@ -7,12 +7,12 @@ import java.awt.Color;
  * https://docs.google.com/document/d/1sa728yOAqV-ZREyM_zxKj7Nek4g2WnesrpbWdnt5YRU/edit?usp=sharing
  */
 public class CladeName {
+  private final int hox;
   private final boolean isVirus;
   private final boolean isConsumer;
   private final boolean isPlant;
   private final boolean isOther;
   private final int symmetry;
-  private final int hox;
   private final boolean mirror;
   private final String primaryColors;
   private final String secondaryColors;
@@ -21,14 +21,14 @@ public class CladeName {
 
   private Color cachedColor;
 
-  public CladeName(boolean isVirus, boolean isConsumer, boolean isPlant, boolean isOther, int symmetry, int hox, boolean mirror,
+  public CladeName(int hox, boolean isVirus, boolean isConsumer, boolean isPlant, boolean isOther, int symmetry, boolean mirror,
       ColorCounter primaryColors, ColorCounter secondaryColors, ColorCounter tertiaryColors, ColorCounter quaternaryColors) {
+	    this.hox = hox;
         this.isVirus = isVirus;
         this.isConsumer = isConsumer;
         this.isPlant = isPlant;
         this.isOther = isOther;
         this.symmetry = symmetry;
-        this.hox = hox;
         this.mirror = mirror;
         this.primaryColors = primaryColors.toString();
         this.secondaryColors = secondaryColors.toString();
@@ -38,6 +38,13 @@ public class CladeName {
 
   public String toString() {
     StringBuilder sb = new StringBuilder();
+    
+  //Hox body plan
+    sb.append(hox);
+    
+    // separator
+    sb.append(" - ");
+    
     if (isVirus) {
       sb.append("V");
     }

@@ -257,7 +257,7 @@ public class CladeNameGenerator {
       isOther = true;
     }
 
-    return new CladeName(isVirus, isConsumer, isPlant, isOther, geneticCode.getSymmetry(), geneticCode.getMirror() == 1,
+    return new CladeName(geneticCode.getHox(),isVirus, isConsumer, isPlant, isOther, geneticCode.getSymmetry(), geneticCode.getMirror() == 1,
         primaryColors, secondaryColors, tertiaryColors, quaternaryColors);
   }
 }
