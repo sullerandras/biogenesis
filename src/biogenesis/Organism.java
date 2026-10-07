@@ -7678,7 +7678,7 @@ public class Organism extends Rectangle {
 						_sporeversion = -1;
 					}
 				} else {
-					if (_isinfectious) {
+					if ((_isinfectious) || (_isblond)) {
 						_N2_Stored += _world.nitrogenfixation(0.0001);
 					} else {
 						_N2_Stored += _world.nitrogenfixation(0.0002);
@@ -7907,6 +7907,9 @@ public class Organism extends Rectangle {
 				_world.addOrganism(newOrg,this);
 				if (_isblond) {
 				    if (useblondcosts) {
+				    	if ((_transfersenergy) && (!_isaconsumer) && (!_isafungus)) {
+				    		useNitrogen(_N2_Stored);
+				    	}				    	
 					    useblondcosts =false;
 						useDetritus(Math.min(_energy, Utils.BLOND_ENERGY_CONSUMPTION));
 					}
@@ -7979,7 +7982,7 @@ public class Organism extends Rectangle {
 				if (_isblond) {
 				    if (useblondcosts) {
 					    useblondcosts =false;
-					    useNitrogen(0.5 * _N2_Stored);
+					    useNitrogen(_N2_Stored);
 					    if (_reproducelate > 0) {
 					    	useDetritus(Math.min(_energy, Utils.BLOND_ENERGY_CONSUMPTION));
 					    } else {
@@ -7996,7 +7999,7 @@ public class Organism extends Rectangle {
 				if (_isblond) {
 				    if (useblondcosts) {
 					    useblondcosts =false;
-					    useNitrogen(0.5 * _N2_Stored);
+					    useNitrogen(_N2_Stored);
 					    if (_reproducelate > 0) {
 					    	useDetritus(Math.min(_energy, 0.5 * Utils.BLOND_ENERGY_CONSUMPTION));
 					    } else {
@@ -8816,7 +8819,7 @@ public class Organism extends Rectangle {
 										}
 									} else {
 										if (_transfersenergy) {
-											if (_growthRatio<16) {
+											if (_growthRatio<14) {
 												reproduceEarly();
 											}
 										} else {
