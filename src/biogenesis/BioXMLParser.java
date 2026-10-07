@@ -56,6 +56,7 @@ public class BioXMLParser implements ErrorHandler {
 		ps.println("<!DOCTYPE genetic_code ["); //$NON-NLS-1$
 		ps.println("<!ELEMENT genetic_code (gene+)>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST genetic_code symmetry (1|2|3|4|5|6|7|8) #REQUIRED>"); //$NON-NLS-1$
+		ps.println("<!ATTLIST genetic_code hox (1|2|3|4) #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST genetic_code mutationrate CDATA #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST genetic_code clonerate CDATA #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST genetic_code homeX CDATA #REQUIRED>"); //$NON-NLS-1$
@@ -64,8 +65,10 @@ public class BioXMLParser implements ErrorHandler {
 		ps.println("<!ATTLIST genetic_code base1Y CDATA #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST genetic_code base2X CDATA #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST genetic_code base2Y CDATA #REQUIRED>"); //$NON-NLS-1$
-		ps.println("<!ATTLIST genetic_code activity (0|1|2) #REQUIRED>"); //$NON-NLS-1$
+		ps.println("<!ATTLIST genetic_code activity (0|2|4) #REQUIRED>"); //$NON-NLS-1$
+		ps.println("<!ATTLIST genetic_code modifiesmaroon (0|1|2|3|4|5|6|7|8|9|10) #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST genetic_code modifiescream (1|2|3) #REQUIRED>"); //$NON-NLS-1$
+		ps.println("<!ATTLIST genetic_code modifiescrimson (0|1|2|3) #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST genetic_code modifiesfallow (1|2|3|4) #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST genetic_code modifiesspore (1|2|3|4|5|6|7|8|9|10|11|12) #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST genetic_code adaptspore (1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29|30|31|32|33|34|35|36|37|38|39|40|41|42|43|44|45|46|47|48|49|50|51|52|53|54|55|56|57|58|59|60|61|62|63|64|65|66|67|68|69|70) #REQUIRED>"); //$NON-NLS-1$
@@ -93,6 +96,10 @@ public class BioXMLParser implements ErrorHandler {
 		ps.println("<!ATTLIST gene theta CDATA #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST gene color (green|forest|ivy|spring|summer|lime|leaf|c4|jade|grass|bark|purple|plankton|red|fire|orange|maroon|crimson|pink|cream|silver|spike|lilac|gray|violet|olive|sky|blue|ochre|fallow|spore|white|plague|coral|mint|lavender|magenta|rose|cyan|teal|drift|spin|yellow|auburn|indigo|blond|flower|darkgray|gold|dark|eye) #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST gene branch CDATA #REQUIRED>"); //$NON-NLS-1$
+		ps.println("<!ATTLIST gene stack CDATA #REQUIRED>"); //$NON-NLS-1$
+		ps.println("<!ATTLIST gene fold CDATA #REQUIRED>"); //$NON-NLS-1$
+		ps.println("<!ATTLIST gene chiral CDATA #REQUIRED>"); //$NON-NLS-1$
+		ps.println("<!ATTLIST gene radial CDATA #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST gene redreaction CDATA #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST gene greenreaction CDATA #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST gene bluereaction CDATA #REQUIRED>"); //$NON-NLS-1$
@@ -105,16 +112,19 @@ public class BioXMLParser implements ErrorHandler {
 		ps.println("<!ATTLIST gene consumerreaction CDATA #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST gene plantreaction CDATA #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST gene magentareaction CDATA #REQUIRED>"); //$NON-NLS-1$
+		ps.println("<!ATTLIST gene rosereaction CDATA #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST gene pinkreaction CDATA #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST gene coralreaction CDATA #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST gene orangereaction CDATA #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST gene barkreaction CDATA #REQUIRED>"); //$NON-NLS-1$
+		ps.println("<!ATTLIST gene ivyreaction CDATA #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST gene violetreaction CDATA #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST gene virusreaction CDATA #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST gene maroonreaction CDATA #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST gene crimsonreaction CDATA #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST gene olivereaction CDATA #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST gene mintreaction CDATA #REQUIRED>"); //$NON-NLS-1$
+		ps.println("<!ATTLIST gene lavenderreaction CDATA #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST gene creamreaction CDATA #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST gene spikereaction CDATA #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST gene fallowreaction CDATA #REQUIRED>"); //$NON-NLS-1$
@@ -132,6 +142,7 @@ public class BioXMLParser implements ErrorHandler {
 		ps.println("<!ATTLIST gene friendreaction CDATA #REQUIRED>"); //$NON-NLS-1$
 		ps.println("]>"); //$NON-NLS-1$
 		ps.println("<genetic_code symmetry=\""+Integer.toString(geneticCode.getSymmetry())+ //$NON-NLS-1$
+				"\" hox=\""+Integer.toString(geneticCode.getHox())+ //$NON-NLS-1$
 				"\" mutationrate=\""+Integer.toString(geneticCode.getMutationrate())+ //$NON-NLS-1$
 				"\" clonerate=\""+Integer.toString(geneticCode.getClonerate())+ //$NON-NLS-1$
 				"\" homeX=\""+Double.toString(geneticCode.getHomeX())+ //$NON-NLS-1$
@@ -141,7 +152,9 @@ public class BioXMLParser implements ErrorHandler {
 				"\" base2X=\""+Double.toString(geneticCode.getBase2X())+ //$NON-NLS-1$
 				"\" base2Y=\""+Double.toString(geneticCode.getBase2Y())+ //$NON-NLS-1$
 				"\" activity=\""+Integer.toString(geneticCode.getActivity())+ //$NON-NLS-1$
+				"\" modifiesmaroon=\""+Integer.toString(geneticCode.getModifiesmaroon())+ //$NON-NLS-1$
 				"\" modifiescream=\""+Integer.toString(geneticCode.getModifiescream())+ //$NON-NLS-1$
+				"\" modifiescrimson=\""+Integer.toString(geneticCode.getModifiescrimson())+ //$NON-NLS-1$
 				"\" modifiesfallow=\""+Integer.toString(geneticCode.getModifiesfallow())+ //$NON-NLS-1$
 				"\" modifiesspore=\""+Integer.toString(geneticCode.getModifiesspore())+ //$NON-NLS-1$
 				"\" adaptspore=\""+Integer.toString(geneticCode.getAdaptspore())+ //$NON-NLS-1$
@@ -174,7 +187,11 @@ public class BioXMLParser implements ErrorHandler {
 		ps.println("\t<gene length=\""+Double.toString(gene.getLength())+"\" theta=\""+ //$NON-NLS-1$ //$NON-NLS-2$
 				Double.toString(gene.getTheta())+"\" color=\""+ //$NON-NLS-1$
 				colorToString(gene.getColor())+"\" branch=\""+ //$NON-NLS-1$
-				Integer.toString(gene.getBranch())+"\" redreaction=\""+ //$NON-NLS-1$
+				Integer.toString(gene.getBranch())+"\" stack=\""+ //$NON-NLS-1$
+				Integer.toString(gene.getStack())+"\" fold=\""+ //$NON-NLS-1$
+				Integer.toString(gene.getFold())+"\" chiral=\""+ //$NON-NLS-1$
+				Integer.toString(gene.getChiral())+"\" radial=\""+ //$NON-NLS-1$
+				Integer.toString(gene.getRadial())+"\" redreaction=\""+ //$NON-NLS-1$
 				Integer.toString(gene.getredReaction())+"\" greenreaction=\""+ //$NON-NLS-1$
 				Integer.toString(gene.getgreenReaction())+"\" bluereaction=\""+ //$NON-NLS-1$
 				Integer.toString(gene.getblueReaction())+"\" plaguereaction=\""+ //$NON-NLS-1$
@@ -186,17 +203,20 @@ public class BioXMLParser implements ErrorHandler {
 				Integer.toString(gene.getdefaultReaction())+"\" consumerreaction=\""+ //$NON-NLS-1$
 				Integer.toString(gene.getconsumerReaction())+"\" plantreaction=\""+ //$NON-NLS-1$
 				Integer.toString(gene.getplantReaction())+"\" magentareaction=\""+ //$NON-NLS-1$
-				Integer.toString(gene.getmagentaReaction())+"\" pinkreaction=\""+ //$NON-NLS-1$
+				Integer.toString(gene.getmagentaReaction())+"\" rosereaction=\""+ //$NON-NLS-1$
+				Integer.toString(gene.getroseReaction())+"\" pinkreaction=\""+ //$NON-NLS-1$
 				Integer.toString(gene.getpinkReaction())+"\" coralreaction=\""+ //$NON-NLS-1$
 				Integer.toString(gene.getcoralReaction())+"\" orangereaction=\""+ //$NON-NLS-1$
 				Integer.toString(gene.getorangeReaction())+"\" barkreaction=\""+ //$NON-NLS-1$
-				Integer.toString(gene.getbarkReaction())+"\" violetreaction=\""+ //$NON-NLS-1$
+				Integer.toString(gene.getbarkReaction())+"\" ivyreaction=\""+ //$NON-NLS-1$
+				Integer.toString(gene.getivyReaction())+"\" violetreaction=\""+ //$NON-NLS-1$
 				Integer.toString(gene.getvioletReaction())+"\" virusreaction=\""+ //$NON-NLS-1$
 				Integer.toString(gene.getvirusReaction())+"\" maroonreaction=\""+ //$NON-NLS-1$
 				Integer.toString(gene.getmaroonReaction())+"\" crimsonreaction=\""+ //$NON-NLS-1$
 				Integer.toString(gene.getcrimsonReaction())+"\" olivereaction=\""+ //$NON-NLS-1$
 				Integer.toString(gene.getoliveReaction())+"\" mintreaction=\""+ //$NON-NLS-1$
-				Integer.toString(gene.getmintReaction())+"\" creamreaction=\""+ //$NON-NLS-1$
+				Integer.toString(gene.getmintReaction())+"\" lavenderreaction=\""+ //$NON-NLS-1$
+				Integer.toString(gene.getlavenderReaction())+"\" creamreaction=\""+ //$NON-NLS-1$
 				Integer.toString(gene.getcreamReaction())+"\" spikereaction=\""+ //$NON-NLS-1$
 				Integer.toString(gene.getspikeReaction())+"\" fallowreaction=\""+ //$NON-NLS-1$
 				Integer.toString(gene.getfallowReaction())+"\" lightbluereaction=\""+ //$NON-NLS-1$
@@ -215,7 +235,7 @@ public class BioXMLParser implements ErrorHandler {
 	}
 
 	public GeneticCode parseGeneticCode(File f) throws SAXException, IOException {
-		int symmetry, mirror, mutationrate, clonerate, activity, modifiescream, modifiesfallow, modifiesspore, adaptspore, modifiesblack, adaptblack;
+		int symmetry, hox, mirror, mutationrate, clonerate, activity, modifiesmaroon, modifiescream, modifiescrimson, modifiesfallow, modifiesspore, adaptspore, modifiesblack, adaptblack;
 		double homeX, homeY, base1X, base1Y, base2X, base2Y;
 		boolean plague;
 		boolean disperse;
@@ -246,6 +266,14 @@ public class BioXMLParser implements ErrorHandler {
 			}
 			if (symmetry<1 || symmetry>8)
 				throw new SAXException("Symmetry has not an allowed value."); //$NON-NLS-1$
+			s = geneticCode.getAttribute("hox"); //$NON-NLS-1$
+			try {
+				hox = Integer.parseInt(s); //$NON-NLS-1$
+			} catch (NumberFormatException e) {
+				throw new SAXException("Hox has not an allowed value."); //$NON-NLS-1$
+			}
+			if (hox<1 || hox>4)
+				throw new SAXException("Hox has not an allowed value."); //$NON-NLS-1$
 			s = geneticCode.getAttribute("mirror"); //$NON-NLS-1$
 			if (s.equals("yes")) //$NON-NLS-1$
 				mirror = 1;
@@ -324,8 +352,16 @@ public class BioXMLParser implements ErrorHandler {
 			} catch (NumberFormatException e) {
 				throw new SAXException("Activity has not an allowed value."); //$NON-NLS-1$
 			}
-			if (activity<0 || activity>2)
+			if (activity<0 || activity>4)
 				throw new SAXException("Activity has not an allowed value."); //$NON-NLS-1$
+			s = geneticCode.getAttribute("modifiesmaroon"); //$NON-NLS-1$
+			try {
+				modifiesmaroon = Integer.parseInt(s); //$NON-NLS-1$
+			} catch (NumberFormatException e) {
+				throw new SAXException("Modifiesmaroon has not an allowed value."); //$NON-NLS-1$
+			}
+			if (modifiesmaroon<0 || modifiesmaroon>10)
+				throw new SAXException("Modifiesmaroon has not an allowed value."); //$NON-NLS-1$
 			s = geneticCode.getAttribute("modifiescream"); //$NON-NLS-1$
 			try {
 				modifiescream = Integer.parseInt(s); //$NON-NLS-1$
@@ -334,6 +370,14 @@ public class BioXMLParser implements ErrorHandler {
 			}
 			if (modifiescream<1 || modifiescream>3)
 				throw new SAXException("Modifiescream has not an allowed value."); //$NON-NLS-1$
+			s = geneticCode.getAttribute("modifiescrimson"); //$NON-NLS-1$
+			try {
+				modifiescrimson = Integer.parseInt(s); //$NON-NLS-1$
+			} catch (NumberFormatException e) {
+				throw new SAXException("Modifiescrimson has not an allowed value."); //$NON-NLS-1$
+			}
+			if (modifiescrimson<0 || modifiescrimson>3)
+				throw new SAXException("Modifiescrimson has not an allowed value."); //$NON-NLS-1$
 			s = geneticCode.getAttribute("modifiesfallow"); //$NON-NLS-1$
 			try {
 				modifiesfallow = Integer.parseInt(s); //$NON-NLS-1$
@@ -509,7 +553,7 @@ public class BioXMLParser implements ErrorHandler {
 				genes.add(parseGene((Element)gene));
 				gene = getNextElement(gene.getNextSibling());
 			}
-			return new GeneticCode(genes, symmetry, mirror, mutationrate, clonerate, homeX, homeY, base1X, base1Y, base2X, base2Y, activity, modifiescream, modifiesfallow, modifiesspore, adaptspore, modifiesblack, adaptblack, plague, disperse, generation, sibling, altruist, familial, social, peaceful, passive, clockwise, modifiesdrift, modifiespink, modifieslilac, modifiessky, modifiesleaf, selfish);
+			return new GeneticCode(genes, symmetry, hox, mirror, mutationrate, clonerate, homeX, homeY, base1X, base1Y, base2X, base2Y, activity, modifiesmaroon, modifiescream, modifiescrimson, modifiesfallow, modifiesspore, adaptspore, modifiesblack, adaptblack, plague, disperse, generation, sibling, altruist, familial, social, peaceful, passive, clockwise, modifiesdrift, modifiespink, modifieslilac, modifiessky, modifiesleaf, selfish);
 		}
 		throw new SAXException("This file does not contain a genetic_code."); //$NON-NLS-1$
 	}
@@ -522,16 +566,21 @@ public class BioXMLParser implements ErrorHandler {
 
 	public Gene parseGene(Element gene) throws SAXException {
 		double length, theta;
-		int branch, redreaction, greenreaction, bluereaction, plaguereaction, scourgereaction, whitereaction, grayreaction, silverreaction, defaultreaction, consumerreaction
-		, plantreaction, magentareaction, pinkreaction, coralreaction, orangereaction, barkreaction, violetreaction, virusreaction, maroonreaction, crimsonreaction, olivereaction
-		, mintreaction, creamreaction, spikereaction, fallowreaction, lightbluereaction, ochrereaction, skyreaction, lilacreaction, firereaction, lightbrownreaction
-		, greenbrownreaction, brownreaction, icereaction, brokenreaction, sickreaction, friendreaction;
+		int branch, stack, fold, chiral, radial, redreaction, greenreaction, bluereaction, plaguereaction, scourgereaction, whitereaction, grayreaction, silverreaction
+		, defaultreaction, consumerreaction, plantreaction, magentareaction, rosereaction, pinkreaction, coralreaction, orangereaction, barkreaction, ivyreaction
+		, violetreaction, virusreaction, maroonreaction, crimsonreaction, olivereaction, mintreaction, lavenderreaction, creamreaction, spikereaction, fallowreaction
+		, lightbluereaction, ochrereaction, skyreaction, lilacreaction, firereaction, lightbrownreaction, greenbrownreaction, brownreaction, icereaction, brokenreaction
+		, sickreaction, friendreaction;
 		Color color;
 		if (gene.getNodeName().equals("gene")) { //$NON-NLS-1$
 			try {
 				length = Double.parseDouble(gene.getAttribute("length")); //$NON-NLS-1$
 				theta = Double.parseDouble(gene.getAttribute("theta")); //$NON-NLS-1$
 				branch = Integer.parseInt(gene.getAttribute("branch")); //$NON-NLS-1$
+				stack = Integer.parseInt(gene.getAttribute("stack")); //$NON-NLS-1$
+				fold = Integer.parseInt(gene.getAttribute("fold")); //$NON-NLS-1$
+				chiral = Integer.parseInt(gene.getAttribute("chiral")); //$NON-NLS-1$
+				radial = Integer.parseInt(gene.getAttribute("radial")); //$NON-NLS-1$
 				redreaction = Integer.parseInt(gene.getAttribute("redreaction")); //$NON-NLS-1$
 				greenreaction = Integer.parseInt(gene.getAttribute("greenreaction")); //$NON-NLS-1$
 				bluereaction = Integer.parseInt(gene.getAttribute("bluereaction")); //$NON-NLS-1$
@@ -544,16 +593,19 @@ public class BioXMLParser implements ErrorHandler {
 				consumerreaction = Integer.parseInt(gene.getAttribute("consumerreaction")); //$NON-NLS-1$
 				plantreaction = Integer.parseInt(gene.getAttribute("plantreaction")); //$NON-NLS-1$
 				magentareaction = Integer.parseInt(gene.getAttribute("magentareaction")); //$NON-NLS-1$
+				rosereaction = Integer.parseInt(gene.getAttribute("rosereaction")); //$NON-NLS-1$
 				pinkreaction = Integer.parseInt(gene.getAttribute("pinkreaction")); //$NON-NLS-1$
 				coralreaction = Integer.parseInt(gene.getAttribute("coralreaction")); //$NON-NLS-1$
 				orangereaction = Integer.parseInt(gene.getAttribute("orangereaction")); //$NON-NLS-1$
 				barkreaction = Integer.parseInt(gene.getAttribute("barkreaction")); //$NON-NLS-1$
+				ivyreaction = Integer.parseInt(gene.getAttribute("ivyreaction")); //$NON-NLS-1$
 				violetreaction = Integer.parseInt(gene.getAttribute("violetreaction")); //$NON-NLS-1$
 				virusreaction = Integer.parseInt(gene.getAttribute("virusreaction")); //$NON-NLS-1$
 				maroonreaction = Integer.parseInt(gene.getAttribute("maroonreaction")); //$NON-NLS-1$
 				crimsonreaction = Integer.parseInt(gene.getAttribute("crimsonreaction")); //$NON-NLS-1$
 				olivereaction = Integer.parseInt(gene.getAttribute("olivereaction")); //$NON-NLS-1$
 				mintreaction = Integer.parseInt(gene.getAttribute("mintreaction")); //$NON-NLS-1$
+				lavenderreaction = Integer.parseInt(gene.getAttribute("lavenderreaction")); //$NON-NLS-1$
 				creamreaction = Integer.parseInt(gene.getAttribute("creamreaction")); //$NON-NLS-1$
 				spikereaction = Integer.parseInt(gene.getAttribute("spikereaction")); //$NON-NLS-1$
 				fallowreaction = Integer.parseInt(gene.getAttribute("fallowreaction")); //$NON-NLS-1$
@@ -577,10 +629,11 @@ public class BioXMLParser implements ErrorHandler {
 			} catch (IllegalArgumentException e) {
 				throw new SAXException("Attribute color does not exist or has not an allowed value."); //$NON-NLS-1$
 			}
-			return new Gene(length,theta,color,branch,redreaction,greenreaction,bluereaction,plaguereaction,scourgereaction,whitereaction,grayreaction,silverreaction
-					        ,defaultreaction,consumerreaction,plantreaction,magentareaction,pinkreaction,coralreaction,orangereaction,barkreaction,violetreaction,virusreaction
-					        ,maroonreaction,crimsonreaction,olivereaction,mintreaction,creamreaction,spikereaction,fallowreaction,lightbluereaction,ochrereaction,skyreaction
-					        ,lilacreaction,firereaction,lightbrownreaction,greenbrownreaction,brownreaction,icereaction,brokenreaction,sickreaction,friendreaction);
+			return new Gene(length,theta,color,branch,stack,fold,chiral,radial,redreaction,greenreaction,bluereaction,plaguereaction,scourgereaction,whitereaction
+					,grayreaction,silverreaction,defaultreaction,consumerreaction,plantreaction,magentareaction,rosereaction,pinkreaction,coralreaction,orangereaction
+					,barkreaction,ivyreaction,violetreaction,virusreaction,maroonreaction,crimsonreaction,olivereaction,mintreaction,lavenderreaction,creamreaction
+					,spikereaction,fallowreaction,lightbluereaction,ochrereaction,skyreaction,lilacreaction,firereaction,lightbrownreaction,greenbrownreaction
+					,brownreaction,icereaction,brokenreaction,sickreaction,friendreaction);
 		}
 		throw new SAXException("Parse error. "+gene.getNodeName()+" found but gene expected.");  //$NON-NLS-1$//$NON-NLS-2$
 	}

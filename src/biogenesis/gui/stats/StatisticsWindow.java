@@ -92,6 +92,7 @@ public class StatisticsWindow extends JDialog {
 	private GraphInfo carbonMonoxideGraph;
 	private GraphInfo methaneGraph;
 	private GraphInfo detritusGraph;
+	private GraphInfo nitrogenGraph;
 
 	private AtmosphereStatsPanel atmosphereStatsPanel;
 
@@ -102,6 +103,7 @@ public class StatisticsWindow extends JDialog {
 	private ValueAndTimeLabel currentStateCarbonMonoxideLabel;
 	private ValueAndTimeLabel currentStateCh4Label;
 	private ValueAndTimeLabel currentStateDetritusLabel;
+	private ValueAndTimeLabel currentStateNitrogenLabel;
 	private ValueAndTimeLabel currentStatePopulationLabel;
 	private ValueAndTimeLabel currentStateRemainsOfBeingsLabel;
 	private ValueAndTimeLabel currentStateTotalMassLabel;
@@ -218,12 +220,14 @@ public class StatisticsWindow extends JDialog {
 		carbonMonoxideGraph = new GraphInfo(0, 0, 100, 104, Color.GRAY, Messages.getString("T_CARBON_MONOXIDE")); //$NON-NLS-1$
 		methaneGraph = new GraphInfo(0, 0, 100, 104, Color.MAGENTA, Messages.getString("T_METHANE")); //$NON-NLS-1$
 		detritusGraph = new GraphInfo(0, 0, 100, 104, Color.YELLOW, Messages.getString("T_DETRITUS")); //$NON-NLS-1$
+		nitrogenGraph = new GraphInfo(0, 0, 100, 104, Color.CYAN, Messages.getString("T_NITROGEN")); //$NON-NLS-1$
 		atmosphereGraphPanel = new GraphPanel(100, 105, nf, Messages.getString("T_TIME")); //$NON-NLS-1$
 		atmosphereGraphPanel.addGraph(oxygenGraph);
 		atmosphereGraphPanel.addGraph(carbonDioxideGraph);
 		atmosphereGraphPanel.addGraph(carbonMonoxideGraph);
 		atmosphereGraphPanel.addGraph(methaneGraph);
 		atmosphereGraphPanel.addGraph(detritusGraph);
+		atmosphereGraphPanel.addGraph(nitrogenGraph);
 
 		// Atmosphere statistics
 		atmosphereStatsPanel = new AtmosphereStatsPanel(worldStatistics, nf);
@@ -272,6 +276,7 @@ public class StatisticsWindow extends JDialog {
 		currentStateCh4Label = new ValueAndTimeLabel(Messages.getString("T_METHANE2"), null, nf); //$NON-NLS-1$
 		currentStateRemainsOfBeingsLabel = new ValueAndTimeLabel(Messages.getString("T_REMAINS_OF_BEINGS"), null, nf); //$NON-NLS-1$
 		currentStateDetritusLabel = new ValueAndTimeLabel(Messages.getString("T_DETRITUS2"), null, nf); //$NON-NLS-1$
+		currentStateNitrogenLabel = new ValueAndTimeLabel(Messages.getString("T_NITROGEN2"), null, nf); //$NON-NLS-1$
 		currentStateTotalMassLabel = new ValueAndTimeLabel(Messages.getString("T_TOTAL_MASS"), null, nf); //$NON-NLS-1$
 		currentStateTotalEnergyLabel = new ValueAndTimeLabel(Messages.getString("T_TOTAL_ENERGY"), null, nf); //$NON-NLS-1$
 
@@ -310,7 +315,8 @@ public class StatisticsWindow extends JDialog {
 												.addComponent(currentStateCarbonDioxideLabel)
 												.addComponent(currentStateCarbonMonoxideLabel)
 												.addComponent(currentStateCh4Label)
-												.addComponent(currentStateDetritusLabel)))
+												.addComponent(currentStateDetritusLabel)
+						                        .addComponent(currentStateNitrogenLabel)))
 						.addComponent(colorPanelWrapper));
 		currentStatePanelLayout.setVerticalGroup(
 				currentStatePanelLayout.createSequentialGroup()
@@ -329,8 +335,9 @@ public class StatisticsWindow extends JDialog {
 						.addGroup(currentStatePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
 								.addComponent(currentStateTotalMassLabel)
 								.addComponent(currentStateDetritusLabel))
-						.addGroup(currentStatePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-								.addComponent(currentStateTotalEnergyLabel))
+		                .addGroup(currentStatePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+		                		.addComponent(currentStateTotalEnergyLabel)
+		                        .addComponent(currentStateNitrogenLabel))
 						.addComponent(colorPanelWrapper));
 
 		title = BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED),
@@ -645,12 +652,13 @@ public class StatisticsWindow extends JDialog {
 
 		atmosphereGraphPanel.setMinTime(minTime);
 		atmosphereGraphPanel.setMaxTime(maxTime);
-		max = Math.sqrt(Math.sqrt(world.getO2() + world.getCO2() + world.getCO1() + world.getCH4() + world.getDetritus()));
+		max = Math.log10(((world.getO2() + world.getCO2() + world.getCO1() + world.getCH4() + world.getDetritus())/100)+1);
 		oxygenGraph.setMaxAndPoints(max, worldStatistics.getOxygenList());
 		carbonDioxideGraph.setMaxAndPoints(max, worldStatistics.getCarbonDioxideList());
 		carbonMonoxideGraph.setMaxAndPoints(max, worldStatistics.getCarbonMonoxideList());
 		methaneGraph.setMaxAndPoints(max, worldStatistics.getMethaneList());
 		detritusGraph.setMaxAndPoints(max, worldStatistics.getDetritusList());
+		nitrogenGraph.setMaxAndPoints(max, worldStatistics.getNitrogenList());
 
 		atmosphereStatsPanel.update();
 
@@ -672,6 +680,7 @@ public class StatisticsWindow extends JDialog {
 		currentStateRemainsOfBeingsLabel.update(world.getNCorpses());
 		currentStateDetritusLabel.update(world.getDetritus());
 		currentStateTotalMassLabel.update(worldStatistics.getTotalMass());
+		currentStateNitrogenLabel.update(world.getN2());
 		currentStateTotalEnergyLabel.update(worldStatistics.getTotalEnergy());
 		updateColorPanel(colorPanel);
 

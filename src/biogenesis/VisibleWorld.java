@@ -376,6 +376,7 @@ public class VisibleWorld extends JPanel implements VisibleWorldInterface {
 			Organism b = getSelectedOrganism();
 			if (b != null && !b.isAlive()) {
 				b.useBreathing(b.getEnergy());
+				b.useNitrogen(b.getNitrogen());
 			}
 		}
 	}

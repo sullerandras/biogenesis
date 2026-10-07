@@ -101,7 +101,7 @@ public class BioFile {
   }
 
   public void appendToCsv(long time, int population, int distinctClades, int distinctCladesWith10Orgs,
-      int distinctCladesWith100Orgs, double O2, double CO2, double CO1, double CH4, double detritus, Collection<Organism> organisms) {
+      int distinctCladesWith100Orgs, double O2, double CO2, double CO1, double CH4, double detritus, double N2, Collection<Organism> organisms) {
     File csvFile = getCsvFile();
     Row row = new Row();
     row.add("time", time);
@@ -114,6 +114,7 @@ public class BioFile {
     row.add("co1", CO1, 2);
     row.add("ch4", CH4, 2);
     row.add("detritus", detritus, 2);
+    row.add("n2", N2, 2);
     row.add("totalmass", 0, 2);
     row.add("totalenergy", 0, 2);
 

@@ -84,6 +84,10 @@ public final class Utils {
 	 */
 	final static double DEF_INITIAL_DETRITUS = 0;
 	/**
+	 * This is the default amount of N2 that exists in a newly created world.
+	 */
+	final static double DEF_INITIAL_N2 = 56250;
+	/**
 	 * This is the initial size of the organisms vector.
 	 */
 	final static int DEF_ORGANISMS_VECTOR_SIZE = 50;
@@ -217,7 +221,11 @@ public final class Utils {
 	/**
 	 * This is the delay when a dark jade segment regenerates.
 	 */
-	final static int DEF_DARKJADE_DELAY = 4;
+	final static int DEF_DARKJADE_DELAY = 5;
+	/**
+	 * This is the CO2 fail threshold of Hox4 plants.
+	 */
+	final static int DEF_HOX4_THRESHOLD = 900;
 	/**
 	 * This is the default energy that is consumed when a red segment is used.
 	 */
@@ -281,7 +289,7 @@ public final class Utils {
 	/**
 	 * This is the default energy that is consumed when an ivy segment is used.
 	 */
-	final static double DEF_IVY_ENERGY_CONSUMPTION = 0.333d;
+	final static double DEF_IVY_ENERGY_CONSUMPTION = 0.33d;
 	/**
 	 * This is the default energy that is consumed when a crowded forest segment is used.
 	 */
@@ -293,7 +301,11 @@ public final class Utils {
 	/**
 	 * This is the default effectivity for drift boosting plant photosynthesis.
 	 */
-	final static double DEF_BOOST_ENERGY_CONSUMPTION = 0.125d;
+	final static double DEF_BOOST_ENERGY_CONSUMPTION = 0.12d;
+	/**
+	 * This is the default effectivity for Hox4 boosting plant photosynthesis.
+	 */
+	final static double DEF_HOX4_ENERGY_CONSUMPTION = 0.28175d;
 	/**
 	 * This is the default energy that is consumed when a spring segment is used.
 	 */
@@ -373,7 +385,7 @@ public final class Utils {
 	/**
 	 * This is the default energy that is consumed when a crimson segment is used.
 	 */
-	final static double DEF_CRIMSON_ENERGY_CONSUMPTION = 3.16d;
+	final static double DEF_CRIMSON_ENERGY_CONSUMPTION = 3.125d;
 	/**
 	 * This is the default energy that is consumed when a olive segment is used.
 	 */
@@ -833,6 +845,10 @@ public final class Utils {
 	 */
 	static double INITIAL_DETRITUS = DEF_INITIAL_DETRITUS;
 	/**
+	 * This is the effective amount of N2 that exists in a newly created world.
+	 */
+	static double INITIAL_N2 = DEF_INITIAL_N2;
+	/**
 	 * This is the effective size of the organisms vector.
 	 */
 	static int ORGANISMS_VECTOR_SIZE = DEF_ORGANISMS_VECTOR_SIZE;
@@ -968,6 +984,10 @@ public final class Utils {
 	 */
 	static int DARKJADE_DELAY = DEF_DARKJADE_DELAY;
 	/**
+	 * This is the CO2 fail threshold of Hox4 plants.
+	 */
+	static int HOX4_THRESHOLD = DEF_HOX4_THRESHOLD;
+	/**
 	 * This is the energy that is consumed when a red segment is used.
 	 */
 	static double RED_ENERGY_CONSUMPTION = DEF_RED_ENERGY_CONSUMPTION;
@@ -1043,6 +1063,10 @@ public final class Utils {
 	 * This is the energy that is used for drift boosting plant photosynthesis
 	 */
 	static double BOOST_ENERGY_CONSUMPTION = DEF_BOOST_ENERGY_CONSUMPTION;
+	/**
+	 * This is the energy that is used for Hox4 boosting plant photosynthesis
+	 */
+	static double HOX4_ENERGY_CONSUMPTION = DEF_HOX4_ENERGY_CONSUMPTION;
 	/**
 	 * This is the energy that is consumed when a spring segment is used.
 	 */
@@ -2062,6 +2086,7 @@ public final class Utils {
 			prefs.putDouble("INITIAL_CO1",INITIAL_CO1); //$NON-NLS-1$
 			prefs.putDouble("INITIAL_CH4",INITIAL_CH4); //$NON-NLS-1$
 			prefs.putDouble("INITIAL_DETRITUS",INITIAL_DETRITUS); //$NON-NLS-1$
+			prefs.putDouble("INITIAL_N2",INITIAL_N2); //$NON-NLS-1$
 			prefs.putInt("ORGANISMS_VECTOR_SIZE",ORGANISMS_VECTOR_SIZE); //$NON-NLS-1$
 			prefs.putInt("WORLD_WIDTH",WORLD_WIDTH); //$NON-NLS-1$
 			prefs.putInt("WORLD_HEIGHT",WORLD_HEIGHT); //$NON-NLS-1$
@@ -2090,6 +2115,7 @@ public final class Utils {
 			prefs.putDouble("GOLD_DIVISOR",GOLD_DIVISOR); //$NON-NLS-1$
 			prefs.putDouble("DODGE_ENERGY_CONSUMPTION",DODGE_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			prefs.putInt("DARKJADE_DELAY",DARKJADE_DELAY); //$NON-NLS-1$
+			prefs.putInt("HOX4_THRESHOLD",HOX4_THRESHOLD); //$NON-NLS-1$
 			prefs.putDouble("RED_ENERGY_CONSUMPTION",RED_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			prefs.putDouble("GREEN_ENERGY_CONSUMPTION",GREEN_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			prefs.putDouble("BLUE_ENERGY_CONSUMPTION",BLUE_ENERGY_CONSUMPTION); //$NON-NLS-1$
@@ -2108,6 +2134,7 @@ public final class Utils {
 			prefs.putDouble("CROWDEDFOREST_ENERGY_CONSUMPTION",CROWDEDFOREST_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			prefs.putDouble("SYMBIONT_ENERGY_CONSUMPTION",SYMBIONT_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			prefs.putDouble("BOOST_ENERGY_CONSUMPTION",BOOST_ENERGY_CONSUMPTION); //$NON-NLS-1$
+			prefs.putDouble("HOX4_ENERGY_CONSUMPTION",HOX4_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			prefs.putDouble("IVY_ENERGY_CONSUMPTION",IVY_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			prefs.putDouble("SPRING_ENERGY_CONSUMPTION",SPRING_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			prefs.putDouble("LEAF_ENERGY_CONSUMPTION",LEAF_ENERGY_CONSUMPTION); //$NON-NLS-1$
@@ -2266,6 +2293,7 @@ public final class Utils {
 			INITIAL_CO1 = prefs.getDouble("INITIAL_CO1",DEF_INITIAL_CO1); //$NON-NLS-1$
 			INITIAL_CH4 = prefs.getDouble("INITIAL_CH4",DEF_INITIAL_CH4); //$NON-NLS-1$
 			INITIAL_DETRITUS = prefs.getDouble("INITIAL_DETRITUS",DEF_INITIAL_DETRITUS); //$NON-NLS-1$
+			INITIAL_N2 = prefs.getDouble("INITIAL_N2",DEF_INITIAL_N2); //$NON-NLS-1$
 			ORGANISMS_VECTOR_SIZE = prefs.getInt("ORGANISMS_VECTOR_SIZE",DEF_ORGANISMS_VECTOR_SIZE); //$NON-NLS-1$
 			WORLD_WIDTH = prefs.getInt("WORLD_WIDTH",DEF_WORLD_WIDTH); //$NON-NLS-1$
 			WORLD_HEIGHT = prefs.getInt("WORLD_HEIGHT",DEF_WORLD_HEIGHT); //$NON-NLS-1$
@@ -2294,6 +2322,7 @@ public final class Utils {
 			GOLD_DIVISOR = prefs.getDouble("GOLD_DIVISOR",DEF_GOLD_DIVISOR); //$NON-NLS-1$
 			DODGE_ENERGY_CONSUMPTION = prefs.getDouble("DODGE_ENERGY_CONSUMPTION",DEF_DODGE_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			DARKJADE_DELAY = prefs.getInt("DARKJADE_DELAY",DEF_DARKJADE_DELAY); //$NON-NLS-1$
+			HOX4_THRESHOLD = prefs.getInt("HOX4_THRESHOLD",DEF_HOX4_THRESHOLD); //$NON-NLS-1$
 			RED_ENERGY_CONSUMPTION = prefs.getDouble("RED_ENERGY_CONSUMPTION",DEF_RED_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			GREEN_ENERGY_CONSUMPTION = prefs.getDouble("GREEN_ENERGY_CONSUMPTION",DEF_GREEN_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			BLUE_ENERGY_CONSUMPTION = prefs.getDouble("BLUE_ENERGY_CONSUMPTION",DEF_BLUE_ENERGY_CONSUMPTION); //$NON-NLS-1$
@@ -2312,6 +2341,7 @@ public final class Utils {
 			CROWDEDFOREST_ENERGY_CONSUMPTION = prefs.getDouble("CROWDEDFOREST_ENERGY_CONSUMPTION",DEF_CROWDEDFOREST_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			SYMBIONT_ENERGY_CONSUMPTION = prefs.getDouble("SYMBIONT_ENERGY_CONSUMPTION",DEF_SYMBIONT_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			BOOST_ENERGY_CONSUMPTION = prefs.getDouble("BOOST_ENERGY_CONSUMPTION",DEF_BOOST_ENERGY_CONSUMPTION); //$NON-NLS-1$
+			HOX4_ENERGY_CONSUMPTION = prefs.getDouble("HOX4_ENERGY_CONSUMPTION",DEF_HOX4_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			IVY_ENERGY_CONSUMPTION = prefs.getDouble("IVY_ENERGY_CONSUMPTION",DEF_IVY_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			SPRING_ENERGY_CONSUMPTION = prefs.getDouble("SPRING_ENERGY_CONSUMPTION",DEF_SPRING_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			LEAF_ENERGY_CONSUMPTION = prefs.getDouble("LEAF_ENERGY_CONSUMPTION",DEF_LEAF_ENERGY_CONSUMPTION); //$NON-NLS-1$

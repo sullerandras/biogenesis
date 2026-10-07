@@ -53,9 +53,10 @@ public class CladeParser {
         .map(gene -> parseGene(gene.getAsJsonObject()))
         .collect(Collectors.toList());
     int symmetry = o.get("_symmetry").getAsInt();
+    int hox = o.get("_hox").getAsInt();
     int mirror = o.get("_mirror").getAsInt();
 
-    GeneticCode x = new GeneticCode(genes, symmetry, mirror, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, false, false, false, false,
+    GeneticCode x = new GeneticCode(genes, symmetry, hox, mirror, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, false, false, false, false,
         false, false, false, false, false, false, false, false, false, false, false, false);
 
     synchronized (geneticCodeCache) {
@@ -70,8 +71,12 @@ public class CladeParser {
     double theta = gene.get("_theta").getAsDouble();
     Color color = parseColor(gene.get("_color").getAsJsonObject());
     int branch = gene.get("_branch").getAsInt();
+    int stack = gene.get("_stack").getAsInt();
+	int fold = gene.get("_fold").getAsInt();
+	int chiral = gene.get("_chiral").getAsInt();
+	int radial = gene.get("_radial").getAsInt();
 
-    return new Gene(length, theta, color, branch, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    return new Gene(length, theta, color, branch, stack, fold, chiral, radial, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   }
 

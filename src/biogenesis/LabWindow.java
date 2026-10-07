@@ -45,6 +45,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
@@ -76,9 +77,12 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 	protected JTextField base2XLabel;
 	protected JTextField base2YLabel;
 	protected JComboBox symmetryCombo;
+	protected JComboBox hoxCombo;
 	protected JComboBox mirrorCombo;
 	protected JComboBox activityCombo;
+	protected JComboBox modifiesmaroonCombo;
 	protected JComboBox modifiescreamCombo;
+	protected JComboBox modifiescrimsonCombo;
 	protected JComboBox modifiesfallowCombo;
 	protected JComboBox modifiessporeCombo;
 	protected JComboBox adaptsporeCombo;
@@ -102,6 +106,7 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 	protected JComboBox selfishCombo;
 
 	protected int symmetry=2;
+	protected int hox=1;
 	protected int energy=40;
 	protected int life=Utils.MAX_AGE;
 	protected int mirror=0;
@@ -113,8 +118,10 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 	protected double base1Y= -1;
 	protected double base2X= -1;
 	protected double base2Y= -1;
-	protected int activity=2;
+	protected int activity=0;
+	protected int modifiesmaroon=0;
 	protected int modifiescream=2;
+	protected int modifiescrimson=0;
 	protected int modifiesfallow=2;
 	protected int modifiesspore=4;
 	protected int adaptspore=4;
@@ -165,9 +172,10 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 		okButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
             	if (genesList.size() > 0)
-            		mainWindow.getVisibleWorld().setClippedGeneticCode(new GeneticCode(genesList, symmetry, mirror, mutationrate, clonerate, homeX, homeY, base1X, base1Y,
-            		base2X, base2Y, activity, modifiescream, modifiesfallow, modifiesspore, adaptspore, modifiesblack, adaptblack, plague, disperseChildren, generationBattle,
-            		siblingBattle, altruist, familial, social, peaceful, passive, clockwise, modifiesdrift, modifiespink, modifieslilac, modifiessky, modifiesleaf, selfish));
+            		mainWindow.getVisibleWorld().setClippedGeneticCode(new GeneticCode(genesList, symmetry, hox, mirror, mutationrate, clonerate, homeX, homeY, base1X, base1Y,
+            		base2X, base2Y, activity, modifiesmaroon, modifiescream, modifiescrimson, modifiesfallow, modifiesspore, adaptspore, modifiesblack, adaptblack, plague,
+            		disperseChildren, generationBattle, siblingBattle, altruist, familial, social, peaceful, passive, clockwise, modifiesdrift, modifiespink, modifieslilac,
+            		modifiessky, modifiesleaf, selfish));
             	else
             		mainWindow.getVisibleWorld().removeClippedGeneticCode();
             	dispose();
@@ -189,7 +197,9 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 		base2X = g.getBase2X();
 		base2Y = g.getBase2Y();
 		activity = g.getActivity();
+		modifiesmaroon = g.getModifiesmaroon();
 		modifiescream = g.getModifiescream();
+		modifiescrimson = g.getModifiescrimson();
 		modifiesfallow = g.getModifiesfallow();
 		modifiesspore = g.getModifiesspore();
 		adaptspore = g.getAdaptspore();
@@ -213,6 +223,7 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 		selfish = g.getSelfish();
 		mirror = g.getMirror();
 		symmetry = g.getSymmetry();
+		hox = g.getHox();
 		for (int i=0; i<g.getNGenes(); i++)
 			genesList.add((Gene)g.getGene(i).clone());
 		energy = 40 + 3 * symmetry * genesList.size();
@@ -411,20 +422,21 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 		generalPanel.add(homeYLabel, gridBagConstraints);
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 2;
-		generalPanel.add(new JLabel(Messages.getString("T_ACTIVITY"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
+		generalPanel.add(new JLabel(Messages.getString("T_HOX_PLAN"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
 		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 2;
-		String[] activityValues = {"0","1","2"};  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
-		activityCombo = new JComboBox(activityValues);
-		activityCombo.setSelectedItem(Integer.toString(activity));
-		activityCombo.addItemListener(new ItemListener() {
+		String[] hoxValues = {"1","2","3","4"};  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+		hoxCombo = new JComboBox(hoxValues);
+		hoxCombo.setSelectedItem(Integer.toString(hox));
+		hoxCombo.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent evt) {
 				if (evt.getStateChange() == ItemEvent.SELECTED) {
-					activity = Integer.parseInt((String)activityCombo.getSelectedItem());
+					hox = Integer.parseInt((String)hoxCombo.getSelectedItem());
+					drawPanel.repaint();
 				}
 			}
 		});
-		generalPanel.add(activityCombo, gridBagConstraints);
+		generalPanel.add(hoxCombo, gridBagConstraints);
 		gridBagConstraints.gridx = 2;
 		gridBagConstraints.gridy = 2;
 		generalPanel.add(new JLabel(Messages.getString("T_GENERATION_BATTLE"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
@@ -783,6 +795,54 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
             }
         });
 		generalPanel.add(base2YLabel, gridBagConstraints);
+		gridBagConstraints.gridx = 0;
+		gridBagConstraints.gridy = 6;
+		generalPanel.add(new JLabel(Messages.getString("T_MODIFIESCRIMSON"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
+		gridBagConstraints.gridx = 1;
+		gridBagConstraints.gridy = 6;
+		String[] modifiescrimsonValues = {"0","1","2","3"};  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+		modifiescrimsonCombo = new JComboBox(modifiescrimsonValues);
+		modifiescrimsonCombo.setSelectedItem(Integer.toString(modifiescrimson));
+		modifiescrimsonCombo.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent evt) {
+				if (evt.getStateChange() == ItemEvent.SELECTED) {
+					modifiescrimson = Integer.parseInt((String)modifiescrimsonCombo.getSelectedItem());
+				}
+			}
+		});
+		generalPanel.add(modifiescrimsonCombo, gridBagConstraints);
+		gridBagConstraints.gridx = 2;
+		gridBagConstraints.gridy = 6;
+		generalPanel.add(new JLabel(Messages.getString("T_MODIFIESMAROON"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
+		gridBagConstraints.gridx = 3;
+		gridBagConstraints.gridy = 6;
+		String[] modifiesmaroonValues = {"0","1","2","3","4","5","6","7","8","9","10"};  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+		modifiesmaroonCombo = new JComboBox(modifiesmaroonValues);
+		modifiesmaroonCombo.setSelectedItem(Integer.toString(modifiesmaroon));
+		modifiesmaroonCombo.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent evt) {
+				if (evt.getStateChange() == ItemEvent.SELECTED) {
+					modifiesmaroon = Integer.parseInt((String)modifiesmaroonCombo.getSelectedItem());
+				}
+			}
+		});
+		generalPanel.add(modifiesmaroonCombo, gridBagConstraints);
+		gridBagConstraints.gridx = 4;
+		gridBagConstraints.gridy = 6;
+		generalPanel.add(new JLabel(Messages.getString("T_ACTIVITY"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
+		gridBagConstraints.gridx = 5;
+		gridBagConstraints.gridy = 6;
+		String[] activityValues = {"0","2","4"};  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+		activityCombo = new JComboBox(activityValues);
+		activityCombo.setSelectedItem(Integer.toString(activity));
+		activityCombo.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent evt) {
+				if (evt.getStateChange() == ItemEvent.SELECTED) {
+					activity = Integer.parseInt((String)activityCombo.getSelectedItem());
+				}
+			}
+		});
+		generalPanel.add(activityCombo, gridBagConstraints);
 
 		getContentPane().add(generalPanel,BorderLayout.NORTH);
 		genesPanel = new JPanel();
@@ -815,6 +875,7 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
             	genesList.clear();
             	refreshGenesPanel();
                 symmetry=2;
+                hox=1;
             	energy=40;
             	life=Utils.MAX_AGE;
             	mirror=0;
@@ -826,8 +887,10 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
             	base1Y= -1;
             	base2X= -1;
             	base2Y= -1;
-            	activity=2;
+            	activity=0;
+            	modifiesmaroon=0;
             	modifiescream=2;
+            	modifiescrimson=0;
             	modifiesfallow=2;
             	modifiesspore=4;
             	adaptspore=4;
@@ -858,6 +921,7 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
             	base2XLabel.setText(Double.toString(base2X));
             	base2YLabel.setText(Double.toString(base2Y));
 				symmetryCombo.setSelectedItem(Integer.toString(symmetry));
+				hoxCombo.setSelectedItem(Integer.toString(hox));
 				mirrorCombo.setSelectedIndex(mirror);
 				disperseCombo.setSelectedIndex(disperseChildren==false?0:1);
 				selfishCombo.setSelectedIndex(selfish==false?0:1);
@@ -868,7 +932,9 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 				siblingCombo.setSelectedIndex(siblingBattle==false?0:1);
 				socialCombo.setSelectedIndex(social==false?0:1);
 				peacefulCombo.setSelectedIndex(peaceful==false?0:1);
+				modifiesmaroonCombo.setSelectedItem(Integer.toString(modifiesmaroon));
 				modifiescreamCombo.setSelectedItem(Integer.toString(modifiescream));
+				modifiescrimsonCombo.setSelectedItem(Integer.toString(modifiescrimson));
 				modifiessporeCombo.setSelectedItem(Integer.toString(modifiesspore));
 				modifiesblackCombo.setSelectedItem(Integer.toString(modifiesblack));
 				modifiesdriftCombo.setSelectedIndex(modifiesdrift==false?0:1);
@@ -911,6 +977,7 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 			            	base2XLabel.setText(Double.toString(base2X));
 			            	base2YLabel.setText(Double.toString(base2Y));
 							symmetryCombo.setSelectedItem(Integer.toString(symmetry));
+							hoxCombo.setSelectedItem(Integer.toString(hox));
 							mirrorCombo.setSelectedIndex(mirror);
 							disperseCombo.setSelectedIndex(disperseChildren==false?0:1);
 							selfishCombo.setSelectedIndex(selfish==false?0:1);
@@ -921,7 +988,9 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 							siblingCombo.setSelectedIndex(siblingBattle==false?0:1);
 							socialCombo.setSelectedIndex(social==false?0:1);
 							peacefulCombo.setSelectedIndex(peaceful==false?0:1);
+							modifiesmaroonCombo.setSelectedItem(Integer.toString(modifiesmaroon));
 							modifiescreamCombo.setSelectedItem(Integer.toString(modifiescream));
+							modifiescrimsonCombo.setSelectedItem(Integer.toString(modifiescrimson));
 							modifiessporeCombo.setSelectedItem(Integer.toString(modifiesspore));
 							modifiesblackCombo.setSelectedItem(Integer.toString(modifiesblack));
 							modifiesdriftCombo.setSelectedIndex(modifiesdrift==false?0:1);
@@ -954,15 +1023,23 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 		exportButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (genesList.size() > 0) {
-					GeneticCode exportcode = new GeneticCode(genesList, symmetry, mirror, mutationrate, clonerate, homeX, homeY, base1X, base1Y, base2X, base2Y, activity,
-							modifiescream, modifiesfallow, modifiesspore, adaptspore, modifiesblack, adaptblack, plague, disperseChildren, generationBattle, siblingBattle,
-							altruist, familial, social, peaceful, passive, clockwise, modifiesdrift, modifiespink, modifieslilac, modifiessky, modifiesleaf, selfish);
+					GeneticCode exportcode = new GeneticCode(genesList, symmetry, hox, mirror, mutationrate, clonerate, homeX, homeY, base1X, base1Y, base2X, base2Y, activity,
+							modifiesmaroon, modifiescream, modifiescrimson, modifiesfallow, modifiesspore, adaptspore, modifiesblack, adaptblack, plague, disperseChildren, generationBattle,
+							siblingBattle, altruist, familial, social, peaceful, passive, clockwise, modifiesdrift, modifiespink, modifieslilac, modifiessky, modifiesleaf,
+							selfish);
 					mainWindow.saveObjectAs(LabWindow.this, exportcode);
 				}
 			}
 		});
 		buttonsPanel.add(exportButton);
 		getContentPane().add(buttonsPanel,BorderLayout.SOUTH);
+		
+		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, genesScroll, drawPanel);
+		splitPane.setResizeWeight(0.5);
+		splitPane.setOneTouchExpandable(true);
+		splitPane.setContinuousLayout(true);
+
+		getContentPane().add(splitPane, BorderLayout.CENTER);
 
 		getRootPane().setDefaultButton(okButton);
 	}
@@ -976,7 +1053,7 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 		}
 		// Add a new gene after the last one
 		if (evt.getActionCommand().equals("add")) { //$NON-NLS-1$
-			Gene gene = new Gene(2.0,0.0,Color.GREEN,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+			Gene gene = new Gene(2.0,0.0,Color.GREEN,-1,0,0,-1,90,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
 			genesList.add(gene);
 			refreshGenesPanel();
 		}
@@ -988,14 +1065,14 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 		}
 		// Insert a new gene before the selected position
 		if (evt.getActionCommand().startsWith("i")) { //$NON-NLS-1$
-			Gene gene = new Gene(2.0,0.0,Color.GREEN,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+			Gene gene = new Gene(2.0,0.0,Color.GREEN,-1,0,0,-1,90,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
 			int insertPosition = Integer.parseInt(evt.getActionCommand().substring(1));
 			genesList.add(insertPosition, gene);
 			refreshGenesPanel();
 		}
 		// Clone a gene and add it before the selected position
 		if (evt.getActionCommand().startsWith("r")) { //$NON-NLS-1$
-			Gene gene = new Gene(2.0,0.0,Color.GREEN,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+			Gene gene = new Gene(2.0,0.0,Color.GREEN,-1,0,0,-1,90,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
 			int clonedGene = Integer.parseInt(evt.getActionCommand().substring(1));
 			gene = genesList.get(clonedGene);
 			genesList.add(clonedGene, (Gene)gene.clone());
@@ -1022,79 +1099,93 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 		genesPanel.add(new JLabel(Messages.getString("T_COLOR2")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 5;
 		genesPanel.add(new JLabel(Messages.getString("T_BRANCH")+" "), constraints); //$NON-NLS-1$
+		constraints.gridx = 6;
+		genesPanel.add(new JLabel(Messages.getString("T_STACK")+" "), constraints); //$NON-NLS-1$
+		constraints.gridx = 7;
+		genesPanel.add(new JLabel(Messages.getString("T_FOLD")+" "), constraints); //$NON-NLS-1$
+		constraints.gridx = 8;
+		genesPanel.add(new JLabel(Messages.getString("T_CHIRAL")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 9;
-		genesPanel.add(new JLabel(Messages.getString("T_GREEN")+" "), constraints); //$NON-NLS-1$
-		constraints.gridx = 10;
-		genesPanel.add(new JLabel(Messages.getString("T_BARK")+" "), constraints); //$NON-NLS-1$
-		constraints.gridx = 11;
-		genesPanel.add(new JLabel(Messages.getString("T_RED")+" "), constraints); //$NON-NLS-1$
-		constraints.gridx = 12;
-		genesPanel.add(new JLabel(Messages.getString("T_FIRE")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_RADIAL")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 13;
-		genesPanel.add(new JLabel(Messages.getString("T_ORANGE")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_GREEN")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 14;
-		genesPanel.add(new JLabel(Messages.getString("T_MAROON")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_BARK")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 15;
-		genesPanel.add(new JLabel(Messages.getString("T_CRIMSON")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_IVY")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 16;
-		genesPanel.add(new JLabel(Messages.getString("T_PINK")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_RED")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 17;
-		genesPanel.add(new JLabel(Messages.getString("T_CREAM")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_FIRE")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 18;
-		genesPanel.add(new JLabel(Messages.getString("T_SILVER")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_ORANGE")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 19;
-		genesPanel.add(new JLabel(Messages.getString("T_SPIKE")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_MAROON")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 20;
-		genesPanel.add(new JLabel(Messages.getString("T_LILAC")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_CRIMSON")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 21;
-		genesPanel.add(new JLabel(Messages.getString("T_GRAY")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_PINK")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 22;
-		genesPanel.add(new JLabel(Messages.getString("T_VIOLET")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_CREAM")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 23;
-		genesPanel.add(new JLabel(Messages.getString("T_OLIVE")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_SILVER")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 24;
-		genesPanel.add(new JLabel(Messages.getString("T_SKY")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_SPIKE")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 25;
-		genesPanel.add(new JLabel(Messages.getString("T_BLUE")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_LILAC")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 26;
-		genesPanel.add(new JLabel(Messages.getString("T_OCHRE")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_GRAY")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 27;
-		genesPanel.add(new JLabel(Messages.getString("T_FALLOW")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_VIOLET")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 28;
-		genesPanel.add(new JLabel(Messages.getString("T_WHITE")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_OLIVE")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 29;
-		genesPanel.add(new JLabel(Messages.getString("T_VIRUS")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_SKY")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 30;
-		genesPanel.add(new JLabel(Messages.getString("T_PLAGUE")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_BLUE")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 31;
-		genesPanel.add(new JLabel(Messages.getString("T_SCOURGE")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_OCHRE")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 32;
-		genesPanel.add(new JLabel(Messages.getString("T_CORAL")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_FALLOW")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 33;
-		genesPanel.add(new JLabel(Messages.getString("T_MINT")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_WHITE")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 34;
-		genesPanel.add(new JLabel(Messages.getString("T_MAGENTA")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_VIRUS")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 35;
-		genesPanel.add(new JLabel(Messages.getString("T_DEFAULT")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_PLAGUE")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 36;
-		genesPanel.add(new JLabel(Messages.getString("T_CONSUMER")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_SCOURGE")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 37;
-		genesPanel.add(new JLabel(Messages.getString("T_PLANT")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_CORAL")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 38;
-		genesPanel.add(new JLabel(Messages.getString("T_ICE")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_MINT")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 39;
-		genesPanel.add(new JLabel(Messages.getString("T_LBL")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_LAVENDER")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 40;
-		genesPanel.add(new JLabel(Messages.getString("T_LBR")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_MAGENTA")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 41;
-		genesPanel.add(new JLabel(Messages.getString("T_GBR")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_ROSE")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 42;
-		genesPanel.add(new JLabel(Messages.getString("T_BROKEN")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_DEFAULT")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 43;
-		genesPanel.add(new JLabel(Messages.getString("T_BRO")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_CONSUMER")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 44;
-		genesPanel.add(new JLabel(Messages.getString("T_SICK")+" "), constraints); //$NON-NLS-1$
+		genesPanel.add(new JLabel(Messages.getString("T_PLANT")+" "), constraints); //$NON-NLS-1$
 		constraints.gridx = 45;
+		genesPanel.add(new JLabel(Messages.getString("T_ICE")+" "), constraints); //$NON-NLS-1$
+		constraints.gridx = 46;
+		genesPanel.add(new JLabel(Messages.getString("T_LBL")+" "), constraints); //$NON-NLS-1$
+		constraints.gridx = 47;
+		genesPanel.add(new JLabel(Messages.getString("T_LBR")+" "), constraints); //$NON-NLS-1$
+		constraints.gridx = 48;
+		genesPanel.add(new JLabel(Messages.getString("T_GBR")+" "), constraints); //$NON-NLS-1$
+		constraints.gridx = 49;
+		genesPanel.add(new JLabel(Messages.getString("T_BROKEN")+" "), constraints); //$NON-NLS-1$
+		constraints.gridx = 50;
+		genesPanel.add(new JLabel(Messages.getString("T_BRO")+" "), constraints); //$NON-NLS-1$
+		constraints.gridx = 51;
+		genesPanel.add(new JLabel(Messages.getString("T_SICK")+" "), constraints); //$NON-NLS-1$
+		constraints.gridx = 52;
 		genesPanel.add(new JLabel(Messages.getString("T_FRIEND")+" "), constraints); //$NON-NLS-1$
 		for (it = genesList.iterator(), i=0; it.hasNext(); i++) {
 			gene = it.next();
@@ -1124,212 +1215,247 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 			BranchSpinner branchSpinner = new BranchSpinner(gene);
 			branchSpinner.addChangeListener(this);
 			genesPanel.add(branchSpinner, constraints);
-
+			
 			constraints.gridx = 6;
+			StackSpinner stackSpinner = new StackSpinner(gene);
+			stackSpinner.addChangeListener(this);
+			genesPanel.add(stackSpinner, constraints);
+			
+			constraints.gridx = 7;
+			FoldSpinner foldSpinner = new FoldSpinner(gene);
+			foldSpinner.addChangeListener(this);
+			genesPanel.add(foldSpinner, constraints);
+			
+			constraints.gridx = 8;
+			ChiralSpinner chiralSpinner = new ChiralSpinner(gene);
+			chiralSpinner.addChangeListener(this);
+			genesPanel.add(chiralSpinner, constraints);
+			
+			constraints.gridx = 9;
+			RadialSpinner radialSpinner = new RadialSpinner(gene);
+			radialSpinner.addChangeListener(this);
+			genesPanel.add(radialSpinner, constraints);
+
+			constraints.gridx = 10;
 			JButton insertButton = new JButton(Messages.getString("T_INSERT")); //$NON-NLS-1$
 			insertButton.setActionCommand("i"+i); //$NON-NLS-1$
 			gridbag.setConstraints(insertButton,constraints);
 			genesPanel.add(insertButton);
 			insertButton.addActionListener(this);
 
-			constraints.gridx = 7;
+			constraints.gridx = 11;
 			JButton cloneButton = new JButton(Messages.getString("T_CLONE")); //$NON-NLS-1$
 			cloneButton.setActionCommand("r"+i); //$NON-NLS-1$
 			gridbag.setConstraints(cloneButton,constraints);
 			genesPanel.add(cloneButton);
 			cloneButton.addActionListener(this);
 
-			constraints.gridx = 8;
+			constraints.gridx = 12;
 			JButton deleteButton = new JButton(Messages.getString("T_DELETE")); //$NON-NLS-1$
 			deleteButton.setActionCommand("d"+i); //$NON-NLS-1$
 			gridbag.setConstraints(deleteButton,constraints);
 			genesPanel.add(deleteButton);
 			deleteButton.addActionListener(this);
 
-			constraints.gridx = 9;
+			constraints.gridx = 13;
 			ReactionSpinner1 reactionSpinner1 = new ReactionSpinner1(gene);
 			reactionSpinner1.addChangeListener(this);
 			genesPanel.add(reactionSpinner1, constraints);
 
-			constraints.gridx = 10;
+			constraints.gridx = 14;
 			ReactionSpinner2 reactionSpinner2 = new ReactionSpinner2(gene);
 			reactionSpinner2.addChangeListener(this);
 			genesPanel.add(reactionSpinner2, constraints);
 
-			constraints.gridx = 11;
+			constraints.gridx = 15;
 			ReactionSpinner3 reactionSpinner3 = new ReactionSpinner3(gene);
 			reactionSpinner3.addChangeListener(this);
 			genesPanel.add(reactionSpinner3, constraints);
 
-			constraints.gridx = 12;
+			constraints.gridx = 16;
 			ReactionSpinner4 reactionSpinner4 = new ReactionSpinner4(gene);
 			reactionSpinner4.addChangeListener(this);
 			genesPanel.add(reactionSpinner4, constraints);
 
-			constraints.gridx = 13;
+			constraints.gridx = 17;
 			ReactionSpinner5 reactionSpinner5 = new ReactionSpinner5(gene);
 			reactionSpinner5.addChangeListener(this);
 			genesPanel.add(reactionSpinner5, constraints);
 
-			constraints.gridx = 14;
+			constraints.gridx = 18;
 			ReactionSpinner6 reactionSpinner6 = new ReactionSpinner6(gene);
 			reactionSpinner6.addChangeListener(this);
 			genesPanel.add(reactionSpinner6, constraints);
 
-			constraints.gridx = 15;
+			constraints.gridx = 19;
 			ReactionSpinner7 reactionSpinner7 = new ReactionSpinner7(gene);
 			reactionSpinner7.addChangeListener(this);
 			genesPanel.add(reactionSpinner7, constraints);
 
-			constraints.gridx = 16;
+			constraints.gridx = 20;
 			ReactionSpinner8 reactionSpinner8 = new ReactionSpinner8(gene);
 			reactionSpinner8.addChangeListener(this);
 			genesPanel.add(reactionSpinner8, constraints);
 
-			constraints.gridx = 17;
+			constraints.gridx = 21;
 			ReactionSpinner9 reactionSpinner9 = new ReactionSpinner9(gene);
 			reactionSpinner9.addChangeListener(this);
 			genesPanel.add(reactionSpinner9, constraints);
 
-			constraints.gridx = 18;
+			constraints.gridx = 22;
 			ReactionSpinner10 reactionSpinner10 = new ReactionSpinner10(gene);
 			reactionSpinner10.addChangeListener(this);
 			genesPanel.add(reactionSpinner10, constraints);
 
-			constraints.gridx = 19;
+			constraints.gridx = 23;
 			ReactionSpinner11 reactionSpinner11 = new ReactionSpinner11(gene);
 			reactionSpinner11.addChangeListener(this);
 			genesPanel.add(reactionSpinner11, constraints);
 
-			constraints.gridx = 20;
+			constraints.gridx = 24;
 			ReactionSpinner12 reactionSpinner12 = new ReactionSpinner12(gene);
 			reactionSpinner12.addChangeListener(this);
 			genesPanel.add(reactionSpinner12, constraints);
 
-			constraints.gridx = 21;
+			constraints.gridx = 25;
 			ReactionSpinner13 reactionSpinner13 = new ReactionSpinner13(gene);
 			reactionSpinner13.addChangeListener(this);
 			genesPanel.add(reactionSpinner13, constraints);
 
-			constraints.gridx = 22;
+			constraints.gridx = 26;
 			ReactionSpinner14 reactionSpinner14 = new ReactionSpinner14(gene);
 			reactionSpinner14.addChangeListener(this);
 			genesPanel.add(reactionSpinner14, constraints);
 
-			constraints.gridx = 23;
+			constraints.gridx = 27;
 			ReactionSpinner15 reactionSpinner15 = new ReactionSpinner15(gene);
 			reactionSpinner15.addChangeListener(this);
 			genesPanel.add(reactionSpinner15, constraints);
 
-			constraints.gridx = 24;
+			constraints.gridx = 28;
 			ReactionSpinner16 reactionSpinner16 = new ReactionSpinner16(gene);
 			reactionSpinner16.addChangeListener(this);
 			genesPanel.add(reactionSpinner16, constraints);
 
-			constraints.gridx = 25;
+			constraints.gridx = 29;
 			ReactionSpinner17 reactionSpinner17 = new ReactionSpinner17(gene);
 			reactionSpinner17.addChangeListener(this);
 			genesPanel.add(reactionSpinner17, constraints);
 
-			constraints.gridx = 26;
+			constraints.gridx = 30;
 			ReactionSpinner18 reactionSpinner18 = new ReactionSpinner18(gene);
 			reactionSpinner18.addChangeListener(this);
 			genesPanel.add(reactionSpinner18, constraints);
 
-			constraints.gridx = 27;
+			constraints.gridx = 31;
 			ReactionSpinner19 reactionSpinner19 = new ReactionSpinner19(gene);
 			reactionSpinner19.addChangeListener(this);
 			genesPanel.add(reactionSpinner19, constraints);
 
-			constraints.gridx = 28;
+			constraints.gridx = 32;
 			ReactionSpinner20 reactionSpinner20 = new ReactionSpinner20(gene);
 			reactionSpinner20.addChangeListener(this);
 			genesPanel.add(reactionSpinner20, constraints);
 
-			constraints.gridx = 29;
+			constraints.gridx = 33;
 			ReactionSpinner21 reactionSpinner21 = new ReactionSpinner21(gene);
 			reactionSpinner21.addChangeListener(this);
 			genesPanel.add(reactionSpinner21, constraints);
 
-			constraints.gridx = 30;
+			constraints.gridx = 34;
 			ReactionSpinner22 reactionSpinner22 = new ReactionSpinner22(gene);
 			reactionSpinner22.addChangeListener(this);
 			genesPanel.add(reactionSpinner22, constraints);
 
-			constraints.gridx = 31;
+			constraints.gridx = 35;
 			ReactionSpinner23 reactionSpinner23 = new ReactionSpinner23(gene);
 			reactionSpinner23.addChangeListener(this);
 			genesPanel.add(reactionSpinner23, constraints);
 
-			constraints.gridx = 32;
+			constraints.gridx = 36;
 			ReactionSpinner24 reactionSpinner24 = new ReactionSpinner24(gene);
 			reactionSpinner24.addChangeListener(this);
 			genesPanel.add(reactionSpinner24, constraints);
 
-			constraints.gridx = 33;
+			constraints.gridx = 37;
 			ReactionSpinner25 reactionSpinner25 = new ReactionSpinner25(gene);
 			reactionSpinner25.addChangeListener(this);
 			genesPanel.add(reactionSpinner25, constraints);
 
-			constraints.gridx = 34;
+			constraints.gridx = 38;
 			ReactionSpinner26 reactionSpinner26 = new ReactionSpinner26(gene);
 			reactionSpinner26.addChangeListener(this);
 			genesPanel.add(reactionSpinner26, constraints);
 
-			constraints.gridx = 35;
+			constraints.gridx = 39;
 			ReactionSpinner27 reactionSpinner27 = new ReactionSpinner27(gene);
 			reactionSpinner27.addChangeListener(this);
 			genesPanel.add(reactionSpinner27, constraints);
 
-			constraints.gridx = 36;
+			constraints.gridx = 40;
 			ReactionSpinner28 reactionSpinner28 = new ReactionSpinner28(gene);
 			reactionSpinner28.addChangeListener(this);
 			genesPanel.add(reactionSpinner28, constraints);
 
-			constraints.gridx = 37;
+			constraints.gridx = 41;
 			ReactionSpinner29 reactionSpinner29 = new ReactionSpinner29(gene);
 			reactionSpinner29.addChangeListener(this);
 			genesPanel.add(reactionSpinner29, constraints);
 
-			constraints.gridx = 38;
+			constraints.gridx = 42;
 			ReactionSpinner30 reactionSpinner30 = new ReactionSpinner30(gene);
 			reactionSpinner30.addChangeListener(this);
 			genesPanel.add(reactionSpinner30, constraints);
 
-			constraints.gridx = 39;
+			constraints.gridx = 43;
 			ReactionSpinner31 reactionSpinner31 = new ReactionSpinner31(gene);
 			reactionSpinner31.addChangeListener(this);
 			genesPanel.add(reactionSpinner31, constraints);
 
-			constraints.gridx = 40;
+			constraints.gridx = 44;
 			ReactionSpinner32 reactionSpinner32 = new ReactionSpinner32(gene);
 			reactionSpinner32.addChangeListener(this);
 			genesPanel.add(reactionSpinner32, constraints);
 
-			constraints.gridx = 41;
+			constraints.gridx = 45;
 			ReactionSpinner33 reactionSpinner33 = new ReactionSpinner33(gene);
 			reactionSpinner33.addChangeListener(this);
 			genesPanel.add(reactionSpinner33, constraints);
 
-			constraints.gridx = 42;
+			constraints.gridx = 46;
 			ReactionSpinner34 reactionSpinner34 = new ReactionSpinner34(gene);
 			reactionSpinner34.addChangeListener(this);
 			genesPanel.add(reactionSpinner34, constraints);
 
-			constraints.gridx = 43;
+			constraints.gridx = 47;
 			ReactionSpinner35 reactionSpinner35 = new ReactionSpinner35(gene);
 			reactionSpinner35.addChangeListener(this);
 			genesPanel.add(reactionSpinner35, constraints);
 
-			constraints.gridx = 44;
+			constraints.gridx = 48;
 			ReactionSpinner36 reactionSpinner36 = new ReactionSpinner36(gene);
 			reactionSpinner36.addChangeListener(this);
 			genesPanel.add(reactionSpinner36, constraints);
 			
-			constraints.gridx = 45;
+			constraints.gridx = 49;
 			ReactionSpinner37 reactionSpinner37 = new ReactionSpinner37(gene);
 			reactionSpinner37.addChangeListener(this);
 			genesPanel.add(reactionSpinner37, constraints);
+			
+			constraints.gridx = 50;
+			ReactionSpinner38 reactionSpinner38 = new ReactionSpinner38(gene);
+			reactionSpinner38.addChangeListener(this);
+			genesPanel.add(reactionSpinner38, constraints);
+			
+			constraints.gridx = 51;
+			ReactionSpinner39 reactionSpinner39 = new ReactionSpinner39(gene);
+			reactionSpinner39.addChangeListener(this);
+			genesPanel.add(reactionSpinner39, constraints);
+			
+			constraints.gridx = 52;
+			ReactionSpinner40 reactionSpinner40 = new ReactionSpinner40(gene);
+			reactionSpinner40.addChangeListener(this);
+			genesPanel.add(reactionSpinner40, constraints);
 		}
 		constraints.gridx = 1;
 		constraints.gridwidth = 2;
@@ -1351,7 +1477,7 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 	}
 
 	protected void draw(Graphics g) {
-		GeneticCode code = new GeneticCode(genesList, symmetry, mirror, mutationrate, clonerate, homeX, homeY, base1X, base1Y, base2X, base2Y, activity, modifiescream, modifiesfallow, modifiesspore, adaptspore, modifiesblack, adaptblack, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false);
+		GeneticCode code = new GeneticCode(genesList, symmetry, hox, mirror, mutationrate, clonerate, homeX, homeY, base1X, base1Y, base2X, base2Y, activity, modifiesmaroon, modifiescream, modifiescrimson, modifiesfallow, modifiesspore, adaptspore, modifiesblack, adaptblack, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false);
 		code.draw(g, drawPanel.getSize().width, drawPanel.getSize().height);
 	}
 
@@ -1369,6 +1495,22 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 			BranchSpinner spinner = (BranchSpinner) evt.getSource();
 			spinner.getGene().setBranch(spinner.getBranch());
 		}
+		if (evt.getSource() instanceof StackSpinner) {
+			StackSpinner spinner = (StackSpinner) evt.getSource();
+			spinner.getGene().setStack(spinner.getStack());
+		}
+		if (evt.getSource() instanceof FoldSpinner) {
+			FoldSpinner spinner = (FoldSpinner) evt.getSource();
+			spinner.getGene().setFold(spinner.getFold());
+		}
+		if (evt.getSource() instanceof ChiralSpinner) {
+			ChiralSpinner spinner = (ChiralSpinner) evt.getSource();
+			spinner.getGene().setChiral(spinner.getChiral());
+		}
+		if (evt.getSource() instanceof RadialSpinner) {
+			RadialSpinner spinner = (RadialSpinner) evt.getSource();
+			spinner.getGene().setRadial(spinner.getRadial());
+		}
 		if (evt.getSource() instanceof ReactionSpinner1) {
 			ReactionSpinner1 spinner = (ReactionSpinner1) evt.getSource();
 			spinner.getGene().setgreenReaction(spinner.getgreenReaction());
@@ -1379,142 +1521,154 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 		}
 		if (evt.getSource() instanceof ReactionSpinner3) {
 			ReactionSpinner3 spinner = (ReactionSpinner3) evt.getSource();
-			spinner.getGene().setredReaction(spinner.getredReaction());
+			spinner.getGene().setivyReaction(spinner.getivyReaction());
 		}
 		if (evt.getSource() instanceof ReactionSpinner4) {
 			ReactionSpinner4 spinner = (ReactionSpinner4) evt.getSource();
-			spinner.getGene().setfireReaction(spinner.getfireReaction());
+			spinner.getGene().setredReaction(spinner.getredReaction());
 		}
 		if (evt.getSource() instanceof ReactionSpinner5) {
 			ReactionSpinner5 spinner = (ReactionSpinner5) evt.getSource();
-			spinner.getGene().setorangeReaction(spinner.getorangeReaction());
+			spinner.getGene().setfireReaction(spinner.getfireReaction());
 		}
 		if (evt.getSource() instanceof ReactionSpinner6) {
 			ReactionSpinner6 spinner = (ReactionSpinner6) evt.getSource();
-			spinner.getGene().setmaroonReaction(spinner.getmaroonReaction());
+			spinner.getGene().setorangeReaction(spinner.getorangeReaction());
 		}
 		if (evt.getSource() instanceof ReactionSpinner7) {
 			ReactionSpinner7 spinner = (ReactionSpinner7) evt.getSource();
-			spinner.getGene().setcrimsonReaction(spinner.getcrimsonReaction());
+			spinner.getGene().setmaroonReaction(spinner.getmaroonReaction());
 		}
 		if (evt.getSource() instanceof ReactionSpinner8) {
 			ReactionSpinner8 spinner = (ReactionSpinner8) evt.getSource();
-			spinner.getGene().setpinkReaction(spinner.getpinkReaction());
+			spinner.getGene().setcrimsonReaction(spinner.getcrimsonReaction());
 		}
 		if (evt.getSource() instanceof ReactionSpinner9) {
 			ReactionSpinner9 spinner = (ReactionSpinner9) evt.getSource();
-			spinner.getGene().setcreamReaction(spinner.getcreamReaction());
+			spinner.getGene().setpinkReaction(spinner.getpinkReaction());
 		}
 		if (evt.getSource() instanceof ReactionSpinner10) {
 			ReactionSpinner10 spinner = (ReactionSpinner10) evt.getSource();
-			spinner.getGene().setsilverReaction(spinner.getsilverReaction());
+			spinner.getGene().setcreamReaction(spinner.getcreamReaction());
 		}
 		if (evt.getSource() instanceof ReactionSpinner11) {
 			ReactionSpinner11 spinner = (ReactionSpinner11) evt.getSource();
-			spinner.getGene().setspikeReaction(spinner.getspikeReaction());
+			spinner.getGene().setsilverReaction(spinner.getsilverReaction());
 		}
 		if (evt.getSource() instanceof ReactionSpinner12) {
 			ReactionSpinner12 spinner = (ReactionSpinner12) evt.getSource();
-			spinner.getGene().setlilacReaction(spinner.getlilacReaction());
+			spinner.getGene().setspikeReaction(spinner.getspikeReaction());
 		}
 		if (evt.getSource() instanceof ReactionSpinner13) {
 			ReactionSpinner13 spinner = (ReactionSpinner13) evt.getSource();
-			spinner.getGene().setgrayReaction(spinner.getgrayReaction());
+			spinner.getGene().setlilacReaction(spinner.getlilacReaction());
 		}
 		if (evt.getSource() instanceof ReactionSpinner14) {
 			ReactionSpinner14 spinner = (ReactionSpinner14) evt.getSource();
-			spinner.getGene().setvioletReaction(spinner.getvioletReaction());
+			spinner.getGene().setgrayReaction(spinner.getgrayReaction());
 		}
 		if (evt.getSource() instanceof ReactionSpinner15) {
 			ReactionSpinner15 spinner = (ReactionSpinner15) evt.getSource();
-			spinner.getGene().setoliveReaction(spinner.getoliveReaction());
+			spinner.getGene().setvioletReaction(spinner.getvioletReaction());
 		}
 		if (evt.getSource() instanceof ReactionSpinner16) {
 			ReactionSpinner16 spinner = (ReactionSpinner16) evt.getSource();
-			spinner.getGene().setskyReaction(spinner.getskyReaction());
+			spinner.getGene().setoliveReaction(spinner.getoliveReaction());
 		}
 		if (evt.getSource() instanceof ReactionSpinner17) {
 			ReactionSpinner17 spinner = (ReactionSpinner17) evt.getSource();
-			spinner.getGene().setblueReaction(spinner.getblueReaction());
+			spinner.getGene().setskyReaction(spinner.getskyReaction());
 		}
 		if (evt.getSource() instanceof ReactionSpinner18) {
 			ReactionSpinner18 spinner = (ReactionSpinner18) evt.getSource();
-			spinner.getGene().setochreReaction(spinner.getochreReaction());
+			spinner.getGene().setblueReaction(spinner.getblueReaction());
 		}
 		if (evt.getSource() instanceof ReactionSpinner19) {
 			ReactionSpinner19 spinner = (ReactionSpinner19) evt.getSource();
-			spinner.getGene().setfallowReaction(spinner.getfallowReaction());
+			spinner.getGene().setochreReaction(spinner.getochreReaction());
 		}
 		if (evt.getSource() instanceof ReactionSpinner20) {
 			ReactionSpinner20 spinner = (ReactionSpinner20) evt.getSource();
-			spinner.getGene().setwhiteReaction(spinner.getwhiteReaction());
+			spinner.getGene().setfallowReaction(spinner.getfallowReaction());
 		}
 		if (evt.getSource() instanceof ReactionSpinner21) {
 			ReactionSpinner21 spinner = (ReactionSpinner21) evt.getSource();
-			spinner.getGene().setvirusReaction(spinner.getvirusReaction());
+			spinner.getGene().setwhiteReaction(spinner.getwhiteReaction());
 		}
 		if (evt.getSource() instanceof ReactionSpinner22) {
 			ReactionSpinner22 spinner = (ReactionSpinner22) evt.getSource();
-			spinner.getGene().setplagueReaction(spinner.getplagueReaction());
+			spinner.getGene().setvirusReaction(spinner.getvirusReaction());
 		}
 		if (evt.getSource() instanceof ReactionSpinner23) {
 			ReactionSpinner23 spinner = (ReactionSpinner23) evt.getSource();
-			spinner.getGene().setscourgeReaction(spinner.getscourgeReaction());
+			spinner.getGene().setplagueReaction(spinner.getplagueReaction());
 		}
 		if (evt.getSource() instanceof ReactionSpinner24) {
 			ReactionSpinner24 spinner = (ReactionSpinner24) evt.getSource();
-			spinner.getGene().setcoralReaction(spinner.getcoralReaction());
+			spinner.getGene().setscourgeReaction(spinner.getscourgeReaction());
 		}
 		if (evt.getSource() instanceof ReactionSpinner25) {
 			ReactionSpinner25 spinner = (ReactionSpinner25) evt.getSource();
-			spinner.getGene().setmintReaction(spinner.getmintReaction());
+			spinner.getGene().setcoralReaction(spinner.getcoralReaction());
 		}
 		if (evt.getSource() instanceof ReactionSpinner26) {
 			ReactionSpinner26 spinner = (ReactionSpinner26) evt.getSource();
-			spinner.getGene().setmagentaReaction(spinner.getmagentaReaction());
+			spinner.getGene().setmintReaction(spinner.getmintReaction());
 		}
 		if (evt.getSource() instanceof ReactionSpinner27) {
 			ReactionSpinner27 spinner = (ReactionSpinner27) evt.getSource();
-			spinner.getGene().setdefaultReaction(spinner.getdefaultReaction());
+			spinner.getGene().setlavenderReaction(spinner.getlavenderReaction());
 		}
 		if (evt.getSource() instanceof ReactionSpinner28) {
 			ReactionSpinner28 spinner = (ReactionSpinner28) evt.getSource();
-			spinner.getGene().setconsumerReaction(spinner.getconsumerReaction());
+			spinner.getGene().setmagentaReaction(spinner.getmagentaReaction());
 		}
 		if (evt.getSource() instanceof ReactionSpinner29) {
 			ReactionSpinner29 spinner = (ReactionSpinner29) evt.getSource();
-			spinner.getGene().setplantReaction(spinner.getplantReaction());
+			spinner.getGene().setroseReaction(spinner.getroseReaction());
 		}
 		if (evt.getSource() instanceof ReactionSpinner30) {
 			ReactionSpinner30 spinner = (ReactionSpinner30) evt.getSource();
-			spinner.getGene().seticeReaction(spinner.geticeReaction());
+			spinner.getGene().setdefaultReaction(spinner.getdefaultReaction());
 		}
 		if (evt.getSource() instanceof ReactionSpinner31) {
 			ReactionSpinner31 spinner = (ReactionSpinner31) evt.getSource();
-			spinner.getGene().setlightblueReaction(spinner.getlightblueReaction());
+			spinner.getGene().setconsumerReaction(spinner.getconsumerReaction());
 		}
 		if (evt.getSource() instanceof ReactionSpinner32) {
 			ReactionSpinner32 spinner = (ReactionSpinner32) evt.getSource();
-			spinner.getGene().setlightbrownReaction(spinner.getlightbrownReaction());
+			spinner.getGene().setplantReaction(spinner.getplantReaction());
 		}
 		if (evt.getSource() instanceof ReactionSpinner33) {
 			ReactionSpinner33 spinner = (ReactionSpinner33) evt.getSource();
-			spinner.getGene().setgreenbrownReaction(spinner.getgreenbrownReaction());
+			spinner.getGene().seticeReaction(spinner.geticeReaction());
 		}
 		if (evt.getSource() instanceof ReactionSpinner34) {
 			ReactionSpinner34 spinner = (ReactionSpinner34) evt.getSource();
-			spinner.getGene().setbrokenReaction(spinner.getbrokenReaction());
+			spinner.getGene().setlightblueReaction(spinner.getlightblueReaction());
 		}
 		if (evt.getSource() instanceof ReactionSpinner35) {
 			ReactionSpinner35 spinner = (ReactionSpinner35) evt.getSource();
-			spinner.getGene().setbrownReaction(spinner.getbrownReaction());
+			spinner.getGene().setlightbrownReaction(spinner.getlightbrownReaction());
 		}
 		if (evt.getSource() instanceof ReactionSpinner36) {
 			ReactionSpinner36 spinner = (ReactionSpinner36) evt.getSource();
-			spinner.getGene().setsickReaction(spinner.getsickReaction());
+			spinner.getGene().setgreenbrownReaction(spinner.getgreenbrownReaction());
 		}
 		if (evt.getSource() instanceof ReactionSpinner37) {
 			ReactionSpinner37 spinner = (ReactionSpinner37) evt.getSource();
+			spinner.getGene().setbrokenReaction(spinner.getbrokenReaction());
+		}
+		if (evt.getSource() instanceof ReactionSpinner38) {
+			ReactionSpinner38 spinner = (ReactionSpinner38) evt.getSource();
+			spinner.getGene().setbrownReaction(spinner.getbrownReaction());
+		}
+		if (evt.getSource() instanceof ReactionSpinner39) {
+			ReactionSpinner39 spinner = (ReactionSpinner39) evt.getSource();
+			spinner.getGene().setsickReaction(spinner.getsickReaction());
+		}
+		if (evt.getSource() instanceof ReactionSpinner40) {
+			ReactionSpinner40 spinner = (ReactionSpinner40) evt.getSource();
 			spinner.getGene().setfriendReaction(spinner.getfriendReaction());
 		}
 		drawPanel.repaint();
@@ -1623,6 +1777,102 @@ class BranchSpinner extends JSpinner {
 	}
 }
 
+class StackSpinner extends JSpinner {
+	private static final long serialVersionUID = Utils.VERSION;
+	private Gene _gene;
+
+	public StackSpinner(Gene gene) {
+		super();
+		_gene = gene;
+		setModel(new SpinnerNumberModel(_gene.getStack(), -2, 2, 1));
+		setEditor(new JSpinner.NumberEditor(this, "#0"));
+	}
+
+	public Gene getGene() {
+		return _gene;
+	}
+
+	public void setGene(Gene gene) {
+		_gene = gene;
+	}
+
+	public int getStack() {
+		return ((SpinnerNumberModel)getModel()).getNumber().intValue();
+	}
+}
+
+class FoldSpinner extends JSpinner {
+	private static final long serialVersionUID = Utils.VERSION;
+	private Gene _gene;
+
+	public FoldSpinner(Gene gene) {
+		super();
+		_gene = gene;
+		setModel(new SpinnerNumberModel(_gene.getFold(), 0, 6, 1));
+		setEditor(new JSpinner.NumberEditor(this, "#0"));
+	}
+
+	public Gene getGene() {
+		return _gene;
+	}
+
+	public void setGene(Gene gene) {
+		_gene = gene;
+	}
+
+	public int getFold() {
+		return ((SpinnerNumberModel)getModel()).getNumber().intValue();
+	}
+}
+
+class ChiralSpinner extends JSpinner {
+	private static final long serialVersionUID = Utils.VERSION;
+	private Gene _gene;
+
+	public ChiralSpinner(Gene gene) {
+		super();
+		_gene = gene;
+		setModel(new SpinnerNumberModel(_gene.getChiral(), -3, 3, 2));
+		setEditor(new JSpinner.NumberEditor(this, "#0"));
+	}
+
+	public Gene getGene() {
+		return _gene;
+	}
+
+	public void setGene(Gene gene) {
+		_gene = gene;
+	}
+
+	public int getChiral() {
+		return ((SpinnerNumberModel)getModel()).getNumber().intValue();
+	}
+}
+
+class RadialSpinner extends JSpinner {
+	private static final long serialVersionUID = Utils.VERSION;
+	private Gene _gene;
+
+	public RadialSpinner(Gene gene) {
+		super();
+		_gene = gene;
+		setModel(new SpinnerNumberModel(_gene.getRadial(), 0, 360, 1));
+		setEditor(new JSpinner.NumberEditor(this, "#0"));
+	}
+
+	public Gene getGene() {
+		return _gene;
+	}
+
+	public void setGene(Gene gene) {
+		_gene = gene;
+	}
+
+	public int getRadial() {
+		return ((SpinnerNumberModel)getModel()).getNumber().intValue();
+	}
+}
+
 class ReactionSpinner1 extends JSpinner {
 	private static final long serialVersionUID = Utils.VERSION;
 	private Gene _gene;
@@ -1678,6 +1928,30 @@ class ReactionSpinner3 extends JSpinner {
 	public ReactionSpinner3(Gene gene) {
 		super();
 		_gene = gene;
+		setModel(new SpinnerNumberModel(_gene.getivyReaction(), 0, 5, 1));
+		setEditor(new JSpinner.NumberEditor(this, "#0"));
+	}
+
+	public Gene getGene() {
+		return _gene;
+	}
+
+	public void setGene(Gene gene) {
+		_gene = gene;
+	}
+
+	public int getivyReaction() {
+		return ((SpinnerNumberModel)getModel()).getNumber().intValue();
+	}
+}
+
+class ReactionSpinner4 extends JSpinner {
+	private static final long serialVersionUID = Utils.VERSION;
+	private Gene _gene;
+
+	public ReactionSpinner4(Gene gene) {
+		super();
+		_gene = gene;
 		setModel(new SpinnerNumberModel(_gene.getredReaction(), 0, 5, 1));
 		setEditor(new JSpinner.NumberEditor(this, "#0"));
 	}
@@ -1695,11 +1969,11 @@ class ReactionSpinner3 extends JSpinner {
 	}
 }
 
-class ReactionSpinner4 extends JSpinner {
+class ReactionSpinner5 extends JSpinner {
 	private static final long serialVersionUID = Utils.VERSION;
 	private Gene _gene;
 
-	public ReactionSpinner4(Gene gene) {
+	public ReactionSpinner5(Gene gene) {
 		super();
 		_gene = gene;
 		setModel(new SpinnerNumberModel(_gene.getfireReaction(), 0, 5, 1));
@@ -1719,11 +1993,11 @@ class ReactionSpinner4 extends JSpinner {
 	}
 }
 
-class ReactionSpinner5 extends JSpinner {
+class ReactionSpinner6 extends JSpinner {
 	private static final long serialVersionUID = Utils.VERSION;
 	private Gene _gene;
 
-	public ReactionSpinner5(Gene gene) {
+	public ReactionSpinner6(Gene gene) {
 		super();
 		_gene = gene;
 		setModel(new SpinnerNumberModel(_gene.getorangeReaction(), 0, 5, 1));
@@ -1743,11 +2017,11 @@ class ReactionSpinner5 extends JSpinner {
 	}
 }
 
-class ReactionSpinner6 extends JSpinner {
+class ReactionSpinner7 extends JSpinner {
 	private static final long serialVersionUID = Utils.VERSION;
 	private Gene _gene;
 
-	public ReactionSpinner6(Gene gene) {
+	public ReactionSpinner7(Gene gene) {
 		super();
 		_gene = gene;
 		setModel(new SpinnerNumberModel(_gene.getmaroonReaction(), 0, 5, 1));
@@ -1767,11 +2041,11 @@ class ReactionSpinner6 extends JSpinner {
 	}
 }
 
-class ReactionSpinner7 extends JSpinner {
+class ReactionSpinner8 extends JSpinner {
 	private static final long serialVersionUID = Utils.VERSION;
 	private Gene _gene;
 
-	public ReactionSpinner7(Gene gene) {
+	public ReactionSpinner8(Gene gene) {
 		super();
 		_gene = gene;
 		setModel(new SpinnerNumberModel(_gene.getcrimsonReaction(), 0, 5, 1));
@@ -1791,11 +2065,11 @@ class ReactionSpinner7 extends JSpinner {
 	}
 }
 
-class ReactionSpinner8 extends JSpinner {
+class ReactionSpinner9 extends JSpinner {
 	private static final long serialVersionUID = Utils.VERSION;
 	private Gene _gene;
 
-	public ReactionSpinner8(Gene gene) {
+	public ReactionSpinner9(Gene gene) {
 		super();
 		_gene = gene;
 		setModel(new SpinnerNumberModel(_gene.getpinkReaction(), 0, 5, 1));
@@ -1815,11 +2089,11 @@ class ReactionSpinner8 extends JSpinner {
 	}
 }
 
-class ReactionSpinner9 extends JSpinner {
+class ReactionSpinner10 extends JSpinner {
 	private static final long serialVersionUID = Utils.VERSION;
 	private Gene _gene;
 
-	public ReactionSpinner9(Gene gene) {
+	public ReactionSpinner10(Gene gene) {
 		super();
 		_gene = gene;
 		setModel(new SpinnerNumberModel(_gene.getcreamReaction(), 0, 5, 1));
@@ -1839,11 +2113,11 @@ class ReactionSpinner9 extends JSpinner {
 	}
 }
 
-class ReactionSpinner10 extends JSpinner {
+class ReactionSpinner11 extends JSpinner {
 	private static final long serialVersionUID = Utils.VERSION;
 	private Gene _gene;
 
-	public ReactionSpinner10(Gene gene) {
+	public ReactionSpinner11(Gene gene) {
 		super();
 		_gene = gene;
 		setModel(new SpinnerNumberModel(_gene.getsilverReaction(), 0, 5, 1));
@@ -1863,11 +2137,11 @@ class ReactionSpinner10 extends JSpinner {
 	}
 }
 
-class ReactionSpinner11 extends JSpinner {
+class ReactionSpinner12 extends JSpinner {
 	private static final long serialVersionUID = Utils.VERSION;
 	private Gene _gene;
 
-	public ReactionSpinner11(Gene gene) {
+	public ReactionSpinner12(Gene gene) {
 		super();
 		_gene = gene;
 		setModel(new SpinnerNumberModel(_gene.getspikeReaction(), 0, 5, 1));
@@ -1887,11 +2161,11 @@ class ReactionSpinner11 extends JSpinner {
 	}
 }
 
-class ReactionSpinner12 extends JSpinner {
+class ReactionSpinner13 extends JSpinner {
 	private static final long serialVersionUID = Utils.VERSION;
 	private Gene _gene;
 
-	public ReactionSpinner12(Gene gene) {
+	public ReactionSpinner13(Gene gene) {
 		super();
 		_gene = gene;
 		setModel(new SpinnerNumberModel(_gene.getlilacReaction(), 0, 5, 1));
@@ -1911,11 +2185,11 @@ class ReactionSpinner12 extends JSpinner {
 	}
 }
 
-class ReactionSpinner13 extends JSpinner {
+class ReactionSpinner14 extends JSpinner {
 	private static final long serialVersionUID = Utils.VERSION;
 	private Gene _gene;
 
-	public ReactionSpinner13(Gene gene) {
+	public ReactionSpinner14(Gene gene) {
 		super();
 		_gene = gene;
 		setModel(new SpinnerNumberModel(_gene.getgrayReaction(), 0, 5, 1));
@@ -1935,11 +2209,11 @@ class ReactionSpinner13 extends JSpinner {
 	}
 }
 
-class ReactionSpinner14 extends JSpinner {
+class ReactionSpinner15 extends JSpinner {
 	private static final long serialVersionUID = Utils.VERSION;
 	private Gene _gene;
 
-	public ReactionSpinner14(Gene gene) {
+	public ReactionSpinner15(Gene gene) {
 		super();
 		_gene = gene;
 		setModel(new SpinnerNumberModel(_gene.getvioletReaction(), 0, 5, 1));
@@ -1959,11 +2233,11 @@ class ReactionSpinner14 extends JSpinner {
 	}
 }
 
-class ReactionSpinner15 extends JSpinner {
+class ReactionSpinner16 extends JSpinner {
 	private static final long serialVersionUID = Utils.VERSION;
 	private Gene _gene;
 
-	public ReactionSpinner15(Gene gene) {
+	public ReactionSpinner16(Gene gene) {
 		super();
 		_gene = gene;
 		setModel(new SpinnerNumberModel(_gene.getoliveReaction(), 0, 5, 1));
@@ -1983,11 +2257,11 @@ class ReactionSpinner15 extends JSpinner {
 	}
 }
 
-class ReactionSpinner16 extends JSpinner {
+class ReactionSpinner17 extends JSpinner {
 	private static final long serialVersionUID = Utils.VERSION;
 	private Gene _gene;
 
-	public ReactionSpinner16(Gene gene) {
+	public ReactionSpinner17(Gene gene) {
 		super();
 		_gene = gene;
 		setModel(new SpinnerNumberModel(_gene.getskyReaction(), 0, 5, 1));
@@ -2007,11 +2281,11 @@ class ReactionSpinner16 extends JSpinner {
 	}
 }
 
-class ReactionSpinner17 extends JSpinner {
+class ReactionSpinner18 extends JSpinner {
 	private static final long serialVersionUID = Utils.VERSION;
 	private Gene _gene;
 
-	public ReactionSpinner17(Gene gene) {
+	public ReactionSpinner18(Gene gene) {
 		super();
 		_gene = gene;
 		setModel(new SpinnerNumberModel(_gene.getblueReaction(), 0, 5, 1));
@@ -2031,11 +2305,11 @@ class ReactionSpinner17 extends JSpinner {
 	}
 }
 
-class ReactionSpinner18 extends JSpinner {
+class ReactionSpinner19 extends JSpinner {
 	private static final long serialVersionUID = Utils.VERSION;
 	private Gene _gene;
 
-	public ReactionSpinner18(Gene gene) {
+	public ReactionSpinner19(Gene gene) {
 		super();
 		_gene = gene;
 		setModel(new SpinnerNumberModel(_gene.getochreReaction(), 0, 5, 1));
@@ -2055,11 +2329,11 @@ class ReactionSpinner18 extends JSpinner {
 	}
 }
 
-class ReactionSpinner19 extends JSpinner {
+class ReactionSpinner20 extends JSpinner {
 	private static final long serialVersionUID = Utils.VERSION;
 	private Gene _gene;
 
-	public ReactionSpinner19(Gene gene) {
+	public ReactionSpinner20(Gene gene) {
 		super();
 		_gene = gene;
 		setModel(new SpinnerNumberModel(_gene.getfallowReaction(), 0, 5, 1));
@@ -2079,11 +2353,11 @@ class ReactionSpinner19 extends JSpinner {
 	}
 }
 
-class ReactionSpinner20 extends JSpinner {
+class ReactionSpinner21 extends JSpinner {
 	private static final long serialVersionUID = Utils.VERSION;
 	private Gene _gene;
 
-	public ReactionSpinner20(Gene gene) {
+	public ReactionSpinner21(Gene gene) {
 		super();
 		_gene = gene;
 		setModel(new SpinnerNumberModel(_gene.getwhiteReaction(), 0, 5, 1));
@@ -2103,11 +2377,11 @@ class ReactionSpinner20 extends JSpinner {
 	}
 }
 
-class ReactionSpinner21 extends JSpinner {
+class ReactionSpinner22 extends JSpinner {
 	private static final long serialVersionUID = Utils.VERSION;
 	private Gene _gene;
 
-	public ReactionSpinner21(Gene gene) {
+	public ReactionSpinner22(Gene gene) {
 		super();
 		_gene = gene;
 		setModel(new SpinnerNumberModel(_gene.getvirusReaction(), 0, 5, 1));
@@ -2127,11 +2401,11 @@ class ReactionSpinner21 extends JSpinner {
 	}
 }
 
-class ReactionSpinner22 extends JSpinner {
+class ReactionSpinner23 extends JSpinner {
 	private static final long serialVersionUID = Utils.VERSION;
 	private Gene _gene;
 
-	public ReactionSpinner22(Gene gene) {
+	public ReactionSpinner23(Gene gene) {
 		super();
 		_gene = gene;
 		setModel(new SpinnerNumberModel(_gene.getplagueReaction(), 0, 5, 1));
@@ -2151,11 +2425,11 @@ class ReactionSpinner22 extends JSpinner {
 	}
 }
 
-class ReactionSpinner23 extends JSpinner {
+class ReactionSpinner24 extends JSpinner {
 	private static final long serialVersionUID = Utils.VERSION;
 	private Gene _gene;
 
-	public ReactionSpinner23(Gene gene) {
+	public ReactionSpinner24(Gene gene) {
 		super();
 		_gene = gene;
 		setModel(new SpinnerNumberModel(_gene.getscourgeReaction(), 0, 5, 1));
@@ -2175,11 +2449,11 @@ class ReactionSpinner23 extends JSpinner {
 	}
 }
 
-class ReactionSpinner24 extends JSpinner {
+class ReactionSpinner25 extends JSpinner {
 	private static final long serialVersionUID = Utils.VERSION;
 	private Gene _gene;
 
-	public ReactionSpinner24(Gene gene) {
+	public ReactionSpinner25(Gene gene) {
 		super();
 		_gene = gene;
 		setModel(new SpinnerNumberModel(_gene.getcoralReaction(), 0, 5, 1));
@@ -2199,11 +2473,11 @@ class ReactionSpinner24 extends JSpinner {
 	}
 }
 
-class ReactionSpinner25 extends JSpinner {
+class ReactionSpinner26 extends JSpinner {
 	private static final long serialVersionUID = Utils.VERSION;
 	private Gene _gene;
 
-	public ReactionSpinner25(Gene gene) {
+	public ReactionSpinner26(Gene gene) {
 		super();
 		_gene = gene;
 		setModel(new SpinnerNumberModel(_gene.getmintReaction(), 0, 5, 1));
@@ -2223,11 +2497,35 @@ class ReactionSpinner25 extends JSpinner {
 	}
 }
 
-class ReactionSpinner26 extends JSpinner {
+class ReactionSpinner27 extends JSpinner {
 	private static final long serialVersionUID = Utils.VERSION;
 	private Gene _gene;
 
-	public ReactionSpinner26(Gene gene) {
+	public ReactionSpinner27(Gene gene) {
+		super();
+		_gene = gene;
+		setModel(new SpinnerNumberModel(_gene.getlavenderReaction(), 0, 5, 1));
+		setEditor(new JSpinner.NumberEditor(this, "#0"));
+	}
+
+	public Gene getGene() {
+		return _gene;
+	}
+
+	public void setGene(Gene gene) {
+		_gene = gene;
+	}
+
+	public int getlavenderReaction() {
+		return ((SpinnerNumberModel)getModel()).getNumber().intValue();
+	}
+}
+
+class ReactionSpinner28 extends JSpinner {
+	private static final long serialVersionUID = Utils.VERSION;
+	private Gene _gene;
+
+	public ReactionSpinner28(Gene gene) {
 		super();
 		_gene = gene;
 		setModel(new SpinnerNumberModel(_gene.getmagentaReaction(), 0, 5, 1));
@@ -2247,11 +2545,35 @@ class ReactionSpinner26 extends JSpinner {
 	}
 }
 
-class ReactionSpinner27 extends JSpinner {
+class ReactionSpinner29 extends JSpinner {
 	private static final long serialVersionUID = Utils.VERSION;
 	private Gene _gene;
 
-	public ReactionSpinner27(Gene gene) {
+	public ReactionSpinner29(Gene gene) {
+		super();
+		_gene = gene;
+		setModel(new SpinnerNumberModel(_gene.getroseReaction(), 0, 5, 1));
+		setEditor(new JSpinner.NumberEditor(this, "#0"));
+	}
+
+	public Gene getGene() {
+		return _gene;
+	}
+
+	public void setGene(Gene gene) {
+		_gene = gene;
+	}
+
+	public int getroseReaction() {
+		return ((SpinnerNumberModel)getModel()).getNumber().intValue();
+	}
+}
+
+class ReactionSpinner30 extends JSpinner {
+	private static final long serialVersionUID = Utils.VERSION;
+	private Gene _gene;
+
+	public ReactionSpinner30(Gene gene) {
 		super();
 		_gene = gene;
 		setModel(new SpinnerNumberModel(_gene.getdefaultReaction(), 0, 5, 1));
@@ -2271,11 +2593,11 @@ class ReactionSpinner27 extends JSpinner {
 	}
 }
 
-class ReactionSpinner28 extends JSpinner {
+class ReactionSpinner31 extends JSpinner {
 	private static final long serialVersionUID = Utils.VERSION;
 	private Gene _gene;
 
-	public ReactionSpinner28(Gene gene) {
+	public ReactionSpinner31(Gene gene) {
 		super();
 		_gene = gene;
 		setModel(new SpinnerNumberModel(_gene.getconsumerReaction(), 0, 5, 1));
@@ -2295,11 +2617,11 @@ class ReactionSpinner28 extends JSpinner {
 	}
 }
 
-class ReactionSpinner29 extends JSpinner {
+class ReactionSpinner32 extends JSpinner {
 	private static final long serialVersionUID = Utils.VERSION;
 	private Gene _gene;
 
-	public ReactionSpinner29(Gene gene) {
+	public ReactionSpinner32(Gene gene) {
 		super();
 		_gene = gene;
 		setModel(new SpinnerNumberModel(_gene.getplantReaction(), 0, 5, 1));
@@ -2319,11 +2641,11 @@ class ReactionSpinner29 extends JSpinner {
 	}
 }
 
-class ReactionSpinner30 extends JSpinner {
+class ReactionSpinner33 extends JSpinner {
 	private static final long serialVersionUID = Utils.VERSION;
 	private Gene _gene;
 
-	public ReactionSpinner30(Gene gene) {
+	public ReactionSpinner33(Gene gene) {
 		super();
 		_gene = gene;
 		setModel(new SpinnerNumberModel(_gene.geticeReaction(), 0, 5, 1));
@@ -2343,11 +2665,11 @@ class ReactionSpinner30 extends JSpinner {
 	}
 }
 
-class ReactionSpinner31 extends JSpinner {
+class ReactionSpinner34 extends JSpinner {
 	private static final long serialVersionUID = Utils.VERSION;
 	private Gene _gene;
 
-	public ReactionSpinner31(Gene gene) {
+	public ReactionSpinner34(Gene gene) {
 		super();
 		_gene = gene;
 		setModel(new SpinnerNumberModel(_gene.getlightblueReaction(), 0, 5, 1));
@@ -2367,11 +2689,11 @@ class ReactionSpinner31 extends JSpinner {
 	}
 }
 
-class ReactionSpinner32 extends JSpinner {
+class ReactionSpinner35 extends JSpinner {
 	private static final long serialVersionUID = Utils.VERSION;
 	private Gene _gene;
 
-	public ReactionSpinner32(Gene gene) {
+	public ReactionSpinner35(Gene gene) {
 		super();
 		_gene = gene;
 		setModel(new SpinnerNumberModel(_gene.getlightbrownReaction(), 0, 5, 1));
@@ -2391,11 +2713,11 @@ class ReactionSpinner32 extends JSpinner {
 	}
 }
 
-class ReactionSpinner33 extends JSpinner {
+class ReactionSpinner36 extends JSpinner {
 	private static final long serialVersionUID = Utils.VERSION;
 	private Gene _gene;
 
-	public ReactionSpinner33(Gene gene) {
+	public ReactionSpinner36(Gene gene) {
 		super();
 		_gene = gene;
 		setModel(new SpinnerNumberModel(_gene.getgreenbrownReaction(), 0, 5, 1));
@@ -2415,11 +2737,11 @@ class ReactionSpinner33 extends JSpinner {
 	}
 }
 
-class ReactionSpinner34 extends JSpinner {
+class ReactionSpinner37 extends JSpinner {
 	private static final long serialVersionUID = Utils.VERSION;
 	private Gene _gene;
 
-	public ReactionSpinner34(Gene gene) {
+	public ReactionSpinner37(Gene gene) {
 		super();
 		_gene = gene;
 		setModel(new SpinnerNumberModel(_gene.getbrokenReaction(), 0, 5, 1));
@@ -2439,11 +2761,11 @@ class ReactionSpinner34 extends JSpinner {
 	}
 }
 
-class ReactionSpinner35 extends JSpinner {
+class ReactionSpinner38 extends JSpinner {
 	private static final long serialVersionUID = Utils.VERSION;
 	private Gene _gene;
 
-	public ReactionSpinner35(Gene gene) {
+	public ReactionSpinner38(Gene gene) {
 		super();
 		_gene = gene;
 		setModel(new SpinnerNumberModel(_gene.getbrownReaction(), 0, 5, 1));
@@ -2463,11 +2785,11 @@ class ReactionSpinner35 extends JSpinner {
 	}
 }
 
-class ReactionSpinner36 extends JSpinner {
+class ReactionSpinner39 extends JSpinner {
 	private static final long serialVersionUID = Utils.VERSION;
 	private Gene _gene;
 
-	public ReactionSpinner36(Gene gene) {
+	public ReactionSpinner39(Gene gene) {
 		super();
 		_gene = gene;
 		setModel(new SpinnerNumberModel(_gene.getsickReaction(), 0, 5, 1));
@@ -2487,11 +2809,11 @@ class ReactionSpinner36 extends JSpinner {
 	}
 }
 
-class ReactionSpinner37 extends JSpinner {
+class ReactionSpinner40 extends JSpinner {
 	private static final long serialVersionUID = Utils.VERSION;
 	private Gene _gene;
 
-	public ReactionSpinner37(Gene gene) {
+	public ReactionSpinner40(Gene gene) {
 		super();
 		_gene = gene;
 		setModel(new SpinnerNumberModel(_gene.getfriendReaction(), 0, 5, 1));

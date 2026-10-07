@@ -95,6 +95,8 @@ public class WorldStatistics implements Serializable {
 	private double maxMethane = 0;
 
 	private double maxDetritus = 0;
+	
+	private double maxNitrogen = Utils.INITIAL_N2;
 
 	private long maxCarbonDioxideTime;
 
@@ -103,6 +105,8 @@ public class WorldStatistics implements Serializable {
 	private long maxMethaneTime;
 
 	private long maxDetritusTime;
+	
+	private long maxNitrogenTime;
 
 	private double minCarbonDioxide = Utils.INITIAL_CO2 +  Utils.INITIAL_CH4 +  Utils.INITIAL_CO1 +  Utils.INITIAL_DETRITUS + Utils.INITIAL_O2;
 
@@ -111,6 +115,8 @@ public class WorldStatistics implements Serializable {
 	private double minMethane = Utils.INITIAL_CO2 +  Utils.INITIAL_CH4 +  Utils.INITIAL_CO1 +  Utils.INITIAL_DETRITUS + Utils.INITIAL_O2;
 
 	private double minDetritus = Utils.INITIAL_CO2 +  Utils.INITIAL_CH4 +  Utils.INITIAL_CO1 +  Utils.INITIAL_DETRITUS + Utils.INITIAL_O2;
+	
+	private double minNitrogen = Utils.INITIAL_N2;
 
 	private long minCarbonDioxideTime;
 
@@ -119,6 +125,8 @@ public class WorldStatistics implements Serializable {
 	private long minMethaneTime;
 
 	private long minDetritusTime;
+	
+	private long minNitrogenTime;
 
 	private Organism aliveOrganismMostChildren;
 	private int aliveOrganismMostChildrenNumber;
@@ -188,6 +196,8 @@ public class WorldStatistics implements Serializable {
 	private List<Double> methaneList = new ArrayList<Double>(MAX_STATS_COUNT);
 
 	private List<Double> detritusList = new ArrayList<Double>(MAX_STATS_COUNT);
+	
+	private List<Double> nitrogenList = new ArrayList<Double>(MAX_STATS_COUNT);
 
 	private List<Double> generationHistogramList = new ArrayList<>(0);
 	private int minGeneration;
@@ -372,6 +382,22 @@ public class WorldStatistics implements Serializable {
 	public long getMinDetritusTime() {
 		return minDetritusTime;
 	}
+	
+	public double getMaxNitrogen() {
+		return maxNitrogen;
+	}
+
+	public long getMaxNitrogenTime() {
+		return maxNitrogenTime;
+	}
+
+	public double getMinNitrogen() {
+		return minNitrogen;
+	}
+	
+	public long getMinNitrogenTime() {
+		return minNitrogenTime;
+	}
 
 	public Organism getAliveOrganismMostChildren() {
 		return aliveOrganismMostChildren;
@@ -528,6 +554,10 @@ public class WorldStatistics implements Serializable {
 	public List<Double> getDetritusList() {
 		return detritusList;
 	}
+	
+	public List<Double> getNitrogenList() {
+		return nitrogenList;
+	}
 
 	public List<Double> getGenerationHistogramList() {
 		return generationHistogramList;
@@ -595,7 +625,7 @@ public class WorldStatistics implements Serializable {
 		infectionsSum++;
 	}
 
-	public void eventTime(int population, int distinctClades, int distinctCladesWith10Orgs, int distinctCladesWith100Orgs, double O2, double CO2, double CO1, double CH4, double detritus, Collection<Organism> organisms) {
+	public void eventTime(int population, int distinctClades, int distinctCladesWith10Orgs, int distinctCladesWith100Orgs, double O2, double CO2, double CO1, double CH4, double detritus, double N2, Collection<Organism> organisms) {
 		time++;
 		if (deathLastTime > 1.5 * getAverageDeaths()) {
 			if (deathLastTime > 3 * getAverageDeaths()) {
@@ -673,6 +703,14 @@ public class WorldStatistics implements Serializable {
 			minDetritus = detritus;
 			minDetritusTime = time;
 		}
+		if ((N2 > maxNitrogen) && (time >= 10)) {
+			maxNitrogen = N2;
+			maxNitrogenTime = time;
+		}
+		if ((N2 < minNitrogen) && (time >= 10)) {
+			minNitrogen = N2;
+			minNitrogenTime = time;
+		}
 		if (birthLastTime > maxBirths)
 			maxBirths = birthLastTime;
 		if (deathLastTime > maxDeaths)
@@ -691,24 +729,51 @@ public class WorldStatistics implements Serializable {
 		birthList.add(Double.valueOf(birthLastTime));
 		if (oxygenList.size() == MAX_STATS_COUNT)
 			oxygenList.remove(0);
-		oxygenList.add(Double.valueOf(Math.sqrt(Math.sqrt(O2))));
+		if (Double.valueOf(O2) <= 100) {
+			oxygenList.add(Double.valueOf(0.0));
+		} else {
+			oxygenList.add(Double.valueOf(Math.log10(O2/100)));
+		}
 		if (carbonDioxideList.size() == MAX_STATS_COUNT)
 			carbonDioxideList.remove(0);
-		carbonDioxideList.add(Double.valueOf(Math.sqrt(Math.sqrt(CO2))));
+		if (Double.valueOf(CO2) <= 100) {
+			carbonDioxideList.add(Double.valueOf(0.0));
+		} else {
+			carbonDioxideList.add(Double.valueOf(Math.log10(CO2/100)));
+		}
 		if (carbonMonoxideList.size() == MAX_STATS_COUNT)
 			carbonMonoxideList.remove(0);
-		carbonMonoxideList.add(Double.valueOf(Math.sqrt(Math.sqrt(CO1))));
+		if (Double.valueOf(CO1) <= 100) {
+			carbonMonoxideList.add(Double.valueOf(0.0));
+		} else {
+			carbonMonoxideList.add(Double.valueOf(Math.log10(CO1/100)));
+		}
 		if (methaneList.size() == MAX_STATS_COUNT)
 			methaneList.remove(0);
-		methaneList.add(Double.valueOf(Math.sqrt(Math.sqrt(CH4))));
+		if (Double.valueOf(CH4) <= 100) {
+			methaneList.add(Double.valueOf(0.0));
+		} else {
+			methaneList.add(Double.valueOf(Math.log10(CH4/100)));
+		}
 		if (detritusList.size() == MAX_STATS_COUNT)
 			detritusList.remove(0);
-		detritusList.add(Double.valueOf(Math.sqrt(Math.sqrt(detritus))));
+		if (Double.valueOf(detritus) <= 100) {
+			detritusList.add(Double.valueOf(0.0));
+		} else {
+			detritusList.add(Double.valueOf(Math.log10(detritus/100)));
+		}
+		if (nitrogenList.size() == MAX_STATS_COUNT)
+			nitrogenList.remove(0);
+		if (Double.valueOf(N2) <= 100) {
+			nitrogenList.add(Double.valueOf(0.0));
+		} else {
+			nitrogenList.add(Double.valueOf(Math.log10(N2/100)));
+		}
 		deathLastTime = 0;
 		birthLastTime = 0;
 
 		if ((Utils.AUTO_BACKUP_CSV) && (mainWindowInterface.getBioFile() != null)) {
-			mainWindowInterface.getBioFile().appendToCsv(time, population, distinctClades, distinctCladesWith10Orgs, distinctCladesWith100Orgs, O2, CO2, CO1, CH4, detritus, organisms);
+			mainWindowInterface.getBioFile().appendToCsv(time, population, distinctClades, distinctCladesWith10Orgs, distinctCladesWith100Orgs, O2, CO2, CO1, CH4, detritus, N2, organisms);
 		}
 	}
 
