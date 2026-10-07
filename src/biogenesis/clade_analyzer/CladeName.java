@@ -12,6 +12,7 @@ public class CladeName {
   private final boolean isPlant;
   private final boolean isOther;
   private final int symmetry;
+  private final int hox;
   private final boolean mirror;
   private final String primaryColors;
   private final String secondaryColors;
@@ -20,13 +21,14 @@ public class CladeName {
 
   private Color cachedColor;
 
-  public CladeName(boolean isVirus, boolean isConsumer, boolean isPlant, boolean isOther, int symmetry, boolean mirror,
+  public CladeName(boolean isVirus, boolean isConsumer, boolean isPlant, boolean isOther, int symmetry, int hox, boolean mirror,
       ColorCounter primaryColors, ColorCounter secondaryColors, ColorCounter tertiaryColors, ColorCounter quaternaryColors) {
         this.isVirus = isVirus;
         this.isConsumer = isConsumer;
         this.isPlant = isPlant;
         this.isOther = isOther;
         this.symmetry = symmetry;
+        this.hox = hox;
         this.mirror = mirror;
         this.primaryColors = primaryColors.toString();
         this.secondaryColors = secondaryColors.toString();
