@@ -73,9 +73,10 @@ public class CladeParser {
     int branch = gene.get("_branch").getAsInt();
     int stack = gene.get("_stack").getAsInt();
 	int fold = gene.get("_fold").getAsInt();
+	int chiral = gene.get("_chiral").getAsInt();
 	int radial = gene.get("_radial").getAsInt();
 
-    return new Gene(length, theta, color, branch, stack, fold, radial, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    return new Gene(length, theta, color, branch, stack, fold, chiral, radial, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   }
 

@@ -65,7 +65,7 @@ public class BioXMLParser implements ErrorHandler {
 		ps.println("<!ATTLIST genetic_code base1Y CDATA #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST genetic_code base2X CDATA #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST genetic_code base2Y CDATA #REQUIRED>"); //$NON-NLS-1$
-		ps.println("<!ATTLIST genetic_code activity (0|1|2) #REQUIRED>"); //$NON-NLS-1$
+		ps.println("<!ATTLIST genetic_code activity (0|2|4) #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST genetic_code modifiesmaroon (0|1|2|3|4|5|6|7|8|9) #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST genetic_code modifiescream (1|2|3) #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST genetic_code modifiesfallow (1|2|3|4) #REQUIRED>"); //$NON-NLS-1$
@@ -97,6 +97,7 @@ public class BioXMLParser implements ErrorHandler {
 		ps.println("<!ATTLIST gene branch CDATA #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST gene stack CDATA #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST gene fold CDATA #REQUIRED>"); //$NON-NLS-1$
+		ps.println("<!ATTLIST gene chiral CDATA #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST gene radial CDATA #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST gene redreaction CDATA #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST gene greenreaction CDATA #REQUIRED>"); //$NON-NLS-1$
@@ -183,7 +184,8 @@ public class BioXMLParser implements ErrorHandler {
 				colorToString(gene.getColor())+"\" branch=\""+ //$NON-NLS-1$
 				Integer.toString(gene.getBranch())+"\" stack=\""+ //$NON-NLS-1$
 				Integer.toString(gene.getStack())+"\" fold=\""+ //$NON-NLS-1$
-				Integer.toString(gene.getFold())+"\" radial=\""+ //$NON-NLS-1$
+				Integer.toString(gene.getFold())+"\" chiral=\""+ //$NON-NLS-1$
+				Integer.toString(gene.getChiral())+"\" radial=\""+ //$NON-NLS-1$
 				Integer.toString(gene.getRadial())+"\" redreaction=\""+ //$NON-NLS-1$
 				Integer.toString(gene.getredReaction())+"\" greenreaction=\""+ //$NON-NLS-1$
 				Integer.toString(gene.getgreenReaction())+"\" bluereaction=\""+ //$NON-NLS-1$
@@ -342,7 +344,7 @@ public class BioXMLParser implements ErrorHandler {
 			} catch (NumberFormatException e) {
 				throw new SAXException("Activity has not an allowed value."); //$NON-NLS-1$
 			}
-			if (activity<0 || activity>2)
+			if (activity<0 || activity>4)
 				throw new SAXException("Activity has not an allowed value."); //$NON-NLS-1$
 			s = geneticCode.getAttribute("modifiesmaroon"); //$NON-NLS-1$
 			try {
@@ -548,7 +550,7 @@ public class BioXMLParser implements ErrorHandler {
 
 	public Gene parseGene(Element gene) throws SAXException {
 		double length, theta;
-		int branch, stack, fold, radial, redreaction, greenreaction, bluereaction, plaguereaction, scourgereaction, whitereaction, grayreaction, silverreaction
+		int branch, stack, fold, chiral, radial, redreaction, greenreaction, bluereaction, plaguereaction, scourgereaction, whitereaction, grayreaction, silverreaction
 		, defaultreaction, consumerreaction, plantreaction, magentareaction, pinkreaction, coralreaction, orangereaction, barkreaction, violetreaction, virusreaction
 		, maroonreaction, crimsonreaction, olivereaction, mintreaction, creamreaction, spikereaction, fallowreaction, lightbluereaction, ochrereaction, skyreaction
 		, lilacreaction, firereaction, lightbrownreaction, greenbrownreaction, brownreaction, icereaction, brokenreaction, sickreaction, friendreaction;
@@ -560,6 +562,7 @@ public class BioXMLParser implements ErrorHandler {
 				branch = Integer.parseInt(gene.getAttribute("branch")); //$NON-NLS-1$
 				stack = Integer.parseInt(gene.getAttribute("stack")); //$NON-NLS-1$
 				fold = Integer.parseInt(gene.getAttribute("fold")); //$NON-NLS-1$
+				chiral = Integer.parseInt(gene.getAttribute("chiral")); //$NON-NLS-1$
 				radial = Integer.parseInt(gene.getAttribute("radial")); //$NON-NLS-1$
 				redreaction = Integer.parseInt(gene.getAttribute("redreaction")); //$NON-NLS-1$
 				greenreaction = Integer.parseInt(gene.getAttribute("greenreaction")); //$NON-NLS-1$
@@ -606,7 +609,7 @@ public class BioXMLParser implements ErrorHandler {
 			} catch (IllegalArgumentException e) {
 				throw new SAXException("Attribute color does not exist or has not an allowed value."); //$NON-NLS-1$
 			}
-			return new Gene(length,theta,color,branch,stack,fold,radial,redreaction,greenreaction,bluereaction,plaguereaction,scourgereaction,whitereaction,grayreaction
+			return new Gene(length,theta,color,branch,stack,fold,chiral,radial,redreaction,greenreaction,bluereaction,plaguereaction,scourgereaction,whitereaction,grayreaction
 					,silverreaction,defaultreaction,consumerreaction,plantreaction,magentareaction,pinkreaction,coralreaction,orangereaction,barkreaction,violetreaction
 					,virusreaction,maroonreaction,crimsonreaction,olivereaction,mintreaction,creamreaction,spikereaction,fallowreaction,lightbluereaction,ochrereaction
 					,skyreaction,lilacreaction,firereaction,lightbrownreaction,greenbrownreaction,brownreaction,icereaction,brokenreaction,sickreaction,friendreaction);

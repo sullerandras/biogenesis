@@ -281,7 +281,7 @@ public final class Utils {
 	/**
 	 * This is the default energy that is consumed when an ivy segment is used.
 	 */
-	final static double DEF_IVY_ENERGY_CONSUMPTION = 0.3d;
+	final static double DEF_IVY_ENERGY_CONSUMPTION = 0.32d;
 	/**
 	 * This is the default energy that is consumed when a crowded forest segment is used.
 	 */
@@ -297,7 +297,7 @@ public final class Utils {
 	/**
 	 * This is the default effectivity for Hox4 boosting plant photosynthesis.
 	 */
-	final static double DEF_HOX4_ENERGY_CONSUMPTION = 0.29d;
+	final static double DEF_HOX4_ENERGY_CONSUMPTION = 0.3d;
 	/**
 	 * This is the default energy that is consumed when a spring segment is used.
 	 */

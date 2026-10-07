@@ -188,8 +188,9 @@ public class World implements Serializable{
 			for (Iterator<Organism> it = _organisms.iterator(); it.hasNext(); ) {
 				b = it.next();
 				if (b.contains(x,y)) {
-					if (b.isAlive())
+					if ((b.isAlive()) && (b != _visibleWorld.getSelectedOrganism())) {
 						return b;
+					}
 					deadOrganism = b;
 				}
 			}

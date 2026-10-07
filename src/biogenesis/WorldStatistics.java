@@ -680,19 +680,39 @@ public class WorldStatistics implements Serializable {
 		birthList.add(Double.valueOf(birthLastTime));
 		if (oxygenList.size() == MAX_STATS_COUNT)
 			oxygenList.remove(0);
-		oxygenList.add(Double.valueOf(Math.sqrt(Math.sqrt(O2))));
+		if (Double.valueOf(O2) <= 100) {
+			oxygenList.add(Double.valueOf(0.0));
+		} else {
+			oxygenList.add(Double.valueOf(Math.log10(O2/100)));
+		}
 		if (carbonDioxideList.size() == MAX_STATS_COUNT)
 			carbonDioxideList.remove(0);
-		carbonDioxideList.add(Double.valueOf(Math.sqrt(Math.sqrt(CO2))));
+		if (Double.valueOf(CO2) <= 100) {
+			carbonDioxideList.add(Double.valueOf(0.0));
+		} else {
+			carbonDioxideList.add(Double.valueOf(Math.log10(CO2/100)));
+		}
 		if (carbonMonoxideList.size() == MAX_STATS_COUNT)
 			carbonMonoxideList.remove(0);
-		carbonMonoxideList.add(Double.valueOf(Math.sqrt(Math.sqrt(CO1))));
+		if (Double.valueOf(CO1) <= 100) {
+			carbonMonoxideList.add(Double.valueOf(0.0));
+		} else {
+			carbonMonoxideList.add(Double.valueOf(Math.log10(CO1/100)));
+		}
 		if (methaneList.size() == MAX_STATS_COUNT)
 			methaneList.remove(0);
-		methaneList.add(Double.valueOf(Math.sqrt(Math.sqrt(CH4))));
+		if (Double.valueOf(CH4) <= 100) {
+			methaneList.add(Double.valueOf(0.0));
+		} else {
+			methaneList.add(Double.valueOf(Math.log10(CH4/100)));
+		}
 		if (detritusList.size() == MAX_STATS_COUNT)
 			detritusList.remove(0);
-		detritusList.add(Double.valueOf(Math.sqrt(Math.sqrt(detritus))));
+		if (Double.valueOf(detritus) <= 100) {
+			detritusList.add(Double.valueOf(0.0));
+		} else {
+			detritusList.add(Double.valueOf(Math.log10(detritus/100)));
+		}
 		deathLastTime = 0;
 		birthLastTime = 0;
 

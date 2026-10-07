@@ -118,7 +118,7 @@ public class GeneticCode implements Cloneable, Serializable {
 	protected double _base2Y;
 	/**
 	 * The seasons of the summer segments. Possible values are
-	 * 0 - 2. 
+	 * 0, 2 or 4. 
 	 */
 	protected int _activity;
 	/**
@@ -324,7 +324,7 @@ public class GeneticCode implements Cloneable, Serializable {
 	/**
 	 * Returns the season activity applied to organisms with this genetic code
 	 * 
-	 * @return  a value of 0 - 2.
+	 * @return  a value of 0, 2 or 4.
 	 */
 	public int getActivity() {
 		return _activity;
@@ -750,10 +750,10 @@ public class GeneticCode implements Cloneable, Serializable {
 		_base2Y = _base2Y - Utils.random.nextDouble();
 	}
 	/**
-	 * Gives activity a random value (0 - 2)
+	 * Gives activity a random value (0, 2 or 4)
 	 */
 	private void randomActivity() {
-		_activity = Utils.random.nextInt(3);
+		_activity = Utils.random.nextInt(3) * 2;
 	}
 	/**
 	 * Create a random genes array making sure that there will be more or equal than
@@ -796,6 +796,7 @@ public class GeneticCode implements Cloneable, Serializable {
 			} else {
 				_genes[i].setFold(0);
 			}
+			_genes[i].setChiral((Utils.random.nextInt(4)*2)-3);
 			if (Utils.random.nextBoolean()) {
 				if (Utils.random.nextBoolean()) {
 					if (Utils.random.nextBoolean()) {
@@ -1122,6 +1123,7 @@ public class GeneticCode implements Cloneable, Serializable {
 		boolean repairBranch = false;
 		boolean randomStack;
 		boolean randomFold;
+		boolean randomChiral;
 		boolean randomRadial;
 		boolean randomredReaction;
 		boolean randomgreenReaction;
@@ -1516,6 +1518,7 @@ public class GeneticCode implements Cloneable, Serializable {
 					} else {
 						_genes[i].setFold(0);
 					}
+					_genes[i].setChiral((Utils.random.nextInt(4)*2)-3);
 					if (Utils.random.nextBoolean()) {
 						if (Utils.random.nextBoolean()) {
 							if (Utils.random.nextBoolean()) {
@@ -1553,7 +1556,7 @@ public class GeneticCode implements Cloneable, Serializable {
 					continue;
 				}
 			}
-			randomLength = randomTheta = randomBranch  = randomStack  = randomFold = randomRadial = randomredReaction = randomgreenReaction = randomblueReaction
+			randomLength = randomTheta = randomBranch = randomStack = randomFold = randomChiral = randomRadial = randomredReaction = randomgreenReaction = randomblueReaction
 			= randomplagueReaction = randomscourgeReaction = randomwhiteReaction = randomgrayReaction = randomsilverReaction = randomdefaultReaction = randomconsumerReaction
 			= randomplantReaction = randommagentaReaction = randompinkReaction = randomcoralReaction = randomorangeReaction = randombarkReaction = randomvioletReaction
 			= randomvirusReaction = randommaroonReaction = randomcrimsonReaction = randomoliveReaction = randommintReaction = randomcreamReaction = randomspikeReaction
@@ -1569,6 +1572,8 @@ public class GeneticCode implements Cloneable, Serializable {
 				randomStack = true;
 			if (Utils.random.nextInt(10000) < _mutationrate)
 				randomFold = true;
+			if (Utils.random.nextInt(10000) < _mutationrate)
+				randomChiral = true;
 			if (Utils.random.nextInt(10000) < _mutationrate)
 				randomRadial = true;
 			if (Utils.random.nextInt(10000) < _mutationrate)
@@ -1647,13 +1652,14 @@ public class GeneticCode implements Cloneable, Serializable {
 				randomfriendReaction = true;
 			if (Utils.random.nextInt(10000) < _mutationrate)
 				randomColor = true;
-			if (randomLength || randomTheta || randomBranch || repairBranch || randomStack || randomFold || randomRadial || randomredReaction || randomgreenReaction
-				|| randomblueReaction || randomplagueReaction || randomscourgeReaction || randomwhiteReaction || randomgrayReaction || randomsilverReaction
-				|| randomdefaultReaction || randomconsumerReaction || randomplantReaction || randommagentaReaction || randompinkReaction || randomcoralReaction
-				|| randomorangeReaction || randombarkReaction || randomvioletReaction || randomvirusReaction || randommaroonReaction || randomcrimsonReaction
-				|| randomoliveReaction || randommintReaction || randomcreamReaction || randomspikeReaction || randomfallowReaction || randomlightblueReaction
-				|| randomochreReaction || randomskyReaction || randomlilacReaction || randomfireReaction || randomlightbrownReaction || randomgreenbrownReaction
-				|| randombrownReaction || randomiceReaction || randombrokenReaction || randomsickReaction || randomfriendReaction || randomColor || clonedGene != 0) {
+			if (randomLength || randomTheta || randomBranch || repairBranch || randomStack || randomFold || randomChiral || randomRadial || randomredReaction
+				|| randomgreenReaction || randomblueReaction || randomplagueReaction || randomscourgeReaction || randomwhiteReaction || randomgrayReaction
+				|| randomsilverReaction || randomdefaultReaction || randomconsumerReaction || randomplantReaction || randommagentaReaction || randompinkReaction
+				|| randomcoralReaction || randomorangeReaction || randombarkReaction || randomvioletReaction || randomvirusReaction || randommaroonReaction
+				|| randomcrimsonReaction || randomoliveReaction || randommintReaction || randomcreamReaction || randomspikeReaction || randomfallowReaction
+				|| randomlightblueReaction || randomochreReaction || randomskyReaction || randomlilacReaction || randomfireReaction || randomlightbrownReaction
+				|| randomgreenbrownReaction || randombrownReaction || randomiceReaction || randombrokenReaction || randomsickReaction || randomfriendReaction
+				|| randomColor || clonedGene != 0) {
 				_genes[i] = new Gene();
 				if (clonedGene != 0) {
 					if ((Utils.random.nextBoolean()) || (randomLength)) {
@@ -1802,6 +1808,11 @@ public class GeneticCode implements Cloneable, Serializable {
 					}
 				} else {
 					_genes[i].setStack(parentCode.getGene(j).getStack());
+				}
+				if (randomChiral) {
+					_genes[i].setChiral((Utils.random.nextInt(4)*2)-3);
+				} else {
+					_genes[i].setChiral(parentCode.getGene(j).getChiral());
 				}
 				if (randomFold) {
 					if (Utils.random.nextBoolean()) {
@@ -2138,13 +2149,13 @@ public class GeneticCode implements Cloneable, Serializable {
 									v.invertX();
 								}	
 							} else {
-								if (_genes[j].getFold() > 0) {
+								if (_genes[j].getStack() != 0) {
 									x0[i][j]=y0[i][j]=0;
 									if ((_genes[j].getRadial() < 90) && (j>0)) {
 										v.setTheta(_genes[j].getTheta());
 									} else {
 										if ((_genes[j].getRadial() < 180) || (j==0)) {
-											if ((_genes[j].getStack() == 0) || i%2==0) {
+											if ((_genes[j].getChiral() < 0) || i%2==0) {
 												v.setTheta(_genes[j].getTheta()+i*2*Math.PI/_symmetry);
 											} else {
 												v.setTheta(_genes[j].getTheta()+(i-1)*2*Math.PI/_symmetry);
@@ -2152,7 +2163,7 @@ public class GeneticCode implements Cloneable, Serializable {
 											}
 										} else {
 											if (_genes[j].getRadial() < 270) {
-												if ((_genes[j].getStack() == 0) || i%2==0) {
+												if ((_genes[j].getChiral() < 0) || i%2==0) {
 													v.setTheta(_genes[j].getTheta()+i*4*Math.PI/_symmetry);
 												} else {
 													v.setTheta(_genes[j].getTheta()+(i-1)*4*Math.PI/_symmetry);
@@ -2160,14 +2171,14 @@ public class GeneticCode implements Cloneable, Serializable {
 												}
 											} else {
 												if (_symmetry == 8) {
-													if ((_genes[j].getStack() == 0) || i%2==0) {
+													if ((_genes[j].getChiral() < 0) || i%2==0) {
 														v.setTheta(_genes[j].getTheta()+i*8*Math.PI/_symmetry);
 													} else {
 														v.setTheta(_genes[j].getTheta()+(i-1)*8*Math.PI/_symmetry);
 														v.invertX();
 													}
 												} else {
-													if ((_genes[j].getStack() == 0) || i%2==0) {
+													if ((_genes[j].getChiral() < 0) || i%2==0) {
 														v.setTheta(_genes[j].getTheta()+i*6*Math.PI/_symmetry);
 													} else {
 														v.setTheta(_genes[j].getTheta()+(i-1)*6*Math.PI/_symmetry);
@@ -2179,7 +2190,7 @@ public class GeneticCode implements Cloneable, Serializable {
 									}
 								} else {
 									x0[i][j]=y0[i][j]=0;
-									if ((_genes[j].getStack() == 0) || i%2==0) {
+									if ((_genes[j].getChiral() < 0) || i%2==0) {
 										v.setTheta(_genes[j].getTheta()+i*((double)_genes[j].getRadial()/45)*Math.PI/_symmetry);
 									} else {
 										v.setTheta(_genes[j].getTheta()+(i-1)*((double)_genes[j].getRadial()/45)*Math.PI/_symmetry);
@@ -2295,51 +2306,110 @@ public class GeneticCode implements Cloneable, Serializable {
 									}
 								} else {
 									if ((_genes[j].getStack() == 0) && (j>=1)) {
-										if (_symmetry%2==0) {
-											if (i<(_symmetry - (2 * Math.round((double)_genes[j].getFold()/2)))) {
-												if (i<=1) {
-													if ((_genes[j].getFold()%2 == 0) || (_genes[j].getFold() <= 0)) {
+										if ((_genes[0].getChiral() > 0) && (_symmetry%2==0)) {
+											if (_genes[j].getChiral() < 0) {
+												if (i<(_symmetry - (2 * Math.round((double)_genes[j].getFold()/2)))) {
+													if (i<=1) {
+														if ((_genes[j].getFold()%2 == 0) || (_genes[j].getFold() <= 0)) {
+															if (i%2==0) {
+																x0[i][j]=y0[i][j]=0;
+															} else {
+																x0[i][j]=1;
+																y0[i][j]=0;
+															}															
+														} else {
+															x0[i][j] = x1[0][0];
+															y0[i][j] = y1[0][0];
+														}
+													} else {
+														if ((_genes[j].getFold()%2 == 0) || (_genes[j].getFold() <= 0)) {
+															x0[i][j] = x1[i-2][0];
+															y0[i][j] = y1[i-2][0];
+														} else {
+															x0[i][j] = x1[i][0];
+															y0[i][j] = y1[i][0];
+														}
+													}
+												} else {
+													if (_genes[j].getFold()%2 == 0) {
 														if (i%2==0) {
 															x0[i][j]=y0[i][j]=0;
 														} else {
 															x0[i][j]=1;
 															y0[i][j]=0;
-														}															
+														}
 													} else {
 														x0[i][j] = x1[0][0];
 														y0[i][j] = y1[0][0];
 													}
-												} else {
-													if ((_genes[j].getFold()%2 == 0) || (_genes[j].getFold() <= 0)) {
-														x0[i][j] = x1[i-2][0];
-														y0[i][j] = y1[i-2][0];
-													} else {
-														x0[i][j] = x1[i][0];
-														y0[i][j] = y1[i][0];
-													}
 												}
 											} else {
-												if (_genes[j].getFold()%2 == 0) {
-													if (i%2==0) {
-														x0[i][j]=y0[i][j]=0;
-													} else {
-														x0[i][j]=1;
-														y0[i][j]=0;
-													}
+												if (i<(_symmetry - (2 * Math.round((double)_genes[j].getFold()/2)))) {
+													x0[i][j] = x1[i][0];
+													y0[i][j] = y1[i][0];
 												} else {
-													x0[i][j] = x1[0][0];
-													y0[i][j] = y1[0][0];
+													if ((_genes[0].getStack() == 0) && (_genes[0].getChiral() == 3)) {
+														if (i%2==0) {
+															x0[i][j]=y0[i][j]=0;
+														} else {
+															x0[i][j]=1;
+															y0[i][j]=0;
+														}
+													} else {
+														if (i<=1) {
+															x0[i][j] = x1[i][0];
+															y0[i][j] = y1[i][0];
+													    } else if (i<=3) {
+															x0[i][j] = x1[i-2][0];
+															y0[i][j] = y1[i-2][0];
+														} else if (i<=5) {
+															x0[i][j] = x1[i-4][0];
+															y0[i][j] = y1[i-4][0];
+														} else {
+															x0[i][j] = x1[i-6][0];
+															y0[i][j] = y1[i-6][0];
+														}
+													}
 												}
 											}
 										} else {
 											if (i==0) {
-												x0[i][j]=y0[i][j]=0;
-											} else {
-												if (i<(_symmetry - _genes[j].getFold())) {
-													x0[i][j] = x1[i-1][0];
-													y0[i][j] = y1[i-1][0];
-												} else {					
+												if (_genes[j].getChiral() < 0) {
 													x0[i][j]=y0[i][j]=0;
+												} else {
+													x0[i][j] = x1[i][0];
+													y0[i][j] = y1[i][0];
+												}
+											} else {
+												if (_genes[j].getChiral() < 0) {
+													if (i<(_symmetry - _genes[j].getFold())) {
+														if ((i%2==0) || (_genes[j].getChiral() == -3)) {
+															x0[i][j] = x1[i-1][0];
+															y0[i][j] = y1[i-1][0];
+														} else {
+															if (i==1) {
+																x0[i][j]=y0[i][j]=0;
+															} else {
+																x0[i][j] = x1[i-2][0];
+																y0[i][j] = y1[i-2][0];
+															}
+														}
+													} else {					
+														x0[i][j]=y0[i][j]=0;
+													}
+												} else {
+													if (i<(_symmetry - _genes[j].getFold())) {
+														if ((i%2==0) || (_genes[j].getChiral() == 3)) {
+															x0[i][j] = x1[i][0];
+															y0[i][j] = y1[i][0];
+														} else {
+															x0[i][j] = x1[i-1][0];
+															y0[i][j] = y1[i-1][0];
+														}
+													} else {
+														x0[i][j] = x1[0][0];
+														y0[i][j] = y1[0][0];
+													}
 												}
 											}
 										}
@@ -2350,9 +2420,9 @@ public class GeneticCode implements Cloneable, Serializable {
 											v.invertX();
 										}
 									} else {
-										if (_symmetry%2==0) {
+										if ((_genes[0].getChiral() > 0) && (_symmetry%2==0)) {
 											if (i<=1) {
-												if ((j==0) || (_genes[j].getStack() < 0)) {
+												if (j==0) {
 													if (i%2==0) {
 														x0[i][j]=y0[i][j]=0;
 													} else {
@@ -2360,16 +2430,30 @@ public class GeneticCode implements Cloneable, Serializable {
 														y0[i][j]=0;
 													}
 												} else {
-													if ((_genes[0].getStack() == 0) && (_genes[0].getBranch() == 0)) {
-														if (i%2==0) {
-															x0[i][j]=y0[i][j]=0;
+													if (_genes[j].getStack() < 0) {
+														if ((_genes[j].getFold()%2 == 0) || (_genes[j].getFold() <= 0)) {
+															if (i%2==0) {
+																x0[i][j]=y0[i][j]=0;
+															} else {
+																x0[i][j]=1;
+																y0[i][j]=0;
+															}															
 														} else {
-															x0[i][j]=1;
-															y0[i][j]=0;
+															x0[i][j] = x1[0][0];
+															y0[i][j] = y1[0][0];
 														}
 													} else {
-														x0[i][j] = x1[i][0];
-														y0[i][j] = y1[i][0];
+														if ((_genes[0].getStack() == 0) && (_genes[0].getChiral() == 3)) {
+															if (i%2==0) {
+																x0[i][j]=y0[i][j]=0;
+															} else {
+																x0[i][j]=1;
+																y0[i][j]=0;
+															}
+														} else {
+															x0[i][j] = x1[i][0];
+															y0[i][j] = y1[i][0];
+														}
 													}
 												}
 												if (_genes[j].getStack() == 0) {
@@ -2379,7 +2463,7 @@ public class GeneticCode implements Cloneable, Serializable {
 												}
 											} else {
 												if (_genes[j].getStack() == 0) {
-													if ((_genes[j].getBranch() == -1) && (_symmetry >= 6)) {
+													if ((_genes[j].getChiral() == 1) && (_symmetry >= 6)) {
 														if ((_genes[j].getFold() <= 0) || (i<_symmetry-2)) {
 															if ((i==4) || (i==5)) {
 																if (i%2==0) {
@@ -2436,14 +2520,24 @@ public class GeneticCode implements Cloneable, Serializable {
 															}
 														} else {					
 															if (i<(_symmetry - (2 * Math.round((double)_genes[j].getFold()/2)))) {
-																x0[i][j] = x1[i-2][0];
-																y0[i][j] = y1[i-2][0];
-															} else {					
-																if (i%2==0) {
-																	x0[i][j]=y0[i][j]=0;
+																if ((_genes[j].getFold()%2 == 0) || (_genes[j].getFold() <= 0)) {
+																	x0[i][j] = x1[i-2][0];
+																	y0[i][j] = y1[i-2][0];
 																} else {
-																	x0[i][j]=1;
-																	y0[i][j]=0;
+																	x0[i][j] = x1[i][0];
+																	y0[i][j] = y1[i][0];
+																}
+															} else {
+																if (_genes[j].getFold()%2 == 0) {
+																	if (i%2==0) {
+																		x0[i][j]=y0[i][j]=0;
+																	} else {
+																		x0[i][j]=1;
+																		y0[i][j]=0;
+																	}
+																} else {
+																	x0[i][j] = x1[0][0];
+																	y0[i][j] = y1[0][0];
 																}
 															}
 														}
@@ -2452,7 +2546,7 @@ public class GeneticCode implements Cloneable, Serializable {
 															x0[i][j] = x1[i][0];
 															y0[i][j] = y1[i][0];
 														} else {
-															if ((_genes[0].getStack() == 0) && (_genes[0].getBranch() == 0)) {
+															if ((_genes[0].getStack() == 0) && (_genes[0].getChiral() == 3)) {
 																if (i%2==0) {
 																	x0[i][j]=y0[i][j]=0;
 																} else {
@@ -2488,29 +2582,43 @@ public class GeneticCode implements Cloneable, Serializable {
 											} else {
 												if ((j==0) || (_genes[j].getStack() < 0)) {
 													if (j==0) {
-														if ((_genes[j].getFold() <= 0) || (i<(_symmetry-1))) {
+														if ((_genes[j].getFold() <= 0) || (i<(_symmetry-2)) || ((i<(_symmetry-1)) && (_genes[j].getFold() <= 3))) {
 															x0[i][j] = x1[i-1][0];
 															y0[i][j] = y1[i-1][0];
 														} else {
-															if (_genes[j].getStack() <= 0) {
+															if (((_genes[j].getFold() <= 3) || (i<(_symmetry-1))) && (i>=2)) {
 																x0[i][j] = x1[i-2][0];
 																y0[i][j] = y1[i-2][0];
 															} else {
 																x0[i][j]=y0[i][j]=0;
-															}											
+															}									
 														}
 													} else {					
 														if (i<(_symmetry - _genes[j].getFold())) {
-															x0[i][j] = x1[i-1][0];
-															y0[i][j] = y1[i-1][0];
+															if ((i%2==0) || (_genes[j].getChiral() == -3) || (_genes[j].getChiral() == 3)) {
+																x0[i][j] = x1[i-1][0];
+																y0[i][j] = y1[i-1][0];
+															} else {
+																if (i==1) {
+																	x0[i][j]=y0[i][j]=0;
+																} else {
+																	x0[i][j] = x1[i-2][0];
+																	y0[i][j] = y1[i-2][0];
+																}
+															}
 														} else {					
 															x0[i][j]=y0[i][j]=0;
 														}
 													}
 												} else {
 													if (i<(_symmetry - _genes[j].getFold())) {
-														x0[i][j] = x1[i][0];
-														y0[i][j] = y1[i][0];
+														if ((i%2==0) || (_genes[j].getChiral() == -3) || (_genes[j].getChiral() == 3)) {
+															x0[i][j] = x1[i][0];
+															y0[i][j] = y1[i][0];
+														} else {
+															x0[i][j] = x1[i-1][0];
+															y0[i][j] = y1[i-1][0];
+														}
 													} else {
 														x0[i][j] = x1[0][0];
 														y0[i][j] = y1[0][0];
@@ -2523,11 +2631,104 @@ public class GeneticCode implements Cloneable, Serializable {
 								}
 							} else {
 								if ((_genes[j].getStack() == 0) && (j>=1)) {
-									x0[i][j]=y0[i][j]=0;
-									if (_genes[j].getFold() <= 0)
+									if ((_symmetry == 2) && (_genes[0].getStack() == 1)) {
+										if (_genes[j].getChiral() > 0) {
+											x0[i][j] = x1[0][0];
+											y0[i][j] = y1[0][0];
+										} else {
+											x0[i][j]=y0[i][j]=0;
+										}
 										v.setTheta(_genes[j].getTheta());
-									else {
-										v.setTheta(_genes[0].getTheta());
+									} else if (_genes[j].getFold() <= 0) {
+										x0[i][j]=y0[i][j]=0;
+										v.setTheta(_genes[j].getTheta());
+									} else {
+										if (_genes[j].getFold() <= 2) {
+											x0[i][j]=y0[i][j]=0;
+											if (_genes[j].getFold() == 1) {
+												v.setTheta(_genes[0].getTheta());
+											} else {
+												if (_genes[0].getStack() == -2) {
+													if (_genes[0].getChiral() > 0) {
+														v.setTheta(_genes[0].getTheta()+((double)_genes[0].getRadial()/((360/_symmetry) + 1))*Math.PI/_symmetry);
+													} else {
+														v.setTheta(_genes[0].getTheta()-((double)_genes[0].getRadial()/((360/_symmetry) + 1))*Math.PI/_symmetry);
+													}
+												} else {
+													v.setTheta(_genes[0].getTheta());
+												}
+												v.invertX();
+												v.invertY();
+											}
+										} else {
+											if (_genes[j].getFold() <= 4) {
+												x0[i][j]=y0[i][j]=0;
+												if (_genes[0].getStack() == -2) {
+													if (_genes[0].getChiral() > 0) {
+														v.setTheta(_genes[0].getTheta()+(0.5*(double)_genes[0].getRadial()/((360/_symmetry) + 1))*Math.PI/_symmetry);
+													} else {
+														v.setTheta(_genes[0].getTheta()-(0.5*(double)_genes[0].getRadial()/((360/_symmetry) + 1))*Math.PI/_symmetry);
+													}
+												} else {
+													if (_genes[0].getStack() == 1) {
+														if (_genes[0].getChiral() > 0) {
+															if (_symmetry%2==0) {
+																v.setTheta(_genes[0].getTheta()+(0.5*((_symmetry/2)-1)*(double)_genes[0].getRadial()/135)*Math.PI/_symmetry);
+															} else {
+																v.setTheta(_genes[0].getTheta()+(0.5*((_symmetry/2)-0.5)*(double)_genes[0].getRadial()/135)*Math.PI/_symmetry);
+															}
+														} else {
+															if (_symmetry%2==0) {
+																v.setTheta(_genes[0].getTheta()-(0.5*((_symmetry/2)-1)*(double)_genes[0].getRadial()/135)*Math.PI/_symmetry);
+															} else {
+																v.setTheta(_genes[0].getTheta()-(0.5*((_symmetry/2)-0.5)*(double)_genes[0].getRadial()/135)*Math.PI/_symmetry);
+															}
+														}
+													} else {
+														if (_genes[0].getStack() == 2) {
+															if (_genes[0].getChiral() > 0) {
+																if (_symmetry%2==0) {
+																	v.setTheta(_genes[0].getTheta()+(0.5*((_symmetry/2)-1)*(double)_genes[0].getRadial()/225)*Math.PI/_symmetry);
+																} else {
+																	v.setTheta(_genes[0].getTheta()+(0.5*((_symmetry/2)-0.5)*(double)_genes[0].getRadial()/225)*Math.PI/_symmetry);
+																}
+															} else {
+																if (_symmetry%2==0) {
+																	v.setTheta(_genes[0].getTheta()-(0.5*((_symmetry/2)-1)*(double)_genes[0].getRadial()/225)*Math.PI/_symmetry);
+																} else {
+																	v.setTheta(_genes[0].getTheta()-(0.5*((_symmetry/2)-0.5)*(double)_genes[0].getRadial()/225)*Math.PI/_symmetry);
+																}
+															}
+														} else {
+															v.setTheta(_genes[0].getTheta());
+														}
+													}
+												}
+												if (_genes[j].getFold() == 3) {
+													v.invertX();
+													v.invertY();
+												}
+											} else {
+												if (i%2==0) {
+													x0[i][j]=y0[i][j]=0;
+													if (_genes[0].getStack() == -2) {
+														if (_genes[0].getChiral() > 0) {
+															v.setTheta(_genes[0].getTheta()+((double)_genes[0].getRadial()/((360/_symmetry) + 1))*Math.PI/_symmetry);
+														} else {
+															v.setTheta(_genes[0].getTheta()-((double)_genes[0].getRadial()/((360/_symmetry) + 1))*Math.PI/_symmetry);
+														}
+													} else {
+														v.setTheta(_genes[0].getTheta());
+													}
+												} else {
+													x0[i][j] = x1[0][j];
+													y0[i][j] = y1[0][j];
+													v.setTheta(_genes[0].getTheta());
+												}
+												v.invertX();
+												v.invertY();
+											}
+										}
 									}
 								} else {
 									if (i==0) {
@@ -2541,17 +2742,43 @@ public class GeneticCode implements Cloneable, Serializable {
 												if (i%2==0) {
 													v.setTheta(_genes[j].getTheta());
 												} else {
-													v.setTheta(_genes[j].getTheta()+((double)_genes[j].getRadial()/((360/_symmetry) + 1))*Math.PI/_symmetry);
+													if (_genes[j].getChiral() > 0) {
+														v.setTheta(_genes[j].getTheta()+((double)_genes[j].getRadial()/((360/_symmetry) + 1))*Math.PI/_symmetry);
+													} else {
+														v.setTheta(_genes[j].getTheta()-((double)_genes[j].getRadial()/((360/_symmetry) + 1))*Math.PI/_symmetry);
+													}
 												}
 											} else {
-												if (_genes[j].getStack() > 0) {
-													if (_genes[j].getStack() == 1) {
-														v.setTheta(_genes[j].getTheta()-i*((double)_genes[j].getRadial()/225)*Math.PI/_symmetry);
-													} else {
+												if (_genes[j].getStack() == 2) {
+													if (_genes[j].getChiral() > 0) {
 														v.setTheta(_genes[j].getTheta()+i*((double)_genes[j].getRadial()/225)*Math.PI/_symmetry);
+													} else {
+														v.setTheta(_genes[j].getTheta()-i*((double)_genes[j].getRadial()/225)*Math.PI/_symmetry);
 													}
 												} else {
-													v.setTheta(_genes[j].getTheta());
+													if (_genes[j].getStack() == 1) {
+														if (_symmetry > 2) {
+															if (_genes[j].getChiral() > 0) {
+																if (i<(_symmetry/2)) {
+																	v.setTheta(_genes[j].getTheta()+i*((double)_genes[j].getRadial()/135)*Math.PI/_symmetry);
+																} else {
+																	v.setTheta(_genes[j].getTheta()+(_symmetry-1-i)*((double)_genes[j].getRadial()/135)*Math.PI/_symmetry);
+																}
+															} else {
+																if (i<(_symmetry/2)) {
+																	v.setTheta(_genes[j].getTheta()-i*((double)_genes[j].getRadial()/135)*Math.PI/_symmetry);
+																} else {
+																	v.setTheta(_genes[j].getTheta()-(_symmetry-1-i)*((double)_genes[j].getRadial()/135)*Math.PI/_symmetry);
+																}
+															}
+														} else {
+															v.setTheta(_genes[j].getTheta());
+															v.invertX();
+															v.invertY();
+														}
+													} else {
+														v.setTheta(_genes[j].getTheta());
+													}
 												}
 											}
 										} else {
@@ -2562,16 +2789,28 @@ public class GeneticCode implements Cloneable, Serializable {
 												x0[i][j] = x1[0][j];
 												y0[i][j] = y1[0][j];
 												if (_genes[j].getStack() == -2) {
-													v.setTheta(_genes[j].getTheta()+((double)_genes[j].getRadial()/((360/_symmetry) + 1))*Math.PI/_symmetry);											
+													if (_genes[j].getChiral() > 0) {
+														v.setTheta(_genes[j].getTheta()+((double)_genes[j].getRadial()/((360/_symmetry) + 1))*Math.PI/_symmetry);
+													} else {
+														v.setTheta(_genes[j].getTheta()-((double)_genes[j].getRadial()/((360/_symmetry) + 1))*Math.PI/_symmetry);
+													}										
 												} else {
-													if (_genes[j].getStack() > 0) {
-														if (_genes[j].getStack() == 1) {
-															v.setTheta(_genes[j].getTheta()-((double)_genes[j].getRadial()/225)*Math.PI/_symmetry);
-														} else {
+													if (_genes[j].getStack() == 2) {
+														if (_genes[j].getChiral() > 0) {
 															v.setTheta(_genes[j].getTheta()+((double)_genes[j].getRadial()/225)*Math.PI/_symmetry);
+														} else {
+															v.setTheta(_genes[j].getTheta()-((double)_genes[j].getRadial()/225)*Math.PI/_symmetry);
 														}
 													} else {
-														v.setTheta(_genes[j].getTheta());
+														if (_genes[j].getStack() == 1) {
+															if (_genes[j].getChiral() > 0) {
+																v.setTheta(_genes[j].getTheta()+((double)_genes[j].getRadial()/135)*Math.PI/_symmetry);
+															} else {
+																v.setTheta(_genes[j].getTheta()-((double)_genes[j].getRadial()/135)*Math.PI/_symmetry);
+															}
+														} else {
+															v.setTheta(_genes[j].getTheta());
+														}
 													}
 												}
 											}

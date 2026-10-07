@@ -627,7 +627,7 @@ public class StatisticsWindow extends JDialog {
 
 		atmosphereGraphPanel.setMinTime(minTime);
 		atmosphereGraphPanel.setMaxTime(maxTime);
-		max = Math.sqrt(Math.sqrt(world.getO2() + world.getCO2() + world.getCO1() + world.getCH4() + world.getDetritus()));
+		max = Math.log10(((world.getO2() + world.getCO2() + world.getCO1() + world.getCH4() + world.getDetritus())/100)+1);
 		oxygenGraph.setMaxAndPoints(max, worldStatistics.getOxygenList());
 		carbonDioxideGraph.setMaxAndPoints(max, worldStatistics.getCarbonDioxideList());
 		carbonMonoxideGraph.setMaxAndPoints(max, worldStatistics.getCarbonMonoxideList());
