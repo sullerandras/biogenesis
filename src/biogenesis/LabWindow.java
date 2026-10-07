@@ -797,24 +797,8 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 		generalPanel.add(base2YLabel, gridBagConstraints);
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 6;
-		generalPanel.add(new JLabel(Messages.getString("T_MODIFIESMAROON"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
-		gridBagConstraints.gridx = 1;
-		gridBagConstraints.gridy = 6;
-		String[] modifiesmaroonValues = {"0","1","2","3","4","5","6","7","8","9"};  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
-		modifiesmaroonCombo = new JComboBox(modifiesmaroonValues);
-		modifiesmaroonCombo.setSelectedItem(Integer.toString(modifiesmaroon));
-		modifiesmaroonCombo.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent evt) {
-				if (evt.getStateChange() == ItemEvent.SELECTED) {
-					modifiesmaroon = Integer.parseInt((String)modifiesmaroonCombo.getSelectedItem());
-				}
-			}
-		});
-		generalPanel.add(modifiesmaroonCombo, gridBagConstraints);
-		gridBagConstraints.gridx = 2;
-		gridBagConstraints.gridy = 6;
 		generalPanel.add(new JLabel(Messages.getString("T_MODIFIESCRIMSON"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
-		gridBagConstraints.gridx = 3;
+		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 6;
 		String[] modifiescrimsonValues = {"0","1","2","3"};  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
 		modifiescrimsonCombo = new JComboBox(modifiescrimsonValues);
@@ -827,6 +811,22 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 			}
 		});
 		generalPanel.add(modifiescrimsonCombo, gridBagConstraints);
+		gridBagConstraints.gridx = 2;
+		gridBagConstraints.gridy = 6;
+		generalPanel.add(new JLabel(Messages.getString("T_MODIFIESMAROON"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$
+		gridBagConstraints.gridx = 3;
+		gridBagConstraints.gridy = 6;
+		String[] modifiesmaroonValues = {"0","1","2","3","4","5","6","7","8","9","10"};  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+		modifiesmaroonCombo = new JComboBox(modifiesmaroonValues);
+		modifiesmaroonCombo.setSelectedItem(Integer.toString(modifiesmaroon));
+		modifiesmaroonCombo.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent evt) {
+				if (evt.getStateChange() == ItemEvent.SELECTED) {
+					modifiesmaroon = Integer.parseInt((String)modifiesmaroonCombo.getSelectedItem());
+				}
+			}
+		});
+		generalPanel.add(modifiesmaroonCombo, gridBagConstraints);
 		gridBagConstraints.gridx = 4;
 		gridBagConstraints.gridy = 6;
 		generalPanel.add(new JLabel(Messages.getString("T_ACTIVITY"),SwingConstants.CENTER), gridBagConstraints); //$NON-NLS-1$

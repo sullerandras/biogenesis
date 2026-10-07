@@ -84,6 +84,10 @@ public final class Utils {
 	 */
 	final static double DEF_INITIAL_DETRITUS = 0;
 	/**
+	 * This is the default amount of N2 that exists in a newly created world.
+	 */
+	final static double DEF_INITIAL_N2 = 56250;
+	/**
 	 * This is the initial size of the organisms vector.
 	 */
 	final static int DEF_ORGANISMS_VECTOR_SIZE = 50;
@@ -217,7 +221,7 @@ public final class Utils {
 	/**
 	 * This is the delay when a dark jade segment regenerates.
 	 */
-	final static int DEF_DARKJADE_DELAY = 4;
+	final static int DEF_DARKJADE_DELAY = 5;
 	/**
 	 * This is the CO2 fail threshold of Hox4 plants.
 	 */
@@ -301,7 +305,7 @@ public final class Utils {
 	/**
 	 * This is the default effectivity for Hox4 boosting plant photosynthesis.
 	 */
-	final static double DEF_HOX4_ENERGY_CONSUMPTION = 0.28125d;
+	final static double DEF_HOX4_ENERGY_CONSUMPTION = 0.28175d;
 	/**
 	 * This is the default energy that is consumed when a spring segment is used.
 	 */
@@ -840,6 +844,10 @@ public final class Utils {
 	 * This is the effective amount of detritus that exists in a newly created world.
 	 */
 	static double INITIAL_DETRITUS = DEF_INITIAL_DETRITUS;
+	/**
+	 * This is the effective amount of N2 that exists in a newly created world.
+	 */
+	static double INITIAL_N2 = DEF_INITIAL_N2;
 	/**
 	 * This is the effective size of the organisms vector.
 	 */
@@ -2078,6 +2086,7 @@ public final class Utils {
 			prefs.putDouble("INITIAL_CO1",INITIAL_CO1); //$NON-NLS-1$
 			prefs.putDouble("INITIAL_CH4",INITIAL_CH4); //$NON-NLS-1$
 			prefs.putDouble("INITIAL_DETRITUS",INITIAL_DETRITUS); //$NON-NLS-1$
+			prefs.putDouble("INITIAL_N2",INITIAL_N2); //$NON-NLS-1$
 			prefs.putInt("ORGANISMS_VECTOR_SIZE",ORGANISMS_VECTOR_SIZE); //$NON-NLS-1$
 			prefs.putInt("WORLD_WIDTH",WORLD_WIDTH); //$NON-NLS-1$
 			prefs.putInt("WORLD_HEIGHT",WORLD_HEIGHT); //$NON-NLS-1$
@@ -2284,6 +2293,7 @@ public final class Utils {
 			INITIAL_CO1 = prefs.getDouble("INITIAL_CO1",DEF_INITIAL_CO1); //$NON-NLS-1$
 			INITIAL_CH4 = prefs.getDouble("INITIAL_CH4",DEF_INITIAL_CH4); //$NON-NLS-1$
 			INITIAL_DETRITUS = prefs.getDouble("INITIAL_DETRITUS",DEF_INITIAL_DETRITUS); //$NON-NLS-1$
+			INITIAL_N2 = prefs.getDouble("INITIAL_N2",DEF_INITIAL_N2); //$NON-NLS-1$
 			ORGANISMS_VECTOR_SIZE = prefs.getInt("ORGANISMS_VECTOR_SIZE",DEF_ORGANISMS_VECTOR_SIZE); //$NON-NLS-1$
 			WORLD_WIDTH = prefs.getInt("WORLD_WIDTH",DEF_WORLD_WIDTH); //$NON-NLS-1$
 			WORLD_HEIGHT = prefs.getInt("WORLD_HEIGHT",DEF_WORLD_HEIGHT); //$NON-NLS-1$

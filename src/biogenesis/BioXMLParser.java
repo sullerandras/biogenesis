@@ -66,7 +66,7 @@ public class BioXMLParser implements ErrorHandler {
 		ps.println("<!ATTLIST genetic_code base2X CDATA #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST genetic_code base2Y CDATA #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST genetic_code activity (0|2|4) #REQUIRED>"); //$NON-NLS-1$
-		ps.println("<!ATTLIST genetic_code modifiesmaroon (0|1|2|3|4|5|6|7|8|9) #REQUIRED>"); //$NON-NLS-1$
+		ps.println("<!ATTLIST genetic_code modifiesmaroon (0|1|2|3|4|5|6|7|8|9|10) #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST genetic_code modifiescream (1|2|3) #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST genetic_code modifiescrimson (0|1|2|3) #REQUIRED>"); //$NON-NLS-1$
 		ps.println("<!ATTLIST genetic_code modifiesfallow (1|2|3|4) #REQUIRED>"); //$NON-NLS-1$
@@ -360,7 +360,7 @@ public class BioXMLParser implements ErrorHandler {
 			} catch (NumberFormatException e) {
 				throw new SAXException("Modifiesmaroon has not an allowed value."); //$NON-NLS-1$
 			}
-			if (modifiesmaroon<0 || modifiesmaroon>9)
+			if (modifiesmaroon<0 || modifiesmaroon>10)
 				throw new SAXException("Modifiesmaroon has not an allowed value."); //$NON-NLS-1$
 			s = geneticCode.getAttribute("modifiescream"); //$NON-NLS-1$
 			try {

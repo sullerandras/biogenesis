@@ -118,6 +118,8 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 	protected StdAction decreaseCH4Action;
 	protected StdAction increaseDetritusAction;
 	protected StdAction decreaseDetritusAction;
+	protected StdAction increaseN2Action;
+	protected StdAction decreaseN2Action;
 	protected StdAction manageConnectionsAction;
 	protected StdAction abortTrackingAction;
 	protected StdAction openGameAction;
@@ -450,6 +452,8 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 		decreaseCH4Action = new DecreaseCH4Action("T_DECREASE_CH4", null, "T_DECREASE_CH4"); //$NON-NLS-1$ //$NON-NLS-2$
 		increaseDetritusAction = new IncreaseDetritusAction("T_INCREASE_DETRITUS", null, "T_INCREASE_DETRITUS"); //$NON-NLS-1$ //$NON-NLS-2$
 		decreaseDetritusAction = new DecreaseDetritusAction("T_DECREASE_DETRITUS", null, "T_DECREASE_DETRITUS"); //$NON-NLS-1$ //$NON-NLS-2$
+		increaseN2Action = new IncreaseN2Action("T_INCREASE_N2", null, "T_INCREASE_N2"); //$NON-NLS-1$ //$NON-NLS-2$
+		decreaseN2Action = new DecreaseN2Action("T_DECREASE_N2", null, "T_DECREASE_N2"); //$NON-NLS-1$ //$NON-NLS-2$
 		killAllAction = new KillAllAction("T_KILL_ALL", null, "T_KILL_ALL_ORGANISMS"); //$NON-NLS-1$ //$NON-NLS-2$
 		disperseAllAction = new DisperseAllAction("T_DISPERSE_ALL", null, "T_DISPERSE_ALL_DEAD_ORGANISMS"); //$NON-NLS-1$ //$NON-NLS-2$
 		parametersAction = new ParametersAction("T_PARAMETERS", null, "T_EDIT_PARAMETERS"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -520,6 +524,8 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 		_menuGlobal.add(new JMenuItem(decreaseCH4Action));
 		_menuGlobal.add(new JMenuItem(increaseDetritusAction));
 		_menuGlobal.add(new JMenuItem(decreaseDetritusAction));
+		_menuGlobal.add(new JMenuItem(increaseN2Action));
+		_menuGlobal.add(new JMenuItem(decreaseN2Action));
 		_menuGlobal.add(new JMenuItem(killAllAction));
 		_menuGlobal.add(new JMenuItem(disperseAllAction));
 		_menuNet = new JMenu(Messages.getString("T_NETWORK")); //$NON-NLS-1$
@@ -875,6 +881,30 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 
 		public void actionPerformed(ActionEvent e) {
 			_world.decreaseDetritus(1000);
+		}
+	}
+	
+	class IncreaseN2Action extends StdAction {
+		private static final long serialVersionUID = 1L;
+
+		public IncreaseN2Action(String text, String icon_path, String desc) {
+			super(text, icon_path, desc);
+		}
+
+		public void actionPerformed(ActionEvent e) {
+			_world.addN2(1000);
+		}
+	}
+
+	class DecreaseN2Action extends StdAction {
+		private static final long serialVersionUID = 1L;
+
+		public DecreaseN2Action(String text, String icon_path, String desc) {
+			super(text, icon_path, desc);
+		}
+
+		public void actionPerformed(ActionEvent e) {
+			_world.decreaseN2(1000);
 		}
 	}
 
@@ -1460,6 +1490,9 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 		statusLabelText.append("      "); //$NON-NLS-1$
 		statusLabelText.append(Messages.getString("T_DETRITUS2")); //$NON-NLS-1$
 		statusLabelText.append(_nf.format(_world.getDetritus()));
+		statusLabelText.append("      "); //$NON-NLS-1$
+		statusLabelText.append(Messages.getString("T_N2")); //$NON-NLS-1$
+		statusLabelText.append(_nf.format(_world.getN2()));
 		if ((VisibleWorld.zoomFactor != 1) || panUpKeyPressed || panLeftKeyPressed || panDownKeyPressed || panRightKeyPressed) {
 		    _statusLabel.setFont(new Font(font.getName(), font.getStyle(), 11));
 			statusLabelText.append("      "); //$NON-NLS-1$
@@ -1759,6 +1792,8 @@ public class MainWindow extends JFrame implements MainWindowInterface {
 		decreaseCH4Action.changeLocale();
 		increaseDetritusAction.changeLocale();
 		decreaseDetritusAction.changeLocale();
+		increaseN2Action.changeLocale();
+		decreaseN2Action.changeLocale();
 		parametersAction.changeLocale();
 		logsAction.changeLocale();
 		labAction.changeLocale();

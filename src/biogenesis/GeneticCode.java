@@ -440,7 +440,7 @@ public class GeneticCode implements Cloneable, Serializable {
 	/**
 	 * Returns the specialization of maroon
 	 * 
-	 * @return  a value of 0 - 9.
+	 * @return  a value of 0 - 10.
 	 */
 	public int getModifiesmaroon() {
 		return _modifiesmaroon;
@@ -926,10 +926,14 @@ public class GeneticCode implements Cloneable, Serializable {
 		_modifiespink =  Utils.random.nextBoolean();
 	}
 	/**
-	 * Gives modifiesmaroon a random value (0 - 9)
+	 * Gives modifiesmaroon a random value (0 - 10)
 	 */
 	private void randomModifiesmaroon() {
-		_modifiesmaroon = Utils.random.nextInt(10);
+		if (Utils.random.nextInt(3) == 0) {
+			_modifiesmaroon = 10;
+		} else {
+			_modifiesmaroon = Utils.random.nextInt(10);
+		}
 	}
 	/**
 	 * Gives modifiescream a random value (1 - 3)

@@ -256,6 +256,10 @@ public class Organism extends Rectangle {
 	 */
 	protected boolean _isaplant;
 	/**
+	 * Indicates if this organism is a hox4 plant
+	 */
+	protected boolean _ishox4;
+	/**
 	 * Indicates if this organism is a consumer
 	 */
 	protected boolean _isaconsumer;
@@ -679,6 +683,14 @@ public class Organism extends Rectangle {
 	 */
 	protected double _energy;
 	/**
+	 * Nitrogen stored by this organism used for growing up
+	 */
+	protected double _N2_Stored = 0;
+	/**
+	 * Maximum amount of nitrogen, that can and needs to be stored
+	 */
+	protected double _N2_Max;
+	/**
 	 * Organism size independent on its position in the world.
 	 * Let p be a point in the organism. Then, p.x + x - _sizeRect.x is the x coordinate
 	 * of p representation in the world.
@@ -788,6 +800,14 @@ public class Organism extends Rectangle {
 	 */
 	public double getEnergy() {
 		return _energy;
+	}
+	/**
+	 * Returns the amount of nitrogen stored by this organism.
+	 *
+	 * @return  The amount of nitrogen stored by this organism.
+	 */
+	public double getNitrogen() {
+		return _N2_Stored;
 	}
 	/**
 	 * Returns the identification number of this organism.
@@ -1625,6 +1645,7 @@ public class Organism extends Rectangle {
 		boolean ispink =false;
 		int alsododgesorspins = 0;
 		_updateEffects = 2;
+		_N2_Max = _geneticCode.getNGenes();
 		if (_geneticCode.getSiblingBattle()) {
 			_siblingbattle =true;
 		}
@@ -1647,16 +1668,24 @@ public class Organism extends Rectangle {
 		_filterfeeding = 0;
 		double photofactor = 0;
 		if (_symmetry == 8) {
-			if ((_geneticCode.getNGenes() != 1) || (((_geneticCode.getHox() == 3) && (_geneticCode.getMirror() == 1)) || (_geneticCode.getHox() == 4))) {
+			if (_geneticCode.getNGenes() != 1) {
 				photofactor = 1961 + Math.round(6000 / ((double)_geneticCode.getNGenes() + 2)) + Math.round(6315 / (double)_symmetry);
 			} else {
-				photofactor = 1961 + 2000 + Math.round(6315 / (double)_symmetry) + Math.round(200 / (double)_symmetry);
+				if (((_geneticCode.getHox() == 3) && (_geneticCode.getMirror() == 1)) || (_geneticCode.getHox() == 4)) {
+					photofactor = 1961 + 1500 + Math.round(6315 / (double)_symmetry) + Math.round(200 / (double)_symmetry);
+				} else {
+					photofactor = 1961 + 2000 + Math.round(6315 / (double)_symmetry) + Math.round(200 / (double)_symmetry);
+				}
 			}
 		} else {
-			if ((_geneticCode.getNGenes() != 1) || ((((_geneticCode.getHox() == 3) && (_geneticCode.getMirror() == 1)) || (_geneticCode.getHox() == 4)) && (_symmetry > 4))) {
+			if (_geneticCode.getNGenes() != 1) {
 				photofactor = 1961.329 + Math.round(6000 / ((double)_geneticCode.getNGenes() + 2)) + Math.round(6315 / (double)_symmetry);
 			} else {
-				photofactor = 1961.329 + 2000 + Math.round(6315 / (double)_symmetry) + Math.round(200 / (double)_symmetry);
+				if ((((_geneticCode.getHox() == 3) && (_geneticCode.getMirror() == 1)) || (_geneticCode.getHox() == 4)) && (_symmetry > 4)) {
+					photofactor = 1961.329 + 1500 + Math.round(6315 / (double)_symmetry) + Math.round(200 / (double)_symmetry);
+				} else {
+					photofactor = 1961.329 + 2000 + Math.round(6315 / (double)_symmetry) + Math.round(200 / (double)_symmetry);
+				}
 			}
 		}
 		double photomultiplier = (photofactor * 0.0006) / Utils.GREEN_OBTAINED_ENERGY_DIVISOR;
@@ -2406,8 +2435,9 @@ public class Organism extends Rectangle {
 		if ((_isaplant) && (createall) && ((_symmetry <= 7) || (_geneticCode.getHox() == 4)) && (_isonlyivy <= 0)) {
         	if (_symmetry >= 6) {
         		if (_geneticCode.getHox() == 4) {
+        			_ishox4 = true;
         			if (_symmetry == 8) {
-        				_lowersymmetric = Utils.HOX4_THRESHOLD;
+        				_lowersymmetric = Utils.HOX4_THRESHOLD + 50;
         			} else {
         				if (_symmetry == 7) {
 	        				_lowersymmetric = Utils.HOX4_THRESHOLD + 100;
@@ -2421,6 +2451,7 @@ public class Organism extends Rectangle {
 			} else {
 				if (_symmetry >= 4) {
 					if (_geneticCode.getHox() == 4) {
+						_ishox4 = true;
 						if (_symmetry == 5) {
 	        				_lowersymmetric = Utils.HOX4_THRESHOLD + 100;
 	        			} else {
@@ -2432,6 +2463,7 @@ public class Organism extends Rectangle {
 				} else {
 					if (_symmetry >= 2) {
 						if (_geneticCode.getHox() == 4) {
+							_ishox4 = true;
 		        			if (_symmetry == 3) {
 		        				_lowersymmetric = Utils.HOX4_THRESHOLD + 200;
 		        			} else {
@@ -2689,8 +2721,8 @@ public class Organism extends Rectangle {
 			}
 		if ((_isaplant) && (_isplankton == 0) && (_blackversion >= -1) && (_symmetry > 1)) {
 			double hoxfactor = 0;
-			double hoxdivisor = 0.7875;
-			int hoxaddition = 0;
+			double hoxdivisor = 0.787;
+			boolean hoxaddition = false;
 			boolean lowerboost = false;
 			int sequence = 0;
     		for (int j = 0; j < _geneticCode.getNGenes(); j++) {
@@ -2718,10 +2750,10 @@ public class Organism extends Rectangle {
     					if (_segColor[j].equals(Utils.ColorBARK)) {
     						hoxdivisor += 0.375;
     					} else {
-    						hoxdivisor += 0.2125;
+    						hoxdivisor += 0.213;
     					}
     					if ((j>0) && (_geneticCode.getGene(j).getFold() > 0) && (_symmetry > 2)) {
-    						hoxaddition = 2;
+    						hoxdivisor += 0.0125;
     					}
         				if (((j==0) && (_geneticCode.getGene(j).getStack() == 0)) || (_geneticCode.getGene(j).getStack() == -1)) {
         					if ((j==0) || (_geneticCode.getGene(j).getFold() >= (_symmetry - 2))) {
@@ -2776,22 +2808,31 @@ public class Organism extends Rectangle {
         				}
     					break;
     				case WHITE:
-    					lowerboost = true;
-    					_lowersymmetric += (int)(10 * ((double)_geneticCode.getGene(j).getLength() - 2));
-    					break;
     				case PLAGUE:
     				case CORAL:
-    				case FALLOW:
     				case VIOLET:
+    					lowerboost = true;
+    					_lowersymmetric += (int)(10 * ((double)_geneticCode.getGene(j).getLength() - 2));
+    					if (_symmetry > 2) {
+    						hoxdivisor += 0.0125;
+    					}
+    					break;
+    				case FALLOW:
     				case OCHRE:
     				case OLIVE:
     				case SKY:
     					_lowersymmetric += (int)(10 * ((double)_geneticCode.getGene(j).getLength() - 2));
+    					if (_symmetry > 2) {
+    						hoxdivisor += 0.0125;
+    					}
     					break;
     				case GRAY:
     				case LILAC:
     				case SPIKE:
     					_lowersymmetric += (int)(10 * ((double)_geneticCode.getGene(j).getLength() - 2));
+    					if (_symmetry > 2) {
+    						hoxdivisor += 0.0125;
+    					}
     					break;
     				default:
     					break;
@@ -2811,19 +2852,17 @@ public class Organism extends Rectangle {
         				case PURPLE:       					
     					    sequence = 1;
     					    if ((_geneticCode.getGene(j).getBranch() == 0)) {
-    					    	if (hoxaddition == 0) {
-            						hoxaddition = 1;
-    					    	}
+            					hoxaddition = true;
         					}
     					    break;
         				case WHITE:
+        				case PLAGUE:
+        				case CORAL:
+        				case VIOLET:
         					lowerboost = true;
         					_lowersymmetric += (int)(10 * ((double)_geneticCode.getGene(j).getLength() - 2));
         					break;
-        				case PLAGUE:
-        				case CORAL:
         				case FALLOW:
-        				case VIOLET:
         				case OCHRE:
         				case OLIVE:
         				case SKY:
@@ -2840,13 +2879,13 @@ public class Organism extends Rectangle {
     				} else {
     					switch (getTypeColor(_segColor[j])) {
     					case WHITE:
+    					case PLAGUE:
+        				case CORAL:
+        				case VIOLET:
     						lowerboost = true;
         					_lowersymmetric += (int)(10 * ((double)_geneticCode.getGene(j).getLength() - 2));
         					break;
-        				case PLAGUE:
-        				case CORAL:
         				case FALLOW:
-        				case VIOLET:
         				case OCHRE:
         				case OLIVE:
         				case SKY:
@@ -2864,10 +2903,11 @@ public class Organism extends Rectangle {
     			}
     		}
     		if ((sequence > 0) && (hoxfactor > 0)) {
+    			_timeToReproduceMax += _segments;
     			int g,h,segment=0;
     			sequence = _segments / _symmetry;
-    			if (hoxaddition > 0) {
-    				hoxdivisor += hoxaddition * 0.0075;
+    			if (hoxaddition) {
+    				hoxdivisor += 0.002;
     			}
     			hoxfactor = ((hoxfactor/(double)(_symmetry-1)) / hoxdivisor);
     			if ((!_isaconsumer) && (!_isafungus) && (!_isakiller)) {
@@ -2910,13 +2950,8 @@ public class Organism extends Rectangle {
 								if ((_segColor[segment].equals(Utils.ColorBARK)) || (_segColor[segment].equals(Utils.ColorIVY))) {
 		    	            	} else {
 		    	            		_mphoto[segment] = hoxfactor * _mphoto[segment];
-		    	            		_timeToReproduceMax += 1;
 		    	            	}
 							}
-	    				} else {
-	    					if (_segColor[segment].equals(Utils.ColorBLOND)) {
-	    						_timeToReproduceMax += 1;
-	    					}
 	    				}
 					}
     			}
@@ -3228,7 +3263,7 @@ public class Organism extends Rectangle {
 				if ((_reproducelate - (3 * _symmetry)) > 0) {
 					_reproduceEnergy = (40 + 3 * _segments) + _reproducelate - (3 * _symmetry);
 				}
-				if (_age == 0) {
+				if ((_age == 0) && (_sporeversion != 6)) {
 					_timeToReproduceMax = 14;
 				}
 			}
@@ -3523,8 +3558,8 @@ public class Organism extends Rectangle {
     			if ((_geneticCode.getGene(j).getBranch() != 0) || (j==0)) {
     				if (j==0) {
     					if (_geneticCode.getHox() == 4) {
-    						if ((_symmetry > 1) && (_geneticCode.getNGenes() > 3)) {
-    							_timeToReproduceMax += 6 - ((5 * _geneticCode.getNGenes()) - 15);
+    						if ((_symmetry > 1) && (_geneticCode.getNGenes() > 2)) {
+    							_timeToReproduceMax += 6 - ((4 * _geneticCode.getNGenes()) - 11);
     						} else {
     							_timeToReproduceMax += 6;
     						}
@@ -3582,7 +3617,7 @@ public class Organism extends Rectangle {
         								if ((_symmetry >= 4) && (_geneticCode.getGene(0).getFold() <= 0)) {
         									_timeToReproduceMax += 6;
         								} else {
-        									if ((useBreathing(3.33)) || (useBreathing(_energy))) {
+        									if ((useBreathing(3.5)) || (useBreathing(_energy))) {
             									_timeToReproduceMax += 6;
             								}
         								}
@@ -3596,7 +3631,7 @@ public class Organism extends Rectangle {
         	        								if ((_symmetry >= 4) && (_geneticCode.getGene(0).getFold() <= 0)) {
         	        									_timeToReproduceMax += 6;
         	        								} else {
-        	        									if ((useBreathing(3.33)) || (useBreathing(_energy))) {
+        	        									if ((useBreathing(3.5)) || (useBreathing(_energy))) {
         	            									_timeToReproduceMax += 6;
         	            								}
         	        								}
@@ -3609,7 +3644,7 @@ public class Organism extends Rectangle {
         	        								if ((_symmetry >= 4) && (_geneticCode.getGene(0).getFold() <= 0)) {
         	        									_timeToReproduceMax += 6;
         	        								} else {
-        	        									if ((useBreathing(3.33)) || (useBreathing(_energy))) {
+        	        									if ((useBreathing(3.5)) || (useBreathing(_energy))) {
         	            									_timeToReproduceMax += 6;
         	            								}
         	        								}
@@ -3934,7 +3969,7 @@ public class Organism extends Rectangle {
                        			symmetric();
                        		}
                     	}
-    				} else if ((_sporeversion == 6) && ((!_issilver) || ((!_isaconsumer) && (!_isafungus)) || (useBreathing(2)) || (useBreathing(_energy)))) {
+    				} else if (_sporeversion == 6) {
     					if ((parent._sporeversion == 6) && (inheritGeneticCode == parent._geneticCode)) {
     						boolean largeenough = false;
     						_usepretoucheffects = false;
@@ -4341,8 +4376,8 @@ public class Organism extends Rectangle {
         			if ((_geneticCode.getGene(j).getBranch() != 0) || (j==0)) {
         				if (j==0) {
         					if (_geneticCode.getHox() == 4) {
-        						if ((_symmetry > 1) && (_geneticCode.getNGenes() > 3)) {
-        							_timeToReproduceMax += 6 - ((5 * _geneticCode.getNGenes()) - 15);
+        						if ((_symmetry > 1) && (_geneticCode.getNGenes() > 2)) {
+        							_timeToReproduceMax += 6 - ((4 * _geneticCode.getNGenes()) - 11);
         						} else {
         							_timeToReproduceMax += 6;
         						}
@@ -4400,7 +4435,7 @@ public class Organism extends Rectangle {
             								if ((_symmetry >= 4) && (_geneticCode.getGene(0).getFold() <= 0)) {
 	        									_timeToReproduceMax += 6;
 	        								} else {
-	        									if ((useBreathing(3.33)) || (useBreathing(_energy))) {
+	        									if ((useBreathing(3.5)) || (useBreathing(_energy))) {
 	            									_timeToReproduceMax += 6;
 	            								}
 	        								}
@@ -4414,7 +4449,7 @@ public class Organism extends Rectangle {
             	        								if ((_symmetry >= 4) && (_geneticCode.getGene(0).getFold() <= 0)) {
             	        									_timeToReproduceMax += 6;
             	        								} else {
-            	        									if ((useBreathing(3.33)) || (useBreathing(_energy))) {
+            	        									if ((useBreathing(3.5)) || (useBreathing(_energy))) {
             	            									_timeToReproduceMax += 6;
             	            								}
             	        								}
@@ -4427,7 +4462,7 @@ public class Organism extends Rectangle {
             	        								if ((_symmetry >= 4) && (_geneticCode.getGene(0).getFold() <= 0)) {
             	        									_timeToReproduceMax += 6;
             	        								} else {
-            	        									if ((useBreathing(3.33)) || (useBreathing(_energy))) {
+            	        									if ((useBreathing(3.5)) || (useBreathing(_energy))) {
             	            									_timeToReproduceMax += 6;
             	            								}
             	        								}
@@ -5090,8 +5125,8 @@ public class Organism extends Rectangle {
         			if ((_geneticCode.getGene(j).getBranch() != 0) || (j==0)) {
         				if (j==0) {
         					if (_geneticCode.getHox() == 4) {
-        						if ((_symmetry > 1) && (_geneticCode.getNGenes() > 3)) {
-        							_timeToReproduceMax += 6 - ((5 * _geneticCode.getNGenes()) - 15);
+        						if ((_symmetry > 1) && (_geneticCode.getNGenes() > 2)) {
+        							_timeToReproduceMax += 6 - ((4 * _geneticCode.getNGenes()) - 11);
         						} else {
         							_timeToReproduceMax += 6;
         						}
@@ -7199,8 +7234,8 @@ public class Organism extends Rectangle {
         			if ((_geneticCode.getGene(j).getBranch() != 0) || (j==0)) {
         				if (j==0) {
         					if (_geneticCode.getHox() == 4) {
-        						if ((_symmetry > 1) && (_geneticCode.getNGenes() > 3)) {
-        							_timeToReproduceMax += 6 - ((5 * _geneticCode.getNGenes()) - 15);
+        						if ((_symmetry > 1) && (_geneticCode.getNGenes() > 2)) {
+        							_timeToReproduceMax += 6 - ((4 * _geneticCode.getNGenes()) - 11);
         						} else {
         							_timeToReproduceMax += 6;
         						}
@@ -7627,18 +7662,64 @@ public class Organism extends Rectangle {
 	private void grow() {
 		if ((_growthRatio > 1) && (_energy >= _mass/10)) {
 			if (((active) || (_growthRatio == 16)) && ((_age & 0x07) == 0x07)) {
-				_growthRatio--;
-				double m = _mass;
-				double I = _I;
-				symmetric();
-				// Cynetic energy is constant. If mass changes, speed must also change.
-				m = Math.sqrt(m/_mass);
-				dx *= m;
-				dy *= m;
-				dtheta *= Math.sqrt(I/_I);
-				hasGrown = 1;
-				if (_sporeversion < -1) {
-					_sporeversion = -1;
+				if (_N2_Stored >= _N2_Max ) {
+					// Grow
+					_growthRatio--;
+					double m = _mass;
+					double I = _I;
+					symmetric();
+					// Cynetic energy is constant. If mass changes, speed must also change.
+					m = Math.sqrt(m/_mass);
+					dx *= m;
+					dy *= m;
+					dtheta *= Math.sqrt(I/_I);
+					hasGrown = 1;
+					if (_sporeversion < -1) {
+						_sporeversion = -1;
+					}
+				} else {
+					if (_isinfectious) {
+						_N2_Stored += _world.nitrogenfixation(0.0001);
+					} else {
+						_N2_Stored += _world.nitrogenfixation(0.0002);
+					}
+					if (_N2_Stored > _N2_Max ) {
+						useNitrogen(_N2_Stored - _N2_Max);
+						// Grow
+						_growthRatio--;
+						double m = _mass;
+						double I = _I;
+						symmetric();
+						// Cynetic energy is constant. If mass changes, speed must also change.
+						m = Math.sqrt(m/_mass);
+						dx *= m;
+						dy *= m;
+						dtheta *= Math.sqrt(I/_I);
+						hasGrown = 1;
+						if (_sporeversion < -1) {
+							_sporeversion = -1;
+						}						
+					} else {
+						if (_N2_Stored >= (_N2_Max / ((double)_growthRatio - 1d))) {
+							// Grow
+							_growthRatio--;
+							double m = _mass;
+							double I = _I;
+							symmetric();
+							// Cynetic energy is constant. If mass changes, speed must also change.
+							m = Math.sqrt(m/_mass);
+							dx *= m;
+							dy *= m;
+							dtheta *= Math.sqrt(I/_I);
+							hasGrown = 1;
+							if (_sporeversion < -1) {
+								_sporeversion = -1;
+							}
+						} else {
+							hasGrown = 0;
+						}
+					}
+					
 				}
 			} else {
 				hasGrown = 0;
@@ -7898,6 +7979,7 @@ public class Organism extends Rectangle {
 				if (_isblond) {
 				    if (useblondcosts) {
 					    useblondcosts =false;
+					    useNitrogen(0.5 * _N2_Stored);
 					    if (_reproducelate > 0) {
 					    	useDetritus(Math.min(_energy, Utils.BLOND_ENERGY_CONSUMPTION));
 					    } else {
@@ -7914,6 +7996,7 @@ public class Organism extends Rectangle {
 				if (_isblond) {
 				    if (useblondcosts) {
 					    useblondcosts =false;
+					    useNitrogen(0.5 * _N2_Stored);
 					    if (_reproducelate > 0) {
 					    	useDetritus(Math.min(_energy, 0.5 * Utils.BLOND_ENERGY_CONSUMPTION));
 					    } else {
@@ -8727,7 +8810,7 @@ public class Organism extends Rectangle {
 												reproduceEarly();
 											}
 										} else {
-											if (_growthRatio<16) {
+											if (_growthRatio<14) {
 												reproduceEarly();
 											}
 										}
@@ -8961,6 +9044,22 @@ public class Organism extends Rectangle {
 		return true;
 	}
 	/**
+	 * Organisms release nitrogen at death
+	 *
+	 * @param q  The quantity of nitrogen to spend.
+	 * @return  true if the organism has enough nitrogen stored, false otherwise.
+	 */
+	public boolean useNitrogen(double q) {
+		if (_N2_Stored < q) {
+			return false;
+		}
+		double nitrogenrelease = _world.nitrogenrelease(q);
+		_N2_Stored -= nitrogenrelease;
+		if (nitrogenrelease < q)
+			return false;
+		return true;
+	}
+	/**
 	 * Realize the respiration process to maintain its structure.
 	 * Aging is applied here too.
 	 */
@@ -8975,14 +9074,10 @@ public class Organism extends Rectangle {
 					if ((_energy > (_reproduceEnergy/2)) && (_growthRatio==1)) {
 						if ((_isaconsumer) || (_isafungus) || (_isaplant) || (_transfersenergy)) {
 							if ((_age >> 8) > _max_age) {
-								if (_isplankton > 0 ) {
-									_reproduceEnergy = (int)(1.333 * _energy);
+								if (_symmetry == 8) {
+									_reproduceEnergy = (int)(1.67 * _energy);
 								} else {
-									if (_symmetry == 8) {
-										_reproduceEnergy = (int)(1.5 * _energy);
-									} else {
-										_reproduceEnergy = (int)(1.333 * _energy);
-									}
+									_reproduceEnergy = (int)(1.5 * _energy);
 								}
 								reproduceatDeath();
 								_reproduceEnergy = (40 + 3 * _segments);
@@ -9038,6 +9133,7 @@ public class Organism extends Rectangle {
 				if (_energy <= Utils.tol) {
 					active = false;
 					alive = false;
+					useNitrogen(_N2_Stored);
 					_world.decreasePopulation();
 					_world.organismHasDied(this, null);
 				}
@@ -9061,6 +9157,7 @@ public class Organism extends Rectangle {
 				} else {
 					if (_energy <= Utils.tol) {
 						alive = false;
+						useNitrogen(_N2_Stored);
 						_world.decreasePopulation();
 						_world.organismHasDied(this, null);
 					} else {
@@ -9086,6 +9183,7 @@ public class Organism extends Rectangle {
 				} else {
 					if (_energy <= Utils.tol) {
 						alive = false;
+						useNitrogen(_N2_Stored);
 						_world.decreasePopulation();
 						_world.organismHasDied(this, null);
 					}
@@ -9100,6 +9198,7 @@ public class Organism extends Rectangle {
 				} else {
 					if (_energy <= Utils.tol) {
 						alive = false;
+						useNitrogen(_N2_Stored);
 						_world.decreasePopulation();
 						_world.organismHasDied(this, null);
 					} else {
@@ -9147,6 +9246,7 @@ public class Organism extends Rectangle {
 					} else {
 						if (_energy <= Utils.tol) {
 							alive = false;
+							useNitrogen(_N2_Stored);
 							_world.decreasePopulation();
 							_world.organismHasDied(this, null);
 						} else {
@@ -9157,38 +9257,41 @@ public class Organism extends Rectangle {
 									_nVirusChildren = 0;
 									if (_energy <= Utils.tol) {
 										alive = false;
+										useNitrogen(_N2_Stored);
 										_world.decreasePopulation();
 										_world.organismHasDied(this, null);
 									}
 								} else {
 									if (_timeToReproduce <= _timeToReproduceMax) {
-										if (useEnergy(Utils.SPORE_ENERGY_CONSUMPTION)) {
-											for (int j = 0; j < _segments; j++) {
-												_segColor[j] = getGeneticCode().getGene(j%getGeneticCode().getNGenes()).getColor();
-											    _mphoto[j] = 0;
+										if ((!_issilver) || ((!_isaconsumer) && (!_isafungus)) || (useBreathing(3)) || (useBreathing(_energy))) {
+											if (useEnergy(Utils.SPORE_ENERGY_CONSUMPTION)) {
+												for (int j = 0; j < _segments; j++) {
+													_segColor[j] = getGeneticCode().getGene(j%getGeneticCode().getNGenes()).getColor();
+												    _mphoto[j] = 0;
+												}
+												_photosynthesis = 0;
+												_methanotrophy = 0;
+												_filterfeeding = 0;
+												_leafphoto = 0;
+												_forestphoto = 0;
+												_framesColor = 0;
+												_isonlyc4 = 0;
+												_isaplant = false;
+												if (_jadefactor > 0) {
+													_jadefactor = 1;
+												}
+												_isfrozen =false;
+												_isinjured =false;
+												_allfrozen =false;
+												active = true;
+												hasMoved = true;
+												_gold = 0;
+												_age = 1;
+												segmentsCreateEffects(true);
+												if (_haseyes) {
+					                       			symmetric();
+					                       		}
 											}
-											_photosynthesis = 0;
-											_methanotrophy = 0;
-											_filterfeeding = 0;
-											_leafphoto = 0;
-											_forestphoto = 0;
-											_framesColor = 0;
-											_isonlyc4 = 0;
-											_isaplant = false;
-											if (_jadefactor > 0) {
-												_jadefactor = 1;
-											}
-											_isfrozen =false;
-											_isinjured =false;
-											_allfrozen =false;
-											active = true;
-											hasMoved = true;
-											_gold = 0;
-											_age = 1;
-											segmentsCreateEffects(true);
-											if (_haseyes) {
-				                       			symmetric();
-				                       		}
 										}
 									} else {
 										_timeToReproduce--;
@@ -9249,6 +9352,7 @@ public class Organism extends Rectangle {
 				if ((!_isinjured) || useDecayEnergy(Math.min(0.001, _energy))) {
 					if (_energy <= Utils.tol) {
 						alive = false;
+						useNitrogen(_N2_Stored);
 						_world.decreasePopulation();
 						_world.organismHasDied(this, null);
 					} else {
@@ -9291,6 +9395,7 @@ public class Organism extends Rectangle {
 					} else {
 						if (_energy <= Utils.tol) {
 							alive = false;
+							useNitrogen(_N2_Stored);
 							_world.decreasePopulation();
 							_world.organismHasDied(this, null);
 						} else {
@@ -9329,6 +9434,7 @@ public class Organism extends Rectangle {
 				if ((!_isinjured) || useDecayEnergy(Math.min(0.001, _energy))) {
 					if (_energy <= Utils.tol) {
 						alive = false;
+						useNitrogen(_N2_Stored);
 						_world.decreasePopulation();
 						_world.organismHasDied(this, null);
 					} else {
@@ -9350,6 +9456,9 @@ public class Organism extends Rectangle {
 		} else {
 			// The corpse slowly decays
 			useDecayEnergy(Math.min(_energy, Utils.DECAY_ENERGY));
+			if (_energy <= Utils.tol) {
+				useNitrogen(_N2_Stored);
+			}
 		}
 	}
 	/**
@@ -9466,6 +9575,7 @@ public class Organism extends Rectangle {
 			useEnergy(Math.min(0.01, _energy));
 			if (_energy <= Utils.tol) {
 				alive = false;
+				useNitrogen(_N2_Stored);
 				_world.decreasePopulation();
 				_world.organismHasDied(this, null);
 			}
@@ -9799,6 +9909,9 @@ public class Organism extends Rectangle {
 				_segColor[i] = Utils.ColorBROWN;
 				_mphoto[i] = 0;
 			}
+		}
+		if (_energy <= Utils.tol) {
+			useNitrogen(_N2_Stored);
 		}
 		_world.decreasePopulation();
 		if (killingOrganism != null)
@@ -14603,6 +14716,11 @@ public class Organism extends Rectangle {
 		}
 		// Check if the other organism has died
 		if (org.alive && org._energy < Utils.tol) {
+			_N2_Stored += 0.5 * org._N2_Stored;
+			org._N2_Stored -= 0.5 * org._N2_Stored;
+			if (_N2_Stored > _N2_Max ) {
+				useNitrogen(_N2_Stored - _N2_Max);
+			}
 			org.die(this);
 			// candodge is used here to make Crimson piercing stop later
 			_candodge =true;
@@ -14882,6 +15000,11 @@ public class Organism extends Rectangle {
 		}
 		// Check if the other organism has died
 		if (org.alive && org._energy < Utils.tol) {
+			_N2_Stored += 0.5 * org._N2_Stored;
+			org._N2_Stored -= 0.5 * org._N2_Stored;
+			if (_N2_Stored > _N2_Max ) {
+				useNitrogen(_N2_Stored - _N2_Max);
+			}
 			org.die(this);
 		}
 	}
@@ -16236,6 +16359,13 @@ public class Organism extends Rectangle {
 				_energy += takenEnergyFire;
 				takenEnergyFire = takenEnergyFire * Utils.ORGANIC_SUBS_PRODUCED;
 				useDetritus(takenEnergyFire);
+				if (!org.alive && org._energy < Utils.tol) {
+					_N2_Stored += 0.5 * org._N2_Stored;
+					org._N2_Stored -= 0.5 * org._N2_Stored;
+					if (_N2_Stored > _N2_Max ) {
+						useNitrogen(_N2_Stored - _N2_Max);
+					}
+				}
 			}
 			break;
 		case RED:
@@ -16752,6 +16882,13 @@ public class Organism extends Rectangle {
 				_energy += takenEnergyPink;
 				takenEnergyPink = takenEnergyPink * Utils.ORGANIC_SUBS_PRODUCED;
 				useDecayEnergy(takenEnergyPink);
+				if (!org.alive && org._energy < Utils.tol) {
+					_N2_Stored += 0.5 * org._N2_Stored;
+					org._N2_Stored -= 0.5 * org._N2_Stored;
+					if (_N2_Stored > _N2_Max ) {
+						useNitrogen(_N2_Stored - _N2_Max);
+					}
+				}
 			}
 			break;
 		case MAROON:
@@ -16770,13 +16907,21 @@ public class Organism extends Rectangle {
 			case ICE:
 				if (org._isaplant) {
 					// Get energy depending on segment length
-					if (_maroonversion == org._symmetry) {
-						takenEnergyMaroon = Utils.between((3 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
-					} else {
-						if (_maroonversion == 0) {
-							takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+					if (_maroonversion == 10) {
+						if (org._ishox4) {
+							takenEnergyMaroon = Utils.between((2 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
 						} else {
-							takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+							takenEnergyMaroon = Utils.between((0.9 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+						}
+					} else {
+						if (_maroonversion == org._symmetry) {
+							takenEnergyMaroon = Utils.between((3 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+						} else {
+							if (_maroonversion == 0) {
+								takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+							} else {
+								takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+							}
 						}
 					}
 				    // The other organism will be shown in yellow
@@ -16791,13 +16936,21 @@ public class Organism extends Rectangle {
 					setColor(Utils.ColorMAROON);
 				} else {
 					// Get energy depending on segment length
-					if (_maroonversion == org._symmetry) {
-						takenEnergyMaroon = Utils.between((0.5 * (3 + _m[seg])) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
-					} else {
-						if (_maroonversion == 0) {
-							takenEnergyMaroon = Utils.between((0.5 * (1 + _m[seg])) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+					if (_maroonversion == 10) {
+						if (org._ishox4) {
+							takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
 						} else {
-							takenEnergyMaroon = Utils.between((0.5 * (_m[seg])) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+							takenEnergyMaroon = Utils.between((0.45 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+						}
+					} else {
+						if (_maroonversion == org._symmetry) {
+							takenEnergyMaroon = Utils.between((0.5 * (3 + _m[seg])) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+						} else {
+							if (_maroonversion == 0) {
+								takenEnergyMaroon = Utils.between((0.5 * (1 + _m[seg])) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+							} else {
+								takenEnergyMaroon = Utils.between((0.5 * (_m[seg])) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+							}
 						}
 					}
 					// The other organism will be shown in green brown
@@ -16814,40 +16967,64 @@ public class Organism extends Rectangle {
 					if (org._modifiesleaf) {
 						if (org._framesColor > 0) {
 							// Get energy depending on segment length
-							if (_maroonversion == org._symmetry) {
-								takenEnergyMaroon = Utils.between((3 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
-							} else {
-								if (_maroonversion == 0) {
-									takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+							if (_maroonversion == 10) {
+								if (org._ishox4) {
+									takenEnergyMaroon = Utils.between((2 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
 								} else {
-									takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+									takenEnergyMaroon = Utils.between((0.9 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+								}
+							} else {
+								if (_maroonversion == org._symmetry) {
+									takenEnergyMaroon = Utils.between((3 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+								} else {
+									if (_maroonversion == 0) {
+										takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+									} else {
+										takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+									}
 								}
 							}
 						    // The other organism will be shown in yellow
 						    org.setColor(Color.YELLOW);
 						} else {
-							if ((org._framesColor < 0) || (org._geneticCode.getHox() == 4)) {
+							if ((org._framesColor < 0) || (org._ishox4)) {
 								// Get energy depending on segment length
-								if (_maroonversion == org._symmetry) {
-									takenEnergyMaroon = Utils.between((0.02 * (3 + _m[seg])) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
-								} else {
-									if (_maroonversion == 0) {
-										takenEnergyMaroon = Utils.between((0.02 * (1 + _m[seg])) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+								if (_maroonversion == 10) {
+									if (org._ishox4) {
+										takenEnergyMaroon = Utils.between((0.04 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
 									} else {
-										takenEnergyMaroon = Utils.between((0.02 * (_m[seg])) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+										takenEnergyMaroon = Utils.between((0.018 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+									}
+								} else {
+									if (_maroonversion == org._symmetry) {
+										takenEnergyMaroon = Utils.between((0.02 * (3 + _m[seg])) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+									} else {
+										if (_maroonversion == 0) {
+											takenEnergyMaroon = Utils.between((0.02 * (1 + _m[seg])) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+										} else {
+											takenEnergyMaroon = Utils.between((0.02 * (_m[seg])) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+										}
 									}
 								}
 								// The other organism will be shown in broken
 								org.setColor(Utils.ColorBROKEN);
 							} else {
 								// Get energy depending on segment length
-								if (_maroonversion == org._symmetry) {
-									takenEnergyMaroon = Utils.between((0.02 * (3 + _m[seg])) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
-								} else {
-									if (_maroonversion == 0) {
-										takenEnergyMaroon = Utils.between((0.02 * (1 + _m[seg])) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+								if (_maroonversion == 10) {
+									if (org._ishox4) {
+										takenEnergyMaroon = Utils.between((0.04 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
 									} else {
-										takenEnergyMaroon = Utils.between((0.02 * (_m[seg])) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+										takenEnergyMaroon = Utils.between((0.018 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+									}
+								} else {
+									if (_maroonversion == org._symmetry) {
+										takenEnergyMaroon = Utils.between((0.02 * (3 + _m[seg])) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+									} else {
+										if (_maroonversion == 0) {
+											takenEnergyMaroon = Utils.between((0.02 * (1 + _m[seg])) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+										} else {
+											takenEnergyMaroon = Utils.between((0.02 * (_m[seg])) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+										}
 									}
 								}
 								// The other organism will be shown in dark olive
@@ -16856,13 +17033,21 @@ public class Organism extends Rectangle {
 						}
 					} else {
 						// Get energy depending on segment length
-						if (_maroonversion == org._symmetry) {
-							takenEnergyMaroon = Utils.between((3 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
-						} else {
-							if (_maroonversion == 0) {
-								takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+						if (_maroonversion == 10) {
+							if (org._ishox4) {
+								takenEnergyMaroon = Utils.between((2 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
 							} else {
-								takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+								takenEnergyMaroon = Utils.between((0.9 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+							}
+						} else {
+							if (_maroonversion == org._symmetry) {
+								takenEnergyMaroon = Utils.between((3 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+							} else {
+								if (_maroonversion == 0) {
+									takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+								} else {
+									takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+								}
 							}
 						}
 					    // The other organism will be shown in yellow
@@ -16878,13 +17063,21 @@ public class Organism extends Rectangle {
 					setColor(Utils.ColorMAROON);
 				} else {
 					// Get energy depending on segment length
-					if (_maroonversion == org._symmetry) {
-						takenEnergyMaroon = Utils.between((3 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
-					} else {
-						if (_maroonversion == 0) {
-							takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+					if (_maroonversion == 10) {
+						if (org._ishox4) {
+							takenEnergyMaroon = Utils.between((2 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
 						} else {
-							takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+							takenEnergyMaroon = Utils.between((0.9 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+						}
+					} else {
+						if (_maroonversion == org._symmetry) {
+							takenEnergyMaroon = Utils.between((3 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+						} else {
+							if (_maroonversion == 0) {
+								takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+							} else {
+								takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+							}
 						}
 					}
 				    // The other organism will be shown in yellow
@@ -16909,13 +17102,21 @@ public class Organism extends Rectangle {
 					setColor(Utils.ColorMAROON);
 				} else {
 					// Get energy depending on segment length
-					if (_maroonversion == org._symmetry) {
-						takenEnergyMaroon = Utils.between((3 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
-					} else {
-						if (_maroonversion == 0) {
-							takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+					if (_maroonversion == 10) {
+						if (org._ishox4) {
+							takenEnergyMaroon = Utils.between((2 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
 						} else {
-							takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+							takenEnergyMaroon = Utils.between((0.9 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+						}
+					} else {
+						if (_maroonversion == org._symmetry) {
+							takenEnergyMaroon = Utils.between((3 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+						} else {
+							if (_maroonversion == 0) {
+								takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+							} else {
+								takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+							}
 						}
 					}
 				    // The other organism will be shown in yellow
@@ -16926,13 +17127,21 @@ public class Organism extends Rectangle {
 				break;
 			case IVY:
 				// Get energy depending on segment length
-				if (_maroonversion == org._symmetry) {
-					takenEnergyMaroon = Utils.between((3 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
-				} else {
-					if (_maroonversion == 0) {
-						takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+				if (_maroonversion == 10) {
+					if (org._ishox4) {
+						takenEnergyMaroon = Utils.between((2 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
 					} else {
-						takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+						takenEnergyMaroon = Utils.between((0.9 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+					}
+				} else {
+					if (_maroonversion == org._symmetry) {
+						takenEnergyMaroon = Utils.between((3 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+					} else {
+						if (_maroonversion == 0) {
+							takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+						} else {
+							takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+						}
 					}
 				}
 			    // The other organism will be shown in yellow
@@ -16956,13 +17165,21 @@ public class Organism extends Rectangle {
 				    } else {
 						// Doesn't have energy to use the shield
 				    	// Get energy depending on segment length
-				    	if (_maroonversion == org._symmetry) {
-							takenEnergyMaroon = Utils.between((3 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
-						} else {
-							if (_maroonversion == 0) {
-								takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+				    	if (_maroonversion == 10) {
+							if (org._ishox4) {
+								takenEnergyMaroon = Utils.between((2 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
 							} else {
-								takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+								takenEnergyMaroon = Utils.between((0.9 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+							}
+						} else {
+							if (_maroonversion == org._symmetry) {
+								takenEnergyMaroon = Utils.between((3 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+							} else {
+								if (_maroonversion == 0) {
+									takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+								} else {
+									takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+								}
 							}
 						}
 					    // The other organism will be shown in yellow
@@ -16976,13 +17193,21 @@ public class Organism extends Rectangle {
 				if (org._isaplant) {
 					if (org._isinfectious) {
 						// Get energy depending on segment length
-						if (_maroonversion == org._symmetry) {
-							takenEnergyMaroon = Utils.between((3 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
-						} else {
-							if (_maroonversion == 0) {
-								takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+						if (_maroonversion == 10) {
+							if (org._ishox4) {
+								takenEnergyMaroon = Utils.between((2 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
 							} else {
-								takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+								takenEnergyMaroon = Utils.between((0.9 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+							}
+						} else {
+							if (_maroonversion == org._symmetry) {
+								takenEnergyMaroon = Utils.between((3 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+							} else {
+								if (_maroonversion == 0) {
+									takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+								} else {
+									takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+								}
 							}
 						}
 					    // The other organism will be shown in yellow
@@ -16991,17 +17216,29 @@ public class Organism extends Rectangle {
 					    setColor(Utils.ColorMAROON);
 					} else {
 						// Get energy depending on segment length
-						if (_maroonversion == org._symmetry) {
-							takenEnergyMaroon = Utils.between((0.1 * (3 + _m[seg])) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
-						} else {
-							if (_maroonversion == 0) {
-								takenEnergyMaroon = Utils.between((0.1 * (1 + _m[seg])) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+						if (_maroonversion == 10) {
+							if (org._ishox4) {
+								takenEnergyMaroon = Utils.between((2 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+								// The other organism will be shown in yellow
+							    org.setColor(Color.YELLOW);
 							} else {
-								takenEnergyMaroon = Utils.between((0.1 * (_m[seg])) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+								takenEnergyMaroon = Utils.between((0.09 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+								// The other organism will be shown in green brown
+								org.setColor(Utils.ColorGREENBROWN);
 							}
+						} else {
+							if (_maroonversion == org._symmetry) {
+								takenEnergyMaroon = Utils.between((0.1 * (3 + _m[seg])) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+							} else {
+								if (_maroonversion == 0) {
+									takenEnergyMaroon = Utils.between((0.1 * (1 + _m[seg])) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+								} else {
+									takenEnergyMaroon = Utils.between((0.1 * (_m[seg])) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+								}
+							}
+							// The other organism will be shown in green brown
+							org.setColor(Utils.ColorGREENBROWN);
 						}
-						// The other organism will be shown in green brown
-						org.setColor(Utils.ColorGREENBROWN);
 						// This organism will be shown in maroon
 						setColor(Utils.ColorMAROON);
 					}
@@ -17010,13 +17247,21 @@ public class Organism extends Rectangle {
 			case FRUIT:
 				if ((org._sporeversion == 2) && (!_hasgoodvision)) {
 					// Get energy depending on segment length
-					if (_maroonversion == org._symmetry) {
-						takenEnergyMaroon = Utils.between((3 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
-					} else {
-						if (_maroonversion == 0) {
-							takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+					if (_maroonversion == 10) {
+						if (org._ishox4) {
+							takenEnergyMaroon = Utils.between((2 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
 						} else {
-							takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+							takenEnergyMaroon = Utils.between((0.9 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+						}
+					} else {
+						if (_maroonversion == org._symmetry) {
+							takenEnergyMaroon = Utils.between((3 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+						} else {
+							if (_maroonversion == 0) {
+								takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+							} else {
+								takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+							}
 						}
 					}
 					// The other organism will be shown in yellow
@@ -17040,13 +17285,21 @@ public class Organism extends Rectangle {
 			case DEADBARK:
 				if ((org._isaplant) || (!org.active)) {
 					// Get energy depending on segment length
-					if (_maroonversion == org._symmetry) {
-						takenEnergyMaroon = Utils.between((3 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
-					} else {
-						if (_maroonversion == 0) {
-							takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+					if (_maroonversion == 10) {
+						if (org._ishox4) {
+							takenEnergyMaroon = Utils.between((2 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
 						} else {
-							takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+							takenEnergyMaroon = Utils.between((0.9 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+						}
+					} else {
+						if (_maroonversion == org._symmetry) {
+							takenEnergyMaroon = Utils.between((3 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+						} else {
+							if (_maroonversion == 0) {
+								takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+							} else {
+								takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+							}
 						}
 					}
 				    // The other organism will be shown in yellow
@@ -17058,19 +17311,31 @@ public class Organism extends Rectangle {
 			case OLDBARK:
 				if (org.active) {
 					if (org._isenhanced) {
-						if (org._framesColor > 0) {
+						if ((org._framesColor > 0) || (org._ishox4)) {
 							// Get energy depending on segment length
-							if (_maroonversion == org._symmetry) {
-								takenEnergyMaroon = Utils.between((0.01 * (3 + _m[seg])) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
-							} else {
-								if (_maroonversion == 0) {
-									takenEnergyMaroon = Utils.between((0.01 * (1 + _m[seg])) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+							if (_maroonversion == 10) {
+								if (org._ishox4) {
+									takenEnergyMaroon = Utils.between((0.2 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+									// The other organism will be shown in green brown
+									org.setColor(Utils.ColorGREENBROWN);
 								} else {
-									takenEnergyMaroon = Utils.between((0.01 * (_m[seg])) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+									takenEnergyMaroon = Utils.between((0.009 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+									// The other organism will be shown in broken
+									org.setColor(Utils.ColorBROKEN);
 								}
+							} else {
+								if (_maroonversion == org._symmetry) {
+									takenEnergyMaroon = Utils.between((0.01 * (3 + _m[seg])) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+								} else {
+									if (_maroonversion == 0) {
+										takenEnergyMaroon = Utils.between((0.01 * (1 + _m[seg])) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+									} else {
+										takenEnergyMaroon = Utils.between((0.01 * (_m[seg])) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+									}
+								}
+								// The other organism will be shown in broken
+								org.setColor(Utils.ColorBROKEN);
 							}
-							// The other organism will be shown in broken
-							org.setColor(Utils.ColorBROKEN);
 							// This organism will be shown in maroon
 						    setColor(Utils.ColorMAROON);
 						} else {
@@ -17079,13 +17344,21 @@ public class Organism extends Rectangle {
 						}
 					} else {
 						// Get energy depending on segment length
-						if (_maroonversion == org._symmetry) {
-							takenEnergyMaroon = Utils.between((3 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
-						} else {
-							if (_maroonversion == 0) {
-								takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+						if (_maroonversion == 10) {
+							if (org._ishox4) {
+								takenEnergyMaroon = Utils.between((2 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
 							} else {
-								takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+								takenEnergyMaroon = Utils.between((0.9 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+							}
+						} else {
+							if (_maroonversion == org._symmetry) {
+								takenEnergyMaroon = Utils.between((3 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+							} else {
+								if (_maroonversion == 0) {
+									takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+								} else {
+									takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+								}
 							}
 						}
 					    // The other organism will be shown in yellow
@@ -17096,13 +17369,21 @@ public class Organism extends Rectangle {
 				} else {
 					if (org._isenhanced) {
 						// Get energy depending on segment length
-						if (_maroonversion == org._symmetry) {
-							takenEnergyMaroon = Utils.between((0.5 * (3 + _m[seg])) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
-						} else {
-							if (_maroonversion == 0) {
-								takenEnergyMaroon = Utils.between((0.5 * (1 + _m[seg])) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+						if (_maroonversion == 10) {
+							if (org._ishox4) {
+								takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
 							} else {
-								takenEnergyMaroon = Utils.between((0.5 * (_m[seg])) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+								takenEnergyMaroon = Utils.between((0.45 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+							}
+						} else {
+							if (_maroonversion == org._symmetry) {
+								takenEnergyMaroon = Utils.between((0.5 * (3 + _m[seg])) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+							} else {
+								if (_maroonversion == 0) {
+									takenEnergyMaroon = Utils.between((0.5 * (1 + _m[seg])) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+								} else {
+									takenEnergyMaroon = Utils.between((0.5 * (_m[seg])) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+								}
 							}
 						}
 						// The other organism will be shown in green brown
@@ -17111,13 +17392,21 @@ public class Organism extends Rectangle {
 						setColor(Utils.ColorMAROON);
 					} else {
 						// Get energy depending on segment length
-						if (_maroonversion == org._symmetry) {
-							takenEnergyMaroon = Utils.between((3 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
-						} else {
-							if (_maroonversion == 0) {
-								takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+						if (_maroonversion == 10) {
+							if (org._ishox4) {
+								takenEnergyMaroon = Utils.between((2 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
 							} else {
-								takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+								takenEnergyMaroon = Utils.between((0.9 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+							}
+						} else {
+							if (_maroonversion == org._symmetry) {
+								takenEnergyMaroon = Utils.between((3 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+							} else {
+								if (_maroonversion == 0) {
+									takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+								} else {
+									takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+								}
 							}
 						}
 					    // The other organism will be shown in yellow
@@ -17135,13 +17424,21 @@ public class Organism extends Rectangle {
 				} else {
 					if (!org._isenhanced) {
 						// Get energy depending on segment length
-						if (_maroonversion == org._symmetry) {
-							takenEnergyMaroon = Utils.between((3 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
-						} else {
-							if (_maroonversion == 0) {
-								takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+						if (_maroonversion == 10) {
+							if (org._ishox4) {
+								takenEnergyMaroon = Utils.between((2 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
 							} else {
-								takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+								takenEnergyMaroon = Utils.between((0.9 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+							}
+						} else {
+							if (_maroonversion == org._symmetry) {
+								takenEnergyMaroon = Utils.between((3 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+							} else {
+								if (_maroonversion == 0) {
+									takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+								} else {
+									takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+								}
 							}
 						}
 					    // The other organism will be shown in yellow
@@ -17169,13 +17466,21 @@ public class Organism extends Rectangle {
 						setColor(Utils.ColorMAROON);
 					} else {
 						// Get energy depending on segment length
-						if (_maroonversion == org._symmetry) {
-							takenEnergyMaroon = Utils.between((3 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
-						} else {
-							if (_maroonversion == 0) {
-								takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+						if (_maroonversion == 10) {
+							if (org._ishox4) {
+								takenEnergyMaroon = Utils.between((2 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
 							} else {
-								takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+								takenEnergyMaroon = Utils.between((0.9 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+							}
+						} else {
+							if (_maroonversion == org._symmetry) {
+								takenEnergyMaroon = Utils.between((3 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+							} else {
+								if (_maroonversion == 0) {
+									takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+								} else {
+									takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+								}
 							}
 						}
 						// The other organism will be shown in yellow
@@ -17192,13 +17497,21 @@ public class Organism extends Rectangle {
 					if (org._isaplant) {
 						if (org._isinfectious) {
 							// Get energy depending on segment length
-							if (_maroonversion == org._symmetry) {
-								takenEnergyMaroon = Utils.between((3 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
-							} else {
-								if (_maroonversion == 0) {
-									takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+							if (_maroonversion == 10) {
+								if (org._ishox4) {
+									takenEnergyMaroon = Utils.between((2 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
 								} else {
-									takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+									takenEnergyMaroon = Utils.between((0.9 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+								}
+							} else {
+								if (_maroonversion == org._symmetry) {
+									takenEnergyMaroon = Utils.between((3 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+								} else {
+									if (_maroonversion == 0) {
+										takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+									} else {
+										takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+									}
 								}
 							}
 							// The other organism will be shown in yellow
@@ -17208,13 +17521,21 @@ public class Organism extends Rectangle {
 						} else {
 							if (_isenhanced) {
 								// Get energy depending on segment length
-								if (_maroonversion == org._symmetry) {
-									takenEnergyMaroon = Utils.between((3 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
-								} else {
-									if (_maroonversion == 0) {
-										takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+								if (_maroonversion == 10) {
+									if (org._ishox4) {
+										takenEnergyMaroon = Utils.between((2 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
 									} else {
-										takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+										takenEnergyMaroon = Utils.between((0.9 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+									}
+								} else {
+									if (_maroonversion == org._symmetry) {
+										takenEnergyMaroon = Utils.between((3 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+									} else {
+										if (_maroonversion == 0) {
+											takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+										} else {
+											takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+										}
 									}
 								}
 								// The other organism will be shown in yellow
@@ -17229,13 +17550,21 @@ public class Organism extends Rectangle {
 			case SPIKEPOINT:
 				if ((_isenhanced) && (!org._isenhanced) && (org._isaplant)) {
 					// Get energy depending on segment length
-					if (_maroonversion == org._symmetry) {
-						takenEnergyMaroon = Utils.between((3 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
-					} else {
-						if (_maroonversion == 0) {
-							takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+					if (_maroonversion == 10) {
+						if (org._ishox4) {
+							takenEnergyMaroon = Utils.between((2 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
 						} else {
-							takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+							takenEnergyMaroon = Utils.between((0.9 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+						}
+					} else {
+						if (_maroonversion == org._symmetry) {
+							takenEnergyMaroon = Utils.between((3 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+						} else {
+							if (_maroonversion == 0) {
+								takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+							} else {
+								takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+							}
 						}
 					}
 					// The other organism will be shown in yellow
@@ -17255,26 +17584,42 @@ public class Organism extends Rectangle {
 						} else {
 							if ((!org._isaconsumer) && (!org._isafungus) && (!org._isakiller)) {
 								// Get energy depending on segment length
-								if (_maroonversion == org._symmetry) {
-									takenEnergyMaroon = Utils.between((0.5 * (3 + _m[seg])) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
-								} else {
-									if (_maroonversion == 0) {
-										takenEnergyMaroon = Utils.between((0.5 * (1 + _m[seg])) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+								if (_maroonversion == 10) {
+									if (org._ishox4) {
+										takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
 									} else {
-										takenEnergyMaroon = Utils.between((0.5 * (_m[seg])) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+										takenEnergyMaroon = Utils.between((0.45 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+									}
+								} else {
+									if (_maroonversion == org._symmetry) {
+										takenEnergyMaroon = Utils.between((0.5 * (3 + _m[seg])) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+									} else {
+										if (_maroonversion == 0) {
+											takenEnergyMaroon = Utils.between((0.5 * (1 + _m[seg])) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+										} else {
+											takenEnergyMaroon = Utils.between((0.5 * (_m[seg])) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+										}
 									}
 								}
 								// The other organism will be shown in green brown
 								org.setColor(Utils.ColorGREENBROWN);
 							} else {
 								// Get energy depending on segment length
-								if (_maroonversion == org._symmetry) {
-									takenEnergyMaroon = Utils.between((3 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
-								} else {
-									if (_maroonversion == 0) {
-										takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+								if (_maroonversion == 10) {
+									if (org._ishox4) {
+										takenEnergyMaroon = Utils.between((2 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
 									} else {
-										takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+										takenEnergyMaroon = Utils.between((0.9 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+									}
+								} else {
+									if (_maroonversion == org._symmetry) {
+										takenEnergyMaroon = Utils.between((3 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+									} else {
+										if (_maroonversion == 0) {
+											takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+										} else {
+											takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+										}
 									}
 								}
 								// The other organism will be shown in yellow
@@ -17299,26 +17644,42 @@ public class Organism extends Rectangle {
 						} else {
 							if ((!org._isaconsumer) && (!org._isafungus) && (!org._isakiller)) {
 								// Get energy depending on segment length
-								if (_maroonversion == org._symmetry) {
-									takenEnergyMaroon = Utils.between((0.5 * (3 + _m[seg])) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
-								} else {
-									if (_maroonversion == 0) {
-										takenEnergyMaroon = Utils.between((0.5 * (1 + _m[seg])) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+								if (_maroonversion == 10) {
+									if (org._ishox4) {
+										takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
 									} else {
-										takenEnergyMaroon = Utils.between((0.5 * (_m[seg])) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+										takenEnergyMaroon = Utils.between((0.45 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+									}
+								} else {
+									if (_maroonversion == org._symmetry) {
+										takenEnergyMaroon = Utils.between((0.5 * (3 + _m[seg])) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+									} else {
+										if (_maroonversion == 0) {
+											takenEnergyMaroon = Utils.between((0.5 * (1 + _m[seg])) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+										} else {
+											takenEnergyMaroon = Utils.between((0.5 * (_m[seg])) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+										}
 									}
 								}
 								// The other organism will be shown in green brown
 								org.setColor(Utils.ColorGREENBROWN);
 							} else {
 								// Get energy depending on segment length
-								if (_maroonversion == org._symmetry) {
-									takenEnergyMaroon = Utils.between((3 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
-								} else {
-									if (_maroonversion == 0) {
-										takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+								if (_maroonversion == 10) {
+									if (org._ishox4) {
+										takenEnergyMaroon = Utils.between((2 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
 									} else {
-										takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+										takenEnergyMaroon = Utils.between((0.9 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+									}
+								} else {
+									if (_maroonversion == org._symmetry) {
+										takenEnergyMaroon = Utils.between((3 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+									} else {
+										if (_maroonversion == 0) {
+											takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+										} else {
+											takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+										}
 									}
 								}
 								// The other organism will be shown in yellow
@@ -17340,13 +17701,21 @@ public class Organism extends Rectangle {
 						org.setColor(Utils.ColorDEEPSKY);
 					} else {
 						// Get energy depending on segment length
-						if (_maroonversion == org._symmetry) {
-							takenEnergyMaroon = Utils.between((3 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
-						} else {
-							if (_maroonversion == 0) {
-								takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+						if (_maroonversion == 10) {
+							if (org._ishox4) {
+								takenEnergyMaroon = Utils.between((2 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
 							} else {
-								takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+								takenEnergyMaroon = Utils.between((0.9 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+							}
+						} else {
+							if (_maroonversion == org._symmetry) {
+								takenEnergyMaroon = Utils.between((3 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+							} else {
+								if (_maroonversion == 0) {
+									takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+								} else {
+									takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+								}
 							}
 						}
 						// The other organism will be shown in yellow
@@ -17360,13 +17729,21 @@ public class Organism extends Rectangle {
 			case VISION:
 				if ((_isenhanced) && (org._isaplant)) {
 					// Get energy depending on segment length
-					if (_maroonversion == org._symmetry) {
-						takenEnergyMaroon = Utils.between((3 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
-					} else {
-						if (_maroonversion == 0) {
-							takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+					if (_maroonversion == 10) {
+						if (org._ishox4) {
+							takenEnergyMaroon = Utils.between((2 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
 						} else {
-							takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+							takenEnergyMaroon = Utils.between((0.9 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+						}
+					} else {
+						if (_maroonversion == org._symmetry) {
+							takenEnergyMaroon = Utils.between((3 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+						} else {
+							if (_maroonversion == 0) {
+								takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+							} else {
+								takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+							}
 						}
 					}
 					// The other organism will be shown in yellow
@@ -17382,13 +17759,21 @@ public class Organism extends Rectangle {
 				} else {
 					if ((_isenhanced) && (org._isaplant)) {
 						// Get energy depending on segment length
-						if (_maroonversion == org._symmetry) {
-							takenEnergyMaroon = Utils.between((3 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
-						} else {
-							if (_maroonversion == 0) {
-								takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+						if (_maroonversion == 10) {
+							if (org._ishox4) {
+								takenEnergyMaroon = Utils.between((2 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
 							} else {
-								takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+								takenEnergyMaroon = Utils.between((0.9 * _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+							}
+						} else {
+							if (_maroonversion == org._symmetry) {
+								takenEnergyMaroon = Utils.between((3 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+							} else {
+								if (_maroonversion == 0) {
+									takenEnergyMaroon = Utils.between((1 + _m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+								} else {
+									takenEnergyMaroon = Utils.between((_m[seg]) / Utils.MAROON_ENERGY_CONSUMPTION, 0, org._energy);
+								}
 							}
 						}
 						// The other organism will be shown in yellow
@@ -21031,6 +21416,14 @@ public class Organism extends Rectangle {
 		}
 		// Check if the other organism has died
 		if (org.alive && org._energy < Utils.tol) {
+			if (((_segColor[seg].equals(Utils.ColorSPIKEPOINT)) && (!_isenhanced)) || (_segColor[seg].equals(Utils.ColorLILAC))) {					
+			} else {
+				_N2_Stored += 0.5 * org._N2_Stored;
+				org._N2_Stored -= 0.5 * org._N2_Stored;
+				if (_N2_Stored > _N2_Max ) {
+					useNitrogen(_N2_Stored - _N2_Max);
+				}
+			}
 			org.die(this);
 		}
 	}
@@ -27078,7 +27471,7 @@ public class Organism extends Rectangle {
 					switch (getTypeColor(_segColor[i])) {
 					// Restore Jade
 					case DARKJADE:
-						if (Utils.random.nextInt(_jadefactor)<8) {
+						if (Utils.random.nextInt(_jadefactor)<10) {
 							_segColor[i] = Utils.ColorJADE;
 						} else {
 							_useextraeffects = true;
@@ -27088,13 +27481,13 @@ public class Organism extends Rectangle {
 						if (_geneticCode.getGene(i%_geneticCode.getNGenes()).getColor().equals(Utils.ColorSUMMER)) {
 							if (((_world.getTime() % 6) != _summerinactivity) && ((_world.getTime() % 6) != (_summerinactivity + 1))) {
 								specialphoto += _mphoto[i];
-								if (Utils.random.nextInt(_jadefactor)<8) {
+								if (Utils.random.nextInt(_jadefactor)<10) {
 									_segColor[i] = Utils.ColorSUMMER;
 								} else {
 									_useextraeffects = true;
 								}
 							} else {
-								if (Utils.random.nextInt(_jadefactor)<8) {
+								if (Utils.random.nextInt(_jadefactor)<10) {
 									_segColor[i] = Utils.ColorWINTER;
 								} else {
 									_useextraeffects = true;
@@ -27106,13 +27499,13 @@ public class Organism extends Rectangle {
 									specialphoto += _mphoto[i];
 								}
 								if (_modifiesleaf) {
-									if (Utils.random.nextInt(Utils.DARKJADE_DELAY * 8)<8) {
+									if (Utils.random.nextInt(Utils.DARKJADE_DELAY * 10)<10) {
 										_segColor[i] = Utils.ColorLEAF;
 									} else {
 										_useextraeffects = true;
 									}
 								} else {
-									if (Utils.random.nextInt(_jadefactor)<8) {
+									if (Utils.random.nextInt(_jadefactor)<10) {
 										_segColor[i] = Utils.ColorLEAF;
 									} else {
 										_useextraeffects = true;
@@ -27125,14 +27518,14 @@ public class Organism extends Rectangle {
 									} else {
 										specialphoto += _mphoto[i];
 									}
-									if (Utils.random.nextInt(_jadefactor)<8) {
+									if (Utils.random.nextInt(_jadefactor)<10) {
 										_segColor[i] = Utils.ColorLIME;
 									} else {
 										_useextraeffects = true;
 									}
 								} else {
 									specialphoto += _mphoto[i];
-									if (Utils.random.nextInt(_jadefactor)<8) {
+									if (Utils.random.nextInt(_jadefactor)<10) {
 										_segColor[i] = _geneticCode.getGene(i%_geneticCode.getNGenes()).getColor();
 									} else {
 										_useextraeffects = true;
@@ -28030,7 +28423,7 @@ public class Organism extends Rectangle {
 					// Restore Jade
 					case DARKJADE:
 						addphoto += _mphoto[i];
-						if (Utils.random.nextInt(_jadefactor)<8) {
+						if (Utils.random.nextInt(_jadefactor)<10) {
 							_segColor[i] = Utils.ColorJADE;
 						} else {
 							_useextraeffects = true;
@@ -28041,13 +28434,13 @@ public class Organism extends Rectangle {
 							if (((_world.getTime() % 6) != _summerinactivity) && ((_world.getTime() % 6) != (_summerinactivity + 1))) {
 								addphoto += _mphoto[i];
 								specialphoto += _mphoto[i];
-								if (Utils.random.nextInt(_jadefactor)<8) {
+								if (Utils.random.nextInt(_jadefactor)<10) {
 									_segColor[i] = Utils.ColorSUMMER;
 								} else {
 									_useextraeffects = true;
 								}
 							} else {
-								if (Utils.random.nextInt(_jadefactor)<8) {
+								if (Utils.random.nextInt(_jadefactor)<10) {
 									_segColor[i] = Utils.ColorWINTER;
 								} else {
 									_useextraeffects = true;
@@ -28058,7 +28451,7 @@ public class Organism extends Rectangle {
 								addphoto += _mphoto[i];
 								_forestphoto += _mphoto[i];
 								specialphoto += _mphoto[i];
-								if (Utils.random.nextInt(_jadefactor)<8) {
+								if (Utils.random.nextInt(_jadefactor)<10) {
 									_segColor[i] = Utils.ColorFOREST;
 								} else {
 									_useextraeffects = true;
@@ -28071,13 +28464,13 @@ public class Organism extends Rectangle {
 										specialphoto += _mphoto[i];
 									}
 									if (_modifiesleaf) {
-										if (Utils.random.nextInt(Utils.DARKJADE_DELAY * 8)<8) {
+										if (Utils.random.nextInt(Utils.DARKJADE_DELAY * 10)<10) {
 											_segColor[i] = Utils.ColorLEAF;
 										} else {
 											_useextraeffects = true;
 										}
 									} else {
-										if (Utils.random.nextInt(_jadefactor)<8) {
+										if (Utils.random.nextInt(_jadefactor)<10) {
 											_segColor[i] = Utils.ColorLEAF;
 										} else {
 											_useextraeffects = true;
@@ -28092,7 +28485,7 @@ public class Organism extends Rectangle {
 											addphoto += _mphoto[i];
 											specialphoto += _mphoto[i];
 										}
-										if (Utils.random.nextInt(_jadefactor)<8) {
+										if (Utils.random.nextInt(_jadefactor)<10) {
 											_segColor[i] = Utils.ColorLIME;
 										} else {
 											_useextraeffects = true;
@@ -28100,7 +28493,7 @@ public class Organism extends Rectangle {
 									} else {
 										addphoto += _mphoto[i];
 										specialphoto += _mphoto[i];
-										if (Utils.random.nextInt(_jadefactor)<8) {
+										if (Utils.random.nextInt(_jadefactor)<10) {
 											_segColor[i] = _geneticCode.getGene(i%_geneticCode.getNGenes()).getColor();
 										} else {
 											_useextraeffects = true;

@@ -15,6 +15,7 @@ import biogenesis.WorldStatistics;
  * <li>Maximum and minimum carbon monoxide.</li>
  * <li>Maximum and minimum methane.</li>
  * <li>Maximum and minimum detritus.</li>
+ * <li>Maximum and minimum nitrogen.</li>
  * <li>Maximum and minimum oxygen.</li>
  * </ul>
  */
@@ -30,6 +31,8 @@ public class AtmosphereStatsPanel extends JPanel {
   private ValueAndTimeLabel minMethaneLabel;
   private ValueAndTimeLabel maxDetritusLabel;
   private ValueAndTimeLabel minDetritusLabel;
+  private ValueAndTimeLabel maxNitrogenLabel;
+  private ValueAndTimeLabel minNitrogenLabel;
   private ValueAndTimeLabel maxOxygenLabel;
   private ValueAndTimeLabel minOxygenLabel;
 
@@ -58,6 +61,8 @@ public class AtmosphereStatsPanel extends JPanel {
     minMethaneLabel = new ValueAndTimeLabel(Messages.getString("T_MINIMUM_METHANE"), timeLabel, nf); //$NON-NLS-1$
     maxDetritusLabel = new ValueAndTimeLabel(Messages.getString("T_MAXIMUM_DETRITUS"), timeLabel, nf); //$NON-NLS-1$
     minDetritusLabel = new ValueAndTimeLabel(Messages.getString("T_MINIMUM_DETRITUS"), timeLabel, nf); //$NON-NLS-1$
+    maxNitrogenLabel = new ValueAndTimeLabel(Messages.getString("T_MAXIMUM_NITROGEN"), timeLabel, nf); //$NON-NLS-1$
+    minNitrogenLabel = new ValueAndTimeLabel(Messages.getString("T_MINIMUM_NITROGEN"), timeLabel, nf); //$NON-NLS-1$
     maxOxygenLabel = new ValueAndTimeLabel(Messages.getString("T_MAXIMUM_OXYGEN"), timeLabel, nf); //$NON-NLS-1$
     minOxygenLabel = new ValueAndTimeLabel(Messages.getString("T_MINIMUM_OXYGEN"), timeLabel, nf); //$NON-NLS-1$
 
@@ -69,6 +74,8 @@ public class AtmosphereStatsPanel extends JPanel {
     add(minMethaneLabel);
     add(maxDetritusLabel);
     add(minDetritusLabel);
+    add(maxNitrogenLabel);
+    add(minNitrogenLabel);
     add(maxOxygenLabel);
     add(minOxygenLabel);
   }
@@ -85,6 +92,8 @@ public class AtmosphereStatsPanel extends JPanel {
     minMethaneLabel.update(worldStatistics.getMinMethane(), worldStatistics.getMinMethaneTime());
     maxDetritusLabel.update(worldStatistics.getMaxDetritus(), worldStatistics.getMaxDetritusTime());
     minDetritusLabel.update(worldStatistics.getMinDetritus(), worldStatistics.getMinDetritusTime());
+    maxNitrogenLabel.update(worldStatistics.getMaxNitrogen(), worldStatistics.getMaxNitrogenTime());
+    minNitrogenLabel.update(worldStatistics.getMinNitrogen(), worldStatistics.getMinNitrogenTime());
     maxOxygenLabel.update(worldStatistics.getMaxOxygen(), worldStatistics.getMaxOxygenTime());
     minOxygenLabel.update(worldStatistics.getMinOxygen(), worldStatistics.getMinOxygenTime());
   }
