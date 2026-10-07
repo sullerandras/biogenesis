@@ -188,6 +188,10 @@ public class GeneticCode implements Cloneable, Serializable {
 	 */
 	protected int _modifiescream;
 	/**
+	 * Modifies the function of crimson
+	 */
+	protected int _modifiescrimson;
+	/**
 	 * Modifies the function of spore
 	 */
 	protected int _modifiesspore;
@@ -448,6 +452,14 @@ public class GeneticCode implements Cloneable, Serializable {
 	 */
 	public int getModifiescream() {
 		return _modifiescream;
+	}
+	/**
+	 * Returns the specialization of crimson
+	 * 
+	 * @return  a value of 0 - 3.
+	 */
+	public int getModifiescrimson() {
+		return _modifiescrimson;
 	}
 	/**
 	 * Returns the specialization of spores
@@ -926,6 +938,12 @@ public class GeneticCode implements Cloneable, Serializable {
 		_modifiescream = Utils.random.nextInt(3)+1;
 	}
 	/**
+	 * Gives modifiescrimson a random value (0 - 3)
+	 */
+	private void randomModifiescrimson() {
+		_modifiescrimson = Utils.random.nextInt(4);
+	}
+	/**
 	 * Gives modifiesspore a random value (1 - 12)
 	 */
 	private void randomModifiesspore() {
@@ -998,6 +1016,7 @@ public class GeneticCode implements Cloneable, Serializable {
 		randomActivity();
 		randomModifiesmaroon();
 		randomModifiescream();
+		randomModifiescrimson();
 		randomModifiesfallow();
 		randomModifiesspore();
 		randomAdaptspore();
@@ -1039,6 +1058,7 @@ public class GeneticCode implements Cloneable, Serializable {
 	 * @param activity  The summer activity that an organism with this genetic code will have.
 	 * @param modifiesmaroon The specialization of maroon.
 	 * @param modifiescream The specialization of an enhanced parasite.
+	 * @param modifiescrimson The specialization of crimson.
 	 * @param modifiesfallow The specialization of fallow. 
 	 * @param modifiesspore The specialization of spores.
 	 * @param adaptspore The further specialization of spores.
@@ -1062,10 +1082,10 @@ public class GeneticCode implements Cloneable, Serializable {
 	 * @param selfish  true if the organism retains half of its energy if it reproduces.
 	 */
 	public GeneticCode(List<Gene> genes, int symmetry, int hox, int mirror, int mutationrate, int clonerate, double homeX, double homeY, double base1X, double base1Y,
-		double base2X, double base2Y, int activity, int modifiesmaroon, int modifiescream, int modifiesfallow, int modifiesspore, int adaptspore, int modifiesblack,
-		int adaptblack, boolean plague, boolean disperseChildren, boolean generationBattle, boolean siblingBattle, boolean altruist, boolean familial, boolean social,
-		boolean peaceful, boolean passive, boolean clockwise, boolean modifiesdrift, boolean modifiespink, boolean modifieslilac, boolean modifiessky, boolean modifiesleaf,
-		boolean selfish) {
+		double base2X, double base2Y, int activity, int modifiesmaroon, int modifiescream, int modifiescrimson, int modifiesfallow, int modifiesspore, int adaptspore,
+		int modifiesblack, int adaptblack, boolean plague, boolean disperseChildren, boolean generationBattle, boolean siblingBattle, boolean altruist, boolean familial,
+		boolean social, boolean peaceful, boolean passive, boolean clockwise, boolean modifiesdrift, boolean modifiespink, boolean modifieslilac, boolean modifiessky,
+		boolean modifiesleaf, boolean selfish) {
 		int nGenes = genes.size();
 		_genes = new Gene[nGenes];
 		genes.toArray(_genes);
@@ -1083,6 +1103,7 @@ public class GeneticCode implements Cloneable, Serializable {
 		_activity = activity;
 		_modifiesmaroon = modifiesmaroon;
 		_modifiescream = modifiescream;
+		_modifiescrimson = modifiescrimson;
 		_modifiesfallow = modifiesfallow;
 		_modifiesspore = modifiesspore;
 		_adaptspore = adaptspore;
@@ -2029,6 +2050,10 @@ public class GeneticCode implements Cloneable, Serializable {
 		else
 			_modifiescream = parentCode.getModifiescream();
 		if (Utils.random.nextInt(10000) < _mutationrate)
+			randomModifiescrimson();
+		else
+			_modifiescrimson = parentCode.getModifiescrimson();
+		if (Utils.random.nextInt(10000) < _mutationrate)
 			randomModifiesfallow();
 		else
 			_modifiesfallow = parentCode.getModifiesfallow();
@@ -2332,37 +2357,22 @@ public class GeneticCode implements Cloneable, Serializable {
 											if (_genes[j].getChiral() < 0) {
 												if (i<(_symmetry - (2 * Math.round((double)_genes[j].getFold()/2)))) {
 													if (i<=1) {
-														if ((_genes[j].getFold()%2 == 0) || (_genes[j].getFold() <= 0)) {
-															if (i%2==0) {
-																x0[i][j]=y0[i][j]=0;
-															} else {
-																x0[i][j]=1;
-																y0[i][j]=0;
-															}															
-														} else {
-															x0[i][j] = x1[0][0];
-															y0[i][j] = y1[0][0];
-														}
-													} else {
-														if ((_genes[j].getFold()%2 == 0) || (_genes[j].getFold() <= 0)) {
-															x0[i][j] = x1[i-2][0];
-															y0[i][j] = y1[i-2][0];
-														} else {
-															x0[i][j] = x1[i][0];
-															y0[i][j] = y1[i][0];
-														}
-													}
-												} else {
-													if (_genes[j].getFold()%2 == 0) {
 														if (i%2==0) {
 															x0[i][j]=y0[i][j]=0;
 														} else {
 															x0[i][j]=1;
 															y0[i][j]=0;
-														}
+														}	
 													} else {
-														x0[i][j] = x1[0][0];
-														y0[i][j] = y1[0][0];
+														x0[i][j] = x1[i-2][0];
+														y0[i][j] = y1[i-2][0];
+													}
+												} else {
+													if (i%2==0) {
+														x0[i][j]=y0[i][j]=0;
+													} else {
+														x0[i][j]=1;
+														y0[i][j]=0;
 													}
 												}
 											} else {
@@ -2453,16 +2463,11 @@ public class GeneticCode implements Cloneable, Serializable {
 													}
 												} else {
 													if (_genes[j].getStack() < 0) {
-														if ((_genes[j].getFold()%2 == 0) || (_genes[j].getFold() <= 0)) {
-															if (i%2==0) {
-																x0[i][j]=y0[i][j]=0;
-															} else {
-																x0[i][j]=1;
-																y0[i][j]=0;
-															}															
+														if (i%2==0) {
+															x0[i][j]=y0[i][j]=0;
 														} else {
-															x0[i][j] = x1[0][0];
-															y0[i][j] = y1[0][0];
+															x0[i][j]=1;
+															y0[i][j]=0;
 														}
 													} else {
 														if ((_genes[0].getStack() == 0) && (_genes[0].getChiral() == 3)) {
@@ -2542,24 +2547,14 @@ public class GeneticCode implements Cloneable, Serializable {
 															}
 														} else {					
 															if (i<(_symmetry - (2 * Math.round((double)_genes[j].getFold()/2)))) {
-																if ((_genes[j].getFold()%2 == 0) || (_genes[j].getFold() <= 0)) {
-																	x0[i][j] = x1[i-2][0];
-																	y0[i][j] = y1[i-2][0];
-																} else {
-																	x0[i][j] = x1[i][0];
-																	y0[i][j] = y1[i][0];
-																}
+																x0[i][j] = x1[i-2][0];
+																y0[i][j] = y1[i-2][0];
 															} else {
-																if (_genes[j].getFold()%2 == 0) {
-																	if (i%2==0) {
-																		x0[i][j]=y0[i][j]=0;
-																	} else {
-																		x0[i][j]=1;
-																		y0[i][j]=0;
-																	}
+																if (i%2==0) {
+																	x0[i][j]=y0[i][j]=0;
 																} else {
-																	x0[i][j] = x1[0][0];
-																	y0[i][j] = y1[0][0];
+																	x0[i][j]=1;
+																	y0[i][j]=0;
 																}
 															}
 														}

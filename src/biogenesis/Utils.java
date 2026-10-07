@@ -221,7 +221,7 @@ public final class Utils {
 	/**
 	 * This is the CO2 fail threshold of Hox4 plants.
 	 */
-	final static int DEF_HOX4_THRESHOLD = 1000;
+	final static int DEF_HOX4_THRESHOLD = 900;
 	/**
 	 * This is the default energy that is consumed when a red segment is used.
 	 */
@@ -301,7 +301,7 @@ public final class Utils {
 	/**
 	 * This is the default effectivity for Hox4 boosting plant photosynthesis.
 	 */
-	final static double DEF_HOX4_ENERGY_CONSUMPTION = 0.3d;
+	final static double DEF_HOX4_ENERGY_CONSUMPTION = 0.28125d;
 	/**
 	 * This is the default energy that is consumed when a spring segment is used.
 	 */
@@ -381,7 +381,7 @@ public final class Utils {
 	/**
 	 * This is the default energy that is consumed when a crimson segment is used.
 	 */
-	final static double DEF_CRIMSON_ENERGY_CONSUMPTION = 3.16d;
+	final static double DEF_CRIMSON_ENERGY_CONSUMPTION = 3.125d;
 	/**
 	 * This is the default energy that is consumed when a olive segment is used.
 	 */
