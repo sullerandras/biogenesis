@@ -1058,7 +1058,7 @@ public class Organism extends Rectangle {
 		}
 		// Calculate jade delay used in restoration of the color
 		if (_jadefactor > 1) {
-			if (_symmetry != 1) {
+			if ((_symmetry != 1) && (_geneticCode.getHox() != 4)) {
 				_jadefactor = Utils.DARKJADE_DELAY * _symmetry;
 			} else {
 				_jadefactor = Utils.DARKJADE_DELAY * 2;
@@ -1393,7 +1393,7 @@ public class Organism extends Rectangle {
 		}
 		// Calculate jade delay used in restoration of the color
 		if (_jadefactor > 1) {
-			if (_symmetry != 1) {
+			if ((_symmetry != 1) && (_geneticCode.getHox() != 4)) {
 				_jadefactor = Utils.DARKJADE_DELAY * _symmetry;
 			} else {
 				_jadefactor = Utils.DARKJADE_DELAY * 2;
@@ -1593,13 +1593,13 @@ public class Organism extends Rectangle {
 			if (_geneticCode.getNGenes() != 1) {
 				photofactor = 1961 + Math.round(6000 / ((double)_geneticCode.getNGenes() + 2)) + Math.round(6315 / (double)_symmetry);
 			} else {
-				photofactor = 1961 + 2200 + Math.round(6315 / (double)_symmetry);
+				photofactor = 1961 + 2000 + Math.round(6315 / (double)_symmetry) + Math.round(421 / (double)_symmetry);
 			}
 		} else {
 			if (_geneticCode.getNGenes() != 1) {
 				photofactor = 1961.329 + Math.round(6000 / ((double)_geneticCode.getNGenes() + 2)) + Math.round(6315 / (double)_symmetry);
 			} else {
-				photofactor = 1961.329 + 2200 + Math.round(6315 / (double)_symmetry);
+				photofactor = 1961.329 + 2000 + Math.round(6315 / (double)_symmetry) + Math.round(421 / (double)_symmetry);
 			}
 		}
 		double photomultiplier = (photofactor * 0.0006) / Utils.GREEN_OBTAINED_ENERGY_DIVISOR;
@@ -2312,7 +2312,7 @@ public class Organism extends Rectangle {
 		}
 		// Calculate jade delay used in restoration of the color
 		if (_jadefactor > 1) {
-			if (_symmetry != 1) {
+			if ((_symmetry != 1) && (_geneticCode.getHox() != 4)) {
 				_jadefactor = Utils.DARKJADE_DELAY * _symmetry;
 			} else {
 				_jadefactor = Utils.DARKJADE_DELAY * 2;
@@ -2549,31 +2549,31 @@ public class Organism extends Rectangle {
     			if (((_geneticCode.getGene(j).getBranch() == 0) && (_geneticCode.getGene(j).getStack() != 0)) || (j==0)) {
     				if (((j==0) && (_geneticCode.getGene(j).getStack() == 0)) || (_geneticCode.getGene(j).getStack() == -1)) {
     					if (_geneticCode.getGene(j).getFold() >= (_symmetry - 2)) {
-    						hoxfactor += ((0.125 * ((double)_geneticCode.getGene(j).getLength() - 2)) * 0.5);
+    						hoxfactor += (0.5 * (0.125 * ((double)_geneticCode.getGene(j).getLength() - 2)) * 0.2);
     					} else {
-    						hoxfactor += (((_symmetry-1) - (double)_geneticCode.getGene(j).getFold()) * (0.125 * ((double)_geneticCode.getGene(j).getLength() - 2)) * 0.5);
+    						hoxfactor += (((_symmetry-1.5) - (double)_geneticCode.getGene(j).getFold()) * (0.125 * ((double)_geneticCode.getGene(j).getLength() - 2)) * 0.2);
     					} 
     				} else {
     					if (_geneticCode.getGene(j).getFold() >= (_symmetry - 2)) {
     						if (_geneticCode.getGene(j).getRadial() < 20) {
-    							hoxfactor += ((0.125 * ((double)_geneticCode.getGene(j).getLength() - 2)) * ((20 + _geneticCode.getGene(j).getRadial())/ 40));
+    							hoxfactor += (0.5 * (0.125 * ((double)_geneticCode.getGene(j).getLength() - 2)) * ((5 + _geneticCode.getGene(j).getRadial())/ 25));
     						} else {
-    							if (_geneticCode.getGene(j).getRadial() > 180) {
-    								hoxfactor += ((0.125 * ((double)_geneticCode.getGene(j).getLength() - 2)) * (180 / _geneticCode.getGene(j).getRadial()));
+    							if (_geneticCode.getGene(j).getRadial() > 72) {
+    								hoxfactor += (0.5 * (0.125 * ((double)_geneticCode.getGene(j).getLength() - 2)) * (72 / _geneticCode.getGene(j).getRadial()));
     							} else {
-    								hoxfactor += (0.125 * ((double)_geneticCode.getGene(j).getLength() - 2));
+    								hoxfactor += (0.5 * 0.125 * ((double)_geneticCode.getGene(j).getLength() - 2));
     							}
     						}
     					} else {
     						if (_geneticCode.getGene(j).getRadial() < 20) {
-    							hoxfactor += (((_symmetry-1) - (double)_geneticCode.getGene(j).getFold()) * (0.125 * ((double)_geneticCode.getGene(j).getLength() - 2))
-    									* ((20 + _geneticCode.getGene(j).getRadial())/ 40));
+    							hoxfactor += (((_symmetry-1.5) - (double)_geneticCode.getGene(j).getFold()) * (0.125 * ((double)_geneticCode.getGene(j).getLength() - 2))
+    									* ((5 + _geneticCode.getGene(j).getRadial())/ 25));
     						} else {
-    							if (_geneticCode.getGene(j).getRadial() > 180) {
-    								hoxfactor += (((_symmetry-1) - (double)_geneticCode.getGene(j).getFold()) * (0.125 * ((double)_geneticCode.getGene(j).getLength() - 2))
-    										* (180 / _geneticCode.getGene(j).getRadial()));
+    							if (_geneticCode.getGene(j).getRadial() > 72) {
+    								hoxfactor += (((_symmetry-1.5) - (double)_geneticCode.getGene(j).getFold()) * (0.125 * ((double)_geneticCode.getGene(j).getLength() - 2))
+    										* (72 / _geneticCode.getGene(j).getRadial()));
     							} else {
-    								hoxfactor += (((_symmetry-1) - (double)_geneticCode.getGene(j).getFold()) * (0.125 * ((double)_geneticCode.getGene(j).getLength() - 2)));
+    								hoxfactor += (((_symmetry-1.5) - (double)_geneticCode.getGene(j).getFold()) * (0.125 * ((double)_geneticCode.getGene(j).getLength() - 2)));
     							}
     						}
     					} 
@@ -2584,8 +2584,8 @@ public class Organism extends Rectangle {
     		}
     		if ((hoxfactor > 0) && (hoxmulti > 0)) {
     			hoxmulti = (((hoxfactor/(_symmetry-1)) * hoxmulti) + 1);
-    			if ((!_isaconsumer) && (!_isakiller) && (!_isinfectious) && (!_isenhanced)) {
-        			hoxmulti = (((Math.sqrt(hoxmulti))/6) + 1);
+    			if ((!_isaconsumer) && (!_isakiller) && (!_isinfectious) && (_plagueversion == 0) && (!_isenhanced)) {
+        			hoxmulti = (((Math.sqrt(hoxmulti))/10) + 1);
     			} else {
         			hoxmulti = (((Math.sqrt(hoxmulti))/60) + 1);
     			}
@@ -3159,7 +3159,7 @@ public class Organism extends Rectangle {
     						additionalcentersegments += _symmetry;
     						if (_symmetry > 4) {
     							if ((_geneticCode.getGene(j).getStack() == -2) || (_symmetry%2 != 0)) {
-    								_timeToReproduceMax += 2;
+    								_timeToReproduceMax += 3;
     							} else {
     								if (_geneticCode.getGene(j).getStack() == -1) {
     									_timeToReproduceMax += 1;
@@ -3823,7 +3823,7 @@ public class Organism extends Rectangle {
         						additionalcentersegments += _symmetry;
         						if (_symmetry > 4) {
         							if ((_geneticCode.getGene(j).getStack() == -2) || (_symmetry%2 != 0)) {
-        								_timeToReproduceMax += 2;
+        								_timeToReproduceMax += 3;
         							} else {
         								if (_geneticCode.getGene(j).getStack() == -1) {
         									_timeToReproduceMax += 1;
@@ -4424,7 +4424,7 @@ public class Organism extends Rectangle {
         						additionalcentersegments += _symmetry;
         						if (_symmetry > 4) {
         							if ((_geneticCode.getGene(j).getStack() == -2) || (_symmetry%2 != 0)) {
-        								_timeToReproduceMax += 2;
+        								_timeToReproduceMax += 3;
         							} else {
         								if (_geneticCode.getGene(j).getStack() == -1) {
         									_timeToReproduceMax += 1;
@@ -5799,7 +5799,7 @@ public class Organism extends Rectangle {
         						additionalcentersegments += _symmetry;
         						if (_symmetry > 4) {
         							if ((_geneticCode.getGene(j).getStack() == -2) || (_symmetry%2 != 0)) {
-        								_timeToReproduceMax += 2;
+        								_timeToReproduceMax += 3;
         							} else {
         								if (_geneticCode.getGene(j).getStack() == -1) {
         									_timeToReproduceMax += 1;
@@ -8481,7 +8481,7 @@ public class Organism extends Rectangle {
 		}
 		// Calculate jade delay used in restoration of the color
 		if (_jadefactor > 1) {
-			if (_symmetry != 1) {
+			if ((_symmetry != 1) && (_geneticCode.getHox() != 4)) {
 				_jadefactor = Utils.DARKJADE_DELAY * _symmetry;
 			} else {
 				_jadefactor = Utils.DARKJADE_DELAY * 2;
