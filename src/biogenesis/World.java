@@ -816,9 +816,15 @@ public class World implements Serializable{
 						double y = Math.min(getCH4()/Utils.CH4_TO_CO2_DIVISOR,getCH4());
 						_CH4 -= y;
 						_CO2 += y;
-						double z = Math.min(getDetritus()/Utils.DETRITUS_TO_CO2_DIVISOR,getDetritus());
-						_detritus -= z;
-						_CO2 += z;
+						if (getDetritus() > (getCO2() + 500)) {
+							double s = Math.min((getDetritus()+(getDetritus()-(getCO2() + 500)))/Utils.DETRITUS_TO_CO2_DIVISOR,getDetritus());
+							_detritus -= s;
+							_CO2 += s;
+						} else {
+							double z = Math.min(getDetritus()/Utils.DETRITUS_TO_CO2_DIVISOR,getDetritus());
+							_detritus -= z;
+							_CO2 += z;
+						}
 						if (getCO1() > getCO2()) {
 							double v = Math.min((getCO1()+(getCO1()-getCO2()))/Utils.CO1_TO_CO2_DIVISOR,getCO1());
 							_CO1 -= v;

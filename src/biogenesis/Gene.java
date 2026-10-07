@@ -50,6 +50,21 @@ public class Gene implements Cloneable, Serializable {
 	@Expose
 	private int _branch = 0;
 	/**
+	 * Stacking variants of segments.
+	 */
+	@Expose
+	private int _stack = 0;
+	/**
+	 * Folding variants of segments (0 is no fold).
+	 */
+	@Expose
+	private int _fold = 0;
+	/**
+	 * Radial rotation variants of segments.
+	 */
+	@Expose
+	private int _radial = 0;
+	/**
 	 * Segment's reactions
 	 */
 	private int _redreaction = 0;
@@ -108,15 +123,19 @@ public class Gene implements Cloneable, Serializable {
 	 * @param reaction
 	 *            segment's reaction
 	 */
-	public Gene(double length, double theta, Color color, int branch, int redreaction, int greenreaction, int bluereaction, int plaguereaction, int scourgereaction
-			, int whitereaction, int grayreaction, int silverreaction, int defaultreaction, int consumerreaction, int plantreaction, int magentareaction, int pinkreaction
-			, int coralreaction, int orangereaction, int barkreaction, int violetreaction, int virusreaction, int maroonreaction, int crimsonreaction, int olivereaction
-			, int mintreaction, int creamreaction, int spikereaction, int fallowreaction, int lightbluereaction, int ochrereaction, int skyreaction, int lilacreaction
-			, int firereaction, int lightbrownreaction, int greenbrownreaction, int brownreaction, int icereaction, int brokenreaction, int sickreaction, int friendreaction) {
+	public Gene(double length, double theta, Color color, int branch, int stack, int fold, int radial, int redreaction, int greenreaction, int bluereaction, int plaguereaction
+			, int scourgereaction, int whitereaction, int grayreaction, int silverreaction, int defaultreaction, int consumerreaction, int plantreaction, int magentareaction
+			, int pinkreaction, int coralreaction, int orangereaction, int barkreaction, int violetreaction, int virusreaction, int maroonreaction, int crimsonreaction
+			, int olivereaction, int mintreaction, int creamreaction, int spikereaction, int fallowreaction, int lightbluereaction, int ochrereaction, int skyreaction
+			, int lilacreaction, int firereaction, int lightbrownreaction, int greenbrownreaction, int brownreaction, int icereaction, int brokenreaction, int sickreaction
+			, int friendreaction) {
 		_length = length;
 		_theta = theta;
 		_color = color;
 		_branch = branch;
+		_stack = stack;
+		_fold = fold;
+		_radial = radial;
 		_redreaction = redreaction;
 		_greenreaction = greenreaction;
 		_bluereaction = bluereaction;
@@ -663,6 +682,33 @@ public class Gene implements Cloneable, Serializable {
 	}
 	
 	/**
+	 * Returns the segment's stacking version.
+	 * 
+	 * @return the segment's stacking version.
+	 */
+	public int getStack() {
+		return _stack;
+	}
+	
+	/**
+	 * Returns the segment's folding version.
+	 * 
+	 * @return the segment's folding version.
+	 */
+	public int getFold() {
+		return _fold;
+	}
+	
+	/**
+	 * Returns the segment's radial version.
+	 * 
+	 * @return the segment's radial version.
+	 */
+	public int getRadial() {
+		return _radial;
+	}
+	
+	/**
 	 * Returns the segment's reactions.
 	 * 
 	 * @return the segment's reactions
@@ -833,6 +879,36 @@ public class Gene implements Cloneable, Serializable {
 	 */
 	public void setBranch(int branch) {
 		_branch = branch;
+	}
+	
+	/**
+	 * Assign a stacking version to the segment.
+	 * 
+	 * @param stack
+	 *            The stacking version to assign
+	 */
+	public void setStack(int stack) {
+		_stack = stack;
+	}
+	
+	/**
+	 * Assign a folding version to the segment.
+	 * 
+	 * @param fold
+	 *            The folding version to assign
+	 */
+	public void setFold(int fold) {
+		_fold = fold;
+	}
+	
+	/**
+	 * Assign a radial version to the segment.
+	 * 
+	 * @param radial
+	 *            The radial version to assign
+	 */
+	public void setRadial(int radial) {
+		_radial = radial;
 	}
 	
 	/**
