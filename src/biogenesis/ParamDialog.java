@@ -2271,6 +2271,12 @@ public class ParamDialog extends JDialog {
 			// Keep old value if there is a problem
 		}
 		try {
+			d = Double.parseDouble(boostcostText.getText());
+			if (d > 0) Utils.BOOST_ENERGY_CONSUMPTION = d;
+		} catch (NumberFormatException ex) {
+			// Keep old value if there is a problem
+		}
+		try {
 			d = Double.parseDouble(symbiontcostText.getText());
 			if (d > 0) Utils.SYMBIONT_ENERGY_CONSUMPTION = d;
 		} catch (NumberFormatException ex) {

@@ -293,7 +293,7 @@ public final class Utils {
 	/**
 	 * This is the default effectivity for drift boosting plant photosynthesis.
 	 */
-	final static double DEF_BOOST_ENERGY_CONSUMPTION = 0.125d;
+	final static double DEF_BOOST_ENERGY_CONSUMPTION = 0.12d;
 	/**
 	 * This is the default energy that is consumed when a spring segment is used.
 	 */
