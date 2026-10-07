@@ -163,6 +163,7 @@ public class ParamDialog extends JDialog {
 	private JTextField modleafcostText = null;
 	private JTextField symbiontcostText = null;
 	private JTextField boostcostText = null;
+	private JTextField hox4costText = null;
 	private JTextField mosquitocostText = null;
 	private JTextField experiencecostText = null;
 	private JTextField dodgecostText = null;
@@ -320,6 +321,7 @@ public class ParamDialog extends JDialog {
 		modleafcostText.setText(String.valueOf(Utils.DEF_MODLEAF_ENERGY_CONSUMPTION));
 		symbiontcostText.setText(String.valueOf(Utils.DEF_SYMBIONT_ENERGY_CONSUMPTION));
 		boostcostText.setText(String.valueOf(Utils.DEF_BOOST_ENERGY_CONSUMPTION));
+		hox4costText.setText(String.valueOf(Utils.DEF_HOX4_ENERGY_CONSUMPTION));
 		experiencecostText.setText(String.valueOf(Utils.DEF_EXPERIENCE_ENERGY_CONSUMPTION));
 		dodgecostText.setText(String.valueOf(Utils.DEF_DODGE_ENERGY_CONSUMPTION));
 		darkjadedelayText.setText(String.valueOf(Utils.DEF_DARKJADE_DELAY));
@@ -948,8 +950,12 @@ public class ParamDialog extends JDialog {
 		modleafcostText = new JTextField(Double.toString(Utils.MODLEAF_ENERGY_CONSUMPTION),6);
 		panel.add(modleafcostText);
 		metabolismPanel.add(panel);
-		// Symbiont costs
+		// Hox4 plant boost costs - Symbiont costs
 		panel = new JPanel();
+		label = new JLabel(Messages.getString("T_HOX4_ENERGY_CONSUMPTION")); //$NON-NLS-1$
+		panel.add(label);
+		hox4costText = new JTextField(Double.toString(Utils.HOX4_ENERGY_CONSUMPTION),6);
+		panel.add(hox4costText);
 		label = new JLabel(Messages.getString("T_SYMBIONT_ENERGY_CONSUMPTION")); //$NON-NLS-1$
 		panel.add(label);
 		symbiontcostText = new JTextField(Double.toString(Utils.SYMBIONT_ENERGY_CONSUMPTION),6);

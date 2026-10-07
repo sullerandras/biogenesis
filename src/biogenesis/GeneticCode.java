@@ -2501,9 +2501,9 @@ public class GeneticCode implements Cloneable, Serializable {
 											} else {
 												if (_genes[j].getStack() > 0) {
 													if (_genes[j].getStack() == 1) {
-														v.setTheta(_genes[j].getTheta()-i*((double)_genes[j].getRadial()/216)*Math.PI/_symmetry);
+														v.setTheta(_genes[j].getTheta()-i*((double)_genes[j].getRadial()/225)*Math.PI/_symmetry);
 													} else {
-														v.setTheta(_genes[j].getTheta()+i*((double)_genes[j].getRadial()/216)*Math.PI/_symmetry);
+														v.setTheta(_genes[j].getTheta()+i*((double)_genes[j].getRadial()/225)*Math.PI/_symmetry);
 													}
 												} else {
 													v.setTheta(_genes[j].getTheta());
@@ -2521,9 +2521,9 @@ public class GeneticCode implements Cloneable, Serializable {
 												} else {
 													if (_genes[j].getStack() > 0) {
 														if (_genes[j].getStack() == 1) {
-															v.setTheta(_genes[j].getTheta()-((double)_genes[j].getRadial()/216)*Math.PI/_symmetry);
+															v.setTheta(_genes[j].getTheta()-((double)_genes[j].getRadial()/225)*Math.PI/_symmetry);
 														} else {
-															v.setTheta(_genes[j].getTheta()+((double)_genes[j].getRadial()/216)*Math.PI/_symmetry);
+															v.setTheta(_genes[j].getTheta()+((double)_genes[j].getRadial()/225)*Math.PI/_symmetry);
 														}
 													} else {
 														v.setTheta(_genes[j].getTheta());
