@@ -373,7 +373,7 @@ public final class Utils {
 	/**
 	 * This is the default energy that is consumed when a crimson segment is used.
 	 */
-	final static double DEF_CRIMSON_ENERGY_CONSUMPTION = 3.16d;
+	final static double DEF_CRIMSON_ENERGY_CONSUMPTION = 3.2d;
 	/**
 	 * This is the default energy that is consumed when a olive segment is used.
 	 */
