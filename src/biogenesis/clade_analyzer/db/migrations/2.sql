@@ -1,0 +1,40 @@
+CREATE TABLE IF NOT EXISTS genetic_codes(
+  GENETIC_CODE_ID  INTEGER PRIMARY KEY ASC,
+  GENETIC_CODE     TEXT    UNIQUE NOT NULL
+);
+drop table if exists clade_summaries;
+drop table if exists clades;
+drop table if exists summary_files;
+
+CREATE TABLE IF NOT EXISTS  summary_files(
+  SUMMARY_FILE_ID  INTEGER PRIMARY KEY ASC,
+  FILENAME         TEXT    UNIQUE NOT NULL,
+  STATE            TEXT    NOT NULL,
+  TIME             INTEGER UNIQUE NOT NULL
+);
+CREATE TABLE IF NOT EXISTS  clades(
+  CLADE_ID         INTEGER PRIMARY KEY ASC,
+  CLADEID          TEXT       UNIQUE NOT NULL,
+  GENETIC_CODE_ID  INTEGER    NOT NULL REFERENCES genetic_codes(GENETIC_CODE_ID),  -- this is the genetic code from the clade_populations table at the last seen time
+  FIRST_SEEN_TIME  INTEGER    NOT NULL,
+  LAST_SEEN_TIME   INTEGER    NOT NULL,
+  MAX_POPULATION   INTEGER    NOT NULL
+);
+CREATE TABLE IF NOT EXISTS  clade_populations(
+  CLADE_POPULATION_ID  INTEGER PRIMARY KEY ASC,
+  CLADE_ID             INTEGER    NOT NULL REFERENCES clades(CLADE_ID),
+  SUMMARY_FILE_ID      INTEGER    NOT NULL REFERENCES summary_files(SUMMARY_FILE_ID),
+  GENETIC_CODE_ID      INTEGER    NOT NULL REFERENCES genetic_codes(GENETIC_CODE_ID),  -- this is the most common genetic code for this clade in this time
+  POPULATION           INTEGER    NOT NULL
+);
+CREATE INDEX IF NOT EXISTS CLADE_POPULATION_SUMMARY_FILE_ID_INDEX ON clade_populations(SUMMARY_FILE_ID);
+CREATE INDEX IF NOT EXISTS CLADE_POPULATION_CLADE_ID_INDEX ON clade_populations(CLADE_ID);
+
+CREATE TABLE IF NOT EXISTS  organisms(
+  ID                   INTEGER PRIMARY KEY ASC,
+  CLADE_POPULATION_ID  INTEGER    NOT NULL REFERENCES clade_populations(CLADE_POPULATION_ID),
+  X                    INTEGER    NOT NULL,
+  Y                    INTEGER    NOT NULL
+);
+CREATE INDEX IF NOT EXISTS ORGANISMS_CLADE_POPULATION_ID_INDEX ON organisms(CLADE_POPULATION_ID);
+
