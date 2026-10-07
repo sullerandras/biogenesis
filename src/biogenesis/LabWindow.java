@@ -45,6 +45,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
@@ -987,6 +988,13 @@ public class LabWindow extends JDialog implements ActionListener, ChangeListener
 		});
 		buttonsPanel.add(exportButton);
 		getContentPane().add(buttonsPanel,BorderLayout.SOUTH);
+		
+		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, genesScroll, drawPanel);
+		splitPane.setResizeWeight(0.5);
+		splitPane.setOneTouchExpandable(true);
+		splitPane.setContinuousLayout(true);
+
+		getContentPane().add(splitPane, BorderLayout.CENTER);
 
 		getRootPane().setDefaultButton(okButton);
 	}
