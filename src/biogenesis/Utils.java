@@ -219,6 +219,10 @@ public final class Utils {
 	 */
 	final static int DEF_DARKJADE_DELAY = 4;
 	/**
+	 * This is the CO2 fail threshold of Hox4 plants.
+	 */
+	final static int DEF_HOX4_THRESHOLD = 1000;
+	/**
 	 * This is the default energy that is consumed when a red segment is used.
 	 */
 	final static double DEF_RED_ENERGY_CONSUMPTION = 0d;
@@ -971,6 +975,10 @@ public final class Utils {
 	 * This is the energy that is consumed when a dark jade segment regenerates.
 	 */
 	static int DARKJADE_DELAY = DEF_DARKJADE_DELAY;
+	/**
+	 * This is the CO2 fail threshold of Hox4 plants.
+	 */
+	static int HOX4_THRESHOLD = DEF_HOX4_THRESHOLD;
 	/**
 	 * This is the energy that is consumed when a red segment is used.
 	 */
@@ -2098,6 +2106,7 @@ public final class Utils {
 			prefs.putDouble("GOLD_DIVISOR",GOLD_DIVISOR); //$NON-NLS-1$
 			prefs.putDouble("DODGE_ENERGY_CONSUMPTION",DODGE_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			prefs.putInt("DARKJADE_DELAY",DARKJADE_DELAY); //$NON-NLS-1$
+			prefs.putInt("HOX4_THRESHOLD",HOX4_THRESHOLD); //$NON-NLS-1$
 			prefs.putDouble("RED_ENERGY_CONSUMPTION",RED_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			prefs.putDouble("GREEN_ENERGY_CONSUMPTION",GREEN_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			prefs.putDouble("BLUE_ENERGY_CONSUMPTION",BLUE_ENERGY_CONSUMPTION); //$NON-NLS-1$
@@ -2303,6 +2312,7 @@ public final class Utils {
 			GOLD_DIVISOR = prefs.getDouble("GOLD_DIVISOR",DEF_GOLD_DIVISOR); //$NON-NLS-1$
 			DODGE_ENERGY_CONSUMPTION = prefs.getDouble("DODGE_ENERGY_CONSUMPTION",DEF_DODGE_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			DARKJADE_DELAY = prefs.getInt("DARKJADE_DELAY",DEF_DARKJADE_DELAY); //$NON-NLS-1$
+			HOX4_THRESHOLD = prefs.getInt("HOX4_THRESHOLD",DEF_HOX4_THRESHOLD); //$NON-NLS-1$
 			RED_ENERGY_CONSUMPTION = prefs.getDouble("RED_ENERGY_CONSUMPTION",DEF_RED_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			GREEN_ENERGY_CONSUMPTION = prefs.getDouble("GREEN_ENERGY_CONSUMPTION",DEF_GREEN_ENERGY_CONSUMPTION); //$NON-NLS-1$
 			BLUE_ENERGY_CONSUMPTION = prefs.getDouble("BLUE_ENERGY_CONSUMPTION",DEF_BLUE_ENERGY_CONSUMPTION); //$NON-NLS-1$
