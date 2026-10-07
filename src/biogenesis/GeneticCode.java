@@ -2489,7 +2489,7 @@ public class GeneticCode implements Cloneable, Serializable {
 										x0[i][j]=y0[i][j]=0;
 										v.setTheta(_genes[j].getTheta());
 									} else {
-										if ((i<(_symmetry - _genes[j].getFold())) || (i==1)) {
+										if ((j==0) || (i<(_symmetry - _genes[j].getFold())) || (i==1)) {
 											x0[i][j] = x1[i-1][j];
 											y0[i][j] = y1[i-1][j];
 											if (_genes[j].getStack() == -2) {
