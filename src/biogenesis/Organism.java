@@ -1590,9 +1590,17 @@ public class Organism extends Rectangle {
 		_filterfeeding = 0;
 		double photofactor = 0;
 		if (_symmetry == 8) {
-			photofactor = 1961 + Math.round(6000 / ((double)_geneticCode.getNGenes() + 2)) + Math.round(6315 / (double)_symmetry);
+			if (_geneticCode.getNGenes() != 1) {
+				photofactor = 1961 + Math.round(6000 / ((double)_geneticCode.getNGenes() + 2)) + Math.round(6315 / (double)_symmetry);
+			} else {
+				photofactor = 1961 + 2200 + Math.round(6315 / (double)_symmetry);
+			}
 		} else {
-			photofactor = 1961.329 + Math.round(6000 / ((double)_geneticCode.getNGenes() + 2)) + Math.round(6315 / (double)_symmetry);
+			if (_geneticCode.getNGenes() != 1) {
+				photofactor = 1961.329 + Math.round(6000 / ((double)_geneticCode.getNGenes() + 2)) + Math.round(6315 / (double)_symmetry);
+			} else {
+				photofactor = 1961.329 + 2200 + Math.round(6315 / (double)_symmetry);
+			}
 		}
 		double photomultiplier = (photofactor * 0.0006) / Utils.GREEN_OBTAINED_ENERGY_DIVISOR;
 		for (i=_segments-1; i>=0; i--) {
@@ -2541,31 +2549,31 @@ public class Organism extends Rectangle {
     			if (((_geneticCode.getGene(j).getBranch() == 0) && (_geneticCode.getGene(j).getStack() != 0)) || (j==0)) {
     				if (((j==0) && (_geneticCode.getGene(j).getStack() == 0)) || (_geneticCode.getGene(j).getStack() == -1)) {
     					if (_geneticCode.getGene(j).getFold() >= (_symmetry - 2)) {
-    						hoxfactor += ((0.1 * (double)_geneticCode.getGene(j).getLength()) * 0.5);
+    						hoxfactor += ((0.125 * ((double)_geneticCode.getGene(j).getLength() - 2)) * 0.5);
     					} else {
-    						hoxfactor += (((_symmetry-1) - (double)_geneticCode.getGene(j).getFold()) * (0.1 * (double)_geneticCode.getGene(j).getLength()) * 0.5);
+    						hoxfactor += (((_symmetry-1) - (double)_geneticCode.getGene(j).getFold()) * (0.125 * ((double)_geneticCode.getGene(j).getLength() - 2)) * 0.5);
     					} 
     				} else {
     					if (_geneticCode.getGene(j).getFold() >= (_symmetry - 2)) {
     						if (_geneticCode.getGene(j).getRadial() < 20) {
-    							hoxfactor += ((0.1 * (double)_geneticCode.getGene(j).getLength()) * ((20 + _geneticCode.getGene(j).getRadial())/ 40));
+    							hoxfactor += ((0.125 * ((double)_geneticCode.getGene(j).getLength() - 2)) * ((20 + _geneticCode.getGene(j).getRadial())/ 40));
     						} else {
     							if (_geneticCode.getGene(j).getRadial() > 180) {
-    								hoxfactor += ((0.1 * (double)_geneticCode.getGene(j).getLength()) * (180 / _geneticCode.getGene(j).getRadial()));
+    								hoxfactor += ((0.125 * ((double)_geneticCode.getGene(j).getLength() - 2)) * (180 / _geneticCode.getGene(j).getRadial()));
     							} else {
-    								hoxfactor += (0.1 * (double)_geneticCode.getGene(j).getLength());
+    								hoxfactor += (0.125 * ((double)_geneticCode.getGene(j).getLength() - 2));
     							}
     						}
     					} else {
     						if (_geneticCode.getGene(j).getRadial() < 20) {
-    							hoxfactor += (((_symmetry-1) - (double)_geneticCode.getGene(j).getFold()) * (0.1 * (double)_geneticCode.getGene(j).getLength())
+    							hoxfactor += (((_symmetry-1) - (double)_geneticCode.getGene(j).getFold()) * (0.125 * ((double)_geneticCode.getGene(j).getLength() - 2))
     									* ((20 + _geneticCode.getGene(j).getRadial())/ 40));
     						} else {
     							if (_geneticCode.getGene(j).getRadial() > 180) {
-    								hoxfactor += (((_symmetry-1) - (double)_geneticCode.getGene(j).getFold()) * (0.1 * (double)_geneticCode.getGene(j).getLength())
+    								hoxfactor += (((_symmetry-1) - (double)_geneticCode.getGene(j).getFold()) * (0.125 * ((double)_geneticCode.getGene(j).getLength() - 2))
     										* (180 / _geneticCode.getGene(j).getRadial()));
     							} else {
-    								hoxfactor += (((_symmetry-1) - (double)_geneticCode.getGene(j).getFold()) * (0.1 * (double)_geneticCode.getGene(j).getLength()));
+    								hoxfactor += (((_symmetry-1) - (double)_geneticCode.getGene(j).getFold()) * (0.125 * ((double)_geneticCode.getGene(j).getLength() - 2)));
     							}
     						}
     					} 
@@ -2576,10 +2584,10 @@ public class Organism extends Rectangle {
     		}
     		if ((hoxfactor > 0) && (hoxmulti > 0)) {
     			hoxmulti = (((hoxfactor/(_symmetry-1)) * hoxmulti) + 1);
-    			if ((!_isaconsumer) && (!_isakiller) && (!_isinfectious)) {
-        			hoxmulti = (((Math.sqrt(hoxmulti))/8) + 1);
+    			if ((!_isaconsumer) && (!_isakiller) && (!_isinfectious) && (!_isenhanced)) {
+        			hoxmulti = (((Math.sqrt(hoxmulti))/6) + 1);
     			} else {
-        			hoxmulti = (((Math.sqrt(hoxmulti))/80) + 1);
+        			hoxmulti = (((Math.sqrt(hoxmulti))/60) + 1);
     			}
         		int h;
         		for (h=_segments-1; h>=0; h--) {
@@ -3141,10 +3149,25 @@ public class Organism extends Rectangle {
             _timeToReproduceMax = 8;
             int additionalcentersegments = 0;
     		for (int j = 0; j < _geneticCode.getNGenes(); j++) {
-    			if ((_geneticCode.getGene(j).getBranch() != 0) || (j==0)) {
+    			if ((_geneticCode.getGene(j).getBranch() != 0) || (j==0) || ((_geneticCode.getHox() == 3) && (_geneticCode.getMirror()==1)) || (_geneticCode.getHox() == 4)) {
     				_timeToReproduceMax += 6;
     			} else {
-    				additionalcentersegments += _symmetry;
+    				if (_geneticCode.getHox() <= 2) {
+    					additionalcentersegments += _symmetry;
+    				} else {
+    					if ((_geneticCode.getHox() == 3) && (_geneticCode.getMirror() == 0) && (_geneticCode.getGene(j).getStack() != 0)) {
+    						additionalcentersegments += _symmetry;
+    						if (_symmetry > 4) {
+    							if ((_geneticCode.getGene(j).getStack() == -2) || (_symmetry%2 != 0)) {
+    								_timeToReproduceMax += 2;
+    							} else {
+    								if (_geneticCode.getGene(j).getStack() == -1) {
+    									_timeToReproduceMax += 1;
+    								}
+    							}
+    						}
+    					}
+    				}
     				if ((_symmetry + additionalcentersegments) > 8) {
     					_timeToReproduceMax += 9;
     				} else {
@@ -3790,10 +3813,25 @@ public class Organism extends Rectangle {
                 _timeToReproduceMax = 8;
                 int additionalcentersegments = 0;
         		for (int j = 0; j < _geneticCode.getNGenes(); j++) {
-        			if ((_geneticCode.getGene(j).getBranch() != 0) || (j==0)) {
+        			if ((_geneticCode.getGene(j).getBranch() != 0) || (j==0) || ((_geneticCode.getHox() == 3) && (_geneticCode.getMirror()==1)) || (_geneticCode.getHox() == 4)) {
         				_timeToReproduceMax += 6;
         			} else {
-        				additionalcentersegments += _symmetry;
+        				if (_geneticCode.getHox() <= 2) {
+        					additionalcentersegments += _symmetry;
+        				} else {
+        					if ((_geneticCode.getHox() == 3) && (_geneticCode.getMirror() == 0) && (_geneticCode.getGene(j).getStack() != 0)) {
+        						additionalcentersegments += _symmetry;
+        						if (_symmetry > 4) {
+        							if ((_geneticCode.getGene(j).getStack() == -2) || (_symmetry%2 != 0)) {
+        								_timeToReproduceMax += 2;
+        							} else {
+        								if (_geneticCode.getGene(j).getStack() == -1) {
+        									_timeToReproduceMax += 1;
+        								}
+        							}
+        						}
+        					}
+        				}
         				if ((_symmetry + additionalcentersegments) > 8) {
         					_timeToReproduceMax += 9;
         				} else {
@@ -4376,10 +4414,25 @@ public class Organism extends Rectangle {
                 _timeToReproduceMax = 8;
                 int additionalcentersegments = 0;
         		for (int j = 0; j < _geneticCode.getNGenes(); j++) {
-        			if ((_geneticCode.getGene(j).getBranch() != 0) || (j==0)) {
+        			if ((_geneticCode.getGene(j).getBranch() != 0) || (j==0) || ((_geneticCode.getHox() == 3) && (_geneticCode.getMirror()==1)) || (_geneticCode.getHox() == 4)) {
         				_timeToReproduceMax += 6;
         			} else {
-        				additionalcentersegments += _symmetry;
+        				if (_geneticCode.getHox() <= 2) {
+        					additionalcentersegments += _symmetry;
+        				} else {
+        					if ((_geneticCode.getHox() == 3) && (_geneticCode.getMirror() == 0) && (_geneticCode.getGene(j).getStack() != 0)) {
+        						additionalcentersegments += _symmetry;
+        						if (_symmetry > 4) {
+        							if ((_geneticCode.getGene(j).getStack() == -2) || (_symmetry%2 != 0)) {
+        								_timeToReproduceMax += 2;
+        							} else {
+        								if (_geneticCode.getGene(j).getStack() == -1) {
+        									_timeToReproduceMax += 1;
+        								}
+        							}
+        						}
+        					}
+        				}
         				if ((_symmetry + additionalcentersegments) > 8) {
         					_timeToReproduceMax += 9;
         				} else {
@@ -4542,7 +4595,7 @@ public class Organism extends Rectangle {
 														if (i%2==0) {
 															v.setTheta((_geneticCode.getGene(j).getTheta()));
 														} else {
-															if (_geneticCode.getGene(j).getFold() == 0) {
+															if (_geneticCode.getGene(j).getFold() <= 0) {
 																v.setTheta(((double)_geneticCode.getGene(j).getRadial()/45));
 															} else {
 																v.setTheta(_geneticCode.getGene(j).getTheta()+((double)1/45)*Math.PI/symmetry);
@@ -4556,7 +4609,7 @@ public class Organism extends Rectangle {
 																if (i%2==0) {
 																	v.setTheta((_geneticCode.getGene(j).getTheta()));
 																} else {
-																	if (_geneticCode.getGene(j).getFold() == 0) {
+																	if (_geneticCode.getGene(j).getFold() <= 0) {
 																		v.setTheta(((double)_geneticCode.getGene(j).getRadial()/45)+i*2*Math.PI/symmetry);
 																	} else {
 																		v.setTheta(_geneticCode.getGene(j).getTheta()+((double)1/45)+(i-1)*2*Math.PI/symmetry);
@@ -4574,7 +4627,7 @@ public class Organism extends Rectangle {
 												                    _startPointY[segment] = _endPointY[((i - 2) * sequence)];
 																	// x0[i][j] = x1[i-2][0];
 																	// y0[i][j] = y1[i-2][0];
-																	if (_geneticCode.getGene(j).getFold() == 0) {
+																	if (_geneticCode.getGene(j).getFold() <= 0) {
 																		v.setTheta(((double)_geneticCode.getGene(j).getRadial()/45)+i*2*Math.PI/symmetry);
 																	} else {
 																		v.setTheta(_geneticCode.getGene(j).getTheta()+((double)1/45)+(i-1)*2*Math.PI/symmetry);
@@ -4588,7 +4641,7 @@ public class Organism extends Rectangle {
 																if (i%2==0) {
 																	v.setTheta((_geneticCode.getGene(j).getTheta()));
 																} else {
-																	if (_geneticCode.getGene(j).getFold() == 0) {
+																	if (_geneticCode.getGene(j).getFold() <= 0) {
 																		v.setTheta(((double)_geneticCode.getGene(j).getRadial()/45));
 																	} else {
 																		v.setTheta(_geneticCode.getGene(j).getTheta()+((double)1/45)*Math.PI/symmetry);
@@ -4611,7 +4664,7 @@ public class Organism extends Rectangle {
 																	v.invertX();
 																	v.invertY();
 																} else {
-																	if (_geneticCode.getGene(j).getFold() == 0) {
+																	if (_geneticCode.getGene(j).getFold() <= 0) {
 																		v.setTheta(((double)_geneticCode.getGene(j).getRadial()/45));
 																		v.invertX();
 																		v.invertY();
@@ -4630,48 +4683,41 @@ public class Organism extends Rectangle {
 									} else {										
 										if ((_geneticCode.getGene(j).getStack() == 0) && (j>=1)) {
 											if (symmetry%2==0) {
-												if ((_geneticCode.getGene(0).getStack() != 0) || (_geneticCode.getGene(0).getBranch() == 0) || (symmetry < 8)) {
+												if (i<(symmetry - (2 * Math.round((double)_geneticCode.getGene(j).getFold()/2)))) {
 													if (i<=1) {
-														_startPointX[segment] = 0;
-													    _startPointY[segment] = 0;
-													} else {
-														if (i<(symmetry - (2 * Math.round((double)_geneticCode.getGene(j).getFold()/2)))) {
-															if ((_geneticCode.getGene(0).getStack() == 0) && (_geneticCode.getGene(0).getFold() > 0)) {
-																if (symmetry == 4) {
-																	_startPointX[segment] = _endPointX[((i - 2) * sequence)];
-												                    _startPointY[segment] = _endPointY[((i - 2) * sequence)];
-																	// x0[i][j] = x1[i-2][0];
-																	// y0[i][j] = y1[i-2][0];
-																} else {
-																	if (i>=4) {
-																		_startPointX[segment] = _endPointX[i * sequence];
-													                    _startPointY[segment] = _endPointY[i * sequence];
-																		// x0[i][j] = x1[i][0];
-																		// y0[i][j] = y1[i][0];	
-																	} else {
-																		_startPointX[segment] = _endPointX[((i - 2) * sequence)];
-													                    _startPointY[segment] = _endPointY[((i - 2) * sequence)];
-																		// x0[i][j] = x1[i-2][0];
-																		// y0[i][j] = y1[i-2][0];
-																	}
-																}
-															} else {
-																_startPointX[segment] = _endPointX[((i - 2) * sequence)];
-											                    _startPointY[segment] = _endPointY[((i - 2) * sequence)];
-																// x0[i][j] = x1[i-2][0];
-																// y0[i][j] = y1[i-2][0];
-															}
-														} else {
+														if ((_geneticCode.getGene(j).getFold()%2 == 0) || (_geneticCode.getGene(j).getFold() <= 0)) {
 															_startPointX[segment] = 0;
-														    _startPointY[segment] = 0;
+														    _startPointY[segment] = 0;															
+														} else {
+															_startPointX[segment] = _endPointX[0];
+										                    _startPointY[segment] = _endPointY[0];
+															// x0[i][j] = x1[0][0];
+															// y0[i][j] = y1[0][0];
+														}
+													} else {
+														if ((_geneticCode.getGene(j).getFold()%2 == 0) || (_geneticCode.getGene(j).getFold() <= 0)) {
+															_startPointX[segment] = _endPointX[((i - 2) * sequence)];
+										                    _startPointY[segment] = _endPointY[((i - 2) * sequence)];
+															// x0[i][j] = x1[i-2][0];
+															// y0[i][j] = y1[i-2][0];
+														} else {
+															_startPointX[segment] = _endPointX[i * sequence];
+										                    _startPointY[segment] = _endPointY[i * sequence];
+															// x0[i][j] = x1[i][0];
+															// y0[i][j] = y1[i][0];
 														}
 													}
 												} else {
-													_startPointX[segment] = _endPointX[i * sequence];
-								                    _startPointY[segment] = _endPointY[i * sequence];
-													// x0[i][j] = x1[i][0];
-													// y0[i][j] = y1[i][0];
-												}
+													if (_geneticCode.getGene(j).getFold()%2 == 0) {
+														_startPointX[segment] = 0;
+													    _startPointY[segment] = 0;
+													} else {
+														_startPointX[segment] = _endPointX[0];
+									                    _startPointY[segment] = _endPointY[0];
+														// x0[i][j] = x1[0][0];
+														// y0[i][j] = y1[0][0];
+													}
+												}												
 											} else {
 												if (i==0) {
 													_startPointX[segment] = 0;
@@ -4705,7 +4751,7 @@ public class Organism extends Rectangle {
 														_startPointX[segment] = 0;
 													    _startPointY[segment] = 0;
 													} else {
-														if ((_geneticCode.getGene(0).getStack() == 0) && ((_geneticCode.getGene(0).getBranch() == 0) || (_symmetry < 8))) {
+														if ((_geneticCode.getGene(0).getStack() == 0) && (_geneticCode.getGene(0).getBranch() == 0)) {
 															_startPointX[segment] = 0;
 														    _startPointY[segment] = 0;
 														} else {
@@ -4722,8 +4768,8 @@ public class Organism extends Rectangle {
 													}
 												} else {
 													if (_geneticCode.getGene(j).getStack() == 0) {
-														if ((_geneticCode.getGene(j).getBranch() == -1) && (symmetry == 8)) {
-															if ((_geneticCode.getGene(j).getFold() <= 0) || (i<=3)) {
+														if ((_geneticCode.getGene(j).getBranch() == -1) && (symmetry >= 6)) {
+															if ((_geneticCode.getGene(j).getFold() <= 0) || (i<symmetry-2)) {
 																if ((i==4) || (i==5)) {
 																	_startPointX[segment] = 0;
 																    _startPointY[segment] = 0;
@@ -4734,15 +4780,10 @@ public class Organism extends Rectangle {
 																	// y0[i][j] = y1[i-2][0];
 																}
 															} else {
-																if (i<=5) {
-																	_startPointX[segment] = _endPointX[((i - 4) * sequence)];
-												                    _startPointY[segment] = _endPointY[((i - 4) * sequence)];
-																	// x0[i][j] = x1[i-4][0];
-																	// y0[i][j] = y1[i-4][0];
-																} else {
-																	_startPointX[segment] = 0;
-																    _startPointY[segment] = 0;
-																}
+																_startPointX[segment] = _endPointX[0];
+											                    _startPointY[segment] = _endPointY[0];
+																// x0[i][j] = x1[0][0];
+																// y0[i][j] = y1[0][0];
 															}
 															if ((i<=3)) {
 																v.setTheta(0.5*Math.PI);
@@ -4750,7 +4791,7 @@ public class Organism extends Rectangle {
 																v.setTheta((Math.abs(_geneticCode.getGene(j).getStack())-0.5)*Math.PI);
 															}
 														} else {
-															if ((_geneticCode.getGene(j).getFold() <= 0) || (i>=4)) {
+															if ((_geneticCode.getGene(j).getFold() <= 0) || (i<symmetry-2)) {
 																if (i<=3) {
 																	_startPointX[segment] = 0;
 																    _startPointY[segment] = 0;
@@ -4761,10 +4802,10 @@ public class Organism extends Rectangle {
 																	// y0[i][j] = y1[i-2][0];
 																}
 															} else {
-																_startPointX[segment] = _endPointX[((i - 2) * sequence)];
-											                    _startPointY[segment] = _endPointY[((i - 2) * sequence)];
-																// x0[i][j] = x1[i-2][0];
-																// y0[i][j] = y1[i-2][0];											
+																_startPointX[segment] = _endPointX[0];
+											                    _startPointY[segment] = _endPointY[0];
+																// x0[i][j] = x1[0][0];
+																// y0[i][j] = y1[0][0];											
 															}
 															v.setTheta((Math.abs(_geneticCode.getGene(j).getStack())-0.5)*Math.PI);
 														}
@@ -4798,7 +4839,7 @@ public class Organism extends Rectangle {
 																// x0[i][j] = x1[i][0];
 																// y0[i][j] = y1[i][0];
 															} else {
-																if ((_geneticCode.getGene(0).getStack() == 0) && ((_geneticCode.getGene(0).getBranch() == 0) || (symmetry < 8))) {
+																if ((_geneticCode.getGene(0).getStack() == 0) && (_geneticCode.getGene(0).getBranch() == 0)) {
 																	_startPointX[segment] = 0;
 																    _startPointY[segment] = 0;
 																} else {
@@ -4889,7 +4930,7 @@ public class Organism extends Rectangle {
 									if ((_geneticCode.getGene(j).getStack() == 0) && (j>=1)) {
 										_startPointX[segment] = 0;
 									    _startPointY[segment] = 0;
-										if (_geneticCode.getGene(j).getFold() == 0)
+										if (_geneticCode.getGene(j).getFold() <= 0)
 											v.setTheta(_geneticCode.getGene(j).getTheta());
 										else {
 											v.setTheta(_geneticCode.getGene(0).getTheta());
@@ -5176,7 +5217,7 @@ public class Organism extends Rectangle {
 														if (i%2==0) {
 															v.setTheta((_geneticCode.getGene(j).getTheta()));
 														} else {
-															if (_geneticCode.getGene(j).getFold() == 0) {
+															if (_geneticCode.getGene(j).getFold() <= 0) {
 																v.setTheta(((double)_geneticCode.getGene(j).getRadial()/45));
 															} else {
 																v.setTheta(_geneticCode.getGene(j).getTheta()+((double)1/45)*Math.PI/symmetry);
@@ -5190,7 +5231,7 @@ public class Organism extends Rectangle {
 																if (i%2==0) {
 																	v.setTheta((_geneticCode.getGene(j).getTheta()));
 																} else {
-																	if (_geneticCode.getGene(j).getFold() == 0) {
+																	if (_geneticCode.getGene(j).getFold() <= 0) {
 																		v.setTheta(((double)_geneticCode.getGene(j).getRadial()/45)+i*2*Math.PI/symmetry);
 																	} else {
 																		v.setTheta(_geneticCode.getGene(j).getTheta()+((double)1/45)+(i-1)*2*Math.PI/symmetry);
@@ -5208,7 +5249,7 @@ public class Organism extends Rectangle {
 												                    _startPointY[segment] = _endPointY[((i - 2) * sequence)];
 																	// x0[i][j] = x1[i-2][0];
 																	// y0[i][j] = y1[i-2][0];
-																	if (_geneticCode.getGene(j).getFold() == 0) {
+																	if (_geneticCode.getGene(j).getFold() <= 0) {
 																		v.setTheta(((double)_geneticCode.getGene(j).getRadial()/45)+i*2*Math.PI/symmetry);
 																	} else {
 																		v.setTheta(_geneticCode.getGene(j).getTheta()+((double)1/45)+(i-1)*2*Math.PI/symmetry);
@@ -5222,7 +5263,7 @@ public class Organism extends Rectangle {
 																if (i%2==0) {
 																	v.setTheta((_geneticCode.getGene(j).getTheta()));
 																} else {
-																	if (_geneticCode.getGene(j).getFold() == 0) {
+																	if (_geneticCode.getGene(j).getFold() <= 0) {
 																		v.setTheta(((double)_geneticCode.getGene(j).getRadial()/45));
 																	} else {
 																		v.setTheta(_geneticCode.getGene(j).getTheta()+((double)1/45)*Math.PI/symmetry);
@@ -5245,7 +5286,7 @@ public class Organism extends Rectangle {
 																	v.invertX();
 																	v.invertY();
 																} else {
-																	if (_geneticCode.getGene(j).getFold() == 0) {
+																	if (_geneticCode.getGene(j).getFold() <= 0) {
 																		v.setTheta(((double)_geneticCode.getGene(j).getRadial()/45));
 																		v.invertX();
 																		v.invertY();
@@ -5264,47 +5305,40 @@ public class Organism extends Rectangle {
 									} else {										
 										if ((_geneticCode.getGene(j).getStack() == 0) && (j>=1)) {
 											if (symmetry%2==0) {
-												if ((_geneticCode.getGene(0).getStack() != 0) || (_geneticCode.getGene(0).getBranch() == 0) || (symmetry < 8)) {
+												if (i<(symmetry - (2 * Math.round((double)_geneticCode.getGene(j).getFold()/2)))) {
 													if (i<=1) {
-														_startPointX[segment] = 0;
-													    _startPointY[segment] = 0;
-													} else {
-														if (i<(symmetry - (2 * Math.round((double)_geneticCode.getGene(j).getFold()/2)))) {
-															if ((_geneticCode.getGene(0).getStack() == 0) && (_geneticCode.getGene(0).getFold() > 0)) {
-																if (symmetry == 4) {
-																	_startPointX[segment] = _endPointX[((i - 2) * sequence)];
-												                    _startPointY[segment] = _endPointY[((i - 2) * sequence)];
-																	// x0[i][j] = x1[i-2][0];
-																	// y0[i][j] = y1[i-2][0];
-																} else {
-																	if (i>=4) {
-																		_startPointX[segment] = _endPointX[i * sequence];
-													                    _startPointY[segment] = _endPointY[i * sequence];
-																		// x0[i][j] = x1[i][0];
-																		// y0[i][j] = y1[i][0];	
-																	} else {
-																		_startPointX[segment] = _endPointX[((i - 2) * sequence)];
-													                    _startPointY[segment] = _endPointY[((i - 2) * sequence)];
-																		// x0[i][j] = x1[i-2][0];
-																		// y0[i][j] = y1[i-2][0];
-																	}
-																}
-															} else {
-																_startPointX[segment] = _endPointX[((i - 2) * sequence)];
-											                    _startPointY[segment] = _endPointY[((i - 2) * sequence)];
-																// x0[i][j] = x1[i-2][0];
-																// y0[i][j] = y1[i-2][0];
-															}
-														} else {
+														if ((_geneticCode.getGene(j).getFold()%2 == 0) || (_geneticCode.getGene(j).getFold() <= 0)) {
 															_startPointX[segment] = 0;
-														    _startPointY[segment] = 0;
+														    _startPointY[segment] = 0;															
+														} else {
+															_startPointX[segment] = _endPointX[0];
+										                    _startPointY[segment] = _endPointY[0];
+															// x0[i][j] = x1[0][0];
+															// y0[i][j] = y1[0][0];
+														}
+													} else {
+														if ((_geneticCode.getGene(j).getFold()%2 == 0) || (_geneticCode.getGene(j).getFold() <= 0)) {
+															_startPointX[segment] = _endPointX[((i - 2) * sequence)];
+										                    _startPointY[segment] = _endPointY[((i - 2) * sequence)];
+															// x0[i][j] = x1[i-2][0];
+															// y0[i][j] = y1[i-2][0];
+														} else {
+															_startPointX[segment] = _endPointX[i * sequence];
+										                    _startPointY[segment] = _endPointY[i * sequence];
+															// x0[i][j] = x1[i][0];
+															// y0[i][j] = y1[i][0];
 														}
 													}
 												} else {
-													_startPointX[segment] = _endPointX[i * sequence];
-								                    _startPointY[segment] = _endPointY[i * sequence];
-													// x0[i][j] = x1[i][0];
-													// y0[i][j] = y1[i][0];
+													if (_geneticCode.getGene(j).getFold()%2 == 0) {
+														_startPointX[segment] = 0;
+													    _startPointY[segment] = 0;
+													} else {
+														_startPointX[segment] = _endPointX[0];
+									                    _startPointY[segment] = _endPointY[0];
+														// x0[i][j] = x1[0][0];
+														// y0[i][j] = y1[0][0];
+													}
 												}
 											} else {
 												if (i==0) {
@@ -5335,7 +5369,7 @@ public class Organism extends Rectangle {
 														_startPointX[segment] = 0;
 													    _startPointY[segment] = 0;
 													} else {
-														if ((_geneticCode.getGene(0).getStack() == 0) && ((_geneticCode.getGene(0).getBranch() == 0) || (_symmetry < 8))) {
+														if ((_geneticCode.getGene(0).getStack() == 0) && (_geneticCode.getGene(0).getBranch() == 0)) {
 															_startPointX[segment] = 0;
 														    _startPointY[segment] = 0;
 														} else {
@@ -5352,8 +5386,8 @@ public class Organism extends Rectangle {
 													}
 												} else {
 													if (_geneticCode.getGene(j).getStack() == 0) {
-														if ((_geneticCode.getGene(j).getBranch() == -1) && (symmetry == 8)) {
-															if ((_geneticCode.getGene(j).getFold() <= 0) || (i<=3)) {
+														if ((_geneticCode.getGene(j).getBranch() == -1) && (symmetry >= 6)) {
+															if ((_geneticCode.getGene(j).getFold() <= 0) || (i<symmetry-2)) {
 																if ((i==4) || (i==5)) {
 																	_startPointX[segment] = 0;
 																    _startPointY[segment] = 0;
@@ -5364,15 +5398,10 @@ public class Organism extends Rectangle {
 																	// y0[i][j] = y1[i-2][0];
 																}
 															} else {
-																if (i<=5) {
-																	_startPointX[segment] = _endPointX[((i - 4) * sequence)];
-												                    _startPointY[segment] = _endPointY[((i - 4) * sequence)];
-																	// x0[i][j] = x1[i-4][0];
-																	// y0[i][j] = y1[i-4][0];
-																} else {
-																	_startPointX[segment] = 0;
-																    _startPointY[segment] = 0;
-																}
+																_startPointX[segment] = _endPointX[0];
+											                    _startPointY[segment] = _endPointY[0];
+																// x0[i][j] = x1[0][0];
+																// y0[i][j] = y1[0][0];
 															}
 															if ((i<=3)) {
 																v.setTheta(0.5*Math.PI);
@@ -5380,7 +5409,7 @@ public class Organism extends Rectangle {
 																v.setTheta((Math.abs(_geneticCode.getGene(j).getStack())-0.5)*Math.PI);
 															}
 														} else {
-															if ((_geneticCode.getGene(j).getFold() <= 0) || (i>=4)) {
+															if ((_geneticCode.getGene(j).getFold() <= 0) || (i<symmetry-2)) {
 																if (i<=3) {
 																	_startPointX[segment] = 0;
 																    _startPointY[segment] = 0;
@@ -5391,10 +5420,10 @@ public class Organism extends Rectangle {
 																	// y0[i][j] = y1[i-2][0];
 																}
 															} else {
-																_startPointX[segment] = _endPointX[((i - 2) * sequence)];
-											                    _startPointY[segment] = _endPointY[((i - 2) * sequence)];
-																// x0[i][j] = x1[i-2][0];
-																// y0[i][j] = y1[i-2][0];											
+																_startPointX[segment] = _endPointX[0];
+											                    _startPointY[segment] = _endPointY[0];
+																// x0[i][j] = x1[0][0];
+																// y0[i][j] = y1[0][0];											
 															}
 															v.setTheta((Math.abs(_geneticCode.getGene(j).getStack())-0.5)*Math.PI);
 														}
@@ -5428,7 +5457,7 @@ public class Organism extends Rectangle {
 																// x0[i][j] = x1[i][0];
 																// y0[i][j] = y1[i][0];
 															} else {
-																if ((_geneticCode.getGene(0).getStack() == 0) && ((_geneticCode.getGene(0).getBranch() == 0) || (symmetry < 8))) {
+																if ((_geneticCode.getGene(0).getStack() == 0) && (_geneticCode.getGene(0).getBranch() == 0)) {
 																	_startPointX[segment] = 0;
 																    _startPointY[segment] = 0;
 																} else {
@@ -5519,7 +5548,7 @@ public class Organism extends Rectangle {
 									if ((_geneticCode.getGene(j).getStack() == 0) && (j>=1)) {
 										_startPointX[segment] = 0;
 									    _startPointY[segment] = 0;
-										if (_geneticCode.getGene(j).getFold() == 0)
+										if (_geneticCode.getGene(j).getFold() <= 0)
 											v.setTheta(_geneticCode.getGene(j).getTheta());
 										else {
 											v.setTheta(_geneticCode.getGene(0).getTheta());
@@ -5760,10 +5789,25 @@ public class Organism extends Rectangle {
                 _timeToReproduceMax = 8;
                 int additionalcentersegments = 0;
         		for (int j = 0; j < _geneticCode.getNGenes(); j++) {
-        			if ((_geneticCode.getGene(j).getBranch() != 0) || (j==0)) {
+        			if ((_geneticCode.getGene(j).getBranch() != 0) || (j==0) || ((_geneticCode.getHox() == 3) && (_geneticCode.getMirror()==1)) || (_geneticCode.getHox() == 4)) {
         				_timeToReproduceMax += 6;
         			} else {
-        				additionalcentersegments += _symmetry;
+        				if (_geneticCode.getHox() <= 2) {
+        					additionalcentersegments += _symmetry;
+        				} else {
+        					if ((_geneticCode.getHox() == 3) && (_geneticCode.getMirror() == 0) && (_geneticCode.getGene(j).getStack() != 0)) {
+        						additionalcentersegments += _symmetry;
+        						if (_symmetry > 4) {
+        							if ((_geneticCode.getGene(j).getStack() == -2) || (_symmetry%2 != 0)) {
+        								_timeToReproduceMax += 2;
+        							} else {
+        								if (_geneticCode.getGene(j).getStack() == -1) {
+        									_timeToReproduceMax += 1;
+        								}
+        							}
+        						}
+        					}
+        				}
         				if ((_symmetry + additionalcentersegments) > 8) {
         					_timeToReproduceMax += 9;
         				} else {
@@ -6709,14 +6753,14 @@ public class Organism extends Rectangle {
 									if (Utils.random.nextInt(541) < _world._detritus) {
 										if ((_drift > 0) && (_world._detritus < 500)) {
 											if (Utils.random.nextInt(500) < _world._detritus) {
-												_energy += _world.filterfeeding(((0.912 * (Math.abs(dx) + Math.abs(dy))) + (22.78275 * Math.abs(dtheta))) * _filterfeeding);
+												_energy += _world.filterfeeding(((0.911 * (Math.abs(dx) + Math.abs(dy))) + (22.78275 * Math.abs(dtheta))) * _filterfeeding);
 											}
 										} else {
-											_energy += _world.filterfeeding(((0.912 * (Math.abs(dx) + Math.abs(dy))) + (22.78275 * Math.abs(dtheta))) * _filterfeeding);
+											_energy += _world.filterfeeding(((0.911 * (Math.abs(dx) + Math.abs(dy))) + (22.78275 * Math.abs(dtheta))) * _filterfeeding);
 										}
 									}
 								} else {
-									_energy += _world.filterfeeding(((0.912 * (Math.abs(dx) + Math.abs(dy))) + (22.78275 * Math.abs(dtheta))) * _filterfeeding);
+									_energy += _world.filterfeeding(((0.911 * (Math.abs(dx) + Math.abs(dy))) + (22.78275 * Math.abs(dtheta))) * _filterfeeding);
 								}
 							} else {
 								if ((_drift > 0) && (_world._detritus < 500)) {
@@ -12597,7 +12641,7 @@ public class Organism extends Rectangle {
 			takenEnergyCrimson = takenEnergyCrimson * Utils.ORGANIC_SUBS_PRODUCED;
 			useDetritus(takenEnergyCrimson);
 		}
-		if (!org.active) {
+		if ((!org.active) || ((org._isonlyivy >= 2) && (!_hasgoodvision))) {
 			// candodge is used here to make Crimson piercing stop later
 			_candodge =true;
 		}
@@ -12670,7 +12714,7 @@ public class Organism extends Rectangle {
 			}
 			break;
 		case IVY:
-			if ((org._isonlyivy <= 0) || (_isenhanced)) {
+			if ((org._isonlyivy <= 0) || (_hasgoodvision)) {
 				// Get energy depending on segment length
 				takenEnergyCrimson = Utils.between((_m[seg]) / Utils.CRIMSON_ENERGY_CONSUMPTION, 0, org._energy);
 				// The other organism will be shown in pierced yellow
