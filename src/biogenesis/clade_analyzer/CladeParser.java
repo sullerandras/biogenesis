@@ -56,7 +56,7 @@ public class CladeParser {
     int hox = o.get("_hox").getAsInt();
     int mirror = o.get("_mirror").getAsInt();
 
-    GeneticCode x = new GeneticCode(genes, symmetry, hox, mirror, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, false, false, false, false,
+    GeneticCode x = new GeneticCode(genes, symmetry, hox, mirror, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, false, false, false, false,
         false, false, false, false, false, false, false, false, false, false, false, false);
 
     synchronized (geneticCodeCache) {
@@ -77,7 +77,7 @@ public class CladeParser {
 	int radial = gene.get("_radial").getAsInt();
 
     return new Gene(length, theta, color, branch, stack, fold, chiral, radial, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   }
 
   private static Color parseColor(JsonObject color) {
