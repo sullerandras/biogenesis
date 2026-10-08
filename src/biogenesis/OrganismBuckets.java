@@ -2,7 +2,6 @@ package biogenesis;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 
 /**
  * Stores a 2D array of buckets, and stores Organisms in one or more buckets that the organism touches.
@@ -21,22 +20,26 @@ import java.util.Collections;
  *    |           |           |           |
  *    ...
  * </pre>
+ *
+ * The buckets are not synchronized: World.time() fills them (holding the
+ * _organisms lock, like the drawing code that reads them) before handing them
+ * to the worker threads, and nothing modifies them while organisms move.
  */
 public class OrganismBuckets {
   private final int bucketSize;
   private final int maxWidth;
   private final int maxHeight;
-  private final Collection<Organism>[][] buckets;
+  private final ArrayList<Organism>[][] buckets;
 
   public OrganismBuckets(final int mapWidth, final int mapHeight, final int bucketSize) {
     this.bucketSize = bucketSize;
 
     this.maxWidth = (mapWidth + bucketSize - 1) / bucketSize;
     this.maxHeight = (mapHeight + bucketSize - 1) / bucketSize;
-    this.buckets = new Collection[maxHeight + 1][maxWidth + 1];
+    this.buckets = new ArrayList[maxHeight + 1][maxWidth + 1];
     for (int y = 0; y <= maxHeight; y++) {
       for (int x = 0; x <= maxWidth; x++) {
-        buckets[y][x] = Collections.synchronizedList(new ArrayList<>());
+        buckets[y][x] = new ArrayList<>();
       }
     }
   }
@@ -90,24 +93,13 @@ public class OrganismBuckets {
     final int maxx = Math.min(maxWidth, (int) (o.getMaxX() / (double) bucketSize));
     final int maxy = Math.min(maxHeight, (int) (o.getMaxY() / (double) bucketSize));
 
-    if (minx == maxx && miny == maxy) {
-      synchronized (buckets[miny][minx]) {
-        for (Organism match : buckets[miny][minx]) {
-          if (matcher.match(match)) {
-            return match;
-          }
-        }
-      }
-      return null;
-    }
-
     for (int y = miny; y <= maxy; y++) {
       for (int x = minx; x <= maxx; x++) {
-        synchronized (buckets[y][x]) {
-          for (Organism match : buckets[y][x]) {
-            if (matcher.match(match)) {
-              return match;
-            }
+        final ArrayList<Organism> bucket = buckets[y][x];
+        for (int i = 0, n = bucket.size(); i < n; i++) {
+          final Organism match = bucket.get(i);
+          if (matcher.match(match)) {
+            return match;
           }
         }
       }
