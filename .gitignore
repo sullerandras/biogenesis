@@ -8,3 +8,4 @@ build
 build-src
 /test*
 !/tests
+perf/tools

@@ -1,0 +1,2 @@
+	// ---- perf/mirror: persists across frames (see CollisionMirror) -------
+	transient CollisionMirror collisionMirror;

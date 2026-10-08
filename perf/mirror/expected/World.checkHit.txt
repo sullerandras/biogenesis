@@ -1,0 +1,1 @@
+{returnorganismBuckets.findFirst(org1,collidingOrganism->{if(collidingOrganism!=org1){if(org1.intersects(collidingOrganism)){if(collidingOrganism.getEnergy()>=Utils.tol&&org1.getEnergy()>=Utils.tol){if(org1.contact(collidingOrganism)){returntrue;}}}}returnfalse;});}

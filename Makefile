@@ -1,9 +1,13 @@
 # UTF-8 copy of src/ that javac compiles from (see the src-utf8 target)
 UTF8_SRC = build-src
 
-# Performance patches applied to $(UTF8_SRC) (see perf/perf_patch.py).
+# Performance patches applied to $(UTF8_SRC): sym and contact are
+# perf/perf_patch.py, mirror is the collision mirror (perf/mirror/README.md).
 # "make PERF_PATCHES=none ..." builds the unpatched upstream code.
-PERF_PATCHES ?= sym,contact
+PERF_PATCHES ?= sym,contact,mirror
+
+# Collision mirror source transform (needs JavaParser, fetched on first use)
+MIRROR_TOOL = perf/tools/classes/MirrorTransform.class
 
 # Benchmark parameters: make benchmark WORLD=runs/1.bgw.gz FRAMES=500 THREADS=1
 WORLD ?= runs/1.bgw.gz
@@ -64,6 +68,16 @@ src-utf8:
 		fi; \
 	done
 	@PERF_PATCHES=$(PERF_PATCHES) python3 perf/perf_patch.py $(UTF8_SRC)
+	@case ",$(PERF_PATCHES)," in *,mirror,*) \
+		$(MAKE) -s $(MIRROR_TOOL) && \
+		java -cp "perf/tools/classes:perf/tools/lib/*" MirrorTransform $(UTF8_SRC) perf/mirror \
+			lib/gson-2.10.1.jar lib/xchart-3.8.5.jar;; \
+	esac
+
+$(MIRROR_TOOL): perf/mirror/MirrorTransform.java perf/mirror/fetch-tools.sh
+	@perf/mirror/fetch-tools.sh
+	@mkdir -p perf/tools/classes
+	javac -nowarn -cp "perf/tools/lib/*" -d perf/tools/classes perf/mirror/MirrorTransform.java
 
 compile: clean src-utf8
 	mkdir -p classes

@@ -1,0 +1,24 @@
+	// ---- perf/mirror: collision mirror slot (see CollisionMirror) --------
+	transient CollisionMirror _mirror;
+	transient int _mirrorSlot;
+
+	final void mirrorSyncBounds() {
+		final CollisionMirror m = _mirror;
+		if (m != null) {
+			m.syncBounds(this);
+		}
+	}
+
+	final void mirrorSyncCenter() {
+		final CollisionMirror m = _mirror;
+		if (m != null) {
+			m.syncCenter(this);
+		}
+	}
+
+	final void mirrorSyncSegments() {
+		final CollisionMirror m = _mirror;
+		if (m != null) {
+			m.syncSegments(this);
+		}
+	}
