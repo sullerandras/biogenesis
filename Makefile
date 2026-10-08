@@ -1,6 +1,15 @@
 # UTF-8 copy of src/ that javac compiles from (see the src-utf8 target)
 UTF8_SRC = build-src
 
+# Performance patches applied to $(UTF8_SRC) (see perf/perf_patch.py).
+# "make PERF_PATCHES=none ..." builds the unpatched upstream code.
+PERF_PATCHES ?= sym,contact
+
+# Benchmark parameters: make benchmark WORLD=runs/1.bgw.gz FRAMES=500 THREADS=1
+WORLD ?= runs/1.bgw.gz
+FRAMES ?= 500
+THREADS ?= 1
+
 run: build
 	SKIP_OPENGL=true java -Dsun.java2d.opengl=True -Dsun.java2d.opengl.fbobject=false -jar biogenesis.jar
 
@@ -54,6 +63,7 @@ src-utf8:
 			iconv -f WINDOWS-1252 -t UTF-8 "$$f" > "../$(UTF8_SRC)/$$f" || exit 1; \
 		fi; \
 	done
+	@PERF_PATCHES=$(PERF_PATCHES) python3 perf/perf_patch.py $(UTF8_SRC)
 
 compile: clean src-utf8
 	mkdir -p classes
@@ -80,6 +90,7 @@ clean:
 	rm -rf biogenesis-src.jar
 
 benchmark: compile
-	java -cp lib/gson-2.10.1.jar:classes biogenesis.Benchmark
+	javac -nowarn -cp classes:lib/gson-2.10.1.jar benchmark/biogenesis/Benchmark.java -source 8 -target 8 -d classes
+	java -Djava.awt.headless=true -cp lib/gson-2.10.1.jar:classes biogenesis.Benchmark $(WORLD) $(FRAMES) $(THREADS)
 
 .PHONY: run run-analyzer test build build-analyzer build-src-jar src-utf8 compile compile-analyzer compile-tests clean benchmark
