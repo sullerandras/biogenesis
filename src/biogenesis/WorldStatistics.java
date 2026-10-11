@@ -97,6 +97,8 @@ public class WorldStatistics implements Serializable {
 	private double maxDetritus = 0;
 	
 	private double maxNitrogen = Utils.INITIAL_N2;
+	
+	private double maxAmmonia = Utils.INITIAL_NH3;
 
 	private long maxCarbonDioxideTime;
 
@@ -107,6 +109,8 @@ public class WorldStatistics implements Serializable {
 	private long maxDetritusTime;
 	
 	private long maxNitrogenTime;
+	
+	private long maxAmmoniaTime;
 
 	private double minCarbonDioxide = Utils.INITIAL_CO2 +  Utils.INITIAL_CH4 +  Utils.INITIAL_CO1 +  Utils.INITIAL_DETRITUS + Utils.INITIAL_O2;
 
@@ -117,6 +121,8 @@ public class WorldStatistics implements Serializable {
 	private double minDetritus = Utils.INITIAL_CO2 +  Utils.INITIAL_CH4 +  Utils.INITIAL_CO1 +  Utils.INITIAL_DETRITUS + Utils.INITIAL_O2;
 	
 	private double minNitrogen = Utils.INITIAL_N2;
+	
+	private double minAmmonia = Utils.INITIAL_NH3;
 
 	private long minCarbonDioxideTime;
 
@@ -127,6 +133,8 @@ public class WorldStatistics implements Serializable {
 	private long minDetritusTime;
 	
 	private long minNitrogenTime;
+	
+	private long minAmmoniaTime;
 
 	private Organism aliveOrganismMostChildren;
 	private int aliveOrganismMostChildrenNumber;
@@ -195,6 +203,8 @@ public class WorldStatistics implements Serializable {
 	private List<Double> detritusList = new ArrayList<Double>(MAX_STATS_COUNT);
 	
 	private List<Double> nitrogenList = new ArrayList<Double>(MAX_STATS_COUNT);
+	
+	private List<Double> ammoniaList = new ArrayList<Double>(MAX_STATS_COUNT);
 
 	private List<Double> generationHistogramList = new ArrayList<>(0);
 	private int minGeneration;
@@ -395,6 +405,22 @@ public class WorldStatistics implements Serializable {
 	public long getMinNitrogenTime() {
 		return minNitrogenTime;
 	}
+	
+	public double getMaxAmmonia() {
+		return maxAmmonia;
+	}
+
+	public long getMaxAmmoniaTime() {
+		return maxAmmoniaTime;
+	}
+
+	public double getMinAmmonia() {
+		return minAmmonia;
+	}
+	
+	public long getMinAmmoniaTime() {
+		return minAmmoniaTime;
+	}
 
 	public Organism getAliveOrganismMostChildren() {
 		return aliveOrganismMostChildren;
@@ -547,6 +573,10 @@ public class WorldStatistics implements Serializable {
 	public List<Double> getNitrogenList() {
 		return nitrogenList;
 	}
+	
+	public List<Double> getAmmoniaList() {
+		return ammoniaList;
+	}
 
 	public List<Double> getGenerationHistogramList() {
 		return generationHistogramList;
@@ -614,7 +644,7 @@ public class WorldStatistics implements Serializable {
 		infectionsSum++;
 	}
 
-	public void eventTime(int population, int distinctClades, int distinctCladesWith10Orgs, int distinctCladesWith100Orgs, double O2, double CO2, double CO1, double CH4, double detritus, double N2, Collection<Organism> organisms) {
+	public void eventTime(int population, int distinctClades, int distinctCladesWith10Orgs, int distinctCladesWith100Orgs, double O2, double CO2, double CO1, double CH4, double detritus, double N2, double NH3, Collection<Organism> organisms) {
 		time++;
 		if (deathLastTime > 1.5 * getAverageDeaths()) {
 			if (deathLastTime > 3 * getAverageDeaths()) {
@@ -700,6 +730,14 @@ public class WorldStatistics implements Serializable {
 			minNitrogen = N2;
 			minNitrogenTime = time;
 		}
+		if ((NH3 > maxAmmonia) && (time >= 10)) {
+			maxAmmonia = NH3;
+			maxAmmoniaTime = time;
+		}
+		if ((NH3 < minAmmonia) && (time >= 10)) {
+			minAmmonia = NH3;
+			minAmmoniaTime = time;
+		}
 		if (birthLastTime > maxBirths)
 			maxBirths = birthLastTime;
 		if (deathLastTime > maxDeaths)
@@ -758,11 +796,18 @@ public class WorldStatistics implements Serializable {
 		} else {
 			nitrogenList.add(Double.valueOf(Math.log10(N2/100)));
 		}
+		if (ammoniaList.size() == MAX_STATS_COUNT)
+			ammoniaList.remove(0);
+		if (Double.valueOf(NH3) <= 100) {
+			ammoniaList.add(Double.valueOf(0.0));
+		} else {
+			ammoniaList.add(Double.valueOf(Math.log10(NH3/100)));
+		}
 		deathLastTime = 0;
 		birthLastTime = 0;
 
 		if ((Utils.AUTO_BACKUP_CSV) && (mainWindowInterface.getBioFile() != null)) {
-			mainWindowInterface.getBioFile().appendToCsv(time, population, distinctClades, distinctCladesWith10Orgs, distinctCladesWith100Orgs, O2, CO2, CO1, CH4, detritus, N2, organisms);
+			mainWindowInterface.getBioFile().appendToCsv(time, population, distinctClades, distinctCladesWith10Orgs, distinctCladesWith100Orgs, O2, CO2, CO1, CH4, detritus, N2, NH3, organisms);
 		}
 	}
 

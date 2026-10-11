@@ -3,9 +3,8 @@ package biogenesis.parallel_executor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 import biogenesis.Organism;
 import biogenesis.OrganismBuckets;
@@ -16,7 +15,7 @@ import biogenesis.VisibleWorldInterface;
  * This class is responsible for executing one step of the simulation in parallel for all organisms.
  */
 public class ParallelExecutor {
-  private static Collection<Organism> checkedOrganisms = Collections.synchronizedSet(new HashSet<>());
+  private static Collection<Organism> checkedOrganisms = ConcurrentHashMap.newKeySet();
   private static List<WorkerThread> workerThreads = new ArrayList<>();
 
   private static Collection<Organism> organisms;
@@ -58,7 +57,7 @@ public class ParallelExecutor {
   private static void progressAllOrganismsInParallel(int organismCount, int threadCount) {
     // System.out.println("========================================================================================== in thread "+Thread.currentThread().getName());
     if (checkedOrganisms == null) {
-      checkedOrganisms = new HashSet<>();
+      checkedOrganisms = ConcurrentHashMap.newKeySet();
     }
     checkedOrganisms.clear();
 
@@ -136,10 +135,8 @@ public class ParallelExecutor {
     for (int y = 0; y <= organismBuckets.getMaxHeight(); y++) {
       Collection<Organism> bucket = organismBuckets.getBucket(index, y);
       for (Organism o : bucket) {
-        synchronized (checkedOrganisms) {
-          if (!checkedOrganisms.add(o)) {
-            continue;
-          }
+        if (!checkedOrganisms.add(o)) {
+          continue;
         }
         if (!o.move()) {
           organisms.remove(o);

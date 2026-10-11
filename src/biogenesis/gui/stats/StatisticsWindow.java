@@ -27,6 +27,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.text.NumberFormat;
@@ -92,6 +93,7 @@ public class StatisticsWindow extends JDialog {
 	private GraphInfo methaneGraph;
 	private GraphInfo detritusGraph;
 	private GraphInfo nitrogenGraph;
+	private GraphInfo ammoniaGraph;
 
 	private AtmosphereStatsPanel atmosphereStatsPanel;
 
@@ -103,6 +105,7 @@ public class StatisticsWindow extends JDialog {
 	private ValueAndTimeLabel currentStateCh4Label;
 	private ValueAndTimeLabel currentStateDetritusLabel;
 	private ValueAndTimeLabel currentStateNitrogenLabel;
+	private ValueAndTimeLabel currentStateAmmoniaLabel;
 	private ValueAndTimeLabel currentStatePopulationLabel;
 	private ValueAndTimeLabel currentStateRemainsOfBeingsLabel;
 	private ValueAndTimeLabel currentStateTotalMassLabel;
@@ -174,7 +177,7 @@ public class StatisticsWindow extends JDialog {
 		birthsGraph = new GraphInfo(0, 0, 100, 104, Color.GREEN, Messages.getString("T_BIRTHS")); //$NON-NLS-1$
 		populationGraph = new GraphInfo(0, 0, 100, 104, Color.WHITE, Messages.getString("T_POPULATION")); //$NON-NLS-1$
 		cladesGraph = new GraphInfo(0, 0, 100, 104, Color.ORANGE, Messages.getString("T_CLADES")); //$NON-NLS-1$
-		populationGraphPanel = new GraphPanel(100, 104, nf);
+		populationGraphPanel = new GraphPanel(100, 104, nf, Messages.getString("T_TIME")); //$NON-NLS-1$
 		populationGraphPanel.addGraph(deathsGraph);
 		populationGraphPanel.addGraph(birthsGraph);
 		populationGraphPanel.addGraph(populationGraph);
@@ -184,7 +187,7 @@ public class StatisticsWindow extends JDialog {
 		// Population graph is added here too to make both clade graphs align
 		populationGraph2 = new GraphInfo(0, 0, 100, 104, Color.BLACK, Messages.getString("T_POPULATION")); //$NON-NLS-1$
 		cladesGraph2 = new GraphInfo(0, 0, 100, 104, Color.ORANGE, Messages.getString("T_CLADES")); //$NON-NLS-1$
-		cladesGraphPanel = new GraphPanel(100, 52, nf);
+		cladesGraphPanel = new GraphPanel(100, 52, nf, Messages.getString("T_TIME")); //$NON-NLS-1$
 		cladesGraphPanel.addGraph(populationGraph2);
 		cladesGraphPanel.addGraph(cladesGraph2);
 
@@ -219,13 +222,15 @@ public class StatisticsWindow extends JDialog {
 		methaneGraph = new GraphInfo(0, 0, 100, 104, Color.MAGENTA, Messages.getString("T_METHANE")); //$NON-NLS-1$
 		detritusGraph = new GraphInfo(0, 0, 100, 104, Color.YELLOW, Messages.getString("T_DETRITUS")); //$NON-NLS-1$
 		nitrogenGraph = new GraphInfo(0, 0, 100, 104, Color.CYAN, Messages.getString("T_NITROGEN")); //$NON-NLS-1$
-		atmosphereGraphPanel = new GraphPanel(100, 105, nf);
+		ammoniaGraph = new GraphInfo(0, 0, 100, 104, Color.PINK, Messages.getString("T_AMMONIA")); //$NON-NLS-1$
+		atmosphereGraphPanel = new GraphPanel(100, 105, nf, Messages.getString("T_TIME")); //$NON-NLS-1$
 		atmosphereGraphPanel.addGraph(oxygenGraph);
 		atmosphereGraphPanel.addGraph(carbonDioxideGraph);
 		atmosphereGraphPanel.addGraph(carbonMonoxideGraph);
 		atmosphereGraphPanel.addGraph(methaneGraph);
 		atmosphereGraphPanel.addGraph(detritusGraph);
 		atmosphereGraphPanel.addGraph(nitrogenGraph);
+		atmosphereGraphPanel.addGraph(ammoniaGraph);
 
 		// Atmosphere statistics
 		atmosphereStatsPanel = new AtmosphereStatsPanel(worldStatistics, nf);
@@ -275,6 +280,7 @@ public class StatisticsWindow extends JDialog {
 		currentStateRemainsOfBeingsLabel = new ValueAndTimeLabel(Messages.getString("T_REMAINS_OF_BEINGS"), null, nf); //$NON-NLS-1$
 		currentStateDetritusLabel = new ValueAndTimeLabel(Messages.getString("T_DETRITUS2"), null, nf); //$NON-NLS-1$
 		currentStateNitrogenLabel = new ValueAndTimeLabel(Messages.getString("T_NITROGEN2"), null, nf); //$NON-NLS-1$
+		currentStateAmmoniaLabel = new ValueAndTimeLabel(Messages.getString("T_AMMONIA2"), null, nf); //$NON-NLS-1$
 		currentStateTotalMassLabel = new ValueAndTimeLabel(Messages.getString("T_TOTAL_MASS"), null, nf); //$NON-NLS-1$
 		currentStateTotalEnergyLabel = new ValueAndTimeLabel(Messages.getString("T_TOTAL_ENERGY"), null, nf); //$NON-NLS-1$
 
@@ -314,7 +320,8 @@ public class StatisticsWindow extends JDialog {
 												.addComponent(currentStateCarbonMonoxideLabel)
 												.addComponent(currentStateCh4Label)
 												.addComponent(currentStateDetritusLabel)
-						                        .addComponent(currentStateNitrogenLabel)))
+						                        .addComponent(currentStateNitrogenLabel)
+						                        .addComponent(currentStateAmmoniaLabel)))
 						.addComponent(colorPanelWrapper));
 		currentStatePanelLayout.setVerticalGroup(
 				currentStatePanelLayout.createSequentialGroup()
@@ -336,6 +343,8 @@ public class StatisticsWindow extends JDialog {
 		                .addGroup(currentStatePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
 		                		.addComponent(currentStateTotalEnergyLabel)
 		                        .addComponent(currentStateNitrogenLabel))
+		                .addGroup(currentStatePanelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+		                        .addComponent(currentStateAmmoniaLabel))
 						.addComponent(colorPanelWrapper));
 
 		title = BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED),
@@ -491,7 +500,7 @@ public class StatisticsWindow extends JDialog {
 
 		// Generation histogram
 		generationHistogram = new GraphInfo(0, 0, 0, 104, Color.WHITE, Messages.getString("T_POPULATION")); //$NON-NLS-1$
-		generationHistogramPanel = new GraphPanel(100, 104, nf);
+		generationHistogramPanel = new GraphPanel(100, 104, nf, Messages.getString("T_GENERATION")); //$NON-NLS-1$
 		generationHistogramPanel.addGraph(generationHistogram);
 		JPanel generationHistogramWrapper = new JPanel(new GridLayout(1, 1));
 		generationHistogramWrapper.add(generationHistogramPanel);
@@ -579,7 +588,7 @@ public class StatisticsWindow extends JDialog {
 		colorCounter[37] = new InfoAndColor(0, Utils.ColorROSE);
 		colorCounter[38] = new InfoAndColor(0, Color.CYAN);
 		colorCounter[39] = new InfoAndColor(0, Utils.ColorTEAL);
-		colorCounter[40] = new InfoAndColor(0, Utils.ColorDRIFT);		
+		colorCounter[40] = new InfoAndColor(0, Utils.ColorDRIFT);
 		colorCounter[41] = new InfoAndColor(0, Utils.ColorSPIN);
 		colorCounter[42] = new InfoAndColor(0, Color.YELLOW);
 		colorCounter[43] = new InfoAndColor(0, Utils.ColorAUBURN);
@@ -641,6 +650,7 @@ public class StatisticsWindow extends JDialog {
 		methaneGraph.setMaxAndPoints(max, worldStatistics.getMethaneList());
 		detritusGraph.setMaxAndPoints(max, worldStatistics.getDetritusList());
 		nitrogenGraph.setMaxAndPoints(max, worldStatistics.getNitrogenList());
+		ammoniaGraph.setMaxAndPoints(max, worldStatistics.getAmmoniaList());
 
 		atmosphereStatsPanel.update();
 
@@ -664,6 +674,7 @@ public class StatisticsWindow extends JDialog {
 		currentStateTotalMassLabel.update(worldStatistics.getTotalMass());
 		currentStateNitrogenLabel.update(world.getN2());
 		currentStateTotalEnergyLabel.update(worldStatistics.getTotalEnergy());
+		currentStateAmmoniaLabel.update(world.getNH3());
 		updateColorPanel(colorPanel);
 
 		// Update notable beings panel
@@ -714,6 +725,36 @@ class ColorPanel extends JPanel {
 	public ColorPanel() {
 		setPreferredSize(new Dimension(300, 25));
 		setMinimumSize(new Dimension(100, 25));
+		addMouseMotionListener(new MouseMotionAdapter() {
+			@Override
+			public void mouseMoved(MouseEvent e) {
+				if (total > 0) {
+					double lastX = 0;
+					int width = getSize().width;
+					for (Iterator<InfoAndColor> it = infoList.iterator(); it.hasNext();) {
+						InfoAndColor infoAndColor = it.next();
+						double x = width * infoAndColor.info / (double) total;
+						if (e.getX() >= lastX && e.getX() < lastX + x) {
+							setToolTipText(
+								"<html><body>"+
+								"<table><tr><td>"+
+								"<div style='width: 20px; height: 20px; background-color: #"+
+								String.format("%06X", infoAndColor.color.getRGB() & 0xFFFFFF)+
+								"; display: inline; border: 1px solid black;'></div>"+
+								"</td><td>"+
+								Utils.colorToString(infoAndColor.color)+
+								"</td></tr><tr><td colspan='2'>"+
+								"Count: "+infoAndColor.info+
+								"</td></tr></table>"+
+								"</body></html>"
+								);
+							return;
+						}
+						lastX += x;
+					}
+				}
+			}
+		});
 	}
 
 	public void setColors(List<InfoAndColor> infoList) {

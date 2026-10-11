@@ -147,6 +147,12 @@ public class World implements Serializable{
 	protected volatile double _N2;
 	private static final Object _N2_monitor = new Object();
 	/**
+	 * The amount of NH3 in the atmosphere of this world.
+	 */
+	@Expose
+	protected volatile double _NH3;
+	private static final Object _NH3_monitor = new Object();
+	/**
 	 * Do we need to check for corridors?
 	 */
 	protected boolean _corridorexists;
@@ -369,6 +375,14 @@ public class World implements Serializable{
 		return _N2;
 	}
 	/**
+	 * Returns the amount of NH3 that exist in the atmosphere.
+	 *
+	 * @return  The amount of NH3.
+	 */
+	public double getNH3() {
+		return _NH3;
+	}
+	/**
 	 * Add CO2 to the atmosphere.
 	 *
 	 * @param q  The amount of CO2 to add.
@@ -419,6 +433,17 @@ public class World implements Serializable{
 		}
 	}
 	/**
+	 * Add NH3 to the atmosphere.
+	 *
+	 * @param q  The amount of NH3 to add.
+	 */
+	public void addNH3(double q) {
+		synchronized (_NH3_monitor) {
+			_NH3 += q;
+		}
+	}
+
+	/**
 	 * Substract CO2 from the atmosphere.
 	 *
 	 * @param q  The amount of CO2 to substract.
@@ -466,6 +491,16 @@ public class World implements Serializable{
 	public void decreaseN2(double q) {
 		synchronized (_N2_monitor) {
 			_N2 -= Math.min(q, _N2);
+		}
+	}
+	/**
+	 * Substract NH3 from the atmosphere.
+	 *
+	 * @param q  The amount of NH3 to substract.
+	 */
+	public void decreaseNH3(double q) {
+		synchronized (_NH3_monitor) {
+			_NH3 -= Math.min(q, _NH3);
 		}
 	}
 	/**
@@ -558,6 +593,15 @@ public class World implements Serializable{
 	public double nitrogenrelease(double q) {
 		synchronized (_N2_monitor) {
 			_N2 += q;
+			return q;
+		}
+	}
+	/**
+	 * NH3 is released at a methanotrophic organisms death, or if its nitrogen store is full
+	 */
+	public double ammoniarelease(double q) {
+		synchronized (_NH3_monitor) {
+			_NH3 += q;
 			return q;
 		}
 	}
@@ -688,6 +732,24 @@ public class World implements Serializable{
 		}
 	}
 	/**
+	 * Consume NH3 from the atmosphere to allow the Hox 4 (and sometimes Hox 3) organism to grow further
+	 *
+	 * The NH3 obtained is calculated as follows: A fixed value equal to the number of organisms genes
+	 * is multiplied by the total NH3 in the atmosphere. The result is the total
+	 * amount of NH3 that the organism can get. This value can't be greater than
+	 * the total amount of NH3 in the atmosphere, nor the effectiveness of ammonia fixation
+	 *
+	 * @param q  The fixed value for ammonia fixation
+	 * @return  The amount of NH3 obtained.
+	 */
+	public double ammoniafixation(double q) {
+		synchronized (_NH3_monitor) {
+			q = Utils.min(10d,q*_NH3,_NH3);
+			_NH3 -= q;
+			return q;
+		}
+	}
+	/**
 	 * Constructor of the World class. All internal structures are initialized and
 	 * the world's size is obtained from parameters.
 	 *
@@ -736,6 +798,7 @@ public class World implements Serializable{
 		_CO1 = Utils.INITIAL_CO1;
 		_detritus = Utils.INITIAL_DETRITUS;
 		_N2 = Utils.INITIAL_N2;
+		_NH3 = Utils.INITIAL_NH3;
 		NEXT_ID = 0;
 		NEXT_CLADE_PART = 0;
 		_population = 0;
@@ -844,7 +907,7 @@ public class World implements Serializable{
 			}
 		}
 	}
-	
+
 	/**
 	 * Executes a frame. This method iterates through all objects in the world
 	 * and make them to execute a movement. Here is the place where all action
@@ -876,29 +939,31 @@ public class World implements Serializable{
 				synchronized (_CO1_monitor) {
 					synchronized (_detritus_monitor) {
 						synchronized (_N2_monitor) {
-							double x = Math.min(getCO2()/Utils.CO2_TO_CH4_DIVISOR,getCO2());
-							_CO2 -= x;
-							_CH4 += x;
-							double y = Math.min(getCH4()/Utils.CH4_TO_CO2_DIVISOR,getCH4());
-							_CH4 -= y;
-							_CO2 += y;
-							if (getDetritus() > (getCO2() + 500)) {
-								double s = Math.min((getDetritus()+(getDetritus()-(getCO2() + 500)))/Utils.DETRITUS_TO_CO2_DIVISOR,getDetritus());
-								_detritus -= s;
-								_CO2 += s;
-							} else {
-								double z = Math.min(getDetritus()/Utils.DETRITUS_TO_CO2_DIVISOR,getDetritus());
-								_detritus -= z;
-								_CO2 += z;
-							}
-							if (getCO1() > getCO2()) {
-								double v = Math.min((getCO1()+(getCO1()-getCO2()))/Utils.CO1_TO_CO2_DIVISOR,getCO1());
-								_CO1 -= v;
-								_CO2 += v;
-							} else {
-								double w = Math.min(getCO1()/Utils.CO1_TO_CO2_DIVISOR,getCO1());
-								_CO1 -= w;
-								_CO2 += w;
+							synchronized (_NH3_monitor) {
+								double x = Math.min(getCO2()/Utils.CO2_TO_CH4_DIVISOR,getCO2());
+								_CO2 -= x;
+								_CH4 += x;
+								double y = Math.min(getCH4()/Utils.CH4_TO_CO2_DIVISOR,getCH4());
+								_CH4 -= y;
+								_CO2 += y;
+								if (getDetritus() > (getCO2() + 500)) {
+									double s = Math.min((getDetritus()+(getDetritus()-(getCO2() + 500)))/Utils.DETRITUS_TO_CO2_DIVISOR,getDetritus());
+									_detritus -= s;
+									_CO2 += s;
+								} else {
+									double z = Math.min(getDetritus()/Utils.DETRITUS_TO_CO2_DIVISOR,getDetritus());
+									_detritus -= z;
+									_CO2 += z;
+								}
+								if (getCO1() > getCO2()) {
+									double v = Math.min((getCO1()+(getCO1()-getCO2()))/Utils.CO1_TO_CO2_DIVISOR,getCO1());
+									_CO1 -= v;
+									_CO2 += v;
+								} else {
+									double w = Math.min(getCO1()/Utils.CO1_TO_CO2_DIVISOR,getCO1());
+									_CO1 -= w;
+									_CO2 += w;
+								}								
 							}
 						}
 					}
@@ -909,7 +974,7 @@ public class World implements Serializable{
 			_visibleWorld.getMainWindow().getInfoPanel().recalculate();
 		if (nFrames % 256 == 0) {
 			nFrames = 0;
-			worldStatistics.eventTime(_population, getDistinctCladeIDCount(1), getDistinctCladeIDCount(10), getDistinctCladeIDCount(100), _O2, _CO2, _CO1, _CH4, _detritus, _N2, _organisms);
+			worldStatistics.eventTime(_population, getDistinctCladeIDCount(1), getDistinctCladeIDCount(10), getDistinctCladeIDCount(100), _O2, _CO2, _CO1, _CH4, _detritus, _N2, _NH3, _organisms);
 			_isbackuped = false;
 			_issaved = false;
 		}

@@ -14,6 +14,8 @@ public class GraphTooltipPanel extends JPanel {
   private final Map<String, Double> values = new LinkedHashMap<>();
   private final NumberFormat nf;
   private JLabel label;
+  private String xAxisName;
+  private long xAxisValue;
 
   /**
    * Creates a new instance of GraphTooltipPanel.
@@ -29,6 +31,16 @@ public class GraphTooltipPanel extends JPanel {
   }
 
   /**
+   * Sets the value of the X axis. This will be shown as the first line of the tooltip.
+   * @param name Name of the X axis.
+   * @param value Value of the X axis.
+   */
+  public void setXAxis(String name, long value) {
+    xAxisName = name;
+    xAxisValue = value;
+  }
+
+  /**
    * Adds a new value to the tooltip.
    * @param name Name of the value.
    * @param value Value to add.
@@ -38,7 +50,7 @@ public class GraphTooltipPanel extends JPanel {
 
     updateText();
   }
-  
+
   /**
    * Adds a new value to the tooltip for the atmosphere graph.
    * @param name Name of the value.
@@ -52,6 +64,10 @@ public class GraphTooltipPanel extends JPanel {
 
   private void updateText() {
     StringBuilder sb = new StringBuilder("<html><table>");
+    if (xAxisName != null) {
+      sb.append("<tr><th>").append(xAxisName).append("</th><td>").append(xAxisValue).append("</td></tr>");
+    }
+
     for (Map.Entry<String, Double> entry : values.entrySet()) {
       sb.append("<tr><th>").append(entry.getKey()).append("</th><td>").append(nf.format(entry.getValue())).append("</td></tr>");
     }

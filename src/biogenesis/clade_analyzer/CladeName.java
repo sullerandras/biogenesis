@@ -38,13 +38,13 @@ public class CladeName {
 
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    
+
   //Hox body plan
     sb.append(hox);
-    
+
     // separator
     sb.append(" - ");
-    
+
     if (isVirus) {
       sb.append("V");
     }
@@ -87,7 +87,7 @@ public class CladeName {
       // tertiary colors
       sb.append(tertiaryColors);
     }
-    
+
     if (quaternaryColors.length() > 0) {
         // separator
         sb.append(" - ");
