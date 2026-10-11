@@ -82,6 +82,7 @@ public class ParamDialog extends JDialog {
 	private JTextField initialCH4Text = null;
 	private JTextField initialDetritusText = null;
 	private JTextField initialN2Text = null;
+	private JTextField initialNH3Text = null;
 	private JTextField maxageText = null;
 	private JTextField agedivisorText = null;
 	private JTextField CO2toCH4divisorText = null;
@@ -292,6 +293,7 @@ public class ParamDialog extends JDialog {
 		initialCH4Text.setText(String.valueOf(Utils.DEF_INITIAL_CH4));
 		initialDetritusText.setText(String.valueOf(Utils.DEF_INITIAL_DETRITUS));
 		initialN2Text.setText(String.valueOf(Utils.DEF_INITIAL_N2));
+		initialNH3Text.setText(String.valueOf(Utils.DEF_INITIAL_NH3));
 		maxageText.setText(String.valueOf(Utils.DEF_MAX_AGE));
 		agedivisorText.setText(String.valueOf(Utils.DEF_AGE_DIVISOR));
 		CO2toCH4divisorText.setText(String.valueOf(Utils.DEF_CO2_TO_CH4_DIVISOR));
@@ -672,16 +674,23 @@ public class ParamDialog extends JDialog {
 		initialCO1Text = new JTextField(Double.toString(Utils.INITIAL_CO1),6);
 		panel.add(initialCO1Text);
 		worldPanel.add(panel);
-		// Initial Detritus - initial N2
+		// Initial Detritus
 		panel = new JPanel();
 		label = new JLabel(Messages.getString("T_INITIAL_DETRITUS")); //$NON-NLS-1$
 		panel.add(label);
 		initialDetritusText = new JTextField(Double.toString(Utils.INITIAL_DETRITUS),6);
 		panel.add(initialDetritusText);
+		worldPanel.add(panel);
+		// Initial N2 - Initial NH3
+		panel = new JPanel();
 		label = new JLabel(Messages.getString("T_INITIAL_NITROGEN")); //$NON-NLS-1$
 		panel.add(label);
 		initialN2Text = new JTextField(Double.toString(Utils.INITIAL_N2),6);
 		panel.add(initialN2Text);
+		label = new JLabel(Messages.getString("T_INITIAL_AMMONIA")); //$NON-NLS-1$
+		panel.add(label);
+		initialNH3Text = new JTextField(Double.toString(Utils.INITIAL_NH3),6);
+		panel.add(initialNH3Text);
 		worldPanel.add(panel);
 		// CO2 -> CH4 - CH4 -> CO2
 		panel = new JPanel();
@@ -1465,6 +1474,12 @@ public class ParamDialog extends JDialog {
 		try {
 			d = Double.parseDouble(initialN2Text.getText());
 			if (d >= 0) Utils.INITIAL_N2 = d;
+		} catch (NumberFormatException ex) {
+			// Keep old value if there is a problem
+		}
+		try {
+			d = Double.parseDouble(initialNH3Text.getText());
+			if (d >= 0) Utils.INITIAL_NH3 = d;
 		} catch (NumberFormatException ex) {
 			// Keep old value if there is a problem
 		}

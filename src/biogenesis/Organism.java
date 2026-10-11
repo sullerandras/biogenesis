@@ -685,11 +685,16 @@ public class Organism extends Rectangle {
 	/**
 	 * Nitrogen stored by this organism used for growing up
 	 */
-	protected double _N2_Stored = 0;
+	protected double _nitrogenStored = 0;
 	/**
 	 * Maximum amount of nitrogen, that can and needs to be stored
 	 */
-	protected double _N2_Max;
+	protected double _nitrogenMax;
+	/**
+	 * Defines if an organism needs N2, NH3, or can use both to grow, 
+	 * and if it releases N2 or NH3 at death
+	 */
+	protected int _nitrogenType;
 	/**
 	 * Organism size independent on its position in the world.
 	 * Let p be a point in the organism. Then, p.x + x - _sizeRect.x is the x coordinate
@@ -807,7 +812,7 @@ public class Organism extends Rectangle {
 	 * @return  The amount of nitrogen stored by this organism.
 	 */
 	public double getNitrogen() {
-		return _N2_Stored;
+		return _nitrogenStored;
 	}
 	/**
 	 * Returns the identification number of this organism.
@@ -1645,7 +1650,7 @@ public class Organism extends Rectangle {
 		boolean ispink =false;
 		int alsododgesorspins = 0;
 		_updateEffects = 2;
-		_N2_Max = _geneticCode.getNGenes();
+		_nitrogenMax = _geneticCode.getNGenes();
 		if (_geneticCode.getSiblingBattle()) {
 			_siblingbattle =true;
 		}
@@ -2490,6 +2495,38 @@ public class Organism extends Rectangle {
 				}
 			}
 		}
+		// Define what nitrogen source an organism needs to grow, and what it releases at death
+		if (_nitrogenType == 0) {
+			if (_symmetry == 1) {
+				if ((!_isaplant) && (_methanotrophy > 0)) {
+					_nitrogenType = 1;
+				} else {
+					_nitrogenType = 2;
+				}
+			} else {
+				if (_geneticCode.getHox() == 4) {
+					if (!_isaplant) {
+						_nitrogenType = 3;
+					} else {
+						_nitrogenType = 4;
+					}
+				} else {
+					if ((_geneticCode.getHox() == 3) && (_geneticCode.getMirror() == 1)) {
+						if (!_isaplant) {
+							_nitrogenType = 3;
+						} else {
+							_nitrogenType = 4;
+						}
+					} else {
+						if ((!_isaplant) && (_methanotrophy > 0)) {
+							_nitrogenType = 1;
+						} else {
+							_nitrogenType = 2;
+						}
+					}
+				}
+			}
+		}			
 		// Give non green filterfeeders the ability of jade during virus hatching, then make them count as plants and lower effectivity for mixed organisms
 		if ((_isplankton > 0) && (createall)) {
 			double planktonfactor = 0;
@@ -3683,7 +3720,7 @@ public class Organism extends Rectangle {
             	    								} else {
             	    									if ((_symmetry <= 6) || ((parent._isplankton == 0) && (useBreathing(0.16125 * ((double)_symmetry - 2.5))))
             	    											|| (useBreathing(0.3225 * ((double)_symmetry - 2.5))) || (useBreathing(_energy))) {
-            	    										_timeToReproduceMax += (_symmetry + 2);
+            	    										_timeToReproduceMax += (_symmetry + 3);
                 	    									additionalcentersegments = -1;
                 	    								}
             	    								}
@@ -3695,7 +3732,7 @@ public class Organism extends Rectangle {
             	    									} else {
             	    										if ((_symmetry <= 6) || ((parent._isplankton == 0) && (useBreathing(0.16125 * ((double)_symmetry - 3.5))))
             	    												|| (useBreathing(0.3225 * ((double)_symmetry - 3.5))) || (useBreathing(_energy))) {
-            	    											_timeToReproduceMax += (_symmetry + 1);
+            	    											_timeToReproduceMax += (_symmetry + 2);
                     	    									additionalcentersegments = -1;
                     	    								}
             	    									}
@@ -7663,7 +7700,7 @@ public class Organism extends Rectangle {
 	private void grow() {
 		if ((_growthRatio > 1) && (_energy >= _mass/10)) {
 			if (((active) || (_growthRatio == 16)) && ((_age & 0x07) == 0x07)) {
-				if (_N2_Stored >= _N2_Max ) {
+				if ((_nitrogenStored >= _nitrogenMax) || (!active)) {
 					// Grow
 					_growthRatio--;
 					double m = _mass;
@@ -7679,13 +7716,33 @@ public class Organism extends Rectangle {
 						_sporeversion = -1;
 					}
 				} else {
-					if ((_isinfectious) || (_isblond)) {
-						_N2_Stored += _world.nitrogenfixation(0.0001);
+					if (_nitrogenType <= 2) {
+						if (_isinfectious) {
+							_nitrogenStored += _world.nitrogenfixation(0.0001);
+						} else {
+							if (_isblond) {
+								_nitrogenStored += _world.nitrogenfixation(0.0001);
+							} else {
+								_nitrogenStored += _world.nitrogenfixation(0.0002);
+							}
+						}
 					} else {
-						_N2_Stored += _world.nitrogenfixation(0.0002);
+						if (_isinfectious) {
+							_nitrogenStored += _world.ammoniafixation(0.0001);
+						} else {
+							if (_isblond) {
+								_nitrogenStored += _world.ammoniafixation(0.0001);
+							} else {
+								_nitrogenStored += _world.ammoniafixation(0.0002);
+							}
+						}
 					}
-					if (_N2_Stored > _N2_Max ) {
-						useNitrogen(_N2_Stored - _N2_Max);
+					if (_nitrogenStored > _nitrogenMax ) {
+						if (_nitrogenType <= 2) {
+							useNitrogen(_nitrogenStored - _nitrogenMax);
+			    		} else {
+			    			useAmmonia(_nitrogenStored - _nitrogenMax);
+			    		}
 						// Grow
 						_growthRatio--;
 						double m = _mass;
@@ -7701,7 +7758,7 @@ public class Organism extends Rectangle {
 							_sporeversion = -1;
 						}						
 					} else {
-						if (_N2_Stored >= (_N2_Max / ((double)_growthRatio - 1d))) {
+						if (_nitrogenStored >= (2 * (_nitrogenMax / (double)_growthRatio))) {
 							// Grow
 							_growthRatio--;
 							double m = _mass;
@@ -7909,7 +7966,14 @@ public class Organism extends Rectangle {
 				if (_isblond) {
 				    if (useblondcosts) {
 				    	if ((_transfersenergy) && (!_isaconsumer) && (!_isafungus)) {
-				    		useNitrogen(_N2_Stored);
+				    		if (_nitrogenType%2==0) {
+				    			useNitrogen(_nitrogenStored);
+				    		} else {
+				    			if (_nitrogenType==1) {
+				    				useNitrogen(0.875 * _nitrogenStored);
+				    			}
+				    			useAmmonia(_nitrogenStored);
+				    		}
 				    	}				    	
 					    useblondcosts =false;
 						useDetritus(Math.min(_energy, Utils.BLOND_ENERGY_CONSUMPTION));
@@ -7983,7 +8047,14 @@ public class Organism extends Rectangle {
 				if (_isblond) {
 				    if (useblondcosts) {
 					    useblondcosts =false;
-					    useNitrogen(_N2_Stored);
+					    if (_nitrogenType%2==0) {
+			    			useNitrogen(_nitrogenStored);
+			    		} else {
+			    			if (_nitrogenType==1) {
+			    				useNitrogen(0.875 * _nitrogenStored);
+			    			}
+			    			useAmmonia(_nitrogenStored);
+			    		}
 					    if (_reproducelate > 0) {
 					    	useDetritus(Math.min(_energy, Utils.BLOND_ENERGY_CONSUMPTION));
 					    } else {
@@ -8000,7 +8071,14 @@ public class Organism extends Rectangle {
 				if (_isblond) {
 				    if (useblondcosts) {
 					    useblondcosts =false;
-					    useNitrogen(_N2_Stored);
+					    if (_nitrogenType%2==0) {
+			    			useNitrogen(_nitrogenStored);
+			    		} else {
+			    			if (_nitrogenType==1) {
+			    				useNitrogen(0.875 * _nitrogenStored);
+			    			}
+			    			useAmmonia(_nitrogenStored);
+			    		}
 					    if (_reproducelate > 0) {
 					    	useDetritus(Math.min(_energy, 0.5 * Utils.BLOND_ENERGY_CONSUMPTION));
 					    } else {
@@ -8109,6 +8187,8 @@ public class Organism extends Rectangle {
 			_nTotalChildren++;
 			_world.addOrganism(newOrg,this);
 			_savedGeneticCode = null;
+			newOrg._nitrogenStored += 0.5 * _nitrogenStored;
+			_nitrogenStored -= 0.5 * _nitrogenStored;
 		}
 	}
 	/**
@@ -9048,18 +9128,34 @@ public class Organism extends Rectangle {
 		return true;
 	}
 	/**
-	 * Organisms release nitrogen at death
+	 * Most organisms release nitrogen at death
 	 *
 	 * @param q  The quantity of nitrogen to spend.
 	 * @return  true if the organism has enough nitrogen stored, false otherwise.
 	 */
 	public boolean useNitrogen(double q) {
-		if (_N2_Stored < q) {
+		if (_nitrogenStored < q) {
 			return false;
 		}
 		double nitrogenrelease = _world.nitrogenrelease(q);
-		_N2_Stored -= nitrogenrelease;
+		_nitrogenStored -= nitrogenrelease;
 		if (nitrogenrelease < q)
+			return false;
+		return true;
+	}
+	/**
+	 * Methanotrophs without green segments release ammonia at death
+	 *
+	 * @param q  The quantity of ammonia to spend.
+	 * @return  true if the organism has enough ammonia stored, false otherwise.
+	 */
+	public boolean useAmmonia(double q) {
+		if (_nitrogenStored < q) {
+			return false;
+		}
+		double ammoniarelease = _world.ammoniarelease(q);
+		_nitrogenStored -= ammoniarelease;
+		if (ammoniarelease < q)
 			return false;
 		return true;
 	}
@@ -9137,7 +9233,14 @@ public class Organism extends Rectangle {
 				if (_energy <= Utils.tol) {
 					active = false;
 					alive = false;
-					useNitrogen(_N2_Stored);
+					if (_nitrogenType%2==0) {
+		    			useNitrogen(_nitrogenStored);
+		    		} else {
+		    			if (_nitrogenType==1) {
+		    				useNitrogen(0.875 * _nitrogenStored);
+		    			}
+		    			useAmmonia(_nitrogenStored);
+		    		}
 					_world.decreasePopulation();
 					_world.organismHasDied(this, null);
 				}
@@ -9161,7 +9264,14 @@ public class Organism extends Rectangle {
 				} else {
 					if (_energy <= Utils.tol) {
 						alive = false;
-						useNitrogen(_N2_Stored);
+						if (_nitrogenType%2==0) {
+			    			useNitrogen(_nitrogenStored);
+			    		} else {
+			    			if (_nitrogenType==1) {
+			    				useNitrogen(0.875 * _nitrogenStored);
+			    			}
+			    			useAmmonia(_nitrogenStored);
+			    		}
 						_world.decreasePopulation();
 						_world.organismHasDied(this, null);
 					} else {
@@ -9187,7 +9297,14 @@ public class Organism extends Rectangle {
 				} else {
 					if (_energy <= Utils.tol) {
 						alive = false;
-						useNitrogen(_N2_Stored);
+						if (_nitrogenType%2==0) {
+			    			useNitrogen(_nitrogenStored);
+			    		} else {
+			    			if (_nitrogenType==1) {
+			    				useNitrogen(0.875 * _nitrogenStored);
+			    			}
+			    			useAmmonia(_nitrogenStored);
+			    		}
 						_world.decreasePopulation();
 						_world.organismHasDied(this, null);
 					}
@@ -9202,7 +9319,14 @@ public class Organism extends Rectangle {
 				} else {
 					if (_energy <= Utils.tol) {
 						alive = false;
-						useNitrogen(_N2_Stored);
+						if (_nitrogenType%2==0) {
+			    			useNitrogen(_nitrogenStored);
+			    		} else {
+			    			if (_nitrogenType==1) {
+			    				useNitrogen(0.875 * _nitrogenStored);
+			    			}
+			    			useAmmonia(_nitrogenStored);
+			    		}
 						_world.decreasePopulation();
 						_world.organismHasDied(this, null);
 					} else {
@@ -9250,7 +9374,14 @@ public class Organism extends Rectangle {
 					} else {
 						if (_energy <= Utils.tol) {
 							alive = false;
-							useNitrogen(_N2_Stored);
+							if (_nitrogenType%2==0) {
+				    			useNitrogen(_nitrogenStored);
+				    		} else {
+				    			if (_nitrogenType==1) {
+				    				useNitrogen(0.875 * _nitrogenStored);
+				    			}
+				    			useAmmonia(_nitrogenStored);
+				    		}
 							_world.decreasePopulation();
 							_world.organismHasDied(this, null);
 						} else {
@@ -9261,7 +9392,14 @@ public class Organism extends Rectangle {
 									_nVirusChildren = 0;
 									if (_energy <= Utils.tol) {
 										alive = false;
-										useNitrogen(_N2_Stored);
+										if (_nitrogenType%2==0) {
+							    			useNitrogen(_nitrogenStored);
+							    		} else {
+							    			if (_nitrogenType==1) {
+							    				useNitrogen(0.875 * _nitrogenStored);
+							    			}
+							    			useAmmonia(_nitrogenStored);
+							    		}
 										_world.decreasePopulation();
 										_world.organismHasDied(this, null);
 									}
@@ -9356,7 +9494,14 @@ public class Organism extends Rectangle {
 				if ((!_isinjured) || useDecayEnergy(Math.min(0.001, _energy))) {
 					if (_energy <= Utils.tol) {
 						alive = false;
-						useNitrogen(_N2_Stored);
+						if (_nitrogenType%2==0) {
+			    			useNitrogen(_nitrogenStored);
+			    		} else {
+			    			if (_nitrogenType==1) {
+			    				useNitrogen(0.875 * _nitrogenStored);
+			    			}
+			    			useAmmonia(_nitrogenStored);
+			    		}
 						_world.decreasePopulation();
 						_world.organismHasDied(this, null);
 					} else {
@@ -9399,7 +9544,14 @@ public class Organism extends Rectangle {
 					} else {
 						if (_energy <= Utils.tol) {
 							alive = false;
-							useNitrogen(_N2_Stored);
+							if (_nitrogenType%2==0) {
+				    			useNitrogen(_nitrogenStored);
+				    		} else {
+				    			if (_nitrogenType==1) {
+				    				useNitrogen(0.875 * _nitrogenStored);
+				    			}
+				    			useAmmonia(_nitrogenStored);
+				    		}
 							_world.decreasePopulation();
 							_world.organismHasDied(this, null);
 						} else {
@@ -9438,7 +9590,14 @@ public class Organism extends Rectangle {
 				if ((!_isinjured) || useDecayEnergy(Math.min(0.001, _energy))) {
 					if (_energy <= Utils.tol) {
 						alive = false;
-						useNitrogen(_N2_Stored);
+						if (_nitrogenType%2==0) {
+			    			useNitrogen(_nitrogenStored);
+			    		} else {
+			    			if (_nitrogenType==1) {
+			    				useNitrogen(0.875 * _nitrogenStored);
+			    			}
+			    			useAmmonia(_nitrogenStored);
+			    		}
 						_world.decreasePopulation();
 						_world.organismHasDied(this, null);
 					} else {
@@ -9461,7 +9620,14 @@ public class Organism extends Rectangle {
 			// The corpse slowly decays
 			useDecayEnergy(Math.min(_energy, Utils.DECAY_ENERGY));
 			if (_energy <= Utils.tol) {
-				useNitrogen(_N2_Stored);
+				if (_nitrogenType%2==0) {
+	    			useNitrogen(_nitrogenStored);
+	    		} else {
+	    			if (_nitrogenType==1) {
+	    				useNitrogen(0.875 * _nitrogenStored);
+	    			}
+	    			useAmmonia(_nitrogenStored);
+	    		}
 			}
 		}
 	}
@@ -9579,7 +9745,14 @@ public class Organism extends Rectangle {
 			useEnergy(Math.min(0.01, _energy));
 			if (_energy <= Utils.tol) {
 				alive = false;
-				useNitrogen(_N2_Stored);
+				if (_nitrogenType%2==0) {
+	    			useNitrogen(_nitrogenStored);
+	    		} else {
+	    			if (_nitrogenType==1) {
+	    				useNitrogen(0.875 * _nitrogenStored);
+	    			}
+	    			useAmmonia(_nitrogenStored);
+	    		}
 				_world.decreasePopulation();
 				_world.organismHasDied(this, null);
 			}
@@ -9915,7 +10088,14 @@ public class Organism extends Rectangle {
 			}
 		}
 		if (_energy <= Utils.tol) {
-			useNitrogen(_N2_Stored);
+			if (_nitrogenType%2==0) {
+    			useNitrogen(_nitrogenStored);
+    		} else {
+    			if (_nitrogenType==1) {
+    				useNitrogen(0.875 * _nitrogenStored);
+    			}
+    			useAmmonia(_nitrogenStored);
+    		}
 		}
 		_world.decreasePopulation();
 		if (killingOrganism != null)
@@ -14720,10 +14900,19 @@ public class Organism extends Rectangle {
 		}
 		// Check if the other organism has died
 		if (org.alive && org._energy < Utils.tol) {
-			_N2_Stored += 0.5 * org._N2_Stored;
-			org._N2_Stored -= 0.5 * org._N2_Stored;
-			if (_N2_Stored > _N2_Max ) {
-				useNitrogen(_N2_Stored - _N2_Max);
+			if (_nitrogenStored < _nitrogenMax ) {
+				_nitrogenStored += 0.5 * org._nitrogenStored;
+				org._nitrogenStored -= 0.5 * org._nitrogenStored;
+				if (_nitrogenStored > _nitrogenMax ) {
+					if (org._nitrogenType%2==0) {
+						useNitrogen(_nitrogenStored - _nitrogenMax);
+		    		} else {
+		    			if (org._nitrogenType==1) {
+		    				useNitrogen(0.875 * (_nitrogenStored - _nitrogenMax));
+		    			}
+		    			useAmmonia(_nitrogenStored - _nitrogenMax);
+		    		}
+				}
 			}
 			org.die(this);
 			// candodge is used here to make Crimson piercing stop later
@@ -15004,10 +15193,19 @@ public class Organism extends Rectangle {
 		}
 		// Check if the other organism has died
 		if (org.alive && org._energy < Utils.tol) {
-			_N2_Stored += 0.5 * org._N2_Stored;
-			org._N2_Stored -= 0.5 * org._N2_Stored;
-			if (_N2_Stored > _N2_Max ) {
-				useNitrogen(_N2_Stored - _N2_Max);
+			if (_nitrogenStored < _nitrogenMax ) {
+				_nitrogenStored += 0.5 * org._nitrogenStored;
+				org._nitrogenStored -= 0.5 * org._nitrogenStored;
+				if (_nitrogenStored > _nitrogenMax ) {
+					if (org._nitrogenType%2==0) {
+						useNitrogen(_nitrogenStored - _nitrogenMax);
+		    		} else {
+		    			if (org._nitrogenType==1) {
+		    				useNitrogen(0.875 * (_nitrogenStored - _nitrogenMax));
+		    			}
+		    			useAmmonia(_nitrogenStored - _nitrogenMax);
+		    		}
+				}
 			}
 			org.die(this);
 		}
@@ -16364,10 +16562,19 @@ public class Organism extends Rectangle {
 				takenEnergyFire = takenEnergyFire * Utils.ORGANIC_SUBS_PRODUCED;
 				useDetritus(takenEnergyFire);
 				if (!org.alive && org._energy < Utils.tol) {
-					_N2_Stored += 0.5 * org._N2_Stored;
-					org._N2_Stored -= 0.5 * org._N2_Stored;
-					if (_N2_Stored > _N2_Max ) {
-						useNitrogen(_N2_Stored - _N2_Max);
+					if (_nitrogenStored < _nitrogenMax ) {
+						_nitrogenStored += 0.5 * org._nitrogenStored;
+						org._nitrogenStored -= 0.5 * org._nitrogenStored;
+						if (_nitrogenStored > _nitrogenMax ) {
+							if (org._nitrogenType%2==0) {
+								useNitrogen(_nitrogenStored - _nitrogenMax);
+				    		} else {
+				    			if (org._nitrogenType==1) {
+				    				useNitrogen(0.875 * (_nitrogenStored - _nitrogenMax));
+				    			}
+				    			useAmmonia(_nitrogenStored - _nitrogenMax);
+				    		}
+						}
 					}
 				}
 			}
@@ -16887,10 +17094,19 @@ public class Organism extends Rectangle {
 				takenEnergyPink = takenEnergyPink * Utils.ORGANIC_SUBS_PRODUCED;
 				useDecayEnergy(takenEnergyPink);
 				if (!org.alive && org._energy < Utils.tol) {
-					_N2_Stored += 0.5 * org._N2_Stored;
-					org._N2_Stored -= 0.5 * org._N2_Stored;
-					if (_N2_Stored > _N2_Max ) {
-						useNitrogen(_N2_Stored - _N2_Max);
+					if (_nitrogenStored < _nitrogenMax ) {
+						_nitrogenStored += 0.5 * org._nitrogenStored;
+						org._nitrogenStored -= 0.5 * org._nitrogenStored;
+						if (_nitrogenStored > _nitrogenMax ) {
+							if (org._nitrogenType%2==0) {
+								useNitrogen(_nitrogenStored - _nitrogenMax);
+				    		} else {
+				    			if (org._nitrogenType==1) {
+				    				useNitrogen(0.875 * (_nitrogenStored - _nitrogenMax));
+				    			}
+				    			useAmmonia(_nitrogenStored - _nitrogenMax);
+				    		}
+						}
 					}
 				}
 			}
@@ -21420,12 +21636,21 @@ public class Organism extends Rectangle {
 		}
 		// Check if the other organism has died
 		if (org.alive && org._energy < Utils.tol) {
-			if (((_segColor[seg].equals(Utils.ColorSPIKEPOINT)) && (!_isenhanced)) || (_segColor[seg].equals(Utils.ColorLILAC))) {					
-			} else {
-				_N2_Stored += 0.5 * org._N2_Stored;
-				org._N2_Stored -= 0.5 * org._N2_Stored;
-				if (_N2_Stored > _N2_Max ) {
-					useNitrogen(_N2_Stored - _N2_Max);
+			if (_nitrogenStored < _nitrogenMax ) {
+				if (((_segColor[seg].equals(Utils.ColorSPIKEPOINT)) && (!_isenhanced)) || (_segColor[seg].equals(Utils.ColorLILAC))) {					
+				} else {
+					_nitrogenStored += 0.5 * org._nitrogenStored;
+					org._nitrogenStored -= 0.5 * org._nitrogenStored;
+					if (_nitrogenStored > _nitrogenMax ) {
+						if (org._nitrogenType%2==0) {
+							useNitrogen(_nitrogenStored - _nitrogenMax);
+			    		} else {
+			    			if (org._nitrogenType==1) {
+			    				useNitrogen(0.875 * (_nitrogenStored - _nitrogenMax));
+			    			}
+			    			useAmmonia(_nitrogenStored - _nitrogenMax);
+			    		}
+					}
 				}
 			}
 			org.die(this);

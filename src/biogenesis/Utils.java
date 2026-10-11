@@ -86,7 +86,11 @@ public final class Utils {
 	/**
 	 * This is the default amount of N2 that exists in a newly created world.
 	 */
-	final static double DEF_INITIAL_N2 = 56250;
+	final static double DEF_INITIAL_N2 = 45000;
+	/**
+	 * This is the default amount of NH3 that exists in a newly created world.
+	 */
+	final static double DEF_INITIAL_NH3 = 15000;
 	/**
 	 * This is the initial size of the organisms vector.
 	 */
@@ -848,6 +852,10 @@ public final class Utils {
 	 * This is the effective amount of N2 that exists in a newly created world.
 	 */
 	static double INITIAL_N2 = DEF_INITIAL_N2;
+	/**
+	 * This is the effective amount of NH3 that exists in a newly created world.
+	 */
+	static double INITIAL_NH3 = DEF_INITIAL_NH3;
 	/**
 	 * This is the effective size of the organisms vector.
 	 */
@@ -2087,6 +2095,7 @@ public final class Utils {
 			prefs.putDouble("INITIAL_CH4",INITIAL_CH4); //$NON-NLS-1$
 			prefs.putDouble("INITIAL_DETRITUS",INITIAL_DETRITUS); //$NON-NLS-1$
 			prefs.putDouble("INITIAL_N2",INITIAL_N2); //$NON-NLS-1$
+			prefs.putDouble("INITIAL_NH3",INITIAL_NH3); //$NON-NLS-1$
 			prefs.putInt("ORGANISMS_VECTOR_SIZE",ORGANISMS_VECTOR_SIZE); //$NON-NLS-1$
 			prefs.putInt("WORLD_WIDTH",WORLD_WIDTH); //$NON-NLS-1$
 			prefs.putInt("WORLD_HEIGHT",WORLD_HEIGHT); //$NON-NLS-1$
@@ -2294,6 +2303,7 @@ public final class Utils {
 			INITIAL_CH4 = prefs.getDouble("INITIAL_CH4",DEF_INITIAL_CH4); //$NON-NLS-1$
 			INITIAL_DETRITUS = prefs.getDouble("INITIAL_DETRITUS",DEF_INITIAL_DETRITUS); //$NON-NLS-1$
 			INITIAL_N2 = prefs.getDouble("INITIAL_N2",DEF_INITIAL_N2); //$NON-NLS-1$
+			INITIAL_NH3 = prefs.getDouble("INITIAL_NH3",DEF_INITIAL_NH3); //$NON-NLS-1$
 			ORGANISMS_VECTOR_SIZE = prefs.getInt("ORGANISMS_VECTOR_SIZE",DEF_ORGANISMS_VECTOR_SIZE); //$NON-NLS-1$
 			WORLD_WIDTH = prefs.getInt("WORLD_WIDTH",DEF_WORLD_WIDTH); //$NON-NLS-1$
 			WORLD_HEIGHT = prefs.getInt("WORLD_HEIGHT",DEF_WORLD_HEIGHT); //$NON-NLS-1$
