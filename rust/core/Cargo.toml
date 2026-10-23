@@ -1,0 +1,20 @@
+[package]
+name = "biogenesis-core"
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+[dependencies]
+
+# Java's int and long arithmetic wraps on overflow. With overflow checks off,
+# Rust's +, -, * and << on i32/i64 do the same, so the generated code can use
+# the plain operators in every profile.
+[profile.dev]
+overflow-checks = false
+
+[profile.release]
+overflow-checks = false
+debug = 1
+
+[profile.test]
+overflow-checks = false

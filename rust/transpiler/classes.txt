@@ -1,0 +1,7 @@
+# Classes J2R translates (instance part). Static members of any class
+# (Utils...) are pulled in when translated code uses them.
+class biogenesis.Gene
+class biogenesis.GeneticCode
+
+# Not part of the simulation: drawing for the GUI.
+skip biogenesis.GeneticCode.draw(java.awt.Graphics,int,int)
