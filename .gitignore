@@ -9,3 +9,4 @@ build-src
 /test*
 !/tests
 perf/tools
+/runs
