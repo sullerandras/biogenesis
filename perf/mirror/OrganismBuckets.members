@@ -1,0 +1,76 @@
+  // ---- perf/mirror: bucket lists of mirror slots, parallel to buckets ----
+  private CollisionMirror mirror;
+  private int[][] slotLists;
+  private int[] slotCounts;
+
+  /** World.time() calls this right after creating the buckets, before any insert. */
+  public void setMirror(CollisionMirror mirror) {
+    this.mirror = mirror;
+    final int nb = (maxHeight + 1) * (maxWidth + 1);
+    slotLists = new int[nb][];
+    slotCounts = new int[nb];
+  }
+
+  /** insert() calls this after every buckets[y][x].add(o). */
+  private void mirrorAdd(int y, int x, Organism o) {
+    if (mirror == null) {
+      return;
+    }
+    final int b = y * (maxWidth + 1) + x;
+    final int s = mirror.slotOf(o);
+    int[] l = slotLists[b];
+    final int n = slotCounts[b];
+    if (l == null) {
+      l = slotLists[b] = new int[4];
+    } else if (n == l.length) {
+      l = slotLists[b] = java.util.Arrays.copyOf(l, n * 2);
+    }
+    l[n] = s;
+    slotCounts[b] = n + 1;
+  }
+
+  /**
+   * World.checkHit(org1): findFirst with checkHit's matcher, reading the
+   * candidates' bounds and segments from the mirror. Same candidates in the same
+   * order; contact() is skipped only when it can't find a touching segment pair.
+   */
+  public Organism findFirstHit(Organism org1) {
+    final CollisionMirror m = mirror;
+    if (m == null) {
+      return findFirst(org1, collidingOrganism -> collidingOrganism != org1
+          && org1.intersects(collidingOrganism)
+          && collidingOrganism.getEnergy() >= Utils.tol && org1.getEnergy() >= Utils.tol
+          && org1.contact(collidingOrganism));
+    }
+    final int minx = Math.max(0, (int) (org1.getMinX() / (double) bucketSize));
+    final int miny = Math.max(0, (int) (org1.getMinY() / (double) bucketSize));
+    final int maxx = Math.min(maxWidth, (int) (org1.getMaxX() / (double) bucketSize));
+    final int maxy = Math.min(maxHeight, (int) (org1.getMaxY() / (double) bucketSize));
+    final int slot1 = m.slotIfPresent(org1);
+    final int w = maxWidth + 1;
+
+    for (int y = miny; y <= maxy; y++) {
+      for (int x = minx; x <= maxx; x++) {
+        final int b = y * w + x;
+        final int[] slots = slotLists[b];
+        for (int k = 0, n = slotCounts[b]; k < n; k++) {
+          final int s = slots[k];
+          if (s == slot1) {
+            continue;
+          }
+          if (CollisionMirror.CHECK) {
+            m.check(s);
+          }
+          if (m.boxIntersects(org1, s)) {
+            final Organism collidingOrganism = m.orgs[s];
+            if (collidingOrganism.getEnergy() >= Utils.tol && org1.getEnergy() >= Utils.tol
+                && m.mayContact(org1, s) && org1.contact(collidingOrganism)) {
+              return collidingOrganism;
+            }
+          }
+        }
+      }
+    }
+    return null;
+  }
+

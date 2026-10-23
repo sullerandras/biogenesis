@@ -1,0 +1,13 @@
+Changes that I've added on top of MarcoDBAA's source:
+- Update statistics regularly (controlled by `Utils.STATISTICS_REFRESH_FPS`)
+- Update status bar regularly (controlled by `Utils.STATUS_BAR_REFRESH_FPS`)
+- Set min digits to 1 in status bar
+- Make color panel narrower so it can fit on the screen with the main frame
+- Stop repainting the world if the window is not in focus
+- Set statistics window’s minimum size to the current window size. This seem to make it less jumpy when the `Remains of beings` number has different number of digits
+- Change scroll unit increment to make it easier to scroll on a macbook
+- Show number of clades in status bar and statistics
+- Add parameter for the "repaint strategy". Defaults to “repaint if any of the app window is in focus”.
+- Limit FPS to the target FPS when game is repainted. The FPS is unlimited when the world is not repainted (e.g. in the background).
+- Save world as png when doing auto backup
+- Ignore auto backup if the world was not saved yet. This is to avoid stopping the simulation and waiting for the user to choose a file.
