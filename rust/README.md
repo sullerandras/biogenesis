@@ -25,6 +25,9 @@ output. The idea is that this can run in CI on every upstream drop.
   mutable objects), arrays/lists, `java.util.Random` (bit-exact, including
   `nextGaussian` with fdlibm's `log`), `Math` edge cases (`max`/`min` with
   NaN and -0.0, `round`), `Color` as a value, and the dump.
+- `core/src/samples/`: J2R output for `verify/j2rtest/Samples.java`, the
+  translator's own test cases (fall-through, string conversions, wrapping
+  arithmetic...). Add a case there when J2R learns a construct.
 - `verify/`: the Java side of the comparisons (`Dump.java` writes the same
   format as `rt/dump.rs`: fields sorted by name, doubles as raw bits, shared
   objects as `@id`, so aliasing is compared too).
@@ -51,6 +54,12 @@ output. The idea is that this can run in CI on every upstream drop.
   with `Math.sin(` etc. replaced by `StrictMath.sin(`. Shipping the same
   replacement in the Java build would make Java runs reproducible across
   machines too.
+- `java.awt` geometry (`Rectangle`, `Line2D.Double`, `Point`,
+  `Point2D.Double`) is hand-ported in `rt/geom.rs`. Organism extends
+  Rectangle and ExLine2DDouble extends Line2D.Double, so variables of those
+  types are `JRef<dyn RectangleT>`/`JRef<dyn Line2DT>` (`JRef` takes unsized
+  types) and the subclass keeps its base part in `__super`. The same
+  mechanism can carry other class hierarchies later.
 - Strings are `JStr` (`Rc<str>`, nullable). `+` and `+=` become one
   `JStr::cat` of all parts; `char` is a UTF-16 unit (`u16`) as in Java.
 - Statics are thread-locals with getters/setters (`utils::random()`,
@@ -60,26 +69,32 @@ output. The idea is that this can run in CI on every upstream drop.
 
 ## Status
 
-Translated and verified: `Gene`, `GeneticCode` (except `draw`), and the
-parts of `Utils` they use, about 4,000 lines of Java, plus `StrictMath`'s 18
-fdlibm functions (`sin` ... `tanh`, 3,500 lines of JDK code). `verify.sh`
-compares 10 genetic code runs (5 seeds, normal and high mutation rates, 20
-lineages × 60 generations, about 1.8M dump lines), including which genes a
-child shares with its parent, and every fdlibm function on 400,000 random
-arguments (NaN, infinities and huge values included). They are identical.
+Verified identical to Java by `verify.sh`:
+
+- `Gene`, `GeneticCode` (except `draw`) and the parts of `Utils` they use,
+  about 4,000 lines: 10 genetic code runs (5 seeds, normal and high mutation
+  rates, 20 lineages × 60 generations, about 1.8M dump lines), including which
+  genes a child shares with its parent.
+- `StrictMath`'s 18 fdlibm functions (`sin` ... `tanh`, 3,500 lines of JDK
+  code), on 400,000 random arguments (NaN, infinities, huge values).
+- The `java.awt` geometry port, on 600,000 random cases.
+- The translator tests (`Samples`).
+
 Changing one constant in the generated code makes the comparison fail.
 
 A trial run on `Organism` + `World` + `Vector2D` + `ExLine2DDouble` (34k lines)
-compiles, and reports 92 unsupported constructs (down from 180: strings and
-math are done). What is left:
+compiles, and reports 56 unsupported constructs (down from 180: strings,
+math, geometry and switch fall-through are done). What is left is mostly a
+matter of deciding what the headless simulation includes:
 
-| What | Count | Work |
-|------|------:|------|
-| `extends Rectangle` / `Line2D.Double`, `intersectsLine`, `setLine`, `setBounds`, `Point`, `Point2D`, `Dimension` | ~30 | Base classes in rt, ported from the JDK's geometry code |
-| `VisibleWorldInterface`, `InfoToolbar`, `WorldStatistics`, `Graphics`, `BufferedImage`, `ObjectInputStream` | ~30 | GUI/statistics links: skip or stub (config `skip` lines) |
-| `Iterator`/`Collection`, Corridors, `OrganismBuckets`, `ParallelExecutor`, `Stream.count` | ~25 | More classes in the list, plus collections in rt |
-| `switch` fall-through | 4 | Translator: lower to a chain of labeled blocks |
-| `equals(Object)` with `instanceof` | 1 | Translator |
+| What | Count | Where | Plan |
+|------|------:|------|------|
+| `VisibleWorldInterface`, `InfoToolbar`, `Graphics`, `Dimension`, `BufferedImage` | ~20 | GUI callbacks in `World`/`Organism`, `draw`, `getImage` | No-ops, as the stubs in `benchmark/Benchmark.java`; `skip` for `draw`/`getImage` |
+| `WorldStatistics` | ~12 | `addOrganism`, `organismHasDied`, `time`... | Translate the class |
+| `Iterator`/`Collection`, `Stream.count` | ~12 | `World._organisms` loops | Collections in rt |
+| `OrganismBuckets`, `ParallelExecutor` | ~7 | `checkHit` family, `time` | Translate; one thread |
+| `InCorridor`/`OutCorridor` | ~8 | Networking (corridors) | Opaque stub that panics if reached (`_corridorexists` is false headless) |
+| `readObject`, `hashCode`/`equals(Object)` | 3 | | `skip` / translator |
 
 ## Not done / next steps
 
