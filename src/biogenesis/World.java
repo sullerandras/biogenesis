@@ -807,6 +807,7 @@ public class World implements Serializable{
 		// Initialize size
 		_width = Utils.WORLD_WIDTH;
 		_height = Utils.WORLD_HEIGHT;
+		organismBuckets = null;
 		Dimension d = new Dimension(_width, _height);
 		VisibleWorld.originalPreferredSize = d;
 		_visibleWorld.setPreferredSize(d);
@@ -917,7 +918,6 @@ public class World implements Serializable{
 	 * and every 256 frames the time counter is increased by 1.
 	 */
 	public synchronized void time() {
-		organismBuckets = new OrganismBuckets(_width, _height, 70);
 		if (_corridorexists) {
 			InCorridor c;
 			synchronized (inCorridors) {
@@ -928,6 +928,12 @@ public class World implements Serializable{
 			}
 		}
 		synchronized (_organisms) {
+			// The same buckets every frame: making ~2,000 new lists a frame took longer than filling them.
+			if (organismBuckets == null) {
+				organismBuckets = new OrganismBuckets(_width, _height, 70);
+			} else {
+				organismBuckets.clear();
+			}
 			for (Organism o: _organisms) {
 				organismBuckets.insert(o);
 			}
@@ -1057,7 +1063,8 @@ public class World implements Serializable{
 		return null;
 	}
 
-	public transient OrganismBuckets organismBuckets = new OrganismBuckets(_width, _height, 70);
+	// Made by the first frame (time()), and again after genesis() changes the size.
+	public transient OrganismBuckets organismBuckets;
 
 	/**
 	 * Checks if an organism has a high probability of being in touch with

@@ -24,6 +24,12 @@ impl<T> JCell<T> {
     pub fn new(value: T) -> Self {
         JCell(std::cell::UnsafeCell::new(value))
     }
+
+    /// The value, when nothing else can reach the cell.
+    #[inline]
+    pub fn get_mut(&mut self) -> &mut T {
+        self.0.get_mut()
+    }
 }
 
 #[cfg(not(feature = "checked"))]
@@ -161,6 +167,45 @@ impl<T> JRef<T> {
     #[inline]
     pub fn map_rc<U: ?Sized>(self, f: impl FnOnce(Rc<JCell<T>>) -> Rc<JCell<U>>) -> JRef<U> {
         JRef(self.0.map(f))
+    }
+}
+
+/// Recent objects of one class, for `new` to reuse once nothing else refers
+/// to them: a slot holding the only reference means nobody can tell the
+/// reused object from a new one, if it is reset to what a new one is
+/// (`T::default()`, then the constructor runs). Java can't do this: it can't
+/// know that an object is garbage until it collects. `contact` makes two
+/// `ExLine2DDouble`s each call; with this they're the same two every time.
+pub struct JRecycler<T, const N: usize>(std::cell::UnsafeCell<([Option<Rc<JCell<T>>>; N], usize)>);
+
+// SAFETY: like JStatic, only used from the simulation's thread.
+unsafe impl<T, const N: usize> Sync for JRecycler<T, N> {}
+
+impl<T: Default, const N: usize> JRecycler<T, N> {
+    pub const fn new() -> Self {
+        JRecycler(std::cell::UnsafeCell::new(([const { None }; N], 0)))
+    }
+
+    /// `JRef::new(T::default())`, but reusing an object in a slot if
+    /// nothing else refers to it. A new object takes a slot (in turn, when
+    /// all are in use: the newest objects are the likeliest to be dropped).
+    #[inline]
+    pub fn new_object(&self) -> JRef<T> {
+        // SAFETY: one thread, and the borrow ends before anything else runs
+        // (resetting drops the old fields, which only drops Rcs).
+        let (slots, next) = unsafe { &mut *self.0.get() };
+        for s in slots.iter_mut() {
+            if let Some(rc) = s {
+                if let Some(cell) = Rc::get_mut(rc) {
+                    *cell.get_mut() = T::default();
+                    return JRef(Some(rc.clone()));
+                }
+            }
+        }
+        let rc = Rc::new(JCell::new(T::default()));
+        slots[*next] = Some(rc.clone());
+        *next = (*next + 1) % N;
+        JRef(Some(rc))
     }
 }
 

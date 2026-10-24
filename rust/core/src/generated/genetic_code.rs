@@ -57,7 +57,7 @@ impl GeneticCode {
 
     /// Java: GeneticCode.java:1007 GeneticCode()
     pub fn new() -> JRef<Self> {
-        let this = &JRef::new(Self::default());
+        let this = &{ static RECYCLER: JRecycler<GeneticCode, 4> = JRecycler::new(); RECYCLER.new_object() };
         Self::__init(this);
         Self::__ctor_new(this);
         this.clone()
@@ -105,7 +105,7 @@ impl GeneticCode {
 
     /// Java: GeneticCode.java:1088 GeneticCode(List<Gene>, int, int, int, int, int, double, double, double, double, double, double, int, int, int, int, int, int, int, int, int, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean)
     pub fn new37(mut genes: JList<JRef<Gene>>, mut symmetry: i32, mut hox: i32, mut mirror: i32, mut mutationrate: i32, mut clonerate: i32, mut homeX: f64, mut homeY: f64, mut base1X: f64, mut base1Y: f64, mut base2X: f64, mut base2Y: f64, mut activity: i32, mut modifiesmaroon: i32, mut modifiescream: i32, mut modifiescrimson: i32, mut modifiesfallow: i32, mut modifiesspore: i32, mut adaptspore: i32, mut modifiesblack: i32, mut adaptblack: i32, mut plague: bool, mut disperseChildren: bool, mut generationBattle: bool, mut siblingBattle: bool, mut altruist: bool, mut familial: bool, mut social: bool, mut peaceful: bool, mut passive: bool, mut clockwise: bool, mut modifiesdrift: bool, mut modifiespink: bool, mut modifieslilac: bool, mut modifiessky: bool, mut modifiesleaf: bool, mut selfish: bool) -> JRef<Self> {
-        let this = &JRef::new(Self::default());
+        let this = &{ static RECYCLER: JRecycler<GeneticCode, 4> = JRecycler::new(); RECYCLER.new_object() };
         Self::__init(this);
         Self::__ctor_new37(this, genes, symmetry, hox, mirror, mutationrate, clonerate, homeX, homeY, base1X, base1Y, base2X, base2Y, activity, modifiesmaroon, modifiescream, modifiescrimson, modifiesfallow, modifiesspore, adaptspore, modifiesblack, adaptblack, plague, disperseChildren, generationBattle, siblingBattle, altruist, familial, social, peaceful, passive, clockwise, modifiesdrift, modifiespink, modifieslilac, modifiessky, modifiesleaf, selfish);
         this.clone()
@@ -155,7 +155,7 @@ impl GeneticCode {
 
     /// Java: GeneticCode.java:1139 GeneticCode(GeneticCode)
     pub fn new1(mut parentCode: JRef<GeneticCode>) -> JRef<Self> {
-        let this = &JRef::new(Self::default());
+        let this = &{ static RECYCLER: JRecycler<GeneticCode, 4> = JRecycler::new(); RECYCLER.new_object() };
         Self::__init(this);
         Self::__ctor_new1(this, parentCode);
         this.clone()

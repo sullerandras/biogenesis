@@ -19,7 +19,7 @@ impl Vector2D {
 
     /// Java: Vector2D.java:24 Vector2D()
     pub fn new() -> JRef<Self> {
-        let this = &JRef::new(Self::default());
+        let this = &{ static RECYCLER: JRecycler<Vector2D, 4> = JRecycler::new(); RECYCLER.new_object() };
         Self::__init(this);
         Self::__ctor_new(this);
         this.clone()

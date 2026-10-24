@@ -50,7 +50,7 @@ pub fn progressAllOrganismsInSerial(mut organismCount: i32) {
             __i1 += 1;
             if !(Organism::r#move(&b)) {
                 (parallel_executor::organisms()).remove(&b.clone());
-                if (JRef::ptr_eq(&{ let _ = parallel_executor::visibleWorld(); <JRef<Organism>>::default() }, &b.clone())) {
+                if (JRef::ptr_eq(&({ let _ = parallel_executor::visibleWorld(); <JRef<Organism>>::default() }), &b)) {
                     { let _ = parallel_executor::visibleWorld(); () };
                 }
             }

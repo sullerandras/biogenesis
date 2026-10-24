@@ -23,7 +23,7 @@ pub use dump::{Dumper, JDump, JDumpTarget};
 pub use geom::{Line2D, Line2DT, Point, Point2D, Rectangle, RectangleT};
 pub use hashset::JHashSet;
 pub use jfn::JFn;
-pub use jref::{JArr, JArray, JList, JRef, JStackArray};
+pub use jref::{JArr, JArray, JList, JRecycler, JRef, JStackArray};
 pub use jstatic::JStatic;
 pub use jstr::{JStr, JToString};
 pub use load::{JLoad, Loader};

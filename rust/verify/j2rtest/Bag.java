@@ -24,6 +24,11 @@ public class Bag {
 		return null;
 	}
 
+	/** A matcher that escapes (returned): a counted closure, not a borrowed one. */
+	Matcher keep(Matcher m) {
+		return m;
+	}
+
 	double threshold() {
 		return limit;
 	}

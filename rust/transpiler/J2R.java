@@ -606,7 +606,7 @@ public class J2R {
 
 		boolean hasCtor = !c.getConstructors().isEmpty();
 		if (!hasCtor) {
-			out.append("\n    pub fn new() -> JRef<Self> {\n        let this = &JRef::new(Self::default());\n        Self::__init(this);\n        this.clone()\n    }\n");
+			out.append("\n    pub fn new() -> JRef<Self> {\n        let this = &" + newObject(q) + ";\n        Self::__init(this);\n        this.clone()\n    }\n");
 		}
 		for (ConstructorDeclaration k : c.getConstructors()) {
 			if (skipped(q, k)) continue;
@@ -730,6 +730,9 @@ public class J2R {
 				if (viewParam(p)) {
 					scope.declareView(p.getNameAsString(), pn, pt);
 					params.append(pn).append(": &impl JArr<").append(rust(pt.elem)).append(">");
+				} else if (!ctor && fnParam(p)) {
+					scope.declareView(p.getNameAsString(), pn, pt);
+					params.append(pn).append(": &").append(fnType(pt.cls));
 				} else {
 					scope.declare(p.getNameAsString(), pn, pt);
 					params.append("mut ").append(pn).append(": ").append(rust(pt));
@@ -751,7 +754,7 @@ public class J2R {
 				}
 				out.append(ind).append("pub fn ").append(name).append("(").append(params.toString().replace("this: &JRef<Self>, ", "").replace("this: &JRef<Self>", ""))
 						.append(") -> JRef<Self> {\n");
-				out.append(ind).append("    let this = &JRef::new(Self::default());\n");
+				out.append(ind).append("    let this = &").append(newObject(q)).append(";\n");
 				if (!delegates) out.append(ind).append("    Self::__init(this);\n");
 				out.append(ind).append("    Self::__ctor_").append(name).append("(this").append(args.length() > 0 ? ", " + args : "").append(");\n");
 				out.append(ind).append("    this.clone()\n").append(ind).append("}\n\n");
@@ -1356,9 +1359,15 @@ public class J2R {
 
 	/**
 	 * A lambda: a closure owning copies of the variables it uses (Java's
-	 * captures are effectively final) and of `this`.
+	 * captures are effectively final) and of `this`. Passed to a `&dyn Fn`
+	 * parameter (`borrowed`, see fnParams) it is a closure on the stack that
+	 * borrows them instead.
 	 */
 	Ex lambda(LambdaExpr l, JT to) {
+		return lambda(l, to, false);
+	}
+
+	Ex lambda(LambdaExpr l, JT to, boolean borrowed) {
 		if (to.k != K.FN) throw new Unsupported("lambda as " + to);
 		MethodDeclaration m = sam(to.cls);
 		if (m.getParameters().size() != l.getParameters().size()) throw new Unsupported("lambda arity");
@@ -1369,6 +1378,7 @@ public class J2R {
 			if (!params.contains(n.getNameAsString()) && scope.find(n.getNameAsString()) != null) captured.add(n.getNameAsString());
 		StringBuilder pre = new StringBuilder("{ ");
 		if (!inStatic) pre.append("let __this = this.clone(); ");
+		if (borrowed) captured.clear();
 		for (String c : captured) {
 			Var v = scope.find(c);
 			pre.append("let ").append(v.rust).append(" = ").append(v.t.copy() ? v.rust : v.rust + ".clone()").append("; ");
@@ -1391,7 +1401,7 @@ public class J2R {
 			curReturn = ret;
 			StringBuilder body = new StringBuilder();
 			String ind = "        ";
-			if (!inStatic) body.append(ind).append("let this = &__this;\n");
+			if (!inStatic && !borrowed) body.append(ind).append("let this = &__this;\n");
 			Statement b = l.getBody();
 			if (b.isExpressionStmt() && ret.k != K.VOID) {
 				body.append(ind).append(exprTo(b.asExpressionStmt().getExpression(), ret, l).code).append("\n");
@@ -1399,6 +1409,7 @@ public class J2R {
 				block(b, body, ind);
 			}
 			String fn = fnType(to.cls);
+			if (borrowed) return new Ex("&|" + sigs + "|" + (ret.k != K.VOID ? " -> " + rust(ret) : "") + " {\n" + body + "    }", to, false);
 			return new Ex(pre + "JFn::new(std::rc::Rc::new(move |" + sigs + "|" + (ret.k != K.VOID ? " -> " + rust(ret) : "") + " {\n" + body
 					+ "    }) as std::rc::Rc<" + fn + ">) }", to, false);
 		} finally {
@@ -1705,7 +1716,7 @@ public class J2R {
 				if (r.t.k == K.NULL && l.t.ref()) return new Ex("(" + neg + recv(b.getLeft(), l) + ".is_null())", BOOL, false);
 				if (l.t.k == K.NULL && r.t.ref()) return new Ex("(" + neg + recv(b.getRight(), r) + ".is_null())", BOOL, false);
 				if (l.t.k == K.CLASS || l.t.k == K.ARRAY || l.t.k == K.LIST || l.t.k == K.RANDOM || l.t.k == K.GEOM || l.t.k == K.COLL || l.t.k == K.HSET)
-					return new Ex("(" + neg + "JRef::ptr_eq(&" + l.code + ", &" + r.code + "))", BOOL, false);
+					return new Ex("(" + neg + "JRef::ptr_eq(" + recvRef(l) + ", " + recvRef(r) + "))", BOOL, false);
 				throw new Unsupported("== on " + l.t + " (identity of value-typed objects)");
 			}
 			case LESS: case LESS_EQUALS: case GREATER: case GREATER_EQUALS: {
@@ -2014,15 +2025,21 @@ public class J2R {
 		return s.toString();
 	}
 
-	/** Arguments of a static method with non-escaping array parameters: those get a reference. */
+	/** Arguments of a method with non-escaping array or lambda parameters: those get a reference. */
 	String viewArgs(List<Expression> as, MethodDeclaration md, Node at) {
 		StringBuilder s = new StringBuilder();
 		if (as.size() != md.getParameters().size()) throw new Unsupported("varargs call");
 		for (int i = 0; i < as.size(); i++) {
 			if (i > 0) s.append(", ");
 			Parameter p = md.getParameter(i);
+			Expression a = as.get(i);
+			while (a.isEnclosedExpr()) a = a.asEnclosedExpr().getInner();
+			if (fnParam(p) && a.isLambdaExpr()) {
+				s.append(lambda(a.asLambdaExpr(), jt(p.getType().resolve()), true).code);
+				continue;
+			}
 			Ex x = exprTo(as.get(i), jt(p.getType().resolve()), at);
-			if (!viewParam(p) || x.view) s.append(x.code);
+			if (!viewParam(p) || x.view) s.append(x.code); // a fnParam gets a lambda or a fnParam
 			else s.append("&").append(recv(as.get(i), x));
 		}
 		return s.toString();
@@ -2148,6 +2165,125 @@ public class J2R {
 		return s.append("])").toString();
 	}
 
+	/**
+	 * A new object of class q, from a JRecycler in the constructor: the
+	 * object a previous `new` made, if nothing refers to it any more.
+	 */
+	String newObject(String q) {
+		String s = simple(q);
+		return "{ static RECYCLER: JRecycler<" + s + ", 4> = JRecycler::new(); RECYCLER.new_object() }";
+	}
+
+	// ---------------------------------------------------------------- lambdas that don't escape
+
+	/*
+	 * A parameter of a functional interface type (`OrganismMatcher`) that the
+	 * method only calls, or passes on to another such parameter, can't outlive
+	 * the call. It is a `&dyn Fn(..)`, and a lambda passed to it is a closure
+	 * on the caller's stack that borrows what it captures: no `Rc`, no copies
+	 * (World.checkHit made one for each organism, every frame). Every call
+	 * must pass a lambda or such a parameter, so that a null still throws
+	 * where Java throws.
+	 */
+	java.util.Set<Parameter> fnParams;
+
+	boolean fnParam(Parameter p) {
+		if (fnParams == null) computeFnParams();
+		return fnParams.contains(p);
+	}
+
+	void computeFnParams() {
+		fnParams = java.util.Collections.newSetFromMap(new java.util.IdentityHashMap<>());
+		Map<Parameter, List<Expression>> passed = new java.util.IdentityHashMap<>();
+		Set<String> names = new java.util.HashSet<>();
+		for (Map.Entry<String, ClassOrInterfaceDeclaration> e : allTypes.entrySet()) {
+			for (MethodDeclaration m : e.getValue().getMethods()) {
+				try {
+					if (!m.getBody().isPresent() || skipped(e.getKey(), m) || natives.contains(e.getKey() + "." + sig(m))) continue;
+					for (Parameter p : m.getParameters()) {
+						if (jt(p.getType().resolve()).k != K.FN) continue;
+						fnParams.add(p);
+						passed.put(p, new ArrayList<>());
+						names.add(m.getNameAsString());
+					}
+				} catch (RuntimeException ignored) {
+					// a type outside the parsed sources: not a candidate
+				}
+			}
+		}
+		// The arguments of every call to the candidates.
+		for (ClassOrInterfaceDeclaration c : allTypes.values()) {
+			for (MethodCallExpr call : c.findAll(MethodCallExpr.class)) {
+				if (!names.contains(call.getNameAsString())) continue;
+				MethodDeclaration md = target(call);
+				if (md == null) continue;
+				for (int k = 0; k < call.getArguments().size() && k < md.getParameters().size(); k++) {
+					List<Expression> l = passed.get(md.getParameter(k));
+					if (l != null) l.add(call.getArgument(k));
+				}
+			}
+		}
+		// Drop parameters that escape until none does (passing one to another candidate is fine).
+		for (boolean changed = true; changed; ) {
+			changed = false;
+			for (Map.Entry<Parameter, List<Expression>> e : passed.entrySet()) {
+				Parameter p = e.getKey();
+				if (!fnParams.contains(p)) continue;
+				boolean ok = fnStaysLocal(p.getNameAsString(), (MethodDeclaration) p.getParentNode().get());
+				for (Expression a : e.getValue()) ok &= borrowable(a);
+				if (!ok) {
+					fnParams.remove(p);
+					changed = true;
+				}
+			}
+		}
+	}
+
+	/** The translated method a call goes to, or null. */
+	MethodDeclaration target(MethodCallExpr call) {
+		try {
+			ResolvedMethodDeclaration rm = call.resolve();
+			String owner = rm.declaringType().getQualifiedName();
+			if (!allTypes.containsKey(owner)) return null;
+			return method(owner, rm.getSignature().replace(" ", ""));
+		} catch (RuntimeException e) {
+			return null;
+		}
+	}
+
+	/** A lambda, or a parameter that is a `&dyn Fn` itself. */
+	boolean borrowable(Expression a) {
+		while (a.isEnclosedExpr()) a = a.asEnclosedExpr().getInner();
+		if (a.isLambdaExpr()) return true;
+		if (!a.isNameExpr()) return false;
+		CallableDeclaration<?> c = a.findAncestor(CallableDeclaration.class).orElse(null);
+		if (c == null || a.findAncestor(LambdaExpr.class).filter(l -> l.isDescendantOf(c)).isPresent()) return false;
+		for (Parameter p : c.getParameters())
+			if (p.getNameAsString().equals(a.asNameExpr().getNameAsString())) return fnParams.contains(p);
+		return false;
+	}
+
+	/** Every use of the parameter `name` in `m` calls it or passes it to a candidate, outside lambdas. */
+	boolean fnStaysLocal(String name, MethodDeclaration m) {
+		int declared = 0;
+		for (Parameter p : m.findAll(Parameter.class)) if (p.getNameAsString().equals(name)) declared++;
+		for (VariableDeclarator v : m.findAll(VariableDeclarator.class)) if (v.getNameAsString().equals(name)) declared++;
+		if (declared != 1) return false;
+		for (NameExpr n : m.findAll(NameExpr.class)) {
+			if (!n.getNameAsString().equals(name)) continue;
+			if (n.findAncestor(LambdaExpr.class).filter(l -> l.isDescendantOf(m)).isPresent()) return false;
+			Node parent = n.getParentNode().orElse(null);
+			if (!(parent instanceof MethodCallExpr)) return false;
+			MethodCallExpr call = (MethodCallExpr) parent;
+			if (call.getScope().orElse(null) == n) continue; // the interface's method
+			MethodDeclaration md = target(call);
+			int k = -1;
+			for (int i = 0; i < call.getArguments().size(); i++) if (call.getArgument(i) == n) k = i;
+			if (md == null || k < 0 || k >= md.getParameters().size() || !fnParams.contains(md.getParameter(k))) return false;
+		}
+		return true;
+	}
+
 	Ex call(MethodCallExpr m) {
 		ResolvedMethodDeclaration rm = m.resolve();
 		String owner = rm.declaringType().getQualifiedName();
@@ -2165,6 +2301,7 @@ public class J2R {
 			Ex f = expr(m.getScope().get());
 			if (f.t.k == K.FN) {
 				String a = args(as, rm::getParam, rm.getNumberOfParams(), m, false);
+				if (f.view) return new Ex("(" + f.code + ")(" + a + ")", jt(rm.getReturnType()), false);
 				return new Ex("(" + recv(m.getScope().get(), f) + ".f())(" + a + ")", jt(rm.getReturnType()), false);
 			}
 		}
@@ -2197,7 +2334,7 @@ public class J2R {
 			if (!callableNames.containsKey(owner + "." + sig)) nameCallables(allTypes.get(owner));
 			needStatic(md);
 			String fn = moduleName(owner) + "::" + callableNames.get(owner + "." + sig);
-			if (md.getParameters().stream().anyMatch(this::viewParam)) return new Ex(fn + "(" + viewArgs(as, md, m) + ")", ret, false);
+			if (md.getParameters().stream().anyMatch(p -> viewParam(p) || fnParam(p))) return new Ex(fn + "(" + viewArgs(as, md, m) + ")", ret, false);
 			return new Ex(fn + "(" + args(as, rm::getParam, rm.getNumberOfParams(), m, false) + ")", ret, false);
 		}
 		if (!classes.containsKey(owner)) throw new Unsupported("instance method of " + owner);
@@ -2210,6 +2347,8 @@ public class J2R {
 			Ex s = expr(m.getScope().get());
 			recv = "&" + recv(m.getScope().get(), s);
 		}
+		MethodDeclaration md = method(owner, sig);
+		if (md.getParameters().stream().anyMatch(this::fnParam)) return new Ex(fn + "(" + recv + ", " + viewArgs(as, md, m) + ")", ret, false);
 		return new Ex(fn + "(" + recv + args(as, rm::getParam, rm.getNumberOfParams(), m, true) + ")", ret, false);
 	}
 

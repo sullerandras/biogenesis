@@ -29,6 +29,8 @@ public class Samples {
 		s += f == null ? "none" : "f" + f.id;
 		Item h = b.heavy();
 		s += h == null ? "none" : "h" + h.id;
+		Bag.Matcher kept = b.keep(it -> it.id < limit - 10);
+		s += kept.match(f) ? "k" : "n";
 		for (java.util.Iterator<Item> it = b.items.iterator(); it.hasNext();) {
 			Item x = it.next();
 			if (x.id % 3 == 0) it.remove();

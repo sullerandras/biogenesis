@@ -64,6 +64,21 @@ frame identical to Java, and saves and loads games (see Saved games):
   to a parameter of the same kind is a `JStackArray` on the stack, and such
   parameters of static methods take `&impl JArr<T>`. FdLibm's `sin`, `cos`,
   `pow` allocated arrays on every call before (3/4 of all allocations).
+- Objects are recycled: a constructor takes its object from a few slots
+  per class (`JRecycler`), reusing one that only the slot refers to, reset
+  to `default()` before the constructor runs. Nobody can tell it from a new
+  object, so this needs no escape analysis. Java can't do it (it can't know
+  an object is garbage until it collects). `contact`'s two `ExLine2DDouble`s
+  and `getP1()`'s `Point2D`s are the same few objects every time.
+- Lambdas that don't escape: a parameter of a functional interface type
+  that the method only calls (or passes to another such parameter), and
+  that every caller passes a lambda, is a `&dyn Fn`; the lambda is a
+  closure on the caller's stack borrowing what it captures (no `Rc`, no
+  copies). `checkHit`'s matcher made one for every organism every frame.
+- Together these leave about 300 allocations a frame (new organisms'
+  arrays) of the 32,000 before; `--features count-allocs` makes
+  `world_check` print the count, and `BIOGENESIS_ALLOC_SITES=1` adds sampled
+  call stacks (return addresses, for `atos`).
 - The binaries use mimalloc (macOS's malloc is slow for Java's allocation
   rate).
 - Rust evaluates a call's receiver and arguments left to right, which is
@@ -148,32 +163,46 @@ Verified identical to Java by `verify.sh`:
 - The translator tests (`Samples`, `Item`, `Bag`).
 
 Speed, single-threaded, a 3000x3000 world growing from 3,000 to 13,000
-organisms in 2000 frames (same final state): Java 43 s, Rust 39 s (it was
-74 s with `RefCell`, thread-local statics, two allocations per array and
-FdLibm's arrays on the heap).
+organisms in 2000 frames (same final state): Java 41 s, Rust 33 s, run
+back to back (it was 74 s with `RefCell`, thread-local statics, two
+allocations per array and FdLibm's arrays on the heap; 36 s before
+recycling objects and borrowing lambdas). The machine's speed drifts by
+10-20% over a session, so only compare runs made back to back.
+
+Profiling: `samply record --save-only --unstable-presymbolicate -o prof.json.gz
+world_check ...` works (outside a sandbox) and `samply load` shows it. Where
+the time goes (self time): `Rectangle.intersectsLine` 25%, `checkHit`'s
+bounding box test 19% (cache misses on the other organism), `contact` 11%,
+`calculateBounds` 11%, fdlibm `sin`/`cos` 5%. That's the same work Java
+does. Reading `this`'s fields once before `calculateBounds`' loop (they
+can't change in it) was tried and gained under 1%.
 
 ## Not done / next steps
 
+Where it stands (2026-10-24): the translation is complete and verified,
+single-threaded Rust is ~20% faster than Java, and a frame allocates
+almost nothing. Next candidates, biggest first: multi-threading (item 1
+below), a renderer (2), then gzip saves (3) and CI (4).
+
 Picking up: `rust/transpile.sh && rust/verify.sh` must print only "same"
-lines (about 3 minutes). Speed baseline, to compare against after changes:
+lines (about 4 minutes). Speed baseline, to compare against after changes:
 
     java --add-opens java.base/java.util=ALL-UNNAMED -cp rust/build/java-classes:lib/gson-2.10.1.jar \
-        biogenesis.WorldCheck new 3 3000 3000 3000 2000 every 0      # 43 s
-    rust/core/target/release/world_check new 3 3000 3000 3000 2000 every 0   # 39 s
+        biogenesis.WorldCheck new 3 3000 3000 3000 2000 every 0
+    rust/core/target/release/world_check new 3 3000 3000 3000 2000 every 0   # 33 s (Java 41 s)
     # both print: frame 2000 population 13213 organisms 13760 hash 82c26c3df8ccda5a
 
 When a world run differs, `full N` prints the whole state of frame N on
 both sides (as a save file); diff the two to find the first wrong field.
 
 
-1. Performance: single-threaded, Rust is now a bit faster than Java. The
-   time goes where it goes in Java (collision geometry, `calculateBounds`'
-   sin/cos). What's left of the translation's own overhead: about 12,000
-   allocations a frame (two `ExLine2DDouble`s per `contact` call, the
-   `checkHit` lambda, the per-frame `OrganismBuckets`), which escape
-   analysis of objects (not just arrays) would remove, and `Rc` count
-   updates when references are passed. The multi-threaded executor is the
-   big win left (Java's isn't deterministic either).
+1. Performance: single-threaded, Rust is about 20% faster than Java, and
+   the time goes where it goes in Java (see Status). Left of the
+   translation's own overhead: `Rc` count updates when references are
+   passed by value. A sin/cos table would save at most the 5% fdlibm
+   takes, and change the simulation (Java would need the same table). The
+   multi-threaded executor is the big win left (Java's isn't deterministic
+   either); it needs `Rc` to become something `Send`.
 2. A front end: the Rust world has no GUI. Drawing (`Organism.draw` etc.)
    is skipped now; a renderer would read the world's state.
 3. Compressed saves (gzip): the text format compresses well.

@@ -45,6 +45,17 @@ public class OrganismBuckets {
   }
 
   /**
+   * Empties all buckets. They keep their capacity, so refilling them doesn't allocate.
+   */
+  public void clear() {
+    for (int y = 0; y <= maxHeight; y++) {
+      for (int x = 0; x <= maxWidth; x++) {
+        buckets[y][x].clear();
+      }
+    }
+  }
+
+  /**
    * Inserts the organism into the grid.
    * @param o
    */

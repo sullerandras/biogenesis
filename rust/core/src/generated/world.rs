@@ -35,12 +35,11 @@ pub struct World {
 
 impl World {
     fn __init(this: &JRef<Self>) {
-        this.setf(|o| &mut o.organismBuckets, OrganismBuckets::new(this.get(|o| o._width), this.get(|o| o._height), 70));
     }
 
     /// Java: World.java:758 World(VisibleWorldInterface)
     pub fn new(mut visibleWorld: Stub) -> JRef<Self> {
-        let this = &JRef::new(Self::default());
+        let this = &{ static RECYCLER: JRecycler<World, 4> = JRecycler::new(); RECYCLER.new_object() };
         Self::__init(this);
         Self::__ctor_new(this, visibleWorld);
         this.clone()
@@ -67,7 +66,7 @@ impl World {
                 while it.hasNext() {
                     b = it.next();
                     if { let __r1 = &b; let __p1_0 = x; let __p1_1 = y; __r1.get(|o| o.__super.contains(__p1_0, __p1_1)) } {
-                        if ((Organism::isAlive(&b)) && ((!JRef::ptr_eq(&b.clone(), &{ let _ = this.get(|o| o._visibleWorld); <JRef<Organism>>::default() })))) {
+                        if ((Organism::isAlive(&b)) && ((!JRef::ptr_eq(&b, &({ let _ = this.get(|o| o._visibleWorld); <JRef<Organism>>::default() }))))) {
                             return b.clone();
                         }
                         deadOrganism = b.clone();
@@ -432,6 +431,7 @@ impl World {
         (this.get(|o| o._organisms.clone())).clear();
         this.setf(|o| &mut o._width, utils::WORLD_WIDTH());
         this.setf(|o| &mut o._height, utils::WORLD_HEIGHT());
+        this.setf(|o| &mut o.organismBuckets, JRef::null());
         let mut d: Stub = { let _ = this.get(|o| o._width); let _ = this.get(|o| o._height); Stub::NONNULL };
         ();
         { let _ = this.get(|o| o._visibleWorld); () };
@@ -448,7 +448,7 @@ impl World {
         }
     }
 
-    /// Java: World.java:827 void disperseAll()
+    /// Java: World.java:828 void disperseAll()
     pub fn disperseAll(this: &JRef<Self>) {
         let mut b: JRef<Organism> = JRef::null();
         {
@@ -465,7 +465,7 @@ impl World {
         }
     }
 
-    /// Java: World.java:842 void killAll()
+    /// Java: World.java:843 void killAll()
     pub fn killAll(this: &JRef<Self>) {
         let mut org: JRef<Organism> = JRef::null();
         {
@@ -481,14 +481,13 @@ impl World {
         }
     }
 
-    /// Java: World.java:859 void draw(Graphics, boolean)
+    /// Java: World.java:860 void draw(Graphics, boolean)
     pub fn draw(this: &JRef<Self>, mut g: Stub, mut fullRedraw: bool) {
         crate::rt::throw("J2R: skipped biogenesis.World.draw(java.awt.Graphics,boolean)")
     }
 
-    /// Java: World.java:919 void time()
+    /// Java: World.java:920 void time()
     pub fn time(this: &JRef<Self>) {
-        this.setf(|o| &mut o.organismBuckets, OrganismBuckets::new(this.get(|o| o._width), this.get(|o| o._height), 70));
         if this.get(|o| o._corridorexists) {
             let mut c: Stub = Stub::NULL;
             {
@@ -502,6 +501,11 @@ impl World {
             }
         }
         {
+            if ((this.get(|o| o.organismBuckets.clone())).is_null()) {
+                this.setf(|o| &mut o.organismBuckets, OrganismBuckets::new(this.get(|o| o._width), this.get(|o| o._height), 70));
+            } else {
+                OrganismBuckets::clear(&(this.get(|o| o.organismBuckets.clone())));
+            }
             {
                 let __a2 = (this.get(|o| o._organisms.clone())).snapshot_array();
                 let mut __i2 = 0;
@@ -560,19 +564,19 @@ impl World {
         }
     }
 
-    /// Java: World.java:992 void addCorridors(InCorridor, OutCorridor)
+    /// Java: World.java:998 void addCorridors(InCorridor, OutCorridor)
     pub fn addCorridors(this: &JRef<Self>, mut r#in: Stub, mut out: Stub) {
         (this.get(|o| o.inCorridors.clone())).add(r#in);
         (this.get(|o| o.outCorridors.clone())).add(out);
         this.setf(|o| &mut o._corridorexists, true);
     }
 
-    /// Java: World.java:1006 void removeCorridors(InCorridor, OutCorridor)
+    /// Java: World.java:1012 void removeCorridors(InCorridor, OutCorridor)
     pub fn removeCorridors(this: &JRef<Self>, mut r#in: Stub, mut out: Stub) {
         crate::rt::throw("J2R: skipped biogenesis.World.removeCorridors(biogenesis.InCorridor,biogenesis.OutCorridor)")
     }
 
-    /// Java: World.java:1025 OutCorridor checkHitCorridor(Organism)
+    /// Java: World.java:1031 OutCorridor checkHitCorridor(Organism)
     pub fn checkHitCorridor(this: &JRef<Self>, mut org: JRef<Organism>) -> Stub {
         let mut c: Stub = Stub::NULL;
         {
@@ -589,7 +593,7 @@ impl World {
         return Stub::NULL;
     }
 
-    /// Java: World.java:1045 Organism genesisCheckHit(Organism)
+    /// Java: World.java:1051 Organism genesisCheckHit(Organism)
     pub fn genesisCheckHit(this: &JRef<Self>, mut b1: JRef<Organism>) -> JRef<Organism> {
         let mut b: JRef<Organism> = JRef::null();
         {
@@ -597,7 +601,7 @@ impl World {
                 let mut it: JIter<JRef<Organism>> = (this.get(|o| o._organisms.clone())).iterator();
                 while it.hasNext() {
                     b = it.next();
-                    if (!JRef::ptr_eq(&b1.clone(), &b.clone())) {
+                    if (!JRef::ptr_eq(&b1, &b)) {
                         if { let __r1 = &b1; let __p1_0 = &b.get(|o| o.__super); __r1.get(|o| o.__super.intersects(&__p1_0)) } {
                             return b1.clone();
                         }
@@ -608,37 +612,34 @@ impl World {
         return JRef::null();
     }
 
-    /// Java: World.java:1071 Organism fastCheckHit(Organism)
+    /// Java: World.java:1078 Organism fastCheckHit(Organism)
     pub fn fastCheckHit(this: &JRef<Self>, mut b1: JRef<Organism>) -> JRef<Organism> {
-        return OrganismBuckets::findFirst(&(this.get(|o| o.organismBuckets.clone())), b1.clone(), { let __this = this.clone(); let b1 = b1.clone(); JFn::new(std::rc::Rc::new(move |mut org: JRef<Organism>| -> bool {
-        let this = &__this;
-        if (!JRef::ptr_eq(&b1.clone(), &org.clone())) {
+        return OrganismBuckets::findFirst(&(this.get(|o| o.organismBuckets.clone())), b1.clone(), &|mut org: JRef<Organism>| -> bool {
+        if (!JRef::ptr_eq(&b1, &org)) {
             if { let __r1 = &b1; let __p1_0 = &org.get(|o| o.__super); __r1.get(|o| o.__super.intersects(&__p1_0)) } {
                 return true;
             }
         }
         return false;
-    }) as std::rc::Rc<dyn Fn(JRef<Organism>) -> bool>) });
+    });
     }
 
-    /// Java: World.java:1093 Organism transformCheckHit(Organism)
+    /// Java: World.java:1100 Organism transformCheckHit(Organism)
     pub fn transformCheckHit(this: &JRef<Self>, mut b1: JRef<Organism>) -> JRef<Organism> {
-        return OrganismBuckets::findFirst(&(this.get(|o| o.organismBuckets.clone())), b1.clone(), { let __this = this.clone(); let b1 = b1.clone(); JFn::new(std::rc::Rc::new(move |mut org: JRef<Organism>| -> bool {
-        let this = &__this;
-        if ((((!JRef::ptr_eq(&b1.clone(), &org.clone()))) && ((b1.get(|o| o._ID) != org.get(|o| o._parentID)))) && ((b1.get(|o| o._parentID) != org.get(|o| o._ID)))) {
+        return OrganismBuckets::findFirst(&(this.get(|o| o.organismBuckets.clone())), b1.clone(), &|mut org: JRef<Organism>| -> bool {
+        if ((((!JRef::ptr_eq(&b1, &org))) && ((b1.get(|o| o._ID) != org.get(|o| o._parentID)))) && ((b1.get(|o| o._parentID) != org.get(|o| o._ID)))) {
             if { let __r1 = &b1; let __p1_0 = &org.get(|o| o.__super); __r1.get(|o| o.__super.intersects(&__p1_0)) } {
                 return true;
             }
         }
         return false;
-    }) as std::rc::Rc<dyn Fn(JRef<Organism>) -> bool>) });
+    });
     }
 
-    /// Java: World.java:1110 Organism checkHit(Organism)
+    /// Java: World.java:1117 Organism checkHit(Organism)
     pub fn checkHit(this: &JRef<Self>, mut org1: JRef<Organism>) -> JRef<Organism> {
-        return OrganismBuckets::findFirst(&(this.get(|o| o.organismBuckets.clone())), org1.clone(), { let __this = this.clone(); let org1 = org1.clone(); JFn::new(std::rc::Rc::new(move |mut collidingOrganism: JRef<Organism>| -> bool {
-        let this = &__this;
-        if (!JRef::ptr_eq(&collidingOrganism.clone(), &org1.clone())) {
+        return OrganismBuckets::findFirst(&(this.get(|o| o.organismBuckets.clone())), org1.clone(), &|mut collidingOrganism: JRef<Organism>| -> bool {
+        if (!JRef::ptr_eq(&collidingOrganism, &org1)) {
             if { let __r1 = &org1; let __p1_0 = &collidingOrganism.get(|o| o.__super); __r1.get(|o| o.__super.intersects(&__p1_0)) } {
                 if ((Organism::getEnergy(&collidingOrganism) >= utils::tol) && (Organism::getEnergy(&org1) >= utils::tol)) {
                     if Organism::contact(&org1, collidingOrganism.clone()) {
@@ -648,13 +649,13 @@ impl World {
             }
         }
         return false;
-    }) as std::rc::Rc<dyn Fn(JRef<Organism>) -> bool>) });
+    });
     }
 
-    /// Java: World.java:1136 void addOrganism(Organism, Organism)
+    /// Java: World.java:1143 void addOrganism(Organism, Organism)
     pub fn addOrganism(this: &JRef<Self>, mut child: JRef<Organism>, mut parent: JRef<Organism>) {
         (this.get(|o| o._organisms.clone())).add(child.clone());
-        if (JRef::ptr_eq(&parent.clone(), &{ let _ = this.get(|o| o._visibleWorld); <JRef<Organism>>::default() })) {
+        if (JRef::ptr_eq(&parent, &({ let _ = this.get(|o| o._visibleWorld); <JRef<Organism>>::default() }))) {
             { let _ = { let _ = { let _ = this.get(|o| o._visibleWorld); Stub::NONNULL }; Stub::NONNULL }; () };
         }
         if (!parent.is_null()) {
@@ -664,21 +665,21 @@ impl World {
         World::increasePopulation(this);
     }
 
-    /// Java: World.java:1152 void organismHasDied(Organism, Organism)
+    /// Java: World.java:1159 void organismHasDied(Organism, Organism)
     pub fn organismHasDied(this: &JRef<Self>, mut dyingOrganism: JRef<Organism>, mut killingOrganism: JRef<Organism>) {
         WorldStatistics::eventOrganismDie(&(this.get(|o| o.worldStatistics.clone())), dyingOrganism.clone(), killingOrganism.clone());
-        if (JRef::ptr_eq(&killingOrganism.clone(), &{ let _ = this.get(|o| o._visibleWorld); <JRef<Organism>>::default() })) {
+        if (JRef::ptr_eq(&killingOrganism, &({ let _ = this.get(|o| o._visibleWorld); <JRef<Organism>>::default() }))) {
             { let _ = { let _ = { let _ = this.get(|o| o._visibleWorld); Stub::NONNULL }; Stub::NONNULL }; () };
         }
-        if (JRef::ptr_eq(&dyingOrganism.clone(), &{ let _ = this.get(|o| o._visibleWorld); <JRef<Organism>>::default() })) {
+        if (JRef::ptr_eq(&dyingOrganism, &({ let _ = this.get(|o| o._visibleWorld); <JRef<Organism>>::default() }))) {
             { let _ = this.get(|o| o._visibleWorld); () };
         }
     }
 
-    /// Java: World.java:1165 void organismHasBeenInfected(Organism, Organism)
+    /// Java: World.java:1172 void organismHasBeenInfected(Organism, Organism)
     pub fn organismHasBeenInfected(this: &JRef<Self>, mut infectedOrganism: JRef<Organism>, mut infectingOrganism: JRef<Organism>) {
         WorldStatistics::eventOrganismInfects(&(this.get(|o| o.worldStatistics.clone())), infectedOrganism.clone(), infectingOrganism.clone());
-        if (JRef::ptr_eq(&infectingOrganism.clone(), &{ let _ = this.get(|o| o._visibleWorld); <JRef<Organism>>::default() })) {
+        if (JRef::ptr_eq(&infectingOrganism, &({ let _ = this.get(|o| o._visibleWorld); <JRef<Organism>>::default() }))) {
             { let _ = { let _ = { let _ = this.get(|o| o._visibleWorld); Stub::NONNULL }; Stub::NONNULL }; () };
         }
     }

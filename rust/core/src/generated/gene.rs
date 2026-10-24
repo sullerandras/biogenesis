@@ -65,7 +65,7 @@ impl Gene {
 
     /// Java: Gene.java:119 Gene()
     pub fn new() -> JRef<Self> {
-        let this = &JRef::new(Self::default());
+        let this = &{ static RECYCLER: JRecycler<Gene, 4> = JRecycler::new(); RECYCLER.new_object() };
         Self::__init(this);
         Self::__ctor_new(this);
         this.clone()
@@ -76,7 +76,7 @@ impl Gene {
 
     /// Java: Gene.java:134 Gene(double, double, Color, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int)
     pub fn new48(mut length: f64, mut theta: f64, mut color: Color, mut branch: i32, mut stack: i32, mut fold: i32, mut chiral: i32, mut radial: i32, mut redreaction: i32, mut greenreaction: i32, mut bluereaction: i32, mut plaguereaction: i32, mut scourgereaction: i32, mut whitereaction: i32, mut grayreaction: i32, mut silverreaction: i32, mut defaultreaction: i32, mut consumerreaction: i32, mut plantreaction: i32, mut magentareaction: i32, mut rosereaction: i32, mut pinkreaction: i32, mut coralreaction: i32, mut orangereaction: i32, mut barkreaction: i32, mut ivyreaction: i32, mut violetreaction: i32, mut virusreaction: i32, mut maroonreaction: i32, mut crimsonreaction: i32, mut olivereaction: i32, mut mintreaction: i32, mut lavenderreaction: i32, mut creamreaction: i32, mut spikereaction: i32, mut fallowreaction: i32, mut lightbluereaction: i32, mut ochrereaction: i32, mut skyreaction: i32, mut lilacreaction: i32, mut firereaction: i32, mut lightbrownreaction: i32, mut greenbrownreaction: i32, mut brownreaction: i32, mut icereaction: i32, mut brokenreaction: i32, mut sickreaction: i32, mut friendreaction: i32) -> JRef<Self> {
-        let this = &JRef::new(Self::default());
+        let this = &{ static RECYCLER: JRecycler<Gene, 4> = JRecycler::new(); RECYCLER.new_object() };
         Self::__init(this);
         Self::__ctor_new48(this, length, theta, color, branch, stack, fold, chiral, radial, redreaction, greenreaction, bluereaction, plaguereaction, scourgereaction, whitereaction, grayreaction, silverreaction, defaultreaction, consumerreaction, plantreaction, magentareaction, rosereaction, pinkreaction, coralreaction, orangereaction, barkreaction, ivyreaction, violetreaction, virusreaction, maroonreaction, crimsonreaction, olivereaction, mintreaction, lavenderreaction, creamreaction, spikereaction, fallowreaction, lightbluereaction, ochrereaction, skyreaction, lilacreaction, firereaction, lightbrownreaction, greenbrownreaction, brownreaction, icereaction, brokenreaction, sickreaction, friendreaction);
         this.clone()

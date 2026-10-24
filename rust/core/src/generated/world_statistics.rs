@@ -128,7 +128,7 @@ impl WorldStatistics {
 
     /// Java: WorldStatistics.java:218 WorldStatistics(MainWindowInterface)
     pub fn new(mut mainWindowInterface: Stub) -> JRef<Self> {
-        let this = &JRef::new(Self::default());
+        let this = &{ static RECYCLER: JRecycler<WorldStatistics, 4> = JRecycler::new(); RECYCLER.new_object() };
         Self::__init(this);
         Self::__ctor_new(this, mainWindowInterface);
         this.clone()

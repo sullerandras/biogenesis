@@ -14,6 +14,15 @@
 use super::jref::JCell;
 use std::rc::Rc;
 
+/// A new object of a geometry class, reusing a recent one that nothing
+/// refers to any more (see JRecycler): `getP1()` makes a Point2D each call.
+macro_rules! new_object {
+    ($t:ty) => {{
+        static RECYCLER: crate::rt::JRecycler<$t, 4> = crate::rt::JRecycler::new();
+        RECYCLER.new_object()
+    }};
+}
+
 use super::dump::{Dumper, JDumpTarget};
 use super::jref::JRef;
 
@@ -51,7 +60,7 @@ impl<T: RectangleT + 'static> JRef<T> {
 impl Rectangle {
     /// `new Rectangle()`
     pub fn new_ref() -> JRef<dyn RectangleT> {
-        JRef::new(Rectangle::default()).as_rectangle()
+        new_object!(Rectangle).as_rectangle()
     }
 
     pub fn setBounds(&mut self, x: i32, y: i32, width: i32, height: i32) {
@@ -247,7 +256,7 @@ impl<T: Line2DT + 'static> JRef<T> {
 impl Line2D {
     /// `new Line2D.Double()`
     pub fn new_ref() -> JRef<dyn Line2DT> {
-        JRef::new(Line2D::default()).as_line2d()
+        new_object!(Line2D).as_line2d()
     }
 
     pub fn setLine(&mut self, x1: f64, y1: f64, x2: f64, y2: f64) {
@@ -340,7 +349,11 @@ pub struct Point {
 impl Point {
     /// `new Point(x, y)`
     pub fn new_ref(x: i32, y: i32) -> JRef<Point> {
-        JRef::new(Point { x, y })
+        {
+            let p = new_object!(Point);
+            p.set(|o| *o = Point { x, y });
+            p
+        }
     }
 }
 
@@ -363,7 +376,11 @@ pub struct Point2D {
 impl Point2D {
     /// `new Point2D.Double(x, y)`
     pub fn new_ref(x: f64, y: f64) -> JRef<Point2D> {
-        JRef::new(Point2D { x, y })
+        {
+            let p = new_object!(Point2D);
+            p.set(|o| *o = Point2D { x, y });
+            p
+        }
     }
 
     pub fn getX(&self) -> f64 {

@@ -24,20 +24,20 @@ impl Bag {
     }
 
     pub fn new() -> JRef<Self> {
-        let this = &JRef::new(Self::default());
+        let this = &{ static RECYCLER: JRecycler<Bag, 4> = JRecycler::new(); RECYCLER.new_object() };
         Self::__init(this);
         this.clone()
     }
 
     /// Java: Bag.java:20 Item find(Matcher)
-    pub fn find(this: &JRef<Self>, mut m: JFn<dyn Fn(JRef<Item>) -> bool>) -> JRef<Item> {
+    pub fn find(this: &JRef<Self>, m: &dyn Fn(JRef<Item>) -> bool) -> JRef<Item> {
         {
             let __a1 = (this.get(|o| o.items.clone())).snapshot_array();
             let mut __i1 = 0;
             'l1: while __i1 < __a1.len() {
                 let mut i: JRef<Item> = __a1.at(__i1);
                 __i1 += 1;
-                if (m.f())(i.clone()) {
+                if (m)(i.clone()) {
                     return i.clone();
                 }
             }
@@ -45,20 +45,24 @@ impl Bag {
         return JRef::null();
     }
 
-    /// Java: Bag.java:27 double threshold()
+    /// Java: Bag.java:28 Matcher keep(Matcher)
+    pub fn keep(this: &JRef<Self>, mut m: JFn<dyn Fn(JRef<Item>) -> bool>) -> JFn<dyn Fn(JRef<Item>) -> bool> {
+        return m.clone();
+    }
+
+    /// Java: Bag.java:32 double threshold()
     pub fn threshold(this: &JRef<Self>) -> f64 {
         return this.get(|o| o.limit);
     }
 
-    /// Java: Bag.java:32 Item heavy()
+    /// Java: Bag.java:37 Item heavy()
     pub fn heavy(this: &JRef<Self>) -> JRef<Item> {
-        return Bag::find(this, { let __this = this.clone(); JFn::new(std::rc::Rc::new(move |mut i: JRef<Item>| -> bool {
-        let this = &__this;
+        return Bag::find(this, &|mut i: JRef<Item>| -> bool {
         if (i.get(|o| o.w) > Bag::threshold(this)) {
             return true;
         }
         return false;
-    }) as std::rc::Rc<dyn Fn(JRef<Item>) -> bool>) });
+    });
     }
 }
 

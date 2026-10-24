@@ -19,7 +19,7 @@ impl Item {
 
     /// Java: Item.java:8 Item(int, double)
     pub fn new(mut id: i32, mut w: f64) -> JRef<Self> {
-        let this = &JRef::new(Self::default());
+        let this = &{ static RECYCLER: JRecycler<Item, 4> = JRecycler::new(); RECYCLER.new_object() };
         Self::__init(this);
         Self::__ctor_new(this, id, w);
         this.clone()

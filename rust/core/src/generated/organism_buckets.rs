@@ -21,7 +21,7 @@ impl OrganismBuckets {
 
     /// Java: OrganismBuckets.java:34 OrganismBuckets(int, int, int)
     pub fn new(mut mapWidth: i32, mut mapHeight: i32, mut bucketSize: i32) -> JRef<Self> {
-        let this = &JRef::new(Self::default());
+        let this = &{ static RECYCLER: JRecycler<OrganismBuckets, 4> = JRecycler::new(); RECYCLER.new_object() };
         Self::__init(this);
         Self::__ctor_new(this, mapWidth, mapHeight, bucketSize);
         this.clone()
@@ -47,7 +47,24 @@ impl OrganismBuckets {
         }
     }
 
-    /// Java: OrganismBuckets.java:51 void insert(Organism)
+    /// Java: OrganismBuckets.java:50 void clear()
+    pub fn clear(this: &JRef<Self>) {
+        {
+            let mut y: i32 = 0;
+            while (y <= this.get(|o| o.maxHeight)) {
+                {
+                    let mut x: i32 = 0;
+                    while (x <= this.get(|o| o.maxWidth)) {
+                        ((this.get(|__o| __o.buckets.at(y))).at(x)).clear();
+                        x = x + 1;
+                    }
+                }
+                y = y + 1;
+            }
+        }
+    }
+
+    /// Java: OrganismBuckets.java:62 void insert(Organism)
     pub fn insert(this: &JRef<Self>, mut o: JRef<Organism>) {
         let mut minx: i32 = std::cmp::max(0, ((({ let __r1 = &o; __r1.get(|o| o.__super.getMinX()) } / (this.get(|o| o.bucketSize) as f64))) as i32));
         let mut miny: i32 = std::cmp::max(0, ((({ let __r2 = &o; __r2.get(|o| o.__super.getMinY()) } / (this.get(|o| o.bucketSize) as f64))) as i32));
@@ -72,8 +89,8 @@ impl OrganismBuckets {
         }
     }
 
-    /// Java: OrganismBuckets.java:90 Organism findFirst(Organism, OrganismMatcher)
-    pub fn findFirst(this: &JRef<Self>, mut o: JRef<Organism>, mut matcher: JFn<dyn Fn(JRef<Organism>) -> bool>) -> JRef<Organism> {
+    /// Java: OrganismBuckets.java:101 Organism findFirst(Organism, OrganismMatcher)
+    pub fn findFirst(this: &JRef<Self>, mut o: JRef<Organism>, matcher: &dyn Fn(JRef<Organism>) -> bool) -> JRef<Organism> {
         let mut minx: i32 = std::cmp::max(0, ((({ let __r1 = &o; __r1.get(|o| o.__super.getMinX()) } / (this.get(|o| o.bucketSize) as f64))) as i32));
         let mut miny: i32 = std::cmp::max(0, ((({ let __r2 = &o; __r2.get(|o| o.__super.getMinY()) } / (this.get(|o| o.bucketSize) as f64))) as i32));
         let mut maxx: i32 = std::cmp::min(this.get(|o| o.maxWidth), ((({ let __r3 = &o; __r3.get(|o| o.__super.getMaxX()) } / (this.get(|o| o.bucketSize) as f64))) as i32));
@@ -90,7 +107,7 @@ impl OrganismBuckets {
                             let mut n: i32 = bucket.len();
                             while (i < n) {
                                 let mut r#match: JRef<Organism> = bucket.at(i);
-                                if (matcher.f())(r#match.clone()) {
+                                if (matcher)(r#match.clone()) {
                                     return r#match.clone();
                                 }
                                 i = i + 1;
@@ -105,22 +122,22 @@ impl OrganismBuckets {
         return JRef::null();
     }
 
-    /// Java: OrganismBuckets.java:111 Collection<Organism> getBucket(int, int)
+    /// Java: OrganismBuckets.java:122 Collection<Organism> getBucket(int, int)
     pub fn getBucket(this: &JRef<Self>, mut x: i32, mut y: i32) -> JCollection<JRef<Organism>> {
         return ((this.get(|__o| __o.buckets.at(y))).at(x)).as_collection();
     }
 
-    /// Java: OrganismBuckets.java:118 int getMaxWidth()
+    /// Java: OrganismBuckets.java:129 int getMaxWidth()
     pub fn getMaxWidth(this: &JRef<Self>) -> i32 {
         return this.get(|o| o.maxWidth);
     }
 
-    /// Java: OrganismBuckets.java:122 int getMaxHeight()
+    /// Java: OrganismBuckets.java:133 int getMaxHeight()
     pub fn getMaxHeight(this: &JRef<Self>) -> i32 {
         return this.get(|o| o.maxHeight);
     }
 
-    /// Java: OrganismBuckets.java:126 int getBucketSize()
+    /// Java: OrganismBuckets.java:137 int getBucketSize()
     pub fn getBucketSize(this: &JRef<Self>) -> i32 {
         return this.get(|o| o.bucketSize);
     }
