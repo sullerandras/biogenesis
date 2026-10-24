@@ -18,6 +18,7 @@ frame identical to Java, and saves and loads games (see Saved games):
 And it has a window (see The GUI):
 
     (cd rust/gui && cargo run --release)            # a new world, Java's default parameters
+    (cd rust/gui && cargo run --release -- 42)      # the same, with random seed 42
     (cd rust/gui && cargo run --release -- my.save)  # a saved game
 
 ## Layout
@@ -168,6 +169,16 @@ keeps the window hidden (no focus, no dock icon, the statistics window drawn
 inside the main one) and writes `<dir>/main.ppm` after 8 seconds
 (`sips -s format png main.ppm --out main.png`). Quit it with `pkill
 biogenesis-gui`.
+`BIOGENESIS_PAINT_HIDDEN=1` draws the hidden window anyway,
+`BIOGENESIS_LOG_FPS=1` prints the frames per second to stderr, and
+`BIOGENESIS_DELAY_MS` sets the ms per frame (0: no limit). The default world
+(7200x7200, 12,500 organisms, about 15,000 after 1,000 frames) runs at
+50-55 frames/s without the limit, repainted at 1:1 at 50, and with the
+whole world in view at 42 (drawing all organisms each frame).
+
+`biogenesis-gui <seed>` makes a new world with that seed, as `java -jar
+biogenesis.jar <seed>` does. It is the world `world_check new <seed> 7200
+7200 12500 ...` makes, so a headless run with `every`/`full` can follow it.
 
 Not there yet (Java has them): selecting an organism (its info and genetic
 code), tracking, feeding/killing, the parameters dialog, remembered

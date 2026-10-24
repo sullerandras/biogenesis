@@ -1,7 +1,7 @@
 //! Biogenesis window for the Rust translation: the world, a status line, the
 //! statistics window. The simulation runs on its own thread (sim.rs).
 //!
-//! biogenesis-gui [save file]
+//! biogenesis-gui [random seed | save file]  (Java: java -jar biogenesis.jar [random seed])
 
 mod sim;
 mod stats;
@@ -91,12 +91,16 @@ fn write_ppm(path: PathBuf, image: &egui::ColorImage) {
 }
 
 fn main() -> eframe::Result {
-    let seed = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map_or(0, |d| d.as_millis() as i64);
+    let arg = std::env::args_os().nth(1);
+    let given_seed = arg.as_ref().and_then(|a| a.to_str()?.parse::<i64>().ok());
+    let seed = given_seed.unwrap_or_else(|| {
+        std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map_or(0, |d| d.as_millis() as i64)
+    });
     // Before the simulation thread starts (see sim::defaults).
     let defaults = sim::defaults(seed);
-    let first = match std::env::args_os().nth(1) {
-        Some(p) => vec![Cmd::Load(PathBuf::from(p)), Cmd::Run(true)],
-        None => vec![Cmd::New(defaults)],
+    let first = match arg {
+        Some(p) if given_seed.is_none() => vec![Cmd::Load(PathBuf::from(p)), Cmd::Run(true)],
+        _ => vec![Cmd::New(defaults)],
     };
     // Taking screenshots for checking a change: the windows stay hidden and
     // the app doesn't take the focus.
@@ -132,7 +136,7 @@ fn main() -> eframe::Result {
                 world_size: Vec2::ZERO,
                 repaint_world: true,
                 strategy: Strategy::Always,
-                delay_ms: 20,
+                delay_ms: std::env::var("BIOGENESIS_DELAY_MS").ok().and_then(|d| d.parse().ok()).unwrap_or(20),
                 stats_open: std::env::var_os("BIOGENESIS_STATS").is_some(),
                 stats_focused: false,
                 stats: None,
@@ -402,6 +406,10 @@ impl App {
 impl eframe::App for App {
     /// Runs while the window is hidden too.
     fn logic(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+        // Hidden, the window isn't drawn, unless asked: measuring what drawing costs.
+        if std::env::var_os("BIOGENESIS_PAINT_HIDDEN").is_some() {
+            ctx.send_viewport_cmd(egui::ViewportCommand::RequestPaintWhileHidden);
+        }
         if let Some((dir, at)) = &self.screenshot {
             if std::time::Instant::now() >= *at {
                 let main = dir.join("main.ppm");

@@ -111,7 +111,7 @@ pub fn defaults(seed: i64) -> NewWorld {
 }
 
 pub fn start(ctx: eframe::egui::Context, first: Vec<Cmd>) -> SharedRef {
-    let shared: SharedRef = Arc::new(Mutex::new(Shared { cmds: first, delay_ms: 20, ..Default::default() }));
+    let shared: SharedRef = Arc::new(Mutex::new(Shared { cmds: first, ..Default::default() }));
     let s = shared.clone();
     std::thread::Builder::new()
         .name("simulation".into())
@@ -168,6 +168,7 @@ fn run(shared: &SharedRef, ctx: &eframe::egui::Context) {
     let mut fps = (Instant::now(), 0u32, 0.0);
     let mut prev = Instant::now();
     let mut ahead_nanos: i64 = 0;
+    let log_fps = std::env::var_os("BIOGENESIS_LOG_FPS").is_some();
     loop {
         let (cmds, view, delay_ms, want_stats) = {
             let mut s = shared.lock().unwrap();
@@ -220,6 +221,9 @@ fn run(shared: &SharedRef, ctx: &eframe::egui::Context) {
             let t = fps.0.elapsed().as_secs_f64();
             if t >= 1.0 {
                 fps = (Instant::now(), 0, fps.1 as f64 / t);
+                if log_fps {
+                    eprintln!("{:.1} frames/s, population {}", fps.2, World::getPopulation(&w));
+                }
             }
         } else {
             fps.2 = 0.0;
