@@ -4,6 +4,8 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.Semaphore;
 
+import biogenesis.World;
+
 /**
  * WorkerThread is responsible for executing WorkerJobs. One WorkerJob is added for every step of the
  * simulation.
@@ -30,6 +32,7 @@ class WorkerThread extends Thread {
    */
   @Override
   public void run() {
+    World.collectAtmosphereChanges();
     while (!isInterrupted()) {
       WorkerJob job = null;
       synchronized (jobs) {

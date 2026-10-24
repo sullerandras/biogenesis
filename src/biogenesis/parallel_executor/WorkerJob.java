@@ -1,5 +1,7 @@
 package biogenesis.parallel_executor;
 
+import biogenesis.World;
+
 /**
  * The WorkerJob is responsible for executing one step of the simulation in parallel for a range of
  * lines in the OrganismBuckets.
@@ -36,6 +38,8 @@ class WorkerJob {
     int index = startIndex;
     while (index <= endIndex) {
       ParallelExecutor.progressLineInBucket(index);
+      // after each line, so that other threads see this one's changes soon
+      World.flushAtmosphereChanges();
       LinesLocker.unlock(index - RANGE_TO_CLEAR);
       index++;
       LinesLocker.lock(index + RANGE_TO_CLEAR);

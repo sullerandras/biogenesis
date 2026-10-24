@@ -388,9 +388,7 @@ public class World implements Serializable{
 	 * @param q  The amount of CO2 to add.
 	 */
 	public void addCO2(double q) {
-		synchronized (_CO2_monitor) {
-			_CO2 += q;
-		}
+		changeCO2(q);
 	}
 	/**
 	 * Add CH4 to the atmosphere.
@@ -398,9 +396,7 @@ public class World implements Serializable{
 	 * @param q  The amount of CH4 to add.
 	 */
 	public void addCH4(double q) {
-		synchronized (_CH4_monitor) {
-			_CH4 += q;
-		}
+		changeCH4(q);
 	}
 	/**
 	 * Add CO to the atmosphere.
@@ -408,9 +404,7 @@ public class World implements Serializable{
 	 * @param q  The amount of CO to add.
 	 */
 	public void addCO1(double q) {
-		synchronized (_CO1_monitor) {
-			_CO1 += q;
-		}
+		changeCO1(q);
 	}
 	/**
 	 * Add detritus to the atmosphere.
@@ -418,9 +412,7 @@ public class World implements Serializable{
 	 * @param q  The amount of detritus to add.
 	 */
 	public void addDetritus(double q) {
-		synchronized (_detritus_monitor) {
-			_detritus += q;
-		}
+		changeDetritus(q);
 	}
 	/**
 	 * Add N2 to the atmosphere.
@@ -428,9 +420,7 @@ public class World implements Serializable{
 	 * @param q  The amount of N2 to add.
 	 */
 	public void addN2(double q) {
-		synchronized (_N2_monitor) {
-			_N2 += q;
-		}
+		changeN2(q);
 	}
 	/**
 	 * Add NH3 to the atmosphere.
@@ -438,9 +428,7 @@ public class World implements Serializable{
 	 * @param q  The amount of NH3 to add.
 	 */
 	public void addNH3(double q) {
-		synchronized (_NH3_monitor) {
-			_NH3 += q;
-		}
+		changeNH3(q);
 	}
 
 	/**
@@ -513,14 +501,13 @@ public class World implements Serializable{
 	 * unless there weren't enough CO2 in the atmosphere.
 	 */
 	public double convertCO2ToO2(double q) {
+		double d;
 		synchronized (_CO2_monitor) {
-			synchronized (_O2_monitor) {
-				double d = Math.min(q,_CO2);
-				_CO2 -= d;
-				_O2 += d;
-				return d;
-			}
+			d = Math.min(q,_CO2);
+			_CO2 -= d;
 		}
+		changeO2(d);
+		return d;
 	}
 	/**
 	 * Consume O2 from the atmosphere to realize the respiration process
@@ -531,13 +518,9 @@ public class World implements Serializable{
 	 * @return  The amount of O2 obtained. This is always <code>q</code>
 	 */
 	public double respiration(double q) {
-		synchronized (_CO2_monitor) {
-			synchronized (_O2_monitor) {
-				_O2 -= q;
-				_CO2 += q;
-				return q;
-			}
-		}
+		changeO2(-q);
+		changeCO2(q);
+		return q;
 	}
 	/**
 	 * Decaying organisms and pink, while consuming another organism, release
@@ -547,13 +530,9 @@ public class World implements Serializable{
 	 * @return  The amount of O2 obtained. This is always <code>q</code>
 	 */
 	public double decomposition(double q) {
-		synchronized (_CH4_monitor) {
-			synchronized (_O2_monitor) {
-				_O2 -= q;
-				_CH4 += q;
-				return q;
-			}
-		}
+		changeO2(-q);
+		changeCH4(q);
+		return q;
 	}
 	/**
 	 * Organisms using their abilities, release
@@ -563,13 +542,9 @@ public class World implements Serializable{
 	 * @return  The amount of O2 obtained. This is always <code>q</code>
 	 */
 	public double energyuse(double q) {
-		synchronized (_CO1_monitor) {
-			synchronized (_O2_monitor) {
-				_O2 -= q;
-				_CO1 += q;
-				return q;
-			}
-		}
+		changeO2(-q);
+		changeCO1(q);
+		return q;
 	}
 	/**
 	 * Feeding organisms except pink (but also produced in some other cases) release
@@ -579,31 +554,23 @@ public class World implements Serializable{
 	 * @return  The amount of O2 obtained. This is always <code>q</code>
 	 */
 	public double detritusproduction(double q) {
-		synchronized (_detritus_monitor) {
-			synchronized (_O2_monitor) {
-				_O2 -= q;
-				_detritus += q;
-				return q;
-			}
-		}
+		changeO2(-q);
+		changeDetritus(q);
+		return q;
 	}
 	/**
 	 * N2 is released at an organisms death, or if its nitrogen store is full
 	 */
 	public double nitrogenrelease(double q) {
-		synchronized (_N2_monitor) {
-			_N2 += q;
-			return q;
-		}
+		changeN2(q);
+		return q;
 	}
 	/**
 	 * NH3 is released at a methanotrophic organisms death, or if its nitrogen store is full
 	 */
 	public double ammoniarelease(double q) {
-		synchronized (_NH3_monitor) {
-			_NH3 += q;
-			return q;
-		}
+		changeNH3(q);
+		return q;
 	}
 	/**
 	 * Consume CO2 from the atmosphere to realize the photosynthesis process
@@ -624,13 +591,11 @@ public class World implements Serializable{
 	 */
 	public double photosynthesis(double q) {
 		synchronized (_CO2_monitor) {
-			synchronized (_O2_monitor) {
-				q = Utils.min(q,q*_CO2/Utils.DRAIN_SUBS_DIVISOR,_CO2);
-				_CO2 -= q;
-				_O2 += q;
-				return q;
-			}
+			q = Utils.min(q,q*_CO2/Utils.DRAIN_SUBS_DIVISOR,_CO2);
+			_CO2 -= q;
 		}
+		changeO2(q);
+		return q;
 	}
 	/**
 	 * Consume CH4 from the atmosphere to realize the methanotrophic process
@@ -651,13 +616,11 @@ public class World implements Serializable{
 	 */
 	public double methanotrophy(double q) {
 		synchronized (_CH4_monitor) {
-			synchronized (_O2_monitor) {
-				q = Utils.min(q,q*_CH4/Utils.DRAIN_SUBS_DIVISOR,_CH4);
-				_CH4 -= q;
-				_O2 += q;
-				return q;
-			}
+			q = Utils.min(q,q*_CH4/Utils.DRAIN_SUBS_DIVISOR,_CH4);
+			_CH4 -= q;
 		}
+		changeO2(q);
+		return q;
 	}
 	/**
 	 * Consume CO from the atmosphere for C4 only plants to realize the photosynthesis process
@@ -678,13 +641,11 @@ public class World implements Serializable{
 	 */
 	public double COphotosynthesis(double q) {
 		synchronized (_CO1_monitor) {
-			synchronized (_O2_monitor) {
-				q = Utils.min(q,q*_CO1/Utils.DRAIN_SUBS_DIVISOR,_CO1);
-				_CO1 -= q;
-				_O2 += q;
-				return q;
-			}
+			q = Utils.min(q,q*_CO1/Utils.DRAIN_SUBS_DIVISOR,_CO1);
+			_CO1 -= q;
 		}
+		changeO2(q);
+		return q;
 	}
 	/**
 	 * Consume detritus from the atmosphere to realize the filter feeder
@@ -705,13 +666,11 @@ public class World implements Serializable{
 	 */
 	public double filterfeeding(double q) {
 		synchronized (_detritus_monitor) {
-			synchronized (_O2_monitor) {
-				q = Utils.min(q,q*_detritus/Utils.DRAIN_SUBS_DIVISOR,_detritus);
-				_detritus -= q;
-				_O2 += q;
-				return q;
-			}
+			q = Utils.min(q,q*_detritus/Utils.DRAIN_SUBS_DIVISOR,_detritus);
+			_detritus -= q;
 		}
+		changeO2(q);
+		return q;
 	}
 	/**
 	 * Consume N2 from the atmosphere to allow the organism to grow further
@@ -747,6 +706,184 @@ public class World implements Serializable{
 			q = Utils.min(10d,q*_NH3,_NH3);
 			_NH3 -= q;
 			return q;
+		}
+	}
+
+	/**
+	 * While organisms move on several threads, each worker thread collects its
+	 * changes to the atmosphere here and adds them to the world after every
+	 * line of buckets it moves (flushAtmosphereChanges), so that organisms
+	 * don't all take the same monitors (_O2_monitor above all) many times a
+	 * frame. Null on other threads, which change the world's fields directly.
+	 */
+	private static final ThreadLocal<AtmosphereChanges> atmosphereChanges = new ThreadLocal<>();
+
+	/**
+	 * Called by a worker thread before it moves organisms: from then on, its
+	 * changes to the atmosphere are collected (see atmosphereChanges).
+	 */
+	public static void collectAtmosphereChanges() {
+		atmosphereChanges.set(new AtmosphereChanges());
+	}
+
+	/**
+	 * Adds the changes to the atmosphere that this thread collected to the
+	 * world, if it collects them.
+	 */
+	public static void flushAtmosphereChanges() {
+		AtmosphereChanges c = atmosphereChanges.get();
+		if (c != null && c.world != null) {
+			c.world.addAtmosphereChanges(c);
+		}
+	}
+
+	private void addAtmosphereChanges(AtmosphereChanges c) {
+		if (c.O2 != 0) {
+			synchronized (_O2_monitor) {
+				_O2 += c.O2;
+			}
+			c.O2 = 0;
+		}
+		if (c.CO2 != 0) {
+			synchronized (_CO2_monitor) {
+				_CO2 += c.CO2;
+			}
+			c.CO2 = 0;
+		}
+		if (c.CH4 != 0) {
+			synchronized (_CH4_monitor) {
+				_CH4 += c.CH4;
+			}
+			c.CH4 = 0;
+		}
+		if (c.CO1 != 0) {
+			synchronized (_CO1_monitor) {
+				_CO1 += c.CO1;
+			}
+			c.CO1 = 0;
+		}
+		if (c.detritus != 0) {
+			synchronized (_detritus_monitor) {
+				_detritus += c.detritus;
+			}
+			c.detritus = 0;
+		}
+		if (c.N2 != 0) {
+			synchronized (_N2_monitor) {
+				_N2 += c.N2;
+			}
+			c.N2 = 0;
+		}
+		if (c.NH3 != 0) {
+			synchronized (_NH3_monitor) {
+				_NH3 += c.NH3;
+			}
+			c.NH3 = 0;
+		}
+	}
+
+	/** Adds q (maybe negative) to the O2 in the atmosphere. */
+	private void changeO2(double q) {
+		AtmosphereChanges c = atmosphereChanges.get();
+		if (c != null) {
+			c.O2 += q;
+			if (c.world == null) {
+				c.world = this;
+			}
+			return;
+		}
+		synchronized (_O2_monitor) {
+			_O2 += q;
+		}
+	}
+
+	/** Adds q (maybe negative) to the CO2 in the atmosphere. */
+	private void changeCO2(double q) {
+		AtmosphereChanges c = atmosphereChanges.get();
+		if (c != null) {
+			c.CO2 += q;
+			if (c.world == null) {
+				c.world = this;
+			}
+			return;
+		}
+		synchronized (_CO2_monitor) {
+			_CO2 += q;
+		}
+	}
+
+	/** Adds q (maybe negative) to the CH4 in the atmosphere. */
+	private void changeCH4(double q) {
+		AtmosphereChanges c = atmosphereChanges.get();
+		if (c != null) {
+			c.CH4 += q;
+			if (c.world == null) {
+				c.world = this;
+			}
+			return;
+		}
+		synchronized (_CH4_monitor) {
+			_CH4 += q;
+		}
+	}
+
+	/** Adds q (maybe negative) to the CO1 in the atmosphere. */
+	private void changeCO1(double q) {
+		AtmosphereChanges c = atmosphereChanges.get();
+		if (c != null) {
+			c.CO1 += q;
+			if (c.world == null) {
+				c.world = this;
+			}
+			return;
+		}
+		synchronized (_CO1_monitor) {
+			_CO1 += q;
+		}
+	}
+
+	/** Adds q (maybe negative) to the detritus in the atmosphere. */
+	private void changeDetritus(double q) {
+		AtmosphereChanges c = atmosphereChanges.get();
+		if (c != null) {
+			c.detritus += q;
+			if (c.world == null) {
+				c.world = this;
+			}
+			return;
+		}
+		synchronized (_detritus_monitor) {
+			_detritus += q;
+		}
+	}
+
+	/** Adds q (maybe negative) to the N2 in the atmosphere. */
+	private void changeN2(double q) {
+		AtmosphereChanges c = atmosphereChanges.get();
+		if (c != null) {
+			c.N2 += q;
+			if (c.world == null) {
+				c.world = this;
+			}
+			return;
+		}
+		synchronized (_N2_monitor) {
+			_N2 += q;
+		}
+	}
+
+	/** Adds q (maybe negative) to the NH3 in the atmosphere. */
+	private void changeNH3(double q) {
+		AtmosphereChanges c = atmosphereChanges.get();
+		if (c != null) {
+			c.NH3 += q;
+			if (c.world == null) {
+				c.world = this;
+			}
+			return;
+		}
+		synchronized (_NH3_monitor) {
+			_NH3 += q;
 		}
 	}
 	/**
