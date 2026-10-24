@@ -13,7 +13,7 @@ pub mod random;
 pub use color::Color;
 pub use dump::{Dumper, JDump, JDumpTarget};
 pub use jref::{JArray, JList, JRef};
-pub use jstr::JStr;
+pub use jstr::{JStr, JToString};
 pub use random::Random;
 
 /// `throw new X(...)` and runtime exceptions end the simulation: the Java

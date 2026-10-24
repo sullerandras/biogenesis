@@ -357,11 +357,14 @@ public class J2R {
 		}
 		out.append("/// Java: ").append(fileOf.get(q)).append(":").append(line(c)).append("\n");
 		out.append("#[derive(Clone, Default)]\npub struct ").append(name).append(" {\n");
+		List<VariableDeclarator> failed = new ArrayList<>();
 		for (VariableDeclarator v : fields) {
 			try {
-				out.append("    pub ").append(rustIdent(v.getNameAsString())).append(": ").append(rust(jt(v.getType().resolve()))).append(",\n");
+				String ft = rust(jt(v.getType().resolve()));
+				out.append("    pub ").append(rustIdent(v.getNameAsString())).append(": ").append(ft).append(",\n");
 			} catch (RuntimeException e) {
 				problem(v, e);
+				failed.add(v);
 			}
 		}
 		out.append("}\n\nimpl ").append(name).append(" {\n");
@@ -372,7 +375,7 @@ public class J2R {
 		for (VariableDeclarator v : inits) {
 			try {
 				JT ft = jt(v.getType().resolve());
-				Ex val = coerce(expr(v.getInitializer().get()), ft, v);
+				Ex val = init(v.getInitializer().get(), ft, v);
 				out.append("        this.setf(|o| &mut o.").append(rustIdent(v.getNameAsString())).append(", ").append(val.code).append(");\n");
 			} catch (RuntimeException e) {
 				problem(v, e);
@@ -398,6 +401,7 @@ public class J2R {
 
 		// Dump, fields sorted by name (the Java harness sorts the same way).
 		List<VariableDeclarator> sorted = new ArrayList<>(fields);
+		sorted.removeAll(failed);
 		sorted.sort((a, b) -> a.getNameAsString().compareTo(b.getNameAsString()));
 		out.append("impl JDumpTarget for ").append(name).append(" {\n    fn dump_target(&self, d: &mut Dumper, id: usize) {\n");
 		out.append("        d.object(\"").append(name).append("\", id, |d| {\n");
@@ -533,7 +537,7 @@ public class J2R {
 				return doc + "pub const " + n + ": " + rust(t) + " = " + val.code + ";\n";
 			}
 			String cell = t.copy() ? "Cell" : "RefCell";
-			String initCode = init == null ? defaultValue(t) : coerce(expr(init), t, v).code;
+			String initCode = init == null ? defaultValue(t) : init(init, t, v).code;
 			boolean constInit = init == null || isConstExpr(init);
 			StringBuilder out = new StringBuilder(doc.replace("/// ", "// "));
 			out.append("thread_local! { static __").append(v.getNameAsString()).append(": std::cell::").append(cell).append("<").append(rust(t)).append("> = ")
@@ -577,6 +581,7 @@ public class J2R {
 				String owner = f.declaringType().getQualifiedName();
 				if (owner.equals("java.awt.Color")) return true;
 				if (owner.equals("java.lang.Math")) return true;
+				if (BOXES.contains(owner)) return true;
 				VariableDeclarator v = staticVar(f);
 				if (!((FieldDeclaration) v.getParentNode().get()).isFinal()) return false;
 				return v.getInitializer().map(this::isConstExpr).orElse(false);
@@ -622,9 +627,17 @@ public class J2R {
 	String pendingLabel; // Java label for the next loop
 
 	void stmt(Statement s, StringBuilder out, String ind) {
+		// A statement that fails halfway must not leave half its code behind.
+		StringBuilder b = new StringBuilder();
+		int savedTargets = targets.size();
+		Scope savedScope = scope;
 		try {
-			stmt0(s, out, ind);
+			stmt0(s, b, ind);
+			out.append(b);
 		} catch (Unsupported e) {
+			while (targets.size() > savedTargets) targets.pop();
+			scope = savedScope;
+			pendingLabel = null;
 			problem(s, e);
 			out.append(ind).append("unimplemented!(\"J2R: ").append(esc(e.getMessage())).append(" (").append(fileOf.get(curClass)).append(":").append(line(s)).append(")\");\n");
 		}
@@ -891,7 +904,7 @@ public class J2R {
 			for (VariableDeclarator v : e.asVariableDeclarationExpr().getVariables()) {
 				JT t = jt(v.getType().resolve());
 				String n = rustIdent(v.getNameAsString());
-				String init = v.getInitializer().isPresent() ? coerce(expr(v.getInitializer().get()), t, v).code : defaultValue(t);
+				String init = v.getInitializer().isPresent() ? init(v.getInitializer().get(), t, v).code : defaultValue(t);
 				scope.declare(v.getNameAsString(), n, t);
 				out.append(ind).append("let mut ").append(n).append(": ").append(rust(t)).append(" = ").append(init).append(";\n");
 			}
@@ -1056,6 +1069,7 @@ public class J2R {
 		JT t = jt(fd.getType());
 		if (fd.isStatic()) {
 			if (owner.equals("java.awt.Color")) return new Ex("Color::" + fd.getName(), COLOR, true);
+			if (BOXES.contains(owner)) return boxConstant(owner, fd.getName());
 			if (owner.equals("java.lang.Math")) {
 				if (fd.getName().equals("PI")) return new Ex("std::f64::consts::PI", DOUBLE, true);
 				if (fd.getName().equals("E")) return new Ex("std::f64::consts::E", DOUBLE, true);
@@ -1077,6 +1091,29 @@ public class J2R {
 		}
 		String fname = rustIdent(fd.getName());
 		return new Ex(obj + ".get(|o| o." + fname + (t.copy() ? "" : ".clone()") + ")", t, false);
+	}
+
+	static final Set<String> BOXES = new java.util.HashSet<>(java.util.Arrays.asList("java.lang.Double", "java.lang.Float",
+			"java.lang.Integer", "java.lang.Long", "java.lang.Short", "java.lang.Byte", "java.lang.Character"));
+
+	/** Double.MAX_VALUE etc.: the value, read from this JVM. */
+	Ex boxConstant(String owner, String name) {
+		Object v;
+		try {
+			v = Class.forName(owner).getField(name).get(null);
+		} catch (ReflectiveOperationException e) {
+			throw new Unsupported(owner + "." + name);
+		}
+		Ex r;
+		if (v instanceof java.lang.Double) r = new Ex(doubleLit((java.lang.Double) v), DOUBLE, true);
+		else if (v instanceof Float) r = new Ex(floatLit((Float) v), FLOAT, true);
+		else if (v instanceof Character) r = new Ex((int) (Character) v + "u16", CHAR, true);
+		else if (v instanceof Integer) { r = new Ex("(" + v + "i32)", INT, true); r.intLit = ((Integer) v).longValue(); }
+		else if (v instanceof Long) { r = new Ex("(" + v + "i64)", LONG, true); r.intLit = (Long) v; }
+		else if (v instanceof Short) r = new Ex("(" + v + "i16)", JT.of(K.SHORT), true);
+		else if (v instanceof Byte) r = new Ex("(" + v + "i8)", JT.of(K.BYTE), true);
+		else throw new Unsupported(owner + "." + name);
+		return r;
 	}
 
 	/** The declaration in our own ASTs (the resolver's toAst() points into its private copies). */
@@ -1193,6 +1230,7 @@ public class J2R {
 
 	Ex binary(BinaryExpr b) {
 		BinaryExpr.Operator op = b.getOperator();
+		if (op == BinaryExpr.Operator.PLUS && isString(b)) return concat(b);
 		Ex l = expr(b.getLeft()), r = expr(b.getRight());
 		boolean pure = l.pure && r.pure;
 		switch (op) {
@@ -1229,25 +1267,51 @@ public class J2R {
 				JT t = promote(l.t);
 				String lc = coerce(l, t, b).code, rc = coerce(r, promote(r.t), b).code;
 				String n = "(" + rc + ") as u32";
-				if (op == BinaryExpr.Operator.LEFT_SHIFT) return new Ex(paren(lc) + ".wrapping_shl(" + n + ")", t, pure);
-				if (op == BinaryExpr.Operator.SIGNED_RIGHT_SHIFT) return new Ex(paren(lc) + ".wrapping_shr(" + n + ")", t, pure);
+				if (op == BinaryExpr.Operator.LEFT_SHIFT) return new Ex(rust(t) + "::wrapping_shl(" + lc + ", " + n + ")", t, pure);
+				if (op == BinaryExpr.Operator.SIGNED_RIGHT_SHIFT) return new Ex(rust(t) + "::wrapping_shr(" + lc + ", " + n + ")", t, pure);
 				String u = t.k == K.LONG ? "u64" : "u32";
 				return new Ex("((" + lc + " as " + u + ").wrapping_shr(" + n + ") as " + rust(t) + ")", t, pure);
 			}
-			case PLUS:
-				if (l.t.k == K.STRING || r.t.k == K.STRING) throw new Unsupported("string concatenation");
-				// fall through
-			case MINUS: case MULTIPLY: case DIVIDE: case REMAINDER: {
+			case PLUS: case MINUS: case MULTIPLY: case DIVIDE: case REMAINDER: {
 				JT t = binaryPromote(l.t, r.t);
 				String lc = coerce(l, t, b).code, rc = coerce(r, t, b).code;
-				if (t.integral() && op == BinaryExpr.Operator.DIVIDE) return new Ex(paren(lc) + ".wrapping_div(" + rc + ")", t, pure);
-				if (t.integral() && op == BinaryExpr.Operator.REMAINDER) return new Ex(paren(lc) + ".wrapping_rem(" + rc + ")", t, pure);
+				if (t.integral() && op == BinaryExpr.Operator.DIVIDE) return new Ex(rust(t) + "::wrapping_div(" + lc + ", " + rc + ")", t, pure);
+				if (t.integral() && op == BinaryExpr.Operator.REMAINDER) return new Ex(rust(t) + "::wrapping_rem(" + lc + ", " + rc + ")", t, pure);
 				// + - * wrap (overflow-checks are off); float ops are IEEE like Java's
 				return new Ex("(" + lc + " " + op.asString() + " " + rc + ")", t, pure);
 			}
 			default:
 				throw new Unsupported("operator " + op);
 		}
+	}
+
+	static boolean isString(Expression e) {
+		ResolvedType t = e.calculateResolvedType();
+		return t.isReferenceType() && t.asReferenceType().getQualifiedName().equals("java.lang.String");
+	}
+
+	/** a + b + ... with a String among the first two: one JStr::cat of all parts, left to right. */
+	Ex concat(BinaryExpr b) {
+		List<Expression> parts = new ArrayList<>();
+		Expression e = b;
+		while (e.isBinaryExpr() && e.asBinaryExpr().getOperator() == BinaryExpr.Operator.PLUS && isString(e)) {
+			parts.add(0, e.asBinaryExpr().getRight());
+			e = e.asBinaryExpr().getLeft();
+		}
+		parts.add(0, e);
+		List<Ex> xs = new ArrayList<>();
+		for (Expression p : parts) xs.add(expr(p));
+		return catCode(xs);
+	}
+
+	Ex catCode(List<Ex> parts) {
+		StringBuilder s = new StringBuilder("JStr::cat(&[");
+		for (int i = 0; i < parts.size(); i++) {
+			Ex x = parts.get(i);
+			if (!(x.t.integral() || x.t.k == K.BOOL || x.t.k == K.STRING)) throw new Unsupported("string conversion of " + x.t);
+			s.append(i > 0 ? ", &" : "&").append(x.code);
+		}
+		return new Ex(s.append("])").toString(), STRING, false);
 	}
 
 	// ---------------------------------------------------------------- lvalues
@@ -1360,7 +1424,13 @@ public class J2R {
 			// Java: read the target, evaluate the value, store (T)(old op value).
 			BinaryExpr.Operator bop = op.toBinaryOperator().get();
 			Ex rv = expr(a.getValue());
-			if (lv.t.k == K.STRING || rv.t.k == K.STRING) throw new Unsupported("string +=");
+			if (lv.t.k == K.STRING && bop == BinaryExpr.Operator.PLUS) {
+				value = catCode(java.util.Arrays.asList(new Ex(lv.read, STRING, false), rv)).code;
+				if (!asExpr) return new Ex(lv.setup.isEmpty() ? lv.write(value) : "{ " + lv.setup + lv.write(value) + "; }", VOID, false);
+				int n = ++tmpCounter;
+				return new Ex("{ " + lv.setup + "let __v" + n + ": JStr = " + value + "; " + lv.write("__v" + n + ".clone()") + "; __v" + n + " }", STRING, false);
+			}
+			if (lv.t.k == K.STRING || rv.t.k == K.STRING) throw new Unsupported("string " + bop);
 			boolean shift = bop == BinaryExpr.Operator.LEFT_SHIFT || bop == BinaryExpr.Operator.SIGNED_RIGHT_SHIFT || bop == BinaryExpr.Operator.UNSIGNED_RIGHT_SHIFT;
 			JT t = shift ? promote(lv.t) : (lv.t.k == K.BOOL ? BOOL : binaryPromote(lv.t, rv.t));
 			value = castTo(binaryCode(bop, new Ex(lv.read, lv.t, false), rv, t, a), lv.t).code;
@@ -1406,8 +1476,8 @@ public class J2R {
 		}
 		String lc = coerce(l, t, at).code;
 		switch (op) {
-			case LEFT_SHIFT: return new Ex(paren(lc) + ".wrapping_shl((" + coerce(r, promote(r.t), at).code + ") as u32)", t, false);
-			case SIGNED_RIGHT_SHIFT: return new Ex(paren(lc) + ".wrapping_shr((" + coerce(r, promote(r.t), at).code + ") as u32)", t, false);
+			case LEFT_SHIFT: return new Ex(rust(t) + "::wrapping_shl(" + lc + ", (" + coerce(r, promote(r.t), at).code + ") as u32)", t, false);
+			case SIGNED_RIGHT_SHIFT: return new Ex(rust(t) + "::wrapping_shr(" + lc + ", (" + coerce(r, promote(r.t), at).code + ") as u32)", t, false);
 			case UNSIGNED_RIGHT_SHIFT: {
 				String u = t.k == K.LONG ? "u64" : "u32";
 				return new Ex("((" + lc + " as " + u + ").wrapping_shr((" + coerce(r, promote(r.t), at).code + ") as u32) as " + rust(t) + ")", t, false);
@@ -1415,8 +1485,8 @@ public class J2R {
 			default: break;
 		}
 		String rc = coerce(r, t, at).code;
-		if (t.integral() && op == BinaryExpr.Operator.DIVIDE) return new Ex(paren(lc) + ".wrapping_div(" + rc + ")", t, false);
-		if (t.integral() && op == BinaryExpr.Operator.REMAINDER) return new Ex(paren(lc) + ".wrapping_rem(" + rc + ")", t, false);
+		if (t.integral() && op == BinaryExpr.Operator.DIVIDE) return new Ex(rust(t) + "::wrapping_div(" + lc + ", " + rc + ")", t, false);
+		if (t.integral() && op == BinaryExpr.Operator.REMAINDER) return new Ex(rust(t) + "::wrapping_rem(" + lc + ", " + rc + ")", t, false);
 		return new Ex("(" + lc + " " + op.asString() + " " + rc + ")", t, false);
 	}
 
@@ -1478,6 +1548,7 @@ public class J2R {
 			case "java.lang.StrictMath": return mathCall(m, owner, name, sig);
 			case "java.awt.Color": return colorCall(m, name, sig);
 			case "java.lang.String": return stringCall(m, name, sig);
+			case "java.lang.Integer": return integerCall(m, sig);
 			case "java.util.List":
 			case "java.util.ArrayList":
 			case "java.util.Collection":
@@ -1536,7 +1607,10 @@ public class J2R {
 		boolean pure = true;
 		for (Ex x : a) pure &= x.pure;
 		switch (sig) {
-			case "abs(int)": case "abs(long)": return new Ex(paren(a[0].code) + ".wrapping_abs()", a[0].t.k == K.LONG ? LONG : INT, pure);
+			case "abs(int)": case "abs(long)": {
+				JT t = sig.contains("long") ? LONG : INT;
+				return new Ex(rust(t) + "::wrapping_abs(" + coerce(a[0], t, m).code + ")", t, pure);
+			}
 			case "abs(double)": case "abs(float)": {
 				JT t = sig.contains("double") ? DOUBLE : FLOAT;
 				return new Ex(paren(coerce(a[0], t, m).code) + ".abs()", t, pure);
@@ -1584,7 +1658,21 @@ public class J2R {
 			if (a.t.k != K.STRING) throw new Unsupported("String.equals(" + a.t + ")");
 			return new Ex("JStr::equals(&" + r + ", &" + a.code + ")", BOOL, false);
 		}
-		throw new Unsupported("String." + sig);
+		switch (sig) {
+			case "toCharArray()": return new Ex(r + ".toCharArray()", new JT(K.ARRAY, null, CHAR), false);
+			case "replace(char,char)":
+				return new Ex(r + ".replace_char(" + coerce(expr(m.getArguments().get(0)), CHAR, m).code + ", "
+						+ coerce(expr(m.getArguments().get(1)), CHAR, m).code + ")", STRING, false);
+			default: throw new Unsupported("String." + sig);
+		}
+	}
+
+	Ex integerCall(MethodCallExpr m, String sig) {
+		switch (sig) {
+			case "toHexString(int)": return new Ex("jstr::to_hex_string(" + coerce(expr(m.getArguments().get(0)), INT, m).code + ")", STRING, false);
+			case "toString(int)": return new Ex("jstr::int_to_string(" + coerce(expr(m.getArguments().get(0)), INT, m).code + ")", STRING, false);
+			default: throw new Unsupported("Integer." + sig);
+		}
 	}
 
 	Ex listCall(MethodCallExpr m, String name, String sig) {
@@ -1655,6 +1743,15 @@ public class J2R {
 	String build(JT t, List<String> dims, int i) {
 		if (i == dims.size() - 1) return "JArray::new_array(" + dims.get(i) + ", " + defaultValue(t.elem) + ")";
 		return "JArray::from_vec((0.." + dims.get(i) + ").map(|_| " + build(t.elem, dims, i + 1) + ").collect())";
+	}
+
+	/** A declaration's initializer: may be a bare {...}. */
+	Ex init(Expression e, JT t, Node at) {
+		if (e.isArrayInitializerExpr()) {
+			if (t.k != K.ARRAY) throw new Unsupported("array initializer for " + t);
+			return arrayInit(e.asArrayInitializerExpr(), t);
+		}
+		return coerce(expr(e), t, at);
 	}
 
 	Ex arrayInit(ArrayInitializerExpr init, JT t) {

@@ -1594,10 +1594,10 @@ impl GeneticCode {
     /// Java: GeneticCode.java:775 void randomGenes()
     pub fn randomGenes(this: &JRef<Self>) {
         let mut nSegments: i32 = (((1 + Random::nextInt_bound(&(utils::random()), utils::INITIAL_COMPLEXITY()))) * this.get(|o| o._symmetry));
-        if (nSegments.wrapping_rem(this.get(|o| o._symmetry)) != 0) {
-            nSegments = (nSegments + ((this.get(|o| o._symmetry) - (nSegments.wrapping_rem(this.get(|o| o._symmetry))))));
+        if (i32::wrapping_rem(nSegments, this.get(|o| o._symmetry)) != 0) {
+            nSegments = (nSegments + ((this.get(|o| o._symmetry) - (i32::wrapping_rem(nSegments, this.get(|o| o._symmetry))))));
         }
-        let mut nGenes: i32 = nSegments.wrapping_div(this.get(|o| o._symmetry));
+        let mut nGenes: i32 = i32::wrapping_div(nSegments, this.get(|o| o._symmetry));
         this.setf(|o| &mut o._genes, { let __d54 = nGenes; JArray::new_array(__d54, JRef::null()) });
         {
             let mut i: i32 = 0;
