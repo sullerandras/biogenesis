@@ -6,6 +6,11 @@ UTF8_SRC = build-src
 # "make PERF_PATCHES=none ..." builds the unpatched upstream code.
 PERF_PATCHES ?= sym,contact,mirror
 
+# STRICT_MATH=1: Math.sin etc. become StrictMath's, as in rust/verify.sh. HotSpot's
+# Math.sin can differ in the last bit (arm64, x86_64), so only then does a world
+# take the same course as the Rust translation's (same seed or save).
+STRICT_MATH ?=
+
 # Collision mirror source transform (needs JavaParser, fetched on first use)
 MIRROR_TOOL = perf/tools/classes/MirrorTransform.class
 
@@ -73,6 +78,10 @@ src-utf8:
 		java -cp "perf/tools/classes:perf/tools/lib/*" MirrorTransform $(UTF8_SRC) perf/mirror \
 			lib/gson-2.10.1.jar lib/xchart-3.8.5.jar;; \
 	esac
+	@if [ -n "$(STRICT_MATH)" ]; then \
+		find $(UTF8_SRC) -name '*.java' -exec perl -pi -e \
+			's/\bMath\.(sin|cos|tan|asin|acos|atan|atan2|exp|log|log10|log1p|expm1|pow|cbrt|hypot|sinh|cosh|tanh)\(/StrictMath.$$1(/g' {} +; \
+	fi
 
 $(MIRROR_TOOL): perf/mirror/MirrorTransform.java perf/mirror/fetch-tools.sh
 	@perf/mirror/fetch-tools.sh

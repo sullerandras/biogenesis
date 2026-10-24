@@ -4,6 +4,10 @@ version = "0.1.0"
 edition = "2024"
 publish = false
 
+[features]
+# cargo run --release --features platform-math: see core/Cargo.toml.
+platform-math = ["biogenesis-core/platform-math"]
+
 [dependencies]
 biogenesis-core = { path = "../core" }
 eframe = "0.37"

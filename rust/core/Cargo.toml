@@ -14,6 +14,10 @@ mimalloc = { version = "0.1", default-features = false }
 checked = []
 # world_check counts the allocations of the frames (to stderr).
 count-allocs = []
+# Math.sin etc. from the platform instead of StrictMath's (rt/jmath.rs).
+# Maybe faster (not on Apple Silicon), but the simulation no longer
+# follows Java's exactly.
+platform-math = []
 
 # Java's int and long arithmetic wraps on overflow. With overflow checks off,
 # Rust's +, -, * and << on i32/i64 do the same, so the generated code can use

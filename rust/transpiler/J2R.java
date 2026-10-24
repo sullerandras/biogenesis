@@ -2485,7 +2485,11 @@ public class J2R {
 			// platforms, so the Java side of the comparison uses StrictMath too.
 			List<String> codes = new ArrayList<>();
 			for (Ex x : a) codes.add(coerce(x, DOUBLE, m).code);
-			return callStatic("java.lang.StrictMath", sig, codes, DOUBLE);
+			Ex strict = callStatic("java.lang.StrictMath", sig, codes, DOUBLE);
+			if (owner.equals("java.lang.StrictMath")) return strict;
+			// Math's go through rt::jmath: StrictMath's, or with the platform-math
+			// feature the platform's (maybe faster, but not Java's bits).
+			return new Ex("jmath::" + name + "(" + String.join(", ", codes) + ")", DOUBLE, strict.pure);
 		}
 		throw new Unsupported(simple(owner) + "." + sig);
 	}

@@ -791,7 +791,7 @@ impl WorldStatistics {
         if (O2 <= 100f64) {
             (this.get(|o| o.oxygenList.clone())).add(0.0f64);
         } else {
-            (this.get(|o| o.oxygenList.clone())).add(strict_math::log10((O2 / 100f64)));
+            (this.get(|o| o.oxygenList.clone())).add(jmath::log10((O2 / 100f64)));
         }
         if ((this.get(|o| o.carbonDioxideList.clone())).len() == world_statistics::MAX_STATS_COUNT) {
             (this.get(|o| o.carbonDioxideList.clone())).remove_at(0);
@@ -799,7 +799,7 @@ impl WorldStatistics {
         if (CO2 <= 100f64) {
             (this.get(|o| o.carbonDioxideList.clone())).add(0.0f64);
         } else {
-            (this.get(|o| o.carbonDioxideList.clone())).add(strict_math::log10((CO2 / 100f64)));
+            (this.get(|o| o.carbonDioxideList.clone())).add(jmath::log10((CO2 / 100f64)));
         }
         if ((this.get(|o| o.carbonMonoxideList.clone())).len() == world_statistics::MAX_STATS_COUNT) {
             (this.get(|o| o.carbonMonoxideList.clone())).remove_at(0);
@@ -807,7 +807,7 @@ impl WorldStatistics {
         if (CO1 <= 100f64) {
             (this.get(|o| o.carbonMonoxideList.clone())).add(0.0f64);
         } else {
-            (this.get(|o| o.carbonMonoxideList.clone())).add(strict_math::log10((CO1 / 100f64)));
+            (this.get(|o| o.carbonMonoxideList.clone())).add(jmath::log10((CO1 / 100f64)));
         }
         if ((this.get(|o| o.methaneList.clone())).len() == world_statistics::MAX_STATS_COUNT) {
             (this.get(|o| o.methaneList.clone())).remove_at(0);
@@ -815,7 +815,7 @@ impl WorldStatistics {
         if (CH4 <= 100f64) {
             (this.get(|o| o.methaneList.clone())).add(0.0f64);
         } else {
-            (this.get(|o| o.methaneList.clone())).add(strict_math::log10((CH4 / 100f64)));
+            (this.get(|o| o.methaneList.clone())).add(jmath::log10((CH4 / 100f64)));
         }
         if ((this.get(|o| o.detritusList.clone())).len() == world_statistics::MAX_STATS_COUNT) {
             (this.get(|o| o.detritusList.clone())).remove_at(0);
@@ -823,7 +823,7 @@ impl WorldStatistics {
         if (detritus <= 100f64) {
             (this.get(|o| o.detritusList.clone())).add(0.0f64);
         } else {
-            (this.get(|o| o.detritusList.clone())).add(strict_math::log10((detritus / 100f64)));
+            (this.get(|o| o.detritusList.clone())).add(jmath::log10((detritus / 100f64)));
         }
         if ((this.get(|o| o.nitrogenList.clone())).len() == world_statistics::MAX_STATS_COUNT) {
             (this.get(|o| o.nitrogenList.clone())).remove_at(0);
@@ -831,7 +831,7 @@ impl WorldStatistics {
         if (N2 <= 100f64) {
             (this.get(|o| o.nitrogenList.clone())).add(0.0f64);
         } else {
-            (this.get(|o| o.nitrogenList.clone())).add(strict_math::log10((N2 / 100f64)));
+            (this.get(|o| o.nitrogenList.clone())).add(jmath::log10((N2 / 100f64)));
         }
         if ((this.get(|o| o.ammoniaList.clone())).len() == world_statistics::MAX_STATS_COUNT) {
             (this.get(|o| o.ammoniaList.clone())).remove_at(0);
@@ -839,7 +839,7 @@ impl WorldStatistics {
         if (NH3 <= 100f64) {
             (this.get(|o| o.ammoniaList.clone())).add(0.0f64);
         } else {
-            (this.get(|o| o.ammoniaList.clone())).add(strict_math::log10((NH3 / 100f64)));
+            (this.get(|o| o.ammoniaList.clone())).add(jmath::log10((NH3 / 100f64)));
         }
         this.setf(|o| &mut o.deathLastTime, 0);
         this.setf(|o| &mut o.birthLastTime, 0);

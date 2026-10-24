@@ -248,3 +248,51 @@ pub fn scalb(d: f64, n: i32) -> f64 {
 pub fn power_of_two_d(n: i32) -> f64 {
     f64::from_bits(((n + 1023) as i64 as u64) << 52)
 }
+
+// `Math.sin` etc. Java's `Math` may differ from `StrictMath` by an ulp (HotSpot
+// intrinsics); the reference results are StrictMath's (fdlibm, translated),
+// and that is what these are, unless the `platform-math` feature takes the
+// platform's functions: maybe faster (not on Apple Silicon, where fdlibm is
+// as fast), but a world then takes another course than Java's. Saves stay
+// compatible.
+#[cfg(not(feature = "platform-math"))]
+pub use crate::generated::strict_math::{
+    acos, asin, atan, atan2, cbrt, cos, cosh, exp, expm1, hypot, log, log10, log1p, pow, sin, sinh, tan, tanh,
+};
+
+#[cfg(feature = "platform-math")]
+pub use platform::*;
+
+#[cfg(feature = "platform-math")]
+#[allow(dead_code)]
+mod platform {
+    macro_rules! unary {
+        ($($java:ident => $rust:ident),*) => {$(
+            #[inline]
+            pub fn $java(a: f64) -> f64 { a.$rust() }
+        )*};
+    }
+    unary!(sin => sin, cos => cos, tan => tan, asin => asin, acos => acos, atan => atan, exp => exp,
+        log => ln, log10 => log10, log1p => ln_1p, expm1 => exp_m1, cbrt => cbrt, sinh => sinh, cosh => cosh,
+        tanh => tanh);
+
+    #[inline]
+    pub fn atan2(y: f64, x: f64) -> f64 {
+        y.atan2(x)
+    }
+
+    #[inline]
+    pub fn hypot(x: f64, y: f64) -> f64 {
+        x.hypot(y)
+    }
+
+    /// Java's special cases where C's pow differs: pow(x, NaN) and
+    /// pow(±1, ±inf) are NaN in Java, 1 in C.
+    #[inline]
+    pub fn pow(a: f64, b: f64) -> f64 {
+        if b.is_nan() || (a.abs() == 1.0 && b.is_infinite()) {
+            return f64::NAN;
+        }
+        a.powf(b)
+    }
+}

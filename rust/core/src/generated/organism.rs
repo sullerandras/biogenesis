@@ -498,9 +498,9 @@ impl Organism {
         }
         if (this.get(|o| o._ivyparasitism) > 0f64) {
             if (((this.get(|o| o._isonlyivy) > 0)) || ((this.get(|o| o._isonlyc4) > 0))) {
-                this.setf(|o| &mut o._ivyparasitism, ((strict_math::log10((this.get(|o| o._ivyparasitism) + 84f64))) / 2f64));
+                this.setf(|o| &mut o._ivyparasitism, ((jmath::log10((this.get(|o| o._ivyparasitism) + 84f64))) / 2f64));
             } else {
-                this.setf(|o| &mut o._ivyparasitism, ((strict_math::log10((this.get(|o| o._ivyparasitism) + 65f64))) / 2f64));
+                this.setf(|o| &mut o._ivyparasitism, ((jmath::log10((this.get(|o| o._ivyparasitism) + 65f64))) / 2f64));
             }
         }
         if (this.get(|o| o._jadefactor) > 1) {
@@ -857,9 +857,9 @@ impl Organism {
         }
         if (this.get(|o| o._ivyparasitism) > 0f64) {
             if (((this.get(|o| o._isonlyivy) > 0)) || ((this.get(|o| o._isonlyc4) > 0))) {
-                this.setf(|o| &mut o._ivyparasitism, ((strict_math::log10((this.get(|o| o._ivyparasitism) + 84f64))) / 2f64));
+                this.setf(|o| &mut o._ivyparasitism, ((jmath::log10((this.get(|o| o._ivyparasitism) + 84f64))) / 2f64));
             } else {
-                this.setf(|o| &mut o._ivyparasitism, ((strict_math::log10((this.get(|o| o._ivyparasitism) + 65f64))) / 2f64));
+                this.setf(|o| &mut o._ivyparasitism, ((jmath::log10((this.get(|o| o._ivyparasitism) + 65f64))) / 2f64));
             }
         }
         if ((this.get(|o| o._canreact)) || ((alsododgesorspins > 0))) {
@@ -1861,9 +1861,9 @@ impl Organism {
                 this.setf(|o| &mut o._isonlyivy, (-1i32));
             }
             if (((this.get(|o| o._isonlyivy) > 0)) || ((this.get(|o| o._isonlyc4) > 0))) {
-                this.setf(|o| &mut o._ivyparasitism, ((strict_math::log10((this.get(|o| o._ivyparasitism) + 84f64))) / 2f64));
+                this.setf(|o| &mut o._ivyparasitism, ((jmath::log10((this.get(|o| o._ivyparasitism) + 84f64))) / 2f64));
             } else {
-                this.setf(|o| &mut o._ivyparasitism, ((strict_math::log10((this.get(|o| o._ivyparasitism) + 65f64))) / 2f64));
+                this.setf(|o| &mut o._ivyparasitism, ((jmath::log10((this.get(|o| o._ivyparasitism) + 65f64))) / 2f64));
             }
             this.setf(|o| &mut o._isaplant, true);
         }
@@ -6609,7 +6609,7 @@ impl Organism {
                 { let __a31 = this.get(|o| o._endPointY.clone()); let __i31 = i; __a31.put(__i31, (__a31.at(__i31) - centerY)); };
                 cx = ((((this.get(|__o| __o._startPointX.at(i)) + this.get(|__o| __o._endPointX.at(i)))) as f64) / 2.0f64);
                 cy = ((((this.get(|__o| __o._startPointY.at(i)) + this.get(|__o| __o._endPointY.at(i)))) as f64) / 2.0f64);
-                this.setf(|o| &mut o._I, (this.get(|o| o._I) + (((strict_math::pow(this.get(|__o| __o._m.at(i)), 3f64) / 12.0f64) + ((this.get(|__o| __o._m.at(i)) * cx) * cx)) + (cy * cy))));
+                this.setf(|o| &mut o._I, (this.get(|o| o._I) + (((jmath::pow(this.get(|__o| __o._m.at(i)), 3f64) / 12.0f64) + ((this.get(|__o| __o._m.at(i)) * cx) * cx)) + (cy * cy))));
                 i = i + 1;
             }
         }
@@ -7010,8 +7010,8 @@ impl Organism {
         let mut right: f64 = 4.9E-324f64;
         let mut top: f64 = 1.7976931348623157E308f64;
         let mut bottom: f64 = 4.9E-324f64;
-        let mut sin: f64 = strict_math::sin(this.get(|o| o._theta));
-        let mut cos: f64 = strict_math::cos(this.get(|o| o._theta));
+        let mut sin: f64 = jmath::sin(this.get(|o| o._theta));
+        let mut cos: f64 = jmath::cos(this.get(|o| o._theta));
         {
             let mut i: i32 = 0;
             while (i < this.get(|o| o._segments)) {
@@ -8196,10 +8196,10 @@ impl Organism {
                 if ((Random::nextBoolean(&(utils::random()))) || (collided)) {
                     phi = ((Random::nextDouble(&(utils::random())) * 2f64) * std::f64::consts::PI);
                 } else {
-                    phi = strict_math::atan2(((this.get(|o| o._homeY) - this.get(|o| o._centerY)) as f64), ((this.get(|o| o._homeX) - this.get(|o| o._centerX)) as f64));
+                    phi = jmath::atan2(((this.get(|o| o._homeY) - this.get(|o| o._centerY)) as f64), ((this.get(|o| o._homeX) - this.get(|o| o._centerX)) as f64));
                 }
-                this.setf(|o| &mut o.dx, utils::between3_1((this.get(|o| o.dx) + (dr * strict_math::cos(phi))), -5.0f64, 5.0f64));
-                this.setf(|o| &mut o.dy, utils::between3_1((this.get(|o| o.dy) + (dr * strict_math::sin(phi))), -5.0f64, 5.0f64));
+                this.setf(|o| &mut o.dx, utils::between3_1((this.get(|o| o.dx) + (dr * jmath::cos(phi))), -5.0f64, 5.0f64));
+                this.setf(|o| &mut o.dy, utils::between3_1((this.get(|o| o.dy) + (dr * jmath::sin(phi))), -5.0f64, 5.0f64));
                 this.setf(|o| &mut o.dtheta, utils::between3_1((this.get(|o| o.dtheta) + ((((utils::randomSign() as f64) * (((this.get(|o| o._drift) as f64) * utils::__scale.with(|__o| __o.at((this.get(|o| o._growthRatio) - 1)))))) * std::f64::consts::PI) / this.get(|o| o._I))), -(utils::MAX_ROT()), utils::MAX_ROT()));
             } else {
                 if (this.get(|o| o._base1X) >= 0) {
@@ -8235,10 +8235,10 @@ impl Organism {
                     if ((Random::nextBoolean(&(utils::random()))) || (collided)) {
                         phi = ((Random::nextDouble(&(utils::random())) * 2f64) * std::f64::consts::PI);
                     } else {
-                        phi = strict_math::atan2(((this.get(|o| o._base1Y) - this.get(|o| o._centerY)) as f64), ((this.get(|o| o._base1X) - this.get(|o| o._centerX)) as f64));
+                        phi = jmath::atan2(((this.get(|o| o._base1Y) - this.get(|o| o._centerY)) as f64), ((this.get(|o| o._base1X) - this.get(|o| o._centerX)) as f64));
                     }
-                    this.setf(|o| &mut o.dx, utils::between3_1((this.get(|o| o.dx) + (dr * strict_math::cos(phi))), -5.0f64, 5.0f64));
-                    this.setf(|o| &mut o.dy, utils::between3_1((this.get(|o| o.dy) + (dr * strict_math::sin(phi))), -5.0f64, 5.0f64));
+                    this.setf(|o| &mut o.dx, utils::between3_1((this.get(|o| o.dx) + (dr * jmath::cos(phi))), -5.0f64, 5.0f64));
+                    this.setf(|o| &mut o.dy, utils::between3_1((this.get(|o| o.dy) + (dr * jmath::sin(phi))), -5.0f64, 5.0f64));
                     this.setf(|o| &mut o.dtheta, utils::between3_1((this.get(|o| o.dtheta) + ((((utils::randomSign() as f64) * (((this.get(|o| o._drift) as f64) * utils::__scale.with(|__o| __o.at((this.get(|o| o._growthRatio) - 1)))))) * std::f64::consts::PI) / this.get(|o| o._I))), -(utils::MAX_ROT()), utils::MAX_ROT()));
                 } else {
                     if (this.get(|o| o._base2X) >= 0) {
@@ -8255,10 +8255,10 @@ impl Organism {
                     if ((Random::nextBoolean(&(utils::random()))) || (collided)) {
                         phi = ((Random::nextDouble(&(utils::random())) * 2f64) * std::f64::consts::PI);
                     } else {
-                        phi = strict_math::atan2(((this.get(|o| o._base2Y) - this.get(|o| o._centerY)) as f64), ((this.get(|o| o._base2X) - this.get(|o| o._centerX)) as f64));
+                        phi = jmath::atan2(((this.get(|o| o._base2Y) - this.get(|o| o._centerY)) as f64), ((this.get(|o| o._base2X) - this.get(|o| o._centerX)) as f64));
                     }
-                    this.setf(|o| &mut o.dx, utils::between3_1((this.get(|o| o.dx) + (dr * strict_math::cos(phi))), -5.0f64, 5.0f64));
-                    this.setf(|o| &mut o.dy, utils::between3_1((this.get(|o| o.dy) + (dr * strict_math::sin(phi))), -5.0f64, 5.0f64));
+                    this.setf(|o| &mut o.dx, utils::between3_1((this.get(|o| o.dx) + (dr * jmath::cos(phi))), -5.0f64, 5.0f64));
+                    this.setf(|o| &mut o.dy, utils::between3_1((this.get(|o| o.dy) + (dr * jmath::sin(phi))), -5.0f64, 5.0f64));
                     this.setf(|o| &mut o.dtheta, utils::between3_1((this.get(|o| o.dtheta) + ((((utils::randomSign() as f64) * (((this.get(|o| o._drift) as f64) * utils::__scale.with(|__o| __o.at((this.get(|o| o._growthRatio) - 1)))))) * std::f64::consts::PI) / this.get(|o| o._I))), -(utils::MAX_ROT()), utils::MAX_ROT()));
                 } else {
                     this.setf(|o| &mut o._switchdrift, 0);
@@ -9620,9 +9620,9 @@ impl Organism {
         }
         if (this.get(|o| o._ivyparasitism) > 0f64) {
             if (((this.get(|o| o._isonlyivy) > 0)) || ((this.get(|o| o._isonlyc4) > 0))) {
-                this.setf(|o| &mut o._ivyparasitism, ((strict_math::log10((this.get(|o| o._ivyparasitism) + 84f64))) / 2f64));
+                this.setf(|o| &mut o._ivyparasitism, ((jmath::log10((this.get(|o| o._ivyparasitism) + 84f64))) / 2f64));
             } else {
-                this.setf(|o| &mut o._ivyparasitism, ((strict_math::log10((this.get(|o| o._ivyparasitism) + 65f64))) / 2f64));
+                this.setf(|o| &mut o._ivyparasitism, ((jmath::log10((this.get(|o| o._ivyparasitism) + 65f64))) / 2f64));
             }
         }
         if (this.get(|o| o._jadefactor) > 1) {
@@ -9913,7 +9913,7 @@ impl Organism {
                 ny = -ny;
             }
         }
-        let mut j: f64 = (((-((1f64 + utils::ELASTICITY())) * (((vab1x * nx) + (vab1y * ny))))) / (((((1f64 / this.get(|o| o._mass)) + (1f64 / org.get(|o| o._mass))) + (strict_math::pow(((rapx * ny) - (rapy * nx)), 2f64) / this.get(|o| o._I))) + (strict_math::pow(((rbpx * ny) - (rbpy * nx)), 2f64) / org.get(|o| o._I)))));
+        let mut j: f64 = (((-((1f64 + utils::ELASTICITY())) * (((vab1x * nx) + (vab1y * ny))))) / (((((1f64 / this.get(|o| o._mass)) + (1f64 / org.get(|o| o._mass))) + (jmath::pow(((rapx * ny) - (rapy * nx)), 2f64) / this.get(|o| o._I))) + (jmath::pow(((rbpx * ny) - (rbpy * nx)), 2f64) / org.get(|o| o._I)))));
         this.setf(|o| &mut o.dx, utils::between3_1((this.get(|o| o.dx) + ((j * nx) / this.get(|o| o._mass))), -5.0f64, 5.0f64));
         this.setf(|o| &mut o.dy, utils::between3_1((this.get(|o| o.dy) + ((j * ny) / this.get(|o| o._mass))), -5.0f64, 5.0f64));
         org.setf(|o| &mut o.dx, utils::between3_1((org.get(|o| o.dx) - ((j * nx) / org.get(|o| o._mass))), -5.0f64, 5.0f64));

@@ -25,6 +25,7 @@ import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.MethodReferenceExpr;
 import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.SuperExpr;
 import com.github.javaparser.ast.expr.ThisExpr;
@@ -862,17 +863,34 @@ public class MirrorTransform {
 			replace(path, start, end, repl.toString());
 		}
 		// organismBuckets = new OrganismBuckets(...) in time(): attach the mirror right after
+		// (after the if around it, when time() creates the buckets once and clears them
+		// on the other frames: the mirror is attached every frame). Elsewhere, only
+		// organismBuckets = null (genesis() drops the old world's buckets).
 		MethodDeclaration time = method(path, "World", "time", 0);
 		int found = 0;
 		for (AssignExpr a : units.get(path).findAll(AssignExpr.class)) {
 			if (a.getTarget().toString().equals("organismBuckets")) {
+				if (a.getValue() instanceof NullLiteralExpr && a.getParentNode().get() instanceof ExpressionStmt) {
+					continue;
+				}
 				if (time == null || !isAncestor(time, a) || !(a.getParentNode().get() instanceof ExpressionStmt)
 						|| !(a.getValue() instanceof ObjectCreationExpr)) {
 					fail(path, a, "unexpected assignment of organismBuckets (only time() may create the buckets)");
 					continue;
 				}
 				found++;
-				addEdit(path, endOffset(path, (Statement) a.getParentNode().get()), 0,
+				Node after = a.getParentNode().get();
+				while (true) {
+					Node p = after.getParentNode().get();
+					if (p instanceof IfStmt) {
+						after = p;
+					} else if (p instanceof BlockStmt && p.getParentNode().get() instanceof IfStmt) {
+						after = p.getParentNode().get();
+					} else {
+						break;
+					}
+				}
+				addEdit(path, endOffset(path, (Statement) after), 0,
 						" collisionMirror = CollisionMirror.prepare(collisionMirror, _organisms.size());"
 								+ " organismBuckets.setMirror(collisionMirror);");
 			}

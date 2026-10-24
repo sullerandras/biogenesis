@@ -30,7 +30,7 @@ impl Vector2D {
 
     /// Java: Vector2D.java:27 double getX()
     pub fn getX(this: &JRef<Self>) -> f64 {
-        return (this.get(|o| o._modulus) * strict_math::cos(this.get(|o| o._theta)));
+        return (this.get(|o| o._modulus) * jmath::cos(this.get(|o| o._theta)));
     }
 
     /// Java: Vector2D.java:31 void setPolar(double, double)
@@ -51,7 +51,7 @@ impl Vector2D {
 
     /// Java: Vector2D.java:44 double getY()
     pub fn getY(this: &JRef<Self>) -> f64 {
-        return (this.get(|o| o._modulus) * strict_math::sin(this.get(|o| o._theta)));
+        return (this.get(|o| o._modulus) * jmath::sin(this.get(|o| o._theta)));
     }
 
     /// Java: Vector2D.java:48 double getModulus()

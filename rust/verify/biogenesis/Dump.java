@@ -5,11 +5,14 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Canonical text dump of an object graph; the same format as the Rust side's
@@ -17,6 +20,16 @@ import java.util.Map;
  * as raw bits, objects seen before as @id.
  */
 public class Dump {
+	/**
+	 * Caches that the perf patches add (`make` builds: perf/perf_patch.py's
+	 * symmetric() cache, perf/mirror's collision mirror), not simulation state.
+	 * Skipped, so a patched build's world can be compared with the unpatched
+	 * code's (and the Rust translation's).
+	 */
+	static final Set<String> PATCH_FIELDS = new HashSet<>(Arrays.asList("Organism._symCache0", "Organism._symCache1",
+		"Organism._mirror", "Organism._mirrorSlot", "World.collisionMirror",
+		"OrganismBuckets.mirror", "OrganismBuckets.slotLists", "OrganismBuckets.slotCounts"));
+
 	final StringBuilder out = new StringBuilder();
 	private final Map<Object, Integer> ids = new IdentityHashMap<>();
 	private int depth;
@@ -169,7 +182,7 @@ public class Dump {
 		depth++;
 		List<Field> fields = new ArrayList<>();
 		for (Class<?> c = v.getClass(); c != null && c != Object.class; c = c.getSuperclass())
-			for (Field f : c.getDeclaredFields()) if (!Modifier.isStatic(f.getModifiers())) fields.add(f);
+			for (Field f : c.getDeclaredFields()) if (!Modifier.isStatic(f.getModifiers()) && !PATCH_FIELDS.contains(c.getSimpleName() + "." + f.getName())) fields.add(f);
 		fields.sort(Comparator.comparing(Field::getName));
 		for (Field f : fields) {
 			f.setAccessible(true);

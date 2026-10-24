@@ -102,9 +102,16 @@ And it has a window (see The GUI):
   differs in the last bit, interpreted or compiled; on x86_64 `log`, `pow`,
   `exp` are intrinsics too), so Java's `Math` is not the same on every
   machine. The reference is `StrictMath`: `verify.sh` compiles the Java side
-  with `Math.sin(` etc. replaced by `StrictMath.sin(`. Shipping the same
-  replacement in the Java build would make Java runs reproducible across
-  machines too.
+  with `Math.sin(` etc. replaced by `StrictMath.sin(`, and `make
+  STRICT_MATH=1 run` builds the Java app so (with the perf patches too: they
+  keep the world bit-identical, `Dump.java` skips the caches they add). From
+  the same seed and parameters, that app and `biogenesis-gui` then show the
+  same world. Java's `Math.x(` calls go through `rt::jmath`, which is
+  `StrictMath`'s unless the `platform-math` cargo feature takes Rust's
+  (`cargo run --release --features platform-math`): no faster on Apple
+  Silicon (1000 frames of a time-55 world: 29.4 s strict, 29.6 s platform),
+  maybe on x86_64; a world then takes its own course. Explicit
+  `StrictMath.x(` calls stay strict.
 - `java.awt` geometry (`Rectangle`, `Line2D.Double`, `Point`,
   `Point2D.Double`) is hand-ported in `rt/geom.rs`. Organism extends
   Rectangle and ExLine2DDouble extends Line2D.Double, so variables of those
@@ -170,7 +177,8 @@ inside the main one) and writes `<dir>/main.ppm` after 8 seconds
 (`sips -s format png main.ppm --out main.png`). Quit it with `pkill
 biogenesis-gui`.
 `BIOGENESIS_PAINT_HIDDEN=1` draws the hidden window anyway,
-`BIOGENESIS_LOG_FPS=1` prints the frames per second to stderr, and
+`BIOGENESIS_LOG_FPS=1` prints the frames per second to stderr (and the ms a
+frame spent on the world, on drawing and on the statistics), and
 `BIOGENESIS_DELAY_MS` sets the ms per frame (0: no limit). The default world
 (7200x7200, 12,500 organisms, about 15,000 after 1,000 frames) runs at
 50-55 frames/s without the limit, repainted at 1:1 at 50, and with the
@@ -179,6 +187,9 @@ whole world in view at 42 (drawing all organisms each frame).
 `biogenesis-gui <seed>` makes a new world with that seed, as `java -jar
 biogenesis.jar <seed>` does. It is the world `world_check new <seed> 7200
 7200 12500 ...` makes, so a headless run with `every`/`full` can follow it.
+The Java app reads its saved parameters (the parameters dialog), this one
+uses Java's defaults: a changed simulation parameter (say,
+`DETRITUS_TO_CO2_DIVISOR`) makes the Java world another one.
 
 Not there yet (Java has them): selecting an organism (its info and genetic
 code), tracking, feeding/killing, the parameters dialog, remembered

@@ -169,6 +169,8 @@ fn run(shared: &SharedRef, ctx: &eframe::egui::Context) {
     let mut prev = Instant::now();
     let mut ahead_nanos: i64 = 0;
     let log_fps = std::env::var_os("BIOGENESIS_LOG_FPS").is_some();
+    // For the log: the time spent advancing the world, drawing, and on the statistics.
+    let mut spent = [Duration::ZERO; 3];
     loop {
         let (cmds, view, delay_ms, want_stats) = {
             let mut s = shared.lock().unwrap();
@@ -215,15 +217,20 @@ fn run(shared: &SharedRef, ctx: &eframe::egui::Context) {
             continue;
         };
         if running {
+            let t0 = Instant::now();
             World::time(&w);
+            spent[0] += t0.elapsed();
             changed = true;
             fps.1 += 1;
             let t = fps.0.elapsed().as_secs_f64();
             if t >= 1.0 {
-                fps = (Instant::now(), 0, fps.1 as f64 / t);
                 if log_fps {
-                    eprintln!("{:.1} frames/s, population {}", fps.2, World::getPopulation(&w));
+                    let ms = |d: Duration| d.as_secs_f64() * 1000.0 / fps.1 as f64;
+                    eprintln!("{:.1} frames/s, population {}, ms a frame: world {:.1} drawing {:.1} statistics {:.1}",
+                        fps.1 as f64 / t, World::getPopulation(&w), ms(spent[0]), ms(spent[1]), ms(spent[2]));
                 }
+                fps = (Instant::now(), 0, fps.1 as f64 / t);
+                spent = [Duration::ZERO; 3];
             }
         } else {
             fps.2 = 0.0;
@@ -238,17 +245,21 @@ fn run(shared: &SharedRef, ctx: &eframe::egui::Context) {
             }
             _ => None,
         };
+        let t0 = Instant::now();
         let picture = picture.map(|(v, mut lines)| {
             lines.clear();
             draw(&w, v, &mut lines);
             drawn = Some(v);
             lines
         });
+        let t1 = Instant::now();
+        spent[1] += t1 - t0;
         let ws: JRef<WorldStatistics> = w.get(|o| o.worldStatistics.clone());
         let stats = (want_stats && WorldStatistics::getTime(&ws) != stats_time).then(|| {
             stats_time = WorldStatistics::getTime(&ws);
             Arc::new(statistics(&w, &ws))
         });
+        spent[2] += t1.elapsed();
         // Wake the window only for something new to show; it refreshes the
         // status line on its own.
         let wake = picture.is_some() || stats.is_some();
