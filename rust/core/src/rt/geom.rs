@@ -12,14 +12,14 @@
 #![allow(non_snake_case)]
 
 use super::jref::JCell;
-use std::rc::Rc;
+use std::sync::Arc;
 
 /// A new object of a geometry class, reusing a recent one that nothing
 /// refers to any more (see JRecycler): `getP1()` makes a Point2D each call.
 macro_rules! new_object {
     ($t:ty) => {{
-        static RECYCLER: crate::rt::JRecycler<$t, 4> = crate::rt::JRecycler::new();
-        RECYCLER.new_object()
+        thread_local! { static RECYCLER: crate::rt::JRecycler<$t, 4> = const { crate::rt::JRecycler::new() }; }
+        RECYCLER.with(|r| r.new_object())
     }};
 }
 
@@ -53,7 +53,7 @@ impl RectangleT for Rectangle {
 impl<T: RectangleT + 'static> JRef<T> {
     /// Use as a `Rectangle` (Java's implicit upcast).
     pub fn as_rectangle(self) -> JRef<dyn RectangleT> {
-        self.map_rc(|rc| rc as Rc<JCell<dyn RectangleT>>)
+        self.map_rc(|rc| rc as Arc<JCell<dyn RectangleT>>)
     }
 }
 
@@ -249,7 +249,7 @@ impl Line2DT for Line2D {
 impl<T: Line2DT + 'static> JRef<T> {
     /// Use as a `Line2D` (Java's implicit upcast).
     pub fn as_line2d(self) -> JRef<dyn Line2DT> {
-        self.map_rc(|rc| rc as Rc<JCell<dyn Line2DT>>)
+        self.map_rc(|rc| rc as Arc<JCell<dyn Line2DT>>)
     }
 }
 

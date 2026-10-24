@@ -70,6 +70,8 @@ struct App {
     repaint_world: bool,
     strategy: Strategy,
     delay_ms: u32,
+    /// Utils.THREAD_COUNT
+    threads: i32,
     stats_open: bool,
     stats_focused: bool,
     stats: Option<Arc<sim::Stats>>,
@@ -137,6 +139,7 @@ fn main() -> eframe::Result {
                 repaint_world: true,
                 strategy: Strategy::Always,
                 delay_ms: std::env::var("BIOGENESIS_DELAY_MS").ok().and_then(|d| d.parse().ok()).unwrap_or(20),
+                threads: std::env::var("BIOGENESIS_THREADS").ok().and_then(|d| d.parse().ok()).unwrap_or(1),
                 stats_open: std::env::var_os("BIOGENESIS_STATS").is_some(),
                 stats_focused: false,
                 stats: None,
@@ -218,6 +221,10 @@ impl App {
                 if ui.button("Step one frame (.)").clicked() {
                     self.send(Cmd::Step);
                 }
+                ui.separator();
+                let cores = std::thread::available_parallelism().map_or(8, |n| n.get()) as i32;
+                ui.add(egui::Slider::new(&mut self.threads, 1..=cores).text("threads"))
+                    .on_hover_text("Organisms move on this many threads (Java's THREAD_COUNT). With more than one, a world takes its own course, as in Java.");
             });
             ui.menu_button("View", |ui| {
                 ui.checkbox(&mut self.stats_open, "Statistics window");
@@ -436,6 +443,7 @@ impl eframe::App for App {
             }
             s.want_stats = self.stats_open;
             s.delay_ms = self.delay_ms;
+            s.threads = self.threads;
         }
         let size = vec2(self.status.width as f32, self.status.height as f32);
         if size != self.world_size {

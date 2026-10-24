@@ -103,6 +103,10 @@ public class WorldCheck {
 			} else if (args[i].equals("full")) {
 				full = Integer.parseInt(args[i + 1]);
 				i += 2;
+			} else if (args[i].equals("threads")) {
+				// Utils.THREAD_COUNT (after loading): not deterministic, for timing
+				Utils.THREAD_COUNT = Integer.parseInt(args[i + 1]);
+				i += 2;
 			} else {
 				throw new IllegalArgumentException(args[i]);
 			}
@@ -117,7 +121,8 @@ public class WorldCheck {
 			if (f == saveAt) java.nio.file.Files.write(java.nio.file.Paths.get(saveFile), save.getBytes(StandardCharsets.UTF_8));
 			if (f == full) {
 				System.out.print(save);
-				return;
+				System.out.flush();
+				System.exit(0); // ParallelExecutor's worker threads would keep the JVM running
 			}
 			if (!hashed) continue;
 			out.append("frame ").append(f).append(" population ").append(world.getPopulation())
@@ -125,6 +130,8 @@ public class WorldCheck {
 					.append(" hash ").append(Long.toHexString(fnv(save))).append('\n');
 		}
 		System.out.print(out);
+		System.out.flush();
+		System.exit(0); // ParallelExecutor's worker threads would keep the JVM running
 	}
 
 	/** The save file text: as rust/core/src/save.rs writes it. */

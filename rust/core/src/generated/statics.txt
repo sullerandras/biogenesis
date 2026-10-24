@@ -164,3 +164,6 @@ biogenesis.Utils.random
 biogenesis.parallel_executor.ParallelExecutor.organismBuckets
 biogenesis.parallel_executor.ParallelExecutor.organisms
 biogenesis.parallel_executor.ParallelExecutor.visibleWorld
+biogenesis.parallel_executor.ThreadStartIndexes.lineCount
+biogenesis.parallel_executor.ThreadStartIndexes.startIndexes
+biogenesis.parallel_executor.ThreadStartIndexes.threadCount

@@ -3,3 +3,4 @@
 //! Keep them few and small, and next to the Java they replace.
 
 pub mod world;
+pub mod parallel_executor;

@@ -113,7 +113,7 @@ pub fn __ieee754_rem_pio2(mut x: f64, y: &impl JArr<f64>) -> i32 {
     while ((tx).at((nx - 1)) == 0.0f64) {
         nx = nx - 1;
     }
-    n = fd_libm_kernel_rem_pio2::__kernel_rem_pio2(tx, y, e0, nx, 2, &(fd_libm_rem_pio2::two_over_pi()));
+    n = fd_libm_kernel_rem_pio2::__kernel_rem_pio2(tx, y, e0, nx, 2, &(*fd_libm_rem_pio2::__two_over_pi.get_ref()));
     if (hx < 0) {
         (y).put(0, -((y).at(0)));
         (y).put(1, -((y).at(1)));

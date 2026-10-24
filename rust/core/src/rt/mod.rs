@@ -16,6 +16,7 @@ pub mod jref;
 pub mod jstatic;
 pub mod jstr;
 pub mod load;
+pub mod parallel;
 pub mod random;
 pub mod stub;
 
@@ -27,8 +28,9 @@ pub use geom::{Line2D, Line2DT, Point, Point2D, Rectangle, RectangleT};
 pub use hashmap::JHashMap;
 pub use hashset::JHashSet;
 pub use jfn::JFn;
-pub use jref::{JArr, JArray, JList, JRecycler, JRef, JStackArray};
+pub use jref::{JAlias, JArr, JShared, JArray, JList, JRecycler, JRef, JStackArray};
 pub use jstatic::JStatic;
+pub use parallel::JMonitor;
 pub use jstr::{JStr, JToString};
 pub use load::{JLoad, Loader};
 pub use random::Random;

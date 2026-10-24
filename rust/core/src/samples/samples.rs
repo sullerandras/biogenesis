@@ -149,9 +149,9 @@ pub fn collections(mut seed: i32) -> JStr {
     s = JStr::cat(&[&s.clone(), &(if (f.is_null()) { JStr::from("none") } else { JStr::cat(&[&JStr::from("f"), &f.get(|o| o.id)]) })]);
     let mut h: JRef<Item> = Bag::heavy(&b);
     s = JStr::cat(&[&s.clone(), &(if (h.is_null()) { JStr::from("none") } else { JStr::cat(&[&JStr::from("h"), &h.get(|o| o.id)]) })]);
-    let mut kept: JFn<dyn Fn(JRef<Item>) -> bool> = Bag::keep(&b, { let limit = limit; JFn::new(std::rc::Rc::new(move |mut it: JRef<Item>| -> bool {
+    let mut kept: JFn<dyn Fn(JRef<Item>) -> bool> = Bag::keep(&b, { let limit = limit; JFn::new(std::sync::Arc::new(move |mut it: JRef<Item>| -> bool {
         (it.get(|o| o.id) < (limit - 10))
-    }) as std::rc::Rc<dyn Fn(JRef<Item>) -> bool>) });
+    }) as std::sync::Arc<dyn Fn(JRef<Item>) -> bool>) });
     s = JStr::cat(&[&s.clone(), &(if (kept.f())(f.clone()) { JStr::from("k") } else { JStr::from("n") })]);
     {
         let mut it: JIter<JRef<Item>> = (b.get(|o| o.items.clone())).iterator();

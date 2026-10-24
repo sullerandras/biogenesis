@@ -10,8 +10,10 @@ import com.github.javaparser.ast.body.CallableDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
+import com.github.javaparser.ast.body.InitializerDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
+import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.stmt.*;
@@ -789,6 +791,10 @@ public class J2R {
 			} else if (nativeName != null) {
 				b.append(ind).append("    ").append(nativeName).append("(").append(isStatic ? "" : args.length() > 0 ? "this, " : "this").append(args).append(")\n");
 			} else {
+				if (d instanceof MethodDeclaration && ((MethodDeclaration) d).isSynchronized()) {
+					if (isStatic) throw new Unsupported("static synchronized method");
+					b.append(ind).append("    let __sync = crate::rt::parallel::lock_object(this.identity());\n");
+				}
 				for (Statement s : body.getStatements()) stmt(s, b, ind + "    ");
 			}
 			out.append(b);
@@ -825,9 +831,10 @@ public class J2R {
 		scope = new Scope(null);
 		try {
 			FieldDeclaration f = (FieldDeclaration) v.getParentNode().get();
+			String doc = "/// Java: " + fileOf.get(owner) + ":" + line(v) + "\n";
+			if (isMonitorField(v)) return doc + "pub static __" + v.getNameAsString() + ": JMonitor = JMonitor::new();\n";
 			JT t = jt(v.getType().resolve());
 			String n = rustIdent(v.getNameAsString());
-			String doc = "/// Java: " + fileOf.get(owner) + ":" + line(v) + "\n";
 			Expression init = v.getInitializer().orElse(null);
 			if (f.isFinal() && init != null && isConstExpr(init)) {
 				Ex val = coerce(expr(init), t, v);
@@ -849,6 +856,31 @@ public class J2R {
 		} finally {
 			scope = saved;
 		}
+	}
+
+	/** `static final Object x = new Object()`: a monitor, used only by synchronized. */
+	static boolean isMonitorField(VariableDeclarator v) {
+		FieldDeclaration f = (FieldDeclaration) v.getParentNode().get();
+		return f.isStatic() && f.isFinal() && v.getType().asString().equals("Object")
+				&& v.getInitializer().map(i -> i.isObjectCreationExpr() && i.asObjectCreationExpr().getType().getNameAsString().equals("Object")).orElse(false);
+	}
+
+	/** The guard of `synchronized (e)`: a monitor static's lock, or the object's monitor. */
+	String monitorLock(Expression e) {
+		while (e.isEnclosedExpr()) e = e.asEnclosedExpr().getInner();
+		if (e.isNameExpr() || e.isFieldAccessExpr()) {
+			ResolvedValueDeclaration r = e.isNameExpr() ? e.asNameExpr().resolve() : e.asFieldAccessExpr().resolve();
+			if (r.isField() && r.asField().isStatic()) {
+				VariableDeclarator v = staticVar(r.asField());
+				if (isMonitorField(v)) {
+					needStatic(v);
+					return moduleName(r.asField().declaringType().getQualifiedName()) + "::__" + v.getNameAsString() + ".lock()";
+				}
+			}
+		}
+		Ex x = expr(e);
+		if (x.t.copy()) throw new Unsupported("synchronized on a value");
+		return "crate::rt::parallel::lock_object(JRef::identity(" + recvRef(x) + "))";
 	}
 
 	/** Can be a Rust const: literals, operators, casts, other constants, new Color(literals). */
@@ -1080,7 +1112,11 @@ public class J2R {
 			// clone() can't fail here: the try body is all there is.
 			stmt0(t.getTryBlock(), out, ind);
 		} else if (s.isSynchronizedStmt()) {
-			stmt0(s.asSynchronizedStmt().getBody(), out, ind);
+			// The guard holds the monitor to the end of the block (rt/parallel.rs).
+			out.append(ind).append("{\n");
+			out.append(ind).append("    let __sync").append(++tmpCounter).append(" = ").append(monitorLock(s.asSynchronizedStmt().getExpression())).append(";\n");
+			block(s.asSynchronizedStmt().getBody(), out, ind + "    ");
+			out.append(ind).append("}\n");
 		} else if (s.isAssertStmt()) {
 			// Java runs without -ea: asserts are not evaluated.
 		} else if (s.isExplicitConstructorInvocationStmt()) {
@@ -1263,6 +1299,7 @@ public class J2R {
 		final String code; final JT t; final boolean pure;
 		Long intLit; // value, when an int/long literal (possibly negated)
 		String staticCell; // the JStatic, when a read of a static field
+		String borrowed;   // a `&JRef` to the same object without clone(), for a call's receiver (see neverReassigned)
 		boolean view;      // a non-escaping array variable (see Var.view)
 		Ex(String code, JT t, boolean pure) { this.code = code; this.t = t; this.pure = pure; }
 	}
@@ -1368,10 +1405,12 @@ public class J2R {
 		if (e.isArrayCreationExpr() && !e.asArrayCreationExpr().getInitializer().isPresent()) return coerce(newArray(e.asArrayCreationExpr(), to), to, at);
 		if (e.isObjectCreationExpr() && e.asObjectCreationExpr().getType().isUsingDiamondOperator()) return coerce(create(e.asObjectCreationExpr(), to), to, at);
 		if (e.isMethodCallExpr() && e.asMethodCallExpr().getArguments().size() == 1) {
-			// Collections.synchronizedSet(x) etc.: x itself (no threads here)
+			// Collections.synchronizedSet(x) etc.: x itself, with a monitor its operations take (rt/parallel.rs)
 			ResolvedMethodDeclaration rm = e.asMethodCallExpr().resolve();
-			if (rm.declaringType().getQualifiedName().equals("java.util.Collections") && rm.getName().startsWith("synchronized"))
-				return exprTo(e.asMethodCallExpr().getArgument(0), to, at);
+			if (rm.declaringType().getQualifiedName().equals("java.util.Collections") && rm.getName().startsWith("synchronized")) {
+				Ex x = exprTo(e.asMethodCallExpr().getArgument(0), to, at);
+				return new Ex("{ let __s = " + x.code + "; crate::rt::parallel::make_synchronized(__s.identity()); __s }", x.t, false);
+			}
 		}
 		return coerce(expr(e), to, at);
 	}
@@ -1429,8 +1468,8 @@ public class J2R {
 			}
 			String fn = fnType(to.cls);
 			if (borrowed) return new Ex("&|" + sigs + "|" + (ret.k != K.VOID ? " -> " + rust(ret) : "") + " {\n" + body + "    }", to, false);
-			return new Ex(pre + "JFn::new(std::rc::Rc::new(move |" + sigs + "|" + (ret.k != K.VOID ? " -> " + rust(ret) : "") + " {\n" + body
-					+ "    }) as std::rc::Rc<" + fn + ">) }", to, false);
+			return new Ex(pre + "JFn::new(std::sync::Arc::new(move |" + sigs + "|" + (ret.k != K.VOID ? " -> " + rust(ret) : "") + " {\n" + body
+					+ "    }) as std::sync::Arc<" + fn + ">) }", to, false);
 		} finally {
 			scope = saved;
 			curReturn = savedReturn;
@@ -1486,6 +1525,7 @@ public class J2R {
 	}
 
 	String recv(Expression javaExpr, Ex x) {
+		if (x.borrowed != null) return "(*" + x.borrowed + ")";
 		if (x.code.endsWith(".clone()") && isSimplePath(x.code.substring(0, x.code.length() - 8))) return x.code.substring(0, x.code.length() - 8);
 		return "(" + x.code + ")";
 	}
@@ -1547,6 +1587,7 @@ public class J2R {
 			if (isConst) return new Ex(path, t, true);
 			Ex x = new Ex(path + "()", t, false);
 			x.staticCell = moduleName(owner) + "::__" + v.getNameAsString();
+			if (isJRef(t) && neverReassigned(fd)) x.borrowed = x.staticCell + ".get_ref()";
 			return x;
 		}
 		String obj;
@@ -1561,7 +1602,71 @@ public class J2R {
 			objT = o.t;
 		}
 		String path = fieldPath(owner, objT, fd.getName(), false);
-		return new Ex(obj + ".get(|o| " + path + (t.copy() ? "" : ".clone()") + ")", t, false);
+		Ex x = new Ex(obj + ".get(|o| " + path + (t.copy() ? "" : ".clone()") + ")", t, false);
+		// this lives through the method, so a field of it that keeps its object does too;
+		// another field's object is borrowed while threads run (JShared), cloned otherwise
+		if (obj.equals("this") && isJRef(t)) x.borrowed = "this.get(|o| unsafe { " + path + (neverReassigned(fd) ? ".alias() })" : ".share() })");
+		return x;
+	}
+
+	static boolean isJRef(JT t) {
+		switch (t.k) {
+			case RANDOM: case CLASS: case GEOM: case ARRAY: case LIST: case COLL: case HSET: case MAP: case ITER: return true;
+			default: return false;
+		}
+	}
+
+	// ---------------------------------------------------------------- fields that keep their object
+
+	/*
+	 * A call on `this.f` clones f's reference for the call (one count update
+	 * each way). If nothing assigns f outside the constructors of its class
+	 * (on `this`), f keeps its object as long as `this` lives, so the
+	 * receiver can be borrowed (JRef::alias) instead. Likewise a static that
+	 * nothing assigns after its initializer (Utils.random) is borrowed in
+	 * place. Every organism calls its `_world`: with threads, its count is
+	 * one cache line all of them would write.
+	 */
+	Set<String> reassigned;
+
+	boolean neverReassigned(ResolvedFieldDeclaration fd) {
+		if (reassigned == null) computeReassigned();
+		return !reassigned.contains(fd.declaringType().getQualifiedName() + "." + fd.getName()) && !reassigned.contains("?." + fd.getName());
+	}
+
+	void computeReassigned() {
+		reassigned = new java.util.HashSet<>();
+		for (ClassOrInterfaceDeclaration c : allTypes.values()) {
+			for (AssignExpr a : c.findAll(AssignExpr.class)) noteAssigned(a.getTarget());
+			for (UnaryExpr u : c.findAll(UnaryExpr.class)) {
+				UnaryExpr.Operator op = u.getOperator();
+				if (op == UnaryExpr.Operator.PREFIX_INCREMENT || op == UnaryExpr.Operator.POSTFIX_INCREMENT
+						|| op == UnaryExpr.Operator.PREFIX_DECREMENT || op == UnaryExpr.Operator.POSTFIX_DECREMENT) noteAssigned(u.getExpression());
+			}
+		}
+	}
+
+	void noteAssigned(Expression target) {
+		while (target.isEnclosedExpr()) target = target.asEnclosedExpr().getInner();
+		if (!target.isNameExpr() && !target.isFieldAccessExpr()) return; // an array element
+		String name = target.isNameExpr() ? target.asNameExpr().getNameAsString() : target.asFieldAccessExpr().getNameAsString();
+		ResolvedValueDeclaration r;
+		try {
+			r = target.isNameExpr() ? target.asNameExpr().resolve() : target.asFieldAccessExpr().resolve();
+		} catch (RuntimeException e) {
+			reassigned.add("?." + name); // can't tell which field: every field of that name
+			return;
+		}
+		if (!r.isField()) return;
+		ResolvedFieldDeclaration fd = r.asField();
+		String owner = fd.declaringType().getQualifiedName();
+		boolean onThis = target.isNameExpr() || target.asFieldAccessExpr().getScope().isThisExpr();
+		Node n = target;
+		while (n != null && !(n instanceof CallableDeclaration) && !(n instanceof InitializerDeclaration) && !(n instanceof TypeDeclaration)) n = n.getParentNode().orElse(null);
+		boolean inOwner = n != null && n.findAncestor(ClassOrInterfaceDeclaration.class).flatMap(ClassOrInterfaceDeclaration::getFullyQualifiedName).map(owner::equals).orElse(false);
+		if (inOwner && onThis && !fd.isStatic() && n instanceof ConstructorDeclaration) return;
+		if (inOwner && fd.isStatic() && n instanceof InitializerDeclaration && ((InitializerDeclaration) n).isStatic()) return;
+		reassigned.add(owner + "." + fd.getName());
 	}
 
 	/** o.f, or o.__super.f / o.rect().f for fields declared in a JDK geometry class. */
@@ -2190,7 +2295,7 @@ public class J2R {
 	 */
 	String newObject(String q) {
 		String s = simple(q);
-		return "{ static RECYCLER: JRecycler<" + s + ", 4> = JRecycler::new(); RECYCLER.new_object() }";
+		return "{ thread_local! { static RECYCLER: JRecycler<" + s + ", 4> = const { JRecycler::new() }; } RECYCLER.with(|r| r.new_object()) }";
 	}
 
 	// ---------------------------------------------------------------- lambdas that don't escape
@@ -2382,6 +2487,7 @@ public class J2R {
 	/** A borrowed reference to x's object: `&name` or `&(expr)`. */
 	String recvRef(Ex x) {
 		if (x.code.equals("this.clone()")) return "this"; // already a reference
+		if (x.borrowed != null) return "&*" + x.borrowed;
 		if (x.code.endsWith(".clone()") && isSimplePath(x.code.substring(0, x.code.length() - 8))) return "&" + x.code.substring(0, x.code.length() - 8);
 		return "&(" + x.code + ")";
 	}

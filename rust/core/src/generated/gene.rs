@@ -65,7 +65,7 @@ impl Gene {
 
     /// Java: Gene.java:119 Gene()
     pub fn new() -> JRef<Self> {
-        let this = &{ static RECYCLER: JRecycler<Gene, 4> = JRecycler::new(); RECYCLER.new_object() };
+        let this = &{ thread_local! { static RECYCLER: JRecycler<Gene, 4> = const { JRecycler::new() }; } RECYCLER.with(|r| r.new_object()) };
         Self::__init(this);
         Self::__ctor_new(this);
         this.clone()
@@ -76,7 +76,7 @@ impl Gene {
 
     /// Java: Gene.java:134 Gene(double, double, Color, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int)
     pub fn new48(mut length: f64, mut theta: f64, mut color: Color, mut branch: i32, mut stack: i32, mut fold: i32, mut chiral: i32, mut radial: i32, mut redreaction: i32, mut greenreaction: i32, mut bluereaction: i32, mut plaguereaction: i32, mut scourgereaction: i32, mut whitereaction: i32, mut grayreaction: i32, mut silverreaction: i32, mut defaultreaction: i32, mut consumerreaction: i32, mut plantreaction: i32, mut magentareaction: i32, mut rosereaction: i32, mut pinkreaction: i32, mut coralreaction: i32, mut orangereaction: i32, mut barkreaction: i32, mut ivyreaction: i32, mut violetreaction: i32, mut virusreaction: i32, mut maroonreaction: i32, mut crimsonreaction: i32, mut olivereaction: i32, mut mintreaction: i32, mut lavenderreaction: i32, mut creamreaction: i32, mut spikereaction: i32, mut fallowreaction: i32, mut lightbluereaction: i32, mut ochrereaction: i32, mut skyreaction: i32, mut lilacreaction: i32, mut firereaction: i32, mut lightbrownreaction: i32, mut greenbrownreaction: i32, mut brownreaction: i32, mut icereaction: i32, mut brokenreaction: i32, mut sickreaction: i32, mut friendreaction: i32) -> JRef<Self> {
-        let this = &{ static RECYCLER: JRecycler<Gene, 4> = JRecycler::new(); RECYCLER.new_object() };
+        let this = &{ thread_local! { static RECYCLER: JRecycler<Gene, 4> = const { JRecycler::new() }; } RECYCLER.with(|r| r.new_object()) };
         Self::__init(this);
         Self::__ctor_new48(this, length, theta, color, branch, stack, fold, chiral, radial, redreaction, greenreaction, bluereaction, plaguereaction, scourgereaction, whitereaction, grayreaction, silverreaction, defaultreaction, consumerreaction, plantreaction, magentareaction, rosereaction, pinkreaction, coralreaction, orangereaction, barkreaction, ivyreaction, violetreaction, virusreaction, maroonreaction, crimsonreaction, olivereaction, mintreaction, lavenderreaction, creamreaction, spikereaction, fallowreaction, lightbluereaction, ochrereaction, skyreaction, lilacreaction, firereaction, lightbrownreaction, greenbrownreaction, brownreaction, icereaction, brokenreaction, sickreaction, friendreaction);
         this.clone()
@@ -136,7 +136,7 @@ impl Gene {
     /// Java: Gene.java:190 void randomizeColor()
     pub fn randomizeColor(this: &JRef<Self>) {
         let mut max_prob: i32 = ((((((((((((((((((((((((((((((((((((((((((((((((((utils::RED_PROB() + utils::GREEN_PROB()) + utils::BLUE_PROB()) + utils::CYAN_PROB()) + utils::WHITE_PROB()) + utils::GRAY_PROB()) + utils::YELLOW_PROB()) + utils::MAGENTA_PROB()) + utils::PINK_PROB()) + utils::CORAL_PROB()) + utils::ORANGE_PROB()) + utils::FOREST_PROB()) + utils::IVY_PROB()) + utils::SPRING_PROB()) + utils::LEAF_PROB()) + utils::SUMMER_PROB()) + utils::LIME_PROB()) + utils::BARK_PROB()) + utils::VIOLET_PROB()) + utils::TEAL_PROB()) + utils::SPIN_PROB()) + utils::EYE_PROB()) + utils::MAROON_PROB()) + utils::CRIMSON_PROB()) + utils::OLIVE_PROB()) + utils::MINT_PROB()) + utils::CREAM_PROB()) + utils::ROSE_PROB()) + utils::DARK_PROB()) + utils::OCHRE_PROB()) + utils::SKY_PROB()) + utils::LILAC_PROB()) + utils::SILVER_PROB()) + utils::FIRE_PROB()) + utils::DARKGRAY_PROB()) + utils::GOLD_PROB()) + utils::BLOND_PROB()) + utils::FLOWER_PROB()) + utils::AUBURN_PROB()) + utils::PLAGUE_PROB()) + utils::SPIKE_PROB()) + utils::INDIGO_PROB()) + utils::LAVENDER_PROB()) + utils::FALLOW_PROB()) + utils::SPORE_PROB()) + utils::JADE_PROB()) + utils::C4_PROB()) + utils::GRASS_PROB()) + utils::PURPLE_PROB()) + utils::PLANKTON_PROB()) + utils::DRIFT_PROB());
-        let mut prob: i32 = Random::nextInt_bound(&(utils::random()), max_prob);
+        let mut prob: i32 = Random::nextInt_bound(&(*utils::__random.get_ref()), max_prob);
         let mut ac_prob: i32 = utils::RED_PROB();
         if (prob < ac_prob) {
             this.setf(|o| &mut o._color, Color::RED);
@@ -392,212 +392,212 @@ impl Gene {
 
     /// Java: Gene.java:452 void randomizeredReaction()
     pub fn randomizeredReaction(this: &JRef<Self>) {
-        this.setf(|o| &mut o._redreaction, Random::nextInt_bound(&(utils::random()), 6));
+        this.setf(|o| &mut o._redreaction, Random::nextInt_bound(&(*utils::__random.get_ref()), 6));
     }
 
     /// Java: Gene.java:456 void randomizegreenReaction()
     pub fn randomizegreenReaction(this: &JRef<Self>) {
-        this.setf(|o| &mut o._greenreaction, Random::nextInt_bound(&(utils::random()), 6));
+        this.setf(|o| &mut o._greenreaction, Random::nextInt_bound(&(*utils::__random.get_ref()), 6));
     }
 
     /// Java: Gene.java:460 void randomizeblueReaction()
     pub fn randomizeblueReaction(this: &JRef<Self>) {
-        this.setf(|o| &mut o._bluereaction, Random::nextInt_bound(&(utils::random()), 6));
+        this.setf(|o| &mut o._bluereaction, Random::nextInt_bound(&(*utils::__random.get_ref()), 6));
     }
 
     /// Java: Gene.java:464 void randomizeplagueReaction()
     pub fn randomizeplagueReaction(this: &JRef<Self>) {
-        this.setf(|o| &mut o._plaguereaction, Random::nextInt_bound(&(utils::random()), 6));
+        this.setf(|o| &mut o._plaguereaction, Random::nextInt_bound(&(*utils::__random.get_ref()), 6));
     }
 
     /// Java: Gene.java:468 void randomizescourgeReaction()
     pub fn randomizescourgeReaction(this: &JRef<Self>) {
-        this.setf(|o| &mut o._scourgereaction, Random::nextInt_bound(&(utils::random()), 6));
+        this.setf(|o| &mut o._scourgereaction, Random::nextInt_bound(&(*utils::__random.get_ref()), 6));
     }
 
     /// Java: Gene.java:472 void randomizewhiteReaction()
     pub fn randomizewhiteReaction(this: &JRef<Self>) {
-        this.setf(|o| &mut o._whitereaction, Random::nextInt_bound(&(utils::random()), 6));
+        this.setf(|o| &mut o._whitereaction, Random::nextInt_bound(&(*utils::__random.get_ref()), 6));
     }
 
     /// Java: Gene.java:476 void randomizegrayReaction()
     pub fn randomizegrayReaction(this: &JRef<Self>) {
-        this.setf(|o| &mut o._grayreaction, Random::nextInt_bound(&(utils::random()), 6));
+        this.setf(|o| &mut o._grayreaction, Random::nextInt_bound(&(*utils::__random.get_ref()), 6));
     }
 
     /// Java: Gene.java:480 void randomizesilverReaction()
     pub fn randomizesilverReaction(this: &JRef<Self>) {
-        this.setf(|o| &mut o._silverreaction, Random::nextInt_bound(&(utils::random()), 6));
+        this.setf(|o| &mut o._silverreaction, Random::nextInt_bound(&(*utils::__random.get_ref()), 6));
     }
 
     /// Java: Gene.java:484 void randomizedefaultReaction()
     pub fn randomizedefaultReaction(this: &JRef<Self>) {
-        this.setf(|o| &mut o._defaultreaction, Random::nextInt_bound(&(utils::random()), 6));
+        this.setf(|o| &mut o._defaultreaction, Random::nextInt_bound(&(*utils::__random.get_ref()), 6));
     }
 
     /// Java: Gene.java:488 void randomizeconsumerReaction()
     pub fn randomizeconsumerReaction(this: &JRef<Self>) {
-        this.setf(|o| &mut o._consumerreaction, Random::nextInt_bound(&(utils::random()), 6));
+        this.setf(|o| &mut o._consumerreaction, Random::nextInt_bound(&(*utils::__random.get_ref()), 6));
     }
 
     /// Java: Gene.java:492 void randomizeplantReaction()
     pub fn randomizeplantReaction(this: &JRef<Self>) {
-        this.setf(|o| &mut o._plantreaction, Random::nextInt_bound(&(utils::random()), 6));
+        this.setf(|o| &mut o._plantreaction, Random::nextInt_bound(&(*utils::__random.get_ref()), 6));
     }
 
     /// Java: Gene.java:496 void randomizemagentaReaction()
     pub fn randomizemagentaReaction(this: &JRef<Self>) {
-        this.setf(|o| &mut o._magentareaction, Random::nextInt_bound(&(utils::random()), 6));
+        this.setf(|o| &mut o._magentareaction, Random::nextInt_bound(&(*utils::__random.get_ref()), 6));
     }
 
     /// Java: Gene.java:500 void randomizeroseReaction()
     pub fn randomizeroseReaction(this: &JRef<Self>) {
-        this.setf(|o| &mut o._rosereaction, Random::nextInt_bound(&(utils::random()), 6));
+        this.setf(|o| &mut o._rosereaction, Random::nextInt_bound(&(*utils::__random.get_ref()), 6));
     }
 
     /// Java: Gene.java:504 void randomizepinkReaction()
     pub fn randomizepinkReaction(this: &JRef<Self>) {
-        this.setf(|o| &mut o._pinkreaction, Random::nextInt_bound(&(utils::random()), 6));
+        this.setf(|o| &mut o._pinkreaction, Random::nextInt_bound(&(*utils::__random.get_ref()), 6));
     }
 
     /// Java: Gene.java:508 void randomizecoralReaction()
     pub fn randomizecoralReaction(this: &JRef<Self>) {
-        this.setf(|o| &mut o._coralreaction, Random::nextInt_bound(&(utils::random()), 6));
+        this.setf(|o| &mut o._coralreaction, Random::nextInt_bound(&(*utils::__random.get_ref()), 6));
     }
 
     /// Java: Gene.java:512 void randomizeorangeReaction()
     pub fn randomizeorangeReaction(this: &JRef<Self>) {
-        this.setf(|o| &mut o._orangereaction, Random::nextInt_bound(&(utils::random()), 6));
+        this.setf(|o| &mut o._orangereaction, Random::nextInt_bound(&(*utils::__random.get_ref()), 6));
     }
 
     /// Java: Gene.java:516 void randomizebarkReaction()
     pub fn randomizebarkReaction(this: &JRef<Self>) {
-        this.setf(|o| &mut o._barkreaction, Random::nextInt_bound(&(utils::random()), 6));
+        this.setf(|o| &mut o._barkreaction, Random::nextInt_bound(&(*utils::__random.get_ref()), 6));
     }
 
     /// Java: Gene.java:520 void randomizeivyReaction()
     pub fn randomizeivyReaction(this: &JRef<Self>) {
-        this.setf(|o| &mut o._ivyreaction, Random::nextInt_bound(&(utils::random()), 6));
+        this.setf(|o| &mut o._ivyreaction, Random::nextInt_bound(&(*utils::__random.get_ref()), 6));
     }
 
     /// Java: Gene.java:524 void randomizevioletReaction()
     pub fn randomizevioletReaction(this: &JRef<Self>) {
-        this.setf(|o| &mut o._violetreaction, Random::nextInt_bound(&(utils::random()), 6));
+        this.setf(|o| &mut o._violetreaction, Random::nextInt_bound(&(*utils::__random.get_ref()), 6));
     }
 
     /// Java: Gene.java:528 void randomizevirusReaction()
     pub fn randomizevirusReaction(this: &JRef<Self>) {
-        this.setf(|o| &mut o._virusreaction, Random::nextInt_bound(&(utils::random()), 6));
+        this.setf(|o| &mut o._virusreaction, Random::nextInt_bound(&(*utils::__random.get_ref()), 6));
     }
 
     /// Java: Gene.java:532 void randomizemaroonReaction()
     pub fn randomizemaroonReaction(this: &JRef<Self>) {
-        this.setf(|o| &mut o._maroonreaction, Random::nextInt_bound(&(utils::random()), 6));
+        this.setf(|o| &mut o._maroonreaction, Random::nextInt_bound(&(*utils::__random.get_ref()), 6));
     }
 
     /// Java: Gene.java:536 void randomizecrimsonReaction()
     pub fn randomizecrimsonReaction(this: &JRef<Self>) {
-        this.setf(|o| &mut o._crimsonreaction, Random::nextInt_bound(&(utils::random()), 6));
+        this.setf(|o| &mut o._crimsonreaction, Random::nextInt_bound(&(*utils::__random.get_ref()), 6));
     }
 
     /// Java: Gene.java:540 void randomizeoliveReaction()
     pub fn randomizeoliveReaction(this: &JRef<Self>) {
-        this.setf(|o| &mut o._olivereaction, Random::nextInt_bound(&(utils::random()), 6));
+        this.setf(|o| &mut o._olivereaction, Random::nextInt_bound(&(*utils::__random.get_ref()), 6));
     }
 
     /// Java: Gene.java:544 void randomizemintReaction()
     pub fn randomizemintReaction(this: &JRef<Self>) {
-        this.setf(|o| &mut o._mintreaction, Random::nextInt_bound(&(utils::random()), 6));
+        this.setf(|o| &mut o._mintreaction, Random::nextInt_bound(&(*utils::__random.get_ref()), 6));
     }
 
     /// Java: Gene.java:548 void randomizelavenderReaction()
     pub fn randomizelavenderReaction(this: &JRef<Self>) {
-        this.setf(|o| &mut o._lavenderreaction, Random::nextInt_bound(&(utils::random()), 6));
+        this.setf(|o| &mut o._lavenderreaction, Random::nextInt_bound(&(*utils::__random.get_ref()), 6));
     }
 
     /// Java: Gene.java:552 void randomizecreamReaction()
     pub fn randomizecreamReaction(this: &JRef<Self>) {
-        this.setf(|o| &mut o._creamreaction, Random::nextInt_bound(&(utils::random()), 6));
+        this.setf(|o| &mut o._creamreaction, Random::nextInt_bound(&(*utils::__random.get_ref()), 6));
     }
 
     /// Java: Gene.java:556 void randomizespikeReaction()
     pub fn randomizespikeReaction(this: &JRef<Self>) {
-        this.setf(|o| &mut o._spikereaction, Random::nextInt_bound(&(utils::random()), 6));
+        this.setf(|o| &mut o._spikereaction, Random::nextInt_bound(&(*utils::__random.get_ref()), 6));
     }
 
     /// Java: Gene.java:560 void randomizefallowReaction()
     pub fn randomizefallowReaction(this: &JRef<Self>) {
-        this.setf(|o| &mut o._fallowreaction, Random::nextInt_bound(&(utils::random()), 6));
+        this.setf(|o| &mut o._fallowreaction, Random::nextInt_bound(&(*utils::__random.get_ref()), 6));
     }
 
     /// Java: Gene.java:564 void randomizelightblueReaction()
     pub fn randomizelightblueReaction(this: &JRef<Self>) {
-        this.setf(|o| &mut o._lightbluereaction, Random::nextInt_bound(&(utils::random()), 6));
+        this.setf(|o| &mut o._lightbluereaction, Random::nextInt_bound(&(*utils::__random.get_ref()), 6));
     }
 
     /// Java: Gene.java:568 void randomizeochreReaction()
     pub fn randomizeochreReaction(this: &JRef<Self>) {
-        this.setf(|o| &mut o._ochrereaction, Random::nextInt_bound(&(utils::random()), 6));
+        this.setf(|o| &mut o._ochrereaction, Random::nextInt_bound(&(*utils::__random.get_ref()), 6));
     }
 
     /// Java: Gene.java:572 void randomizeskyReaction()
     pub fn randomizeskyReaction(this: &JRef<Self>) {
-        this.setf(|o| &mut o._skyreaction, Random::nextInt_bound(&(utils::random()), 6));
+        this.setf(|o| &mut o._skyreaction, Random::nextInt_bound(&(*utils::__random.get_ref()), 6));
     }
 
     /// Java: Gene.java:576 void randomizelilacReaction()
     pub fn randomizelilacReaction(this: &JRef<Self>) {
-        this.setf(|o| &mut o._lilacreaction, Random::nextInt_bound(&(utils::random()), 6));
+        this.setf(|o| &mut o._lilacreaction, Random::nextInt_bound(&(*utils::__random.get_ref()), 6));
     }
 
     /// Java: Gene.java:580 void randomizefireReaction()
     pub fn randomizefireReaction(this: &JRef<Self>) {
-        this.setf(|o| &mut o._firereaction, Random::nextInt_bound(&(utils::random()), 6));
+        this.setf(|o| &mut o._firereaction, Random::nextInt_bound(&(*utils::__random.get_ref()), 6));
     }
 
     /// Java: Gene.java:584 void randomizelightbrownReaction()
     pub fn randomizelightbrownReaction(this: &JRef<Self>) {
-        this.setf(|o| &mut o._lightbrownreaction, Random::nextInt_bound(&(utils::random()), 6));
+        this.setf(|o| &mut o._lightbrownreaction, Random::nextInt_bound(&(*utils::__random.get_ref()), 6));
     }
 
     /// Java: Gene.java:588 void randomizegreenbrownReaction()
     pub fn randomizegreenbrownReaction(this: &JRef<Self>) {
-        this.setf(|o| &mut o._greenbrownreaction, Random::nextInt_bound(&(utils::random()), 6));
+        this.setf(|o| &mut o._greenbrownreaction, Random::nextInt_bound(&(*utils::__random.get_ref()), 6));
     }
 
     /// Java: Gene.java:592 void randomizebrownReaction()
     pub fn randomizebrownReaction(this: &JRef<Self>) {
-        this.setf(|o| &mut o._brownreaction, Random::nextInt_bound(&(utils::random()), 6));
+        this.setf(|o| &mut o._brownreaction, Random::nextInt_bound(&(*utils::__random.get_ref()), 6));
     }
 
     /// Java: Gene.java:596 void randomizeiceReaction()
     pub fn randomizeiceReaction(this: &JRef<Self>) {
-        this.setf(|o| &mut o._icereaction, Random::nextInt_bound(&(utils::random()), 6));
+        this.setf(|o| &mut o._icereaction, Random::nextInt_bound(&(*utils::__random.get_ref()), 6));
     }
 
     /// Java: Gene.java:600 void randomizebrokenReaction()
     pub fn randomizebrokenReaction(this: &JRef<Self>) {
-        this.setf(|o| &mut o._brokenreaction, Random::nextInt_bound(&(utils::random()), 6));
+        this.setf(|o| &mut o._brokenreaction, Random::nextInt_bound(&(*utils::__random.get_ref()), 6));
     }
 
     /// Java: Gene.java:604 void randomizesickReaction()
     pub fn randomizesickReaction(this: &JRef<Self>) {
-        this.setf(|o| &mut o._sickreaction, Random::nextInt_bound(&(utils::random()), 6));
+        this.setf(|o| &mut o._sickreaction, Random::nextInt_bound(&(*utils::__random.get_ref()), 6));
     }
 
     /// Java: Gene.java:608 void randomizefriendReaction()
     pub fn randomizefriendReaction(this: &JRef<Self>) {
-        this.setf(|o| &mut o._friendreaction, Random::nextInt_bound(&(utils::random()), 6));
+        this.setf(|o| &mut o._friendreaction, Random::nextInt_bound(&(*utils::__random.get_ref()), 6));
     }
 
     /// Java: Gene.java:612 void randomizeLength()
     pub fn randomizeLength(this: &JRef<Self>) {
-        this.setf(|o| &mut o._length, (2.0f64 + (Random::nextDouble(&(utils::random())) * 16.0f64)));
+        this.setf(|o| &mut o._length, (2.0f64 + (Random::nextDouble(&(*utils::__random.get_ref())) * 16.0f64)));
     }
 
     /// Java: Gene.java:616 void randomizeTheta()
     pub fn randomizeTheta(this: &JRef<Self>) {
-        this.setf(|o| &mut o._theta, ((Random::nextDouble(&(utils::random())) * 2.0f64) * std::f64::consts::PI));
+        this.setf(|o| &mut o._theta, ((Random::nextDouble(&(*utils::__random.get_ref())) * 2.0f64) * std::f64::consts::PI));
     }
 
     /// Java: Gene.java:626 void randomize()

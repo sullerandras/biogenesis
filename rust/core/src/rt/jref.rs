@@ -1,12 +1,16 @@
 //! Java object references.
 //!
 //! A Java reference is shared, mutable and nullable. `JRef<T>` models it as an
-//! optional `Rc<JCell<T>>`. The generated code never keeps a borrow across a
+//! optional `Arc<JCell<T>>`. The generated code never keeps a borrow across a
 //! call: it reads a field with `obj.get(|o| o.f)` and writes it with
 //! `obj.set(|o| o.f = v)` after `v` is computed, so a method may freely read
 //! and write the object it was called on, like in Java.
+//!
+//! Objects are shared between threads as in Java (`Arc`, and `JCell` is
+//! `Send + Sync`): with THREAD_COUNT > 1 organisms move on several threads,
+//! under the rules of `rt/parallel.rs`.
 
-use std::rc::Rc;
+use std::sync::Arc;
 
 use super::throw;
 
@@ -15,9 +19,14 @@ use super::throw;
 /// borrow across a call (see above). The `checked` feature checks it like a
 /// `RefCell` would (`verify.sh` runs a world with it), keeping the borrow
 /// counts in a side table so that the layout stays the same: an array is
-/// an `Rc<JCell<[T]>>` made from an `Rc<[T]>`.
+/// an `Arc<JCell<[T]>>` made from an `Arc<[T]>`.
 #[repr(transparent)]
 pub struct JCell<T: ?Sized>(std::cell::UnsafeCell<T>);
+
+// SAFETY: Java's sharing model; see rt/parallel.rs for what keeps the
+// parallel phase memory-safe (deferred drops, monitors, the line locks).
+unsafe impl<T: ?Sized> Send for JCell<T> {}
+unsafe impl<T: ?Sized> Sync for JCell<T> {}
 
 impl<T> JCell<T> {
     #[inline]
@@ -134,7 +143,77 @@ pub mod checked {
 
 /// `T` may be a trait object (`JRef<dyn RectangleT>`), for variables of a
 /// class type that subclasses are assigned to.
-pub struct JRef<T: ?Sized>(Option<Rc<JCell<T>>>);
+pub struct JRef<T: ?Sized>(Option<Arc<JCell<T>>>);
+
+/// The object of a field that is never reassigned after the constructor
+/// (J2R checks that), borrowed for a call without updating its count: a
+/// copy of the reference that is never dropped. Shared counts are what
+/// threads contend on (every organism calls its `_world`).
+pub struct JAlias<T: ?Sized>(std::mem::ManuallyDrop<JRef<T>>);
+
+impl<T: ?Sized> std::ops::Deref for JAlias<T> {
+    type Target = JRef<T>;
+    #[inline]
+    fn deref(&self) -> &JRef<T> {
+        &self.0
+    }
+}
+
+impl<T: ?Sized> JRef<T> {
+    /// # Safety
+    /// The alias must not outlive the object holding this reference, and
+    /// the reference must not be overwritten meanwhile: J2R uses it for a
+    /// call's receiver `this.f`, f never reassigned after the constructor.
+    #[inline]
+    pub unsafe fn alias(&self) -> JAlias<T> {
+        // SAFETY: a bitwise copy that is never dropped, so the count stays right.
+        JAlias(std::mem::ManuallyDrop::new(unsafe { std::ptr::read(self) }))
+    }
+}
+
+/// A field's object for a call's receiver: borrowed (no count update)
+/// while organisms move on several threads, a clone otherwise. Then a
+/// field that is reassigned during the call keeps its old object alive
+/// anyway: overwritten references are only dropped when the threads are
+/// done (rt/parallel.rs). The world's `organismBuckets` and
+/// `worldStatistics`, which all organisms use, are such fields.
+pub struct JShared<T: ?Sized> {
+    r: std::mem::ManuallyDrop<JRef<T>>,
+    owned: bool,
+}
+
+impl<T: ?Sized> std::ops::Deref for JShared<T> {
+    type Target = JRef<T>;
+    #[inline]
+    fn deref(&self) -> &JRef<T> {
+        &self.r
+    }
+}
+
+impl<T: ?Sized> Drop for JShared<T> {
+    #[inline]
+    fn drop(&mut self) {
+        if self.owned {
+            // SAFETY: a clone, dropped once.
+            unsafe { std::mem::ManuallyDrop::drop(&mut self.r) }
+        }
+    }
+}
+
+impl<T: ?Sized> JRef<T> {
+    /// # Safety
+    /// For a call's receiver `this.f`: `this` lives through the call, and
+    /// the field is only written with `setf` meanwhile.
+    #[inline]
+    pub unsafe fn share(&self) -> JShared<T> {
+        if super::parallel::active() {
+            // SAFETY: see JShared: an overwritten value is deferred, not dropped.
+            JShared { r: std::mem::ManuallyDrop::new(unsafe { std::ptr::read(self) }), owned: false }
+        } else {
+            JShared { r: std::mem::ManuallyDrop::new(self.clone()), owned: true }
+        }
+    }
+}
 
 /// A Java array: one allocation holding the elements, like Java's.
 pub type JArray<T> = JRef<[T]>;
@@ -159,13 +238,13 @@ impl<T: ?Sized> Default for JRef<T> {
 impl<T> JRef<T> {
     #[inline]
     pub fn new(value: T) -> Self {
-        JRef(Some(Rc::new(JCell::new(value))))
+        JRef(Some(Arc::new(JCell::new(value))))
     }
 
     /// The same object (or null) as another type: used for upcasts to trait
-    /// objects, `self.map_rc(|rc| rc as Rc<JCell<dyn Trait>>)`.
+    /// objects, `self.map_rc(|rc| rc as Arc<JCell<dyn Trait>>)`.
     #[inline]
-    pub fn map_rc<U: ?Sized>(self, f: impl FnOnce(Rc<JCell<T>>) -> Rc<JCell<U>>) -> JRef<U> {
+    pub fn map_rc<U: ?Sized>(self, f: impl FnOnce(Arc<JCell<T>>) -> Arc<JCell<U>>) -> JRef<U> {
         JRef(self.0.map(f))
     }
 }
@@ -176,10 +255,8 @@ impl<T> JRef<T> {
 /// (`T::default()`, then the constructor runs). Java can't do this: it can't
 /// know that an object is garbage until it collects. `contact` makes two
 /// `ExLine2DDouble`s each call; with this they're the same two every time.
-pub struct JRecycler<T, const N: usize>(std::cell::UnsafeCell<([Option<Rc<JCell<T>>>; N], usize)>);
-
-// SAFETY: like JStatic, only used from the simulation's thread.
-unsafe impl<T, const N: usize> Sync for JRecycler<T, N> {}
+/// Each thread has its own (J2R declares them `thread_local!`).
+pub struct JRecycler<T, const N: usize>(std::cell::UnsafeCell<([Option<Arc<JCell<T>>>; N], usize)>);
 
 impl<T: Default, const N: usize> JRecycler<T, N> {
     pub const fn new() -> Self {
@@ -191,18 +268,18 @@ impl<T: Default, const N: usize> JRecycler<T, N> {
     /// all are in use: the newest objects are the likeliest to be dropped).
     #[inline]
     pub fn new_object(&self) -> JRef<T> {
-        // SAFETY: one thread, and the borrow ends before anything else runs
+        // SAFETY: thread-local, and the borrow ends before anything else runs
         // (resetting drops the old fields, which only drops Rcs).
         let (slots, next) = unsafe { &mut *self.0.get() };
         for s in slots.iter_mut() {
             if let Some(rc) = s {
-                if let Some(cell) = Rc::get_mut(rc) {
+                if let Some(cell) = Arc::get_mut(rc) {
                     *cell.get_mut() = T::default();
                     return JRef(Some(rc.clone()));
                 }
             }
         }
-        let rc = Rc::new(JCell::new(T::default()));
+        let rc = Arc::new(JCell::new(T::default()));
         slots[*next] = Some(rc.clone());
         *next = (*next + 1) % N;
         JRef(Some(rc))
@@ -221,7 +298,7 @@ impl<T: ?Sized> JRef<T> {
     }
 
     #[inline]
-    fn rc(&self) -> &Rc<JCell<T>> {
+    fn rc(&self) -> &Arc<JCell<T>> {
         match &self.0 {
             Some(rc) => rc,
             None => throw("java.lang.NullPointerException"),
@@ -233,7 +310,7 @@ impl<T: ?Sized> JRef<T> {
     #[inline]
     pub fn ptr_eq<U: ?Sized>(a: &Self, b: &JRef<U>) -> bool {
         match (&a.0, &b.0) {
-            (Some(x), Some(y)) => std::ptr::addr_eq(Rc::as_ptr(x), Rc::as_ptr(y)),
+            (Some(x), Some(y)) => std::ptr::addr_eq(Arc::as_ptr(x), Arc::as_ptr(y)),
             (None, None) => true,
             _ => false,
         }
@@ -241,7 +318,7 @@ impl<T: ?Sized> JRef<T> {
 
     /// Identity of the referenced object (for dumps), or None for null.
     pub fn identity(&self) -> Option<*const ()> {
-        self.0.as_ref().map(|rc| Rc::as_ptr(rc) as *const ())
+        self.0.as_ref().map(|rc| Arc::as_ptr(rc) as *const ())
     }
 
     /// Reads from the object. The borrow ends when `f` returns.
@@ -259,8 +336,15 @@ impl<T: ?Sized> JRef<T> {
     /// `obj.f = v`, written `obj.setf(|o| &mut o.f, v)`: `v` is evaluated
     /// before the object is borrowed, and after `obj` (Java's order).
     #[inline]
-    pub fn setf<F>(&self, field: impl FnOnce(&mut T) -> &mut F, v: F) {
-        *field(&mut self.rc().borrow_mut()) = v;
+    pub fn setf<F: 'static>(&self, field: impl FnOnce(&mut T) -> &mut F, v: F) {
+        let mut o = self.rc().borrow_mut();
+        let slot = field(&mut o);
+        if std::mem::needs_drop::<F>() && super::parallel::active() {
+            // SAFETY: a field of a live object.
+            unsafe { super::parallel::store_shared(slot, v) }
+        } else {
+            *slot = v;
+        }
     }
 }
 
@@ -274,12 +358,12 @@ impl<T: Clone> JRef<[T]> {
     }
 
     pub fn from_vec(v: Vec<T>) -> Self {
-        Self::from_rc(Rc::from(v))
+        Self::from_rc(Arc::from(v))
     }
 
-    fn from_rc(rc: Rc<[T]>) -> Self {
+    fn from_rc(rc: Arc<[T]>) -> Self {
         // SAFETY: JCell<[T]> is a transparent UnsafeCell<[T]>, which has the layout of [T].
-        JRef(Some(unsafe { Rc::from_raw(Rc::into_raw(rc) as *const JCell<[T]>) }))
+        JRef(Some(unsafe { Arc::from_raw(Arc::into_raw(rc) as *const JCell<[T]>) }))
     }
 
     /// `a.length`
@@ -299,8 +383,15 @@ impl<T: Clone> JRef<[T]> {
 
     /// `a[i] = x`
     #[inline]
-    pub fn put(&self, i: i32, x: T) {
+    pub fn put(&self, i: i32, x: T)
+    where
+        T: 'static,
+    {
         self.set(|v| match v.get_mut(i as usize) {
+            // SAFETY: an element of a live array.
+            Some(slot) if std::mem::needs_drop::<T>() && super::parallel::active() => unsafe {
+                super::parallel::store_shared(slot, x)
+            },
             Some(slot) => *slot = x,
             None => throw("java.lang.ArrayIndexOutOfBoundsException"),
         })
@@ -371,7 +462,7 @@ pub trait JArr<T: Copy> {
     fn len(&self) -> i32;
 }
 
-impl<T: Copy> JArr<T> for JRef<[T]> {
+impl<T: Copy + 'static> JArr<T> for JRef<[T]> {
     #[inline]
     fn at(&self, i: i32) -> T {
         JRef::<[T]>::at(self, i)

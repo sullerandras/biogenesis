@@ -10,6 +10,7 @@ pub mod vector2_d;
 pub mod world;
 pub mod world_statistics;
 pub mod parallel_executor;
+pub mod thread_start_indexes;
 pub mod fd_libm;
 pub mod fd_libm_acos;
 pub mod fd_libm_asin;
@@ -212,6 +213,9 @@ pub fn dump_statics(d: &mut Dumper) {
     d.field("biogenesis.parallel_executor.ParallelExecutor.organismBuckets", &parallel_executor::organismBuckets());
     d.field("biogenesis.parallel_executor.ParallelExecutor.organisms", &parallel_executor::organisms());
     d.field("biogenesis.parallel_executor.ParallelExecutor.visibleWorld", &parallel_executor::visibleWorld());
+    d.field("biogenesis.parallel_executor.ThreadStartIndexes.lineCount", &thread_start_indexes::lineCount());
+    d.field("biogenesis.parallel_executor.ThreadStartIndexes.startIndexes", &thread_start_indexes::startIndexes());
+    d.field("biogenesis.parallel_executor.ThreadStartIndexes.threadCount", &thread_start_indexes::threadCount());
 }
 
 /// Sets a static from a save. False if there's no such static.
@@ -383,6 +387,9 @@ pub fn load_static(l: &mut Loader, name: &str) -> bool {
         "biogenesis.parallel_executor.ParallelExecutor.organismBuckets" => parallel_executor::set_organismBuckets(JLoad::load(l)),
         "biogenesis.parallel_executor.ParallelExecutor.organisms" => parallel_executor::set_organisms(JLoad::load(l)),
         "biogenesis.parallel_executor.ParallelExecutor.visibleWorld" => parallel_executor::set_visibleWorld(JLoad::load(l)),
+        "biogenesis.parallel_executor.ThreadStartIndexes.lineCount" => thread_start_indexes::set_lineCount(JLoad::load(l)),
+        "biogenesis.parallel_executor.ThreadStartIndexes.startIndexes" => thread_start_indexes::set_startIndexes(JLoad::load(l)),
+        "biogenesis.parallel_executor.ThreadStartIndexes.threadCount" => thread_start_indexes::set_threadCount(JLoad::load(l)),
         _ => return false,
     }
     true

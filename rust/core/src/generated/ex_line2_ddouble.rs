@@ -18,7 +18,7 @@ impl ExLine2DDouble {
     }
 
     pub fn new() -> JRef<Self> {
-        let this = &{ static RECYCLER: JRecycler<ExLine2DDouble, 4> = JRecycler::new(); RECYCLER.new_object() };
+        let this = &{ thread_local! { static RECYCLER: JRecycler<ExLine2DDouble, 4> = const { JRecycler::new() }; } RECYCLER.with(|r| r.new_object()) };
         Self::__init(this);
         this.clone()
     }

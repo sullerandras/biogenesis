@@ -3,14 +3,14 @@
 //! `JFn<dyn Fn(JRef<Organism>) -> bool>`. Captured variables are copied into
 //! it, as Java captures (effectively final) values.
 
-use std::rc::Rc;
+use std::sync::Arc;
 
 use super::throw;
 
-pub struct JFn<F: ?Sized>(Option<Rc<F>>);
+pub struct JFn<F: ?Sized>(Option<Arc<F>>);
 
 impl<F: ?Sized> JFn<F> {
-    pub fn new(f: Rc<F>) -> Self {
+    pub fn new(f: Arc<F>) -> Self {
         JFn(Some(f))
     }
 

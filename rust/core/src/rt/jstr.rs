@@ -1,18 +1,18 @@
 //! `java.lang.String`: immutable and nullable.
 
-use std::rc::Rc;
+use std::sync::Arc;
 
 use super::throw;
 use super::JArray;
 
 #[derive(Clone, Default, Debug)]
-pub struct JStr(Option<Rc<str>>);
+pub struct JStr(Option<Arc<str>>);
 
 impl JStr {
     pub const NULL: JStr = JStr(None);
 
     pub fn from(s: &str) -> JStr {
-        JStr(Some(Rc::from(s)))
+        JStr(Some(Arc::from(s)))
     }
 
     #[inline]
@@ -40,7 +40,7 @@ impl JStr {
 
 impl JStr {
     pub fn from_string(s: String) -> JStr {
-        JStr(Some(Rc::from(s)))
+        JStr(Some(Arc::from(s)))
     }
 
     /// `a + b + ...` on strings: each part converted like `String.valueOf`.

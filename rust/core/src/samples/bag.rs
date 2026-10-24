@@ -17,14 +17,14 @@ pub struct Bag {
 
 impl Bag {
     fn __init(this: &JRef<Self>) {
-        this.setf(|o| &mut o.items, (JRef::<JHashSet<JRef<Item>>>::new_set()).as_collection());
+        this.setf(|o| &mut o.items, { let __s = (JRef::<JHashSet<JRef<Item>>>::new_set()).as_collection(); crate::rt::parallel::make_synchronized(__s.identity()); __s });
         this.setf(|o| &mut o.weights, JList::from_vec(Vec::new()));
         this.setf(|o| &mut o.limit, 9f64);
         this.setf(|o| &mut o.slots, JArray::new_array(3, 0));
     }
 
     pub fn new() -> JRef<Self> {
-        let this = &{ static RECYCLER: JRecycler<Bag, 4> = JRecycler::new(); RECYCLER.new_object() };
+        let this = &{ thread_local! { static RECYCLER: JRecycler<Bag, 4> = const { JRecycler::new() }; } RECYCLER.with(|r| r.new_object()) };
         Self::__init(this);
         this.clone()
     }
@@ -32,7 +32,7 @@ impl Bag {
     /// Java: Bag.java:20 Item find(Matcher)
     pub fn find(this: &JRef<Self>, m: &dyn Fn(JRef<Item>) -> bool) -> JRef<Item> {
         {
-            let __a1 = (this.get(|o| o.items.clone())).snapshot_array();
+            let __a1 = (*this.get(|o| unsafe { o.items.alias() })).snapshot_array();
             let mut __i1 = 0;
             'l1: while __i1 < __a1.len() {
                 let mut i: JRef<Item> = __a1.at(__i1);

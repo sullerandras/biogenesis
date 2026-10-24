@@ -4,6 +4,8 @@
 //! world_check new <seed> <width> <height> <organisms> <frames> [options]
 //! world_check load <file> <frames> [options]
 //! options: save <frame> <file>, full <frame>, every <k> (hash every k-th frame only; 0: the last)
+//!          threads <n> (Utils.THREAD_COUNT, after loading: organisms move on
+//!          n threads, so the world takes its own course, as Java's does then)
 
 use biogenesis_core::generated::{World, utils};
 use biogenesis_core::rt::{Random, Stub};
@@ -137,6 +139,10 @@ fn main() {
             }
             "full" => {
                 full = rest[1].parse().unwrap();
+                rest = &rest[2..];
+            }
+            "threads" => {
+                utils::set_THREAD_COUNT(rest[1].parse().unwrap());
                 rest = &rest[2..];
             }
             a => panic!("unknown argument {a}"),

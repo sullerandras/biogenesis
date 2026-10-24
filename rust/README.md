@@ -30,8 +30,10 @@ And it has a window (see The GUI):
   which `transpile.sh` takes from the JDK's `src.zip`, and `ParallelExecutor`),
   `static` lines force a static method in. `stub` lines name the GUI and
   networking types (see below), `skip` methods become a body that throws,
-  `native` methods get a hand-written body from `core/src/native/` (only
-  `World.getDistinctCladeIDCount`, a stream pipeline). Constructs it doesn't support
+  `native` methods get a hand-written body from `core/src/native/`
+  (`World.getDistinctCladeIDCount`, a stream pipeline, and
+  `ParallelExecutor.progressAllOrganismsInParallel`, Java's thread
+  machinery; see Threads). Constructs it doesn't support
   are listed in `core/src/generated/unsupported.txt` and become
   `unimplemented!()`, so that file is the to-do list.
 - `core/src/generated/`: output. Committed so upstream changes show up as a
@@ -41,7 +43,8 @@ And it has a window (see The GUI):
   `HashMap`, tree bins included), `Collection`/`Iterator`, lambdas (`JFn`),
   GUI stubs, `java.util.Random` (bit-exact, including
   `nextGaussian` with fdlibm's `log`), `Math` edge cases (`max`/`min` with
-  NaN and -0.0, `round`), `Color` as a value, and the dump and its loader.
+  NaN and -0.0, `round`), `Color` as a value, the dump and its loader, and
+  what threads need (`parallel`: monitors, deferred drops; see Threads).
 - `core/src/save.rs`: saved games (the world and the statics).
 - `core/src/bin/world_check.rs`: the headless world runner.
 - `gui/`: the window (egui), a separate crate so the core stays free of
@@ -56,16 +59,17 @@ And it has a window (see The GUI):
 
 ## How Java semantics are kept
 
-- Every object is an `Rc<JCell<_>>`. Fields are read with
+- Every object is an `Arc<JCell<_>>` (shared between threads as in Java,
+  see Threads). Fields are read with
   `obj.get(|o| o.f)` and written with `obj.setf(|o| &mut o.f, v)`. No borrow
   outlives a field access, so methods can call back into the same object
   freely, as in Java. Because of that, `JCell` is an `UnsafeCell` (a field
   access is a plain load or store); the `checked` cargo feature counts
   borrows like a `RefCell` and panics on an overlap, and `verify.sh` runs a
   world with it.
-- An array is one allocation, `Rc<JCell<[T]>>`, like Java's (a `List` is a
+- An array is one allocation, `Arc<JCell<[T]>>`, like Java's (a `List` is a
   `Vec`). `x1[i]` on a field reads the element inside the field access,
-  `this.get(|__o| __o.x1.at(i))`, without cloning the array's `Rc`, when
+  `this.get(|__o| __o.x1.at(i))`, without cloning the array's `Arc`, when
   the index can't change the object (no calls, assignments, `++`).
 - Escape analysis, as HotSpot does it, for primitive arrays: a local
   `new double[2]` (or `{1.0, 1.5}`) that is only indexed, measured or passed
@@ -77,11 +81,23 @@ And it has a window (see The GUI):
   to `default()` before the constructor runs. Nobody can tell it from a new
   object, so this needs no escape analysis. Java can't do it (it can't know
   an object is garbage until it collects). `contact`'s two `ExLine2DDouble`s
-  and `getP1()`'s `Point2D`s are the same few objects every time.
+  and `getP1()`'s `Point2D`s are the same few objects every time. The slots
+  are per thread (`thread_local!`).
+- A call's receiver isn't cloned when it is a field of `this` that nothing
+  assigns outside its class's constructors (`_world`, J2R checks every
+  assignment in the parsed sources), or a static that nothing assigns
+  after its initializer (`Utils.random`): `this.get(|o| unsafe {
+  o._world.alias() })` borrows it (`JAlias`, a copy of the reference that
+  is never dropped), as `this` lives through the method. Other fields of
+  `this` (`_geneticCode`, the world's `organismBuckets`) are borrowed only
+  while threads run (`JShared`: overwritten references are kept until the
+  threads are done then), cloned otherwise. With threads, every organism
+  updating its world's count would make that count's cache line the
+  bottleneck.
 - Lambdas that don't escape: a parameter of a functional interface type
   that the method only calls (or passes to another such parameter), and
   that every caller passes a lambda, is a `&dyn Fn`; the lambda is a
-  closure on the caller's stack borrowing what it captures (no `Rc`, no
+  closure on the caller's stack borrowing what it captures (no `Arc`, no
   copies). `checkHit`'s matcher made one for every organism every frame.
 - Together these leave about 300 allocations a frame (new organisms'
   arrays) of the 32,000 before; `--features count-allocs` makes
@@ -118,10 +134,10 @@ And it has a window (see The GUI):
   types are `JRef<dyn RectangleT>`/`JRef<dyn Line2DT>` (`JRef` takes unsized
   types) and the subclass keeps its base part in `__super`. The same
   mechanism can carry other class hierarchies later.
-- Strings are `JStr` (`Rc<str>`, nullable). `+` and `+=` become one
+- Strings are `JStr` (`Arc<str>`, nullable). `+` and `+=` become one
   `JStr::cat` of all parts; `char` is a UTF-16 unit (`u16`) as in Java.
-- Statics are globals (`JStatic`, initialized on first use, single-threaded)
-  with getters/setters (`utils::random()`, `utils::set_MAX_MUTATION_RATE(..)`).
+- Statics are globals (`JStatic`, initialized on first use, under a lock as
+  that may happen on a worker thread) with getters/setters (`utils::random()`, `utils::set_MAX_MUTATION_RATE(..)`).
   Compile-time constants become `const`.
 - Overloads get the arity appended (`GeneticCode::new1(parent)`,
   `new37(...)`). `clone` becomes `jclone`.
@@ -144,8 +160,68 @@ And it has a window (see The GUI):
   A headless world has no corridors, so those calls aren't reached.
 - Lambdas (`organismBuckets.findFirst(b1, org -> ...)`) are closures owning
   copies of what they capture, behind `JFn<dyn Fn(...)>`.
-- Threads: `THREAD_COUNT` is 1 (the Java default), so `ParallelExecutor`
-  takes its serial path; the parallel one is skipped.
+
+## Threads
+
+`Utils.THREAD_COUNT` (Java's default 1; `world_check ... threads N`, the
+GUI's Simulation menu) > 1 moves organisms on that many threads, with
+Java's `ParallelExecutor` scheme: the world's bucket columns are split in
+ranges, one per thread, and each thread holds locks on the columns near
+the one it is in, so organisms that touch never move at the same time
+(`core/src/native/parallel_executor.rs`, hand-written: it's Java's
+thread machinery, `WorkerThread`, `LinesLocker`; `ThreadStartIndexes`,
+which balances the ranges, is translated). As in Java, a world then takes
+its own course on each run: only THREAD_COUNT 1 is reproducible and
+compared with Java (`verify.sh`). A save made with threads loads anywhere
+(it keeps THREAD_COUNT; `threads 1` continues it identically in Java and
+Rust).
+
+What Java gives that code, `rt/parallel.rs` provides, while the threads
+run (`parallel::active()`; otherwise all of it is a branch on a flag, so
+the serial simulation keeps its speed and its bits):
+
+- `synchronized`: `static final Object x_monitor = new Object()` becomes a
+  `JMonitor` (reentrant, spinning: the atmosphere's are held for two
+  additions), `synchronized (x)` a guard on it; other objects' monitors
+  (`synchronized (_organisms)`, synchronized methods) come from a table
+  keyed by address.
+- `Collections.synchronizedSet`: every operation on a collection that has a
+  monitor takes it.
+- `java.util.Random` is thread-safe: the seed is an atomic, updated with
+  Java's compare-and-set loop (a plain store when serial).
+- The garbage collector: a thread may read a reference field (statistics'
+  `lastBornBeing`) while another overwrites it. An overwritten reference
+  isn't dropped while the threads run, but kept until they're done, so a
+  racing read always finds the object alive; the overwrite itself is under
+  a striped lock, so two writers can't both drop the old value.
+
+Plain fields (ints, doubles) race as in Java: a reader sees the old or the
+new value (Rust calls a data race undefined; the generated code does plain
+loads and stores, as the JVM does). Collections other than synchronized
+ones aren't protected, as in Java: the simulation doesn't change shared
+lists while organisms move. A panic in a worker ends the process (the
+other threads may wait for its columns).
+
+Speed (M1 Pro: 8 performance cores; the GUI's default world, 7200x7200,
+12,500 organisms, 600 frames, back to back, including the 2 s `genesis()`):
+
+    threads    1      4      6      8
+    Rust       9.9 s  6.5 s  6.8 s  6.9 s
+    Java      12.4 s  8.8 s  8.7 s  8.7 s
+
+Without `genesis()`, 4 threads move the organisms 2.2-2.4 times as fast
+as 1, and the GUI runs at 110 frames/s instead of 57. Both stop gaining
+at 4: every organism takes the atmosphere's monitors (`_CO2_monitor`,
+`_O2_monitor`) several times a frame, about 75,000 critical sections, and
+each moves a few cache lines between cores, so with more threads the time
+goes to waiting for them (at 8 threads the workers use 5 times the CPU
+time of the serial run). That is Java's design; per-thread atmosphere
+deltas would scale, but change the simulation. About 1 ms a frame is
+serial (`World.time()` refilling the buckets). Found on the way: monitors
+side by side in memory shared a cache line (now each has its own, as do
+`parallel::active()`'s flag and `Random`), and a cleverer `checkedOrganisms`
+set changed nothing (the machine's speed drifts by 25% within minutes
+while other apps run: compare alternating runs only).
 
 ## The GUI
 
@@ -154,9 +230,10 @@ egui_plot for the charts): the world, a status line, menus (new world, open,
 save; run, pause, step; zoom) and a statistics window with Java's charts
 (population, clades, atmosphere, generations) and numbers.
 
-As in Java, the simulation runs on its own thread (`gui/src/sim.rs`), which
-owns everything of the translated code (`Rc` objects and statics are
-single-threaded). The window gets copies: the lines of the organisms in
+As in Java, the simulation runs on its own thread (`gui/src/sim.rs`), and
+with THREAD_COUNT > 1 the organisms move on the executor's threads (the
+Simulation menu's "threads", 1 by default as in Java, or
+`BIOGENESIS_THREADS`). The window gets copies: the lines of the organisms in
 view, recorded from the translated `Organism.draw` through `rt::Graphics`,
 and the statistics (`findBestAliveBeings`, as Java's statistics window
 calls it). Java's repaint settings are under View: repaint the world
@@ -249,9 +326,9 @@ can't change in it) was tried and gained under 1%.
 
 Where it stands (2026-10-24): the translation is complete and verified,
 single-threaded Rust is ~20% faster than Java, and a frame allocates
-almost nothing, and the GUI shows it (with charts). Next candidates:
-multi-threading (item 1 below), more of the GUI (2), then gzip saves (3)
-and CI (4).
+almost nothing, the GUI shows it (with charts), and organisms move on
+several threads as in Java (see Threads). Next candidates: more of the
+GUI (2), then gzip saves (3) and CI (4).
 
 Picking up: `rust/transpile.sh && rust/verify.sh` must print only "same"
 lines (about 4 minutes). Speed baseline, to compare against after changes:
@@ -259,7 +336,8 @@ lines (about 4 minutes). Speed baseline, to compare against after changes:
     java --add-opens java.base/java.util=ALL-UNNAMED -cp rust/build/java-classes:lib/gson-2.10.1.jar \
         biogenesis.WorldCheck new 3 3000 3000 3000 2000 every 0
     rust/core/target/release/world_check new 3 3000 3000 3000 2000 every 0   # 33 s (Java 41 s)
-    # both print: frame 2000 population 13213 organisms 13760 hash 82c26c3df8ccda5a
+    # both print: frame 2000 population 13213 organisms 13760 hash 610eabb4552699a7
+    # (82c26c3d... before the saves included ThreadStartIndexes' statics)
 
 When a world run differs, `full N` prints the whole state of frame N on
 both sides (as a save file); diff the two to find the first wrong field.
@@ -267,11 +345,12 @@ both sides (as a save file); diff the two to find the first wrong field.
 
 1. Performance: single-threaded, Rust is about 20% faster than Java, and
    the time goes where it goes in Java (see Status). Left of the
-   translation's own overhead: `Rc` count updates when references are
+   translation's own overhead: `Arc` count updates when references are
    passed by value. A sin/cos table would save at most the 5% fdlibm
-   takes, and change the simulation (Java would need the same table). The
-   multi-threaded executor is the big win left (Java's isn't deterministic
-   either); it needs `Rc` to become something `Send`.
+   takes, and change the simulation (Java would need the same table).
+   Threads stop gaining at 4 because of the atmosphere's monitors (see
+   Threads): more needs a change of the Java code (per-thread deltas, or
+   fewer atmosphere calls), which is Marco's model.
 2. The GUI: see the list at the end of The GUI. Selecting an organism
    needs `World.findOrganismFromPosition` (translated) and
    `GeneticCode.draw` (skipped now; with `rt::Graphics` it would translate

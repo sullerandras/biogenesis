@@ -1,8 +1,9 @@
 //! The simulation thread. As in Java (MainWindow's "Main Worker Thread"),
 //! the world advances on its own thread and the window only shows it. The
-//! translated code is single-threaded (`Rc` objects, statics), so all of it
-//! runs on this thread; the window gets copies: the lines of the organisms in
-//! view (drawn by the translated `Organism.draw`) and the statistics.
+//! translated code runs on this thread (and, with THREAD_COUNT > 1, on the
+//! parallel executor's workers while organisms move); the window gets copies:
+//! the lines of the organisms in view (drawn by the translated
+//! `Organism.draw`) and the statistics.
 
 use std::path::PathBuf;
 use std::sync::{Arc, Mutex};
@@ -93,6 +94,8 @@ pub struct Shared {
     pub view: Option<View>,
     /// Utils.DELAY: while the world is repainted, a frame takes at least this.
     pub delay_ms: u32,
+    /// Utils.THREAD_COUNT, for the next frames (a loaded game's is ignored).
+    pub threads: i32,
     /// The latest frame's lines; the window takes it.
     pub picture: Option<Vec<Line>>,
     /// A used picture handed back, to draw the next one into.
@@ -172,9 +175,9 @@ fn run(shared: &SharedRef, ctx: &eframe::egui::Context) {
     // For the log: the time spent advancing the world, drawing, and on the statistics.
     let mut spent = [Duration::ZERO; 3];
     loop {
-        let (cmds, view, delay_ms, want_stats) = {
+        let (cmds, view, delay_ms, want_stats, threads) = {
             let mut s = shared.lock().unwrap();
-            (std::mem::take(&mut s.cmds), s.view, s.delay_ms, s.want_stats)
+            (std::mem::take(&mut s.cmds), s.view, s.delay_ms, s.want_stats, s.threads)
         };
         let mut changed = false;
         for c in cmds {
@@ -216,6 +219,7 @@ fn run(shared: &SharedRef, ctx: &eframe::egui::Context) {
             std::thread::sleep(Duration::from_millis(10));
             continue;
         };
+        utils::set_THREAD_COUNT(threads.max(1));
         if running {
             let t0 = Instant::now();
             World::time(&w);

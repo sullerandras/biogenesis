@@ -297,7 +297,7 @@ pub const ColorDRIFT: Color = Color::rgb(64, 160, 160);
 
 /// Java: Utils.java:2007 boolean randomMutation()
 pub fn randomMutation() -> bool {
-    if (Random::nextInt_bound(&(utils::random()), 10000) < utils::META_MUTATION_RATE()) {
+    if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < utils::META_MUTATION_RATE()) {
         return true;
     }
     return false;
@@ -321,7 +321,7 @@ pub fn set_MIN_CLONE_RATE(v: i32) { __MIN_CLONE_RATE.set(v) }
 
 /// Java: Utils.java:2017 boolean coordinateMutation()
 pub fn coordinateMutation() -> bool {
-    if (Random::nextInt_bound(&(utils::random()), 10000) < utils::XY_MUTATION_RATE()) {
+    if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < utils::XY_MUTATION_RATE()) {
         return true;
     }
     return false;
@@ -529,7 +529,7 @@ pub const tol: f64 = 1.0E-7f64;
 
 /// Java: Utils.java:1933 int randomSign()
 pub fn randomSign() -> i32 {
-    return ((i32::wrapping_shl(Random::nextInt_bound(&(utils::random()), 2), (1) as u32)) - 1);
+    return ((i32::wrapping_shl(Random::nextInt_bound(&(*utils::__random.get_ref()), 2), (1) as u32)) - 1);
 }
 // Java: Utils.java:1073
 pub static __BOOST_ENERGY_CONSUMPTION: JStatic<f64> = JStatic::new(utils::DEF_BOOST_ENERGY_CONSUMPTION);

@@ -37,7 +37,7 @@ pub fn set_visibleWorld(v: Stub) { __visibleWorld.set(v) }
 
 /// Java: ParallelExecutor.java:57 void progressAllOrganismsInParallel(int, int)
 pub fn progressAllOrganismsInParallel(mut organismCount: i32, mut threadCount: i32) {
-    crate::rt::throw("J2R: skipped biogenesis.parallel_executor.ParallelExecutor.progressAllOrganismsInParallel(int,int)")
+    crate::native::parallel_executor::progressAllOrganismsInParallel(organismCount, threadCount)
 }
 
 /// Java: ParallelExecutor.java:46 void progressAllOrganismsInSerial(int)

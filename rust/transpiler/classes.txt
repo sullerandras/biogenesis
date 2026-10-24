@@ -10,6 +10,12 @@ class biogenesis.Vector2D
 class biogenesis.ExLine2DDouble
 # Only its static methods (World.time calls progressAllOrganisms).
 source biogenesis.parallel_executor.ParallelExecutor
+# The parallel executor's ranges (used by core/src/native/parallel_executor.rs).
+source biogenesis.parallel_executor.ThreadStartIndexes
+static biogenesis.parallel_executor.ThreadStartIndexes.initialize(int,int)
+static biogenesis.parallel_executor.ThreadStartIndexes.getStartIndex(int)
+static biogenesis.parallel_executor.ThreadStartIndexes.getEndIndex(int)
+static biogenesis.parallel_executor.ThreadStartIndexes.adjust(int,long,int,long)
 
 # The GUI and networking: values are rt::Stub, calls on them do nothing (as
 # the stubs in benchmark/Benchmark.java do). A headless world has no
@@ -37,12 +43,11 @@ skip biogenesis.WorldStatistics.getMaxPopulationFromList()
 skip biogenesis.WorldStatistics.getMaxDistinctClades()
 skip biogenesis.WorldStatistics.getMaxBirthFromList()
 skip biogenesis.WorldStatistics.getMaxDeathsFromList()
-# Threads: THREAD_COUNT is 1, the serial path.
-skip biogenesis.parallel_executor.ParallelExecutor.progressAllOrganismsInParallel(int,int)
-skip biogenesis.parallel_executor.ParallelExecutor.progressLineInBucket(int)
 
 # Stream pipelines, hand-written in core/src/native/.
 native biogenesis.World.getDistinctCladeIDCount(int)
+# Java's threads (WorkerThread, LinesLocker...), hand-written in core/src/native/.
+native biogenesis.parallel_executor.ParallelExecutor.progressAllOrganismsInParallel(int,int)
 
 # Math.sin, Math.log etc. are translated from the JDK's StrictMath (fdlibm).
 source java.lang.StrictMath

@@ -57,7 +57,7 @@ impl GeneticCode {
 
     /// Java: GeneticCode.java:1007 GeneticCode()
     pub fn new() -> JRef<Self> {
-        let this = &{ static RECYCLER: JRecycler<GeneticCode, 4> = JRecycler::new(); RECYCLER.new_object() };
+        let this = &{ thread_local! { static RECYCLER: JRecycler<GeneticCode, 4> = const { JRecycler::new() }; } RECYCLER.with(|r| r.new_object()) };
         Self::__init(this);
         Self::__ctor_new(this);
         this.clone()
@@ -105,7 +105,7 @@ impl GeneticCode {
 
     /// Java: GeneticCode.java:1088 GeneticCode(List<Gene>, int, int, int, int, int, double, double, double, double, double, double, int, int, int, int, int, int, int, int, int, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean)
     pub fn new37(mut genes: JList<JRef<Gene>>, mut symmetry: i32, mut hox: i32, mut mirror: i32, mut mutationrate: i32, mut clonerate: i32, mut homeX: f64, mut homeY: f64, mut base1X: f64, mut base1Y: f64, mut base2X: f64, mut base2Y: f64, mut activity: i32, mut modifiesmaroon: i32, mut modifiescream: i32, mut modifiescrimson: i32, mut modifiesfallow: i32, mut modifiesspore: i32, mut adaptspore: i32, mut modifiesblack: i32, mut adaptblack: i32, mut plague: bool, mut disperseChildren: bool, mut generationBattle: bool, mut siblingBattle: bool, mut altruist: bool, mut familial: bool, mut social: bool, mut peaceful: bool, mut passive: bool, mut clockwise: bool, mut modifiesdrift: bool, mut modifiespink: bool, mut modifieslilac: bool, mut modifiessky: bool, mut modifiesleaf: bool, mut selfish: bool) -> JRef<Self> {
-        let this = &{ static RECYCLER: JRecycler<GeneticCode, 4> = JRecycler::new(); RECYCLER.new_object() };
+        let this = &{ thread_local! { static RECYCLER: JRecycler<GeneticCode, 4> = const { JRecycler::new() }; } RECYCLER.with(|r| r.new_object()) };
         Self::__init(this);
         Self::__ctor_new37(this, genes, symmetry, hox, mirror, mutationrate, clonerate, homeX, homeY, base1X, base1Y, base2X, base2Y, activity, modifiesmaroon, modifiescream, modifiescrimson, modifiesfallow, modifiesspore, adaptspore, modifiesblack, adaptblack, plague, disperseChildren, generationBattle, siblingBattle, altruist, familial, social, peaceful, passive, clockwise, modifiesdrift, modifiespink, modifieslilac, modifiessky, modifiesleaf, selfish);
         this.clone()
@@ -114,7 +114,7 @@ impl GeneticCode {
     fn __ctor_new37(this: &JRef<Self>, mut genes: JList<JRef<Gene>>, mut symmetry: i32, mut hox: i32, mut mirror: i32, mut mutationrate: i32, mut clonerate: i32, mut homeX: f64, mut homeY: f64, mut base1X: f64, mut base1Y: f64, mut base2X: f64, mut base2Y: f64, mut activity: i32, mut modifiesmaroon: i32, mut modifiescream: i32, mut modifiescrimson: i32, mut modifiesfallow: i32, mut modifiesspore: i32, mut adaptspore: i32, mut modifiesblack: i32, mut adaptblack: i32, mut plague: bool, mut disperseChildren: bool, mut generationBattle: bool, mut siblingBattle: bool, mut altruist: bool, mut familial: bool, mut social: bool, mut peaceful: bool, mut passive: bool, mut clockwise: bool, mut modifiesdrift: bool, mut modifiespink: bool, mut modifieslilac: bool, mut modifiessky: bool, mut modifiesleaf: bool, mut selfish: bool) {
         let mut nGenes: i32 = genes.len();
         this.setf(|o| &mut o._genes, { let __d1 = nGenes; JArray::new_array(__d1, JRef::null()) });
-        genes.to_array(&(this.get(|o| o._genes.clone())), JRef::null());
+        genes.to_array(&(*this.get(|o| unsafe { o._genes.share() })), JRef::null());
         this.setf(|o| &mut o._mirror, mirror);
         this.setf(|o| &mut o._symmetry, symmetry);
         this.setf(|o| &mut o._hox, hox);
@@ -155,7 +155,7 @@ impl GeneticCode {
 
     /// Java: GeneticCode.java:1139 GeneticCode(GeneticCode)
     pub fn new1(mut parentCode: JRef<GeneticCode>) -> JRef<Self> {
-        let this = &{ static RECYCLER: JRecycler<GeneticCode, 4> = JRecycler::new(); RECYCLER.new_object() };
+        let this = &{ thread_local! { static RECYCLER: JRecycler<GeneticCode, 4> = const { JRecycler::new() }; } RECYCLER.with(|r| r.new_object()) };
         Self::__init(this);
         Self::__ctor_new1(this, parentCode);
         this.clone()
@@ -219,17 +219,17 @@ impl GeneticCode {
         let mut randomColor: bool = false;
         this.setf(|o| &mut o._mutationrate, GeneticCode::getMutationrate(&parentCode));
         if utils::randomMutation() {
-            if (Random::nextInt_bound(&(utils::random()), 10) < 1) {
-                if Random::nextBoolean(&(utils::random())) {
+            if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10) < 1) {
+                if Random::nextBoolean(&(*utils::__random.get_ref())) {
                     GeneticCode::increaseMutationrate(this);
                 } else {
                     GeneticCode::decreaseMutationrate(this);
                 }
             } else {
-                if Random::nextBoolean(&(utils::random())) {
-                    this.setf(|o| &mut o._mutationrate, ((this.get(|o| o._mutationrate) + Random::nextInt_bound(&(utils::random()), 2)) + 1));
+                if Random::nextBoolean(&(*utils::__random.get_ref())) {
+                    this.setf(|o| &mut o._mutationrate, ((this.get(|o| o._mutationrate) + Random::nextInt_bound(&(*utils::__random.get_ref()), 2)) + 1));
                 } else {
-                    this.setf(|o| &mut o._mutationrate, ((this.get(|o| o._mutationrate) - Random::nextInt_bound(&(utils::random()), 2)) - 1));
+                    this.setf(|o| &mut o._mutationrate, ((this.get(|o| o._mutationrate) - Random::nextInt_bound(&(*utils::__random.get_ref()), 2)) - 1));
                 }
             }
         }
@@ -242,14 +242,14 @@ impl GeneticCode {
         }
         this.setf(|o| &mut o._clonerate, GeneticCode::getClonerate(&parentCode));
         if utils::randomMutation() {
-            if (Random::nextInt_bound(&(utils::random()), 10) < 1) {
-                if Random::nextBoolean(&(utils::random())) {
+            if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10) < 1) {
+                if Random::nextBoolean(&(*utils::__random.get_ref())) {
                     GeneticCode::increaseClonerate(this);
                 } else {
                     GeneticCode::decreaseClonerate(this);
                 }
             } else {
-                if Random::nextBoolean(&(utils::random())) {
+                if Random::nextBoolean(&(*utils::__random.get_ref())) {
                     this.setf(|o| &mut o._clonerate, (this.get(|o| o._clonerate) + 1));
                 } else {
                     this.setf(|o| &mut o._clonerate, (this.get(|o| o._clonerate) - 1));
@@ -265,11 +265,11 @@ impl GeneticCode {
         }
         this.setf(|o| &mut o._homeX, GeneticCode::getHomeX(&parentCode));
         if utils::coordinateMutation() {
-            if (Random::nextInt_bound(&(utils::random()), 10) < 1) {
+            if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10) < 1) {
                 GeneticCode::randomHomeX(this);
             } else {
                 if (this.get(|o| o._homeX) >= 0f64) {
-                    if Random::nextBoolean(&(utils::random())) {
+                    if Random::nextBoolean(&(*utils::__random.get_ref())) {
                         GeneticCode::increaseHomeX(this);
                     } else {
                         GeneticCode::decreaseHomeX(this);
@@ -288,11 +288,11 @@ impl GeneticCode {
         }
         this.setf(|o| &mut o._homeY, GeneticCode::getHomeY(&parentCode));
         if utils::coordinateMutation() {
-            if (Random::nextInt_bound(&(utils::random()), 10) < 1) {
+            if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10) < 1) {
                 GeneticCode::randomHomeY(this);
             } else {
                 if (this.get(|o| o._homeY) >= 0f64) {
-                    if Random::nextBoolean(&(utils::random())) {
+                    if Random::nextBoolean(&(*utils::__random.get_ref())) {
                         GeneticCode::increaseHomeY(this);
                     } else {
                         GeneticCode::decreaseHomeY(this);
@@ -311,11 +311,11 @@ impl GeneticCode {
         }
         this.setf(|o| &mut o._base1X, GeneticCode::getBase1X(&parentCode));
         if utils::coordinateMutation() {
-            if (Random::nextInt_bound(&(utils::random()), 10) < 1) {
+            if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10) < 1) {
                 GeneticCode::randomBase1X(this);
             } else {
                 if (this.get(|o| o._base1X) >= 0f64) {
-                    if Random::nextBoolean(&(utils::random())) {
+                    if Random::nextBoolean(&(*utils::__random.get_ref())) {
                         GeneticCode::increaseBase1X(this);
                     } else {
                         GeneticCode::decreaseBase1X(this);
@@ -334,11 +334,11 @@ impl GeneticCode {
         }
         this.setf(|o| &mut o._base1Y, GeneticCode::getBase1Y(&parentCode));
         if utils::coordinateMutation() {
-            if (Random::nextInt_bound(&(utils::random()), 10) < 1) {
+            if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10) < 1) {
                 GeneticCode::randomBase1Y(this);
             } else {
                 if (this.get(|o| o._base1Y) >= 0f64) {
-                    if Random::nextBoolean(&(utils::random())) {
+                    if Random::nextBoolean(&(*utils::__random.get_ref())) {
                         GeneticCode::increaseBase1Y(this);
                     } else {
                         GeneticCode::decreaseBase1Y(this);
@@ -357,11 +357,11 @@ impl GeneticCode {
         }
         this.setf(|o| &mut o._base2X, GeneticCode::getBase2X(&parentCode));
         if utils::coordinateMutation() {
-            if (Random::nextInt_bound(&(utils::random()), 10) < 1) {
+            if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10) < 1) {
                 GeneticCode::randomBase2X(this);
             } else {
                 if (this.get(|o| o._base2X) >= 0f64) {
-                    if Random::nextBoolean(&(utils::random())) {
+                    if Random::nextBoolean(&(*utils::__random.get_ref())) {
                         GeneticCode::increaseBase2X(this);
                     } else {
                         GeneticCode::decreaseBase2X(this);
@@ -380,11 +380,11 @@ impl GeneticCode {
         }
         this.setf(|o| &mut o._base2Y, GeneticCode::getBase2Y(&parentCode));
         if utils::coordinateMutation() {
-            if (Random::nextInt_bound(&(utils::random()), 10) < 1) {
+            if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10) < 1) {
                 GeneticCode::randomBase2Y(this);
             } else {
                 if (this.get(|o| o._base2Y) >= 0f64) {
-                    if Random::nextBoolean(&(utils::random())) {
+                    if Random::nextBoolean(&(*utils::__random.get_ref())) {
                         GeneticCode::increaseBase2Y(this);
                     } else {
                         GeneticCode::decreaseBase2Y(this);
@@ -401,7 +401,7 @@ impl GeneticCode {
                 }
             }
         }
-        if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+        if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
             GeneticCode::randomHox(this);
             this.setf(|o| &mut o._symmetry, GeneticCode::getSymmetry(&parentCode));
             this.setf(|o| &mut o._mirror, GeneticCode::getMirror(&parentCode));
@@ -411,7 +411,7 @@ impl GeneticCode {
             }
         } else {
             this.setf(|o| &mut o._hox, GeneticCode::getHox(&parentCode));
-            if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+            if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
                 GeneticCode::randomSymmetry(this);
                 this.setf(|o| &mut o._mirror, GeneticCode::getMirror(&parentCode));
                 nGenes = GeneticCode::getNGenes(&parentCode);
@@ -420,7 +420,7 @@ impl GeneticCode {
                 }
             } else {
                 this.setf(|o| &mut o._symmetry, GeneticCode::getSymmetry(&parentCode));
-                if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+                if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
                     GeneticCode::randomMirror(this);
                     nGenes = GeneticCode::getNGenes(&parentCode);
                     if (this.get(|o| o._mirror) != GeneticCode::getMirror(&parentCode)) {
@@ -428,13 +428,13 @@ impl GeneticCode {
                     }
                 } else {
                     this.setf(|o| &mut o._mirror, GeneticCode::getMirror(&parentCode));
-                    if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
-                        if Random::nextBoolean(&(utils::random())) {
+                    if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
+                        if Random::nextBoolean(&(*utils::__random.get_ref())) {
                             if (GeneticCode::getNGenes(&parentCode) >= 100) {
                                 nGenes = GeneticCode::getNGenes(&parentCode);
                             } else {
                                 nGenes = (GeneticCode::getNGenes(&parentCode) + 1);
-                                addedGene = Random::nextInt_bound(&(utils::random()), nGenes);
+                                addedGene = Random::nextInt_bound(&(*utils::__random.get_ref()), nGenes);
                                 this.setf(|o| &mut o._updateClade, (-1i32));
                             }
                         } else {
@@ -442,7 +442,7 @@ impl GeneticCode {
                                 nGenes = GeneticCode::getNGenes(&parentCode);
                             } else {
                                 nGenes = (GeneticCode::getNGenes(&parentCode) - 1);
-                                removedGene = Random::nextInt_bound(&(utils::random()), GeneticCode::getNGenes(&parentCode));
+                                removedGene = Random::nextInt_bound(&(*utils::__random.get_ref()), GeneticCode::getNGenes(&parentCode));
                                 this.setf(|o| &mut o._updateClade, (-1i32));
                                 repairBranch = true;
                             }
@@ -464,12 +464,12 @@ impl GeneticCode {
                         break 'c1;
                     }
                     if (addedGene == i) {
-                        if (Random::nextInt_bound(&(utils::random()), 100) < this.get(|o| o._clonerate)) {
+                        if (Random::nextInt_bound(&(*utils::__random.get_ref()), 100) < this.get(|o| o._clonerate)) {
                             if (i == 0) {
                                 clonedGene = (-1i32);
                             } else {
                                 if (i < (nGenes - 1)) {
-                                    if Random::nextBoolean(&(utils::random())) {
+                                    if Random::nextBoolean(&(*utils::__random.get_ref())) {
                                         clonedGene = (-1i32);
                                     } else {
                                         clonedGene = 1;
@@ -481,22 +481,22 @@ impl GeneticCode {
                                 }
                             }
                         } else {
-                            (this.get(|o| o._genes.clone())).put(i, Gene::new());
+                            (*this.get(|o| unsafe { o._genes.share() })).put(i, Gene::new());
                             Gene::randomize(&(this.get(|__o| __o._genes.at(i))));
-                            if Random::nextBoolean(&(utils::random())) {
+                            if Random::nextBoolean(&(*utils::__random.get_ref())) {
                                 Gene::setBranch(&(this.get(|__o| __o._genes.at(i))), (-1i32));
                             } else {
-                                Gene::setBranch(&(this.get(|__o| __o._genes.at(i))), Random::nextInt_bound(&(utils::random()), (i + 1)));
+                                Gene::setBranch(&(this.get(|__o| __o._genes.at(i))), Random::nextInt_bound(&(*utils::__random.get_ref()), (i + 1)));
                             }
-                            if Random::nextBoolean(&(utils::random())) {
-                                if Random::nextBoolean(&(utils::random())) {
-                                    if Random::nextBoolean(&(utils::random())) {
+                            if Random::nextBoolean(&(*utils::__random.get_ref())) {
+                                if Random::nextBoolean(&(*utils::__random.get_ref())) {
+                                    if Random::nextBoolean(&(*utils::__random.get_ref())) {
                                         Gene::setStack(&(this.get(|__o| __o._genes.at(i))), 1);
                                     } else {
                                         Gene::setStack(&(this.get(|__o| __o._genes.at(i))), 2);
                                     }
                                 } else {
-                                    if Random::nextBoolean(&(utils::random())) {
+                                    if Random::nextBoolean(&(*utils::__random.get_ref())) {
                                         Gene::setStack(&(this.get(|__o| __o._genes.at(i))), (-1i32));
                                     } else {
                                         Gene::setStack(&(this.get(|__o| __o._genes.at(i))), (-2i32));
@@ -505,36 +505,36 @@ impl GeneticCode {
                             } else {
                                 Gene::setStack(&(this.get(|__o| __o._genes.at(i))), 0);
                             }
-                            if Random::nextBoolean(&(utils::random())) {
-                                Gene::setFold(&(this.get(|__o| __o._genes.at(i))), (Random::nextInt_bound(&(utils::random()), 6) + 1));
+                            if Random::nextBoolean(&(*utils::__random.get_ref())) {
+                                Gene::setFold(&(this.get(|__o| __o._genes.at(i))), (Random::nextInt_bound(&(*utils::__random.get_ref()), 6) + 1));
                             } else {
                                 Gene::setFold(&(this.get(|__o| __o._genes.at(i))), 0);
                             }
-                            Gene::setChiral(&(this.get(|__o| __o._genes.at(i))), (((Random::nextInt_bound(&(utils::random()), 4) * 2)) - 3));
-                            if Random::nextBoolean(&(utils::random())) {
-                                if Random::nextBoolean(&(utils::random())) {
-                                    if Random::nextBoolean(&(utils::random())) {
-                                        if Random::nextBoolean(&(utils::random())) {
+                            Gene::setChiral(&(this.get(|__o| __o._genes.at(i))), (((Random::nextInt_bound(&(*utils::__random.get_ref()), 4) * 2)) - 3));
+                            if Random::nextBoolean(&(*utils::__random.get_ref())) {
+                                if Random::nextBoolean(&(*utils::__random.get_ref())) {
+                                    if Random::nextBoolean(&(*utils::__random.get_ref())) {
+                                        if Random::nextBoolean(&(*utils::__random.get_ref())) {
                                             Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 0);
                                         } else {
                                             Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 90);
                                         }
                                     } else {
-                                        if Random::nextBoolean(&(utils::random())) {
+                                        if Random::nextBoolean(&(*utils::__random.get_ref())) {
                                             Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 120);
                                         } else {
                                             Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 135);
                                         }
                                     }
                                 } else {
-                                    if Random::nextBoolean(&(utils::random())) {
-                                        if Random::nextBoolean(&(utils::random())) {
+                                    if Random::nextBoolean(&(*utils::__random.get_ref())) {
+                                        if Random::nextBoolean(&(*utils::__random.get_ref())) {
                                             Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 180);
                                         } else {
                                             Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 240);
                                         }
                                     } else {
-                                        if Random::nextBoolean(&(utils::random())) {
+                                        if Random::nextBoolean(&(*utils::__random.get_ref())) {
                                             Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 270);
                                         } else {
                                             Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 360);
@@ -542,190 +542,190 @@ impl GeneticCode {
                                     }
                                 }
                             } else {
-                                Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), Random::nextInt_bound(&(utils::random()), 361));
+                                Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), Random::nextInt_bound(&(*utils::__random.get_ref()), 361));
                             }
                             j = j - 1;
                             break 'c1;
                         }
                     }
                     { let __v3 = false; randomColor = __v3; let __v4 = __v3; randomfriendReaction = __v4; let __v5 = __v4; randomsickReaction = __v5; let __v6 = __v5; randombrokenReaction = __v6; let __v7 = __v6; randomiceReaction = __v7; let __v8 = __v7; randombrownReaction = __v8; let __v9 = __v8; randomgreenbrownReaction = __v9; let __v10 = __v9; randomlightbrownReaction = __v10; let __v11 = __v10; randomfireReaction = __v11; let __v12 = __v11; randomlilacReaction = __v12; let __v13 = __v12; randomskyReaction = __v13; let __v14 = __v13; randomochreReaction = __v14; let __v15 = __v14; randomlightblueReaction = __v15; let __v16 = __v15; randomfallowReaction = __v16; let __v17 = __v16; randomspikeReaction = __v17; let __v18 = __v17; randomcreamReaction = __v18; let __v19 = __v18; randomlavenderReaction = __v19; let __v20 = __v19; randommintReaction = __v20; let __v21 = __v20; randomoliveReaction = __v21; let __v22 = __v21; randomcrimsonReaction = __v22; let __v23 = __v22; randommaroonReaction = __v23; let __v24 = __v23; randomvirusReaction = __v24; let __v25 = __v24; randomvioletReaction = __v25; let __v26 = __v25; randomivyReaction = __v26; let __v27 = __v26; randombarkReaction = __v27; let __v28 = __v27; randomorangeReaction = __v28; let __v29 = __v28; randomcoralReaction = __v29; let __v30 = __v29; randompinkReaction = __v30; let __v31 = __v30; randomroseReaction = __v31; let __v32 = __v31; randommagentaReaction = __v32; let __v33 = __v32; randomplantReaction = __v33; let __v34 = __v33; randomconsumerReaction = __v34; let __v35 = __v34; randomdefaultReaction = __v35; let __v36 = __v35; randomsilverReaction = __v36; let __v37 = __v36; randomgrayReaction = __v37; let __v38 = __v37; randomwhiteReaction = __v38; let __v39 = __v38; randomscourgeReaction = __v39; let __v40 = __v39; randomplagueReaction = __v40; let __v41 = __v40; randomblueReaction = __v41; let __v42 = __v41; randomgreenReaction = __v42; let __v43 = __v42; randomredReaction = __v43; let __v44 = __v43; randomRadial = __v44; let __v45 = __v44; randomChiral = __v45; let __v46 = __v45; randomFold = __v46; let __v47 = __v46; randomStack = __v47; let __v48 = __v47; randomBranch = __v48; let __v49 = __v48; randomTheta = __v49; let __v50 = __v49; randomLength = __v50; };
-                    if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+                    if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
                         randomLength = true;
                     }
-                    if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+                    if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
                         randomTheta = true;
                     }
-                    if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+                    if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
                         randomBranch = true;
                     }
-                    if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+                    if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
                         randomStack = true;
                     }
-                    if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+                    if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
                         randomFold = true;
                     }
-                    if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+                    if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
                         randomChiral = true;
                     }
-                    if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+                    if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
                         randomRadial = true;
                     }
-                    if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+                    if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
                         randomredReaction = true;
                     }
-                    if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+                    if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
                         randomgreenReaction = true;
                     }
-                    if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+                    if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
                         randomblueReaction = true;
                     }
-                    if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+                    if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
                         randomplagueReaction = true;
                     }
-                    if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+                    if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
                         randomscourgeReaction = true;
                     }
-                    if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+                    if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
                         randomwhiteReaction = true;
                     }
-                    if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+                    if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
                         randomgrayReaction = true;
                     }
-                    if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+                    if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
                         randomsilverReaction = true;
                     }
-                    if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+                    if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
                         randomdefaultReaction = true;
                     }
-                    if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+                    if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
                         randomconsumerReaction = true;
                     }
-                    if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+                    if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
                         randomplantReaction = true;
                     }
-                    if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+                    if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
                         randommagentaReaction = true;
                     }
-                    if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+                    if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
                         randomroseReaction = true;
                     }
-                    if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+                    if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
                         randompinkReaction = true;
                     }
-                    if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+                    if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
                         randomcoralReaction = true;
                     }
-                    if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+                    if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
                         randomorangeReaction = true;
                     }
-                    if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+                    if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
                         randombarkReaction = true;
                     }
-                    if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+                    if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
                         randomivyReaction = true;
                     }
-                    if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+                    if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
                         randomvioletReaction = true;
                     }
-                    if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+                    if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
                         randomvirusReaction = true;
                     }
-                    if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+                    if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
                         randommaroonReaction = true;
                     }
-                    if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+                    if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
                         randomcrimsonReaction = true;
                     }
-                    if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+                    if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
                         randomoliveReaction = true;
                     }
-                    if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+                    if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
                         randommintReaction = true;
                     }
-                    if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+                    if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
                         randomlavenderReaction = true;
                     }
-                    if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+                    if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
                         randomcreamReaction = true;
                     }
-                    if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+                    if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
                         randomspikeReaction = true;
                     }
-                    if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+                    if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
                         randomfallowReaction = true;
                     }
-                    if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+                    if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
                         randomlightblueReaction = true;
                     }
-                    if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+                    if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
                         randomochreReaction = true;
                     }
-                    if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+                    if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
                         randomskyReaction = true;
                     }
-                    if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+                    if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
                         randomlilacReaction = true;
                     }
-                    if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+                    if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
                         randomfireReaction = true;
                     }
-                    if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+                    if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
                         randomlightbrownReaction = true;
                     }
-                    if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+                    if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
                         randomgreenbrownReaction = true;
                     }
-                    if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+                    if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
                         randombrownReaction = true;
                     }
-                    if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+                    if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
                         randomiceReaction = true;
                     }
-                    if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+                    if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
                         randombrokenReaction = true;
                     }
-                    if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+                    if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
                         randomsickReaction = true;
                     }
-                    if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+                    if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
                         randomfriendReaction = true;
                     }
-                    if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+                    if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
                         randomColor = true;
                     }
                     if (((((((((((((((((((((((((((((((((((((((((((((((((randomLength || randomTheta) || randomBranch) || repairBranch) || randomStack) || randomFold) || randomChiral) || randomRadial) || randomredReaction) || randomgreenReaction) || randomblueReaction) || randomplagueReaction) || randomscourgeReaction) || randomwhiteReaction) || randomgrayReaction) || randomsilverReaction) || randomdefaultReaction) || randomconsumerReaction) || randomplantReaction) || randommagentaReaction) || randomroseReaction) || randompinkReaction) || randomcoralReaction) || randomorangeReaction) || randombarkReaction) || randomivyReaction) || randomvioletReaction) || randomvirusReaction) || randommaroonReaction) || randomcrimsonReaction) || randomoliveReaction) || randommintReaction) || randomlavenderReaction) || randomcreamReaction) || randomspikeReaction) || randomfallowReaction) || randomlightblueReaction) || randomochreReaction) || randomskyReaction) || randomlilacReaction) || randomfireReaction) || randomlightbrownReaction) || randomgreenbrownReaction) || randombrownReaction) || randomiceReaction) || randombrokenReaction) || randomsickReaction) || randomfriendReaction) || randomColor) || (clonedGene != 0)) {
-                        (this.get(|o| o._genes.clone())).put(i, Gene::new());
+                        (*this.get(|o| unsafe { o._genes.share() })).put(i, Gene::new());
                         if (clonedGene != 0) {
-                            if ((Random::nextBoolean(&(utils::random()))) || (randomLength)) {
+                            if ((Random::nextBoolean(&(*utils::__random.get_ref()))) || (randomLength)) {
                                 Gene::randomizeLength(&(this.get(|__o| __o._genes.at(i))));
                             } else {
                                 Gene::setLength(&(this.get(|__o| __o._genes.at(i))), Gene::getLength(&(GeneticCode::getGene(&parentCode, j))));
                             }
                             Gene::randomizeTheta(&(this.get(|__o| __o._genes.at(i))));
-                            if Random::nextBoolean(&(utils::random())) {
-                                if Random::nextBoolean(&(utils::random())) {
-                                    if Random::nextBoolean(&(utils::random())) {
-                                        if Random::nextBoolean(&(utils::random())) {
+                            if Random::nextBoolean(&(*utils::__random.get_ref())) {
+                                if Random::nextBoolean(&(*utils::__random.get_ref())) {
+                                    if Random::nextBoolean(&(*utils::__random.get_ref())) {
+                                        if Random::nextBoolean(&(*utils::__random.get_ref())) {
                                             Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 0);
                                         } else {
                                             Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 90);
                                         }
                                     } else {
-                                        if Random::nextBoolean(&(utils::random())) {
+                                        if Random::nextBoolean(&(*utils::__random.get_ref())) {
                                             Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 120);
                                         } else {
                                             Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 135);
                                         }
                                     }
                                 } else {
-                                    if Random::nextBoolean(&(utils::random())) {
-                                        if Random::nextBoolean(&(utils::random())) {
+                                    if Random::nextBoolean(&(*utils::__random.get_ref())) {
+                                        if Random::nextBoolean(&(*utils::__random.get_ref())) {
                                             Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 180);
                                         } else {
                                             Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 240);
                                         }
                                     } else {
-                                        if Random::nextBoolean(&(utils::random())) {
+                                        if Random::nextBoolean(&(*utils::__random.get_ref())) {
                                             Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 270);
                                         } else {
                                             Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 360);
@@ -733,28 +733,28 @@ impl GeneticCode {
                                     }
                                 }
                             } else {
-                                Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), Random::nextInt_bound(&(utils::random()), 361));
+                                Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), Random::nextInt_bound(&(*utils::__random.get_ref()), 361));
                             }
-                            if (((Random::nextInt_bound(&(utils::random()), 4) < 1)) || (randomBranch)) {
-                                if Random::nextBoolean(&(utils::random())) {
+                            if (((Random::nextInt_bound(&(*utils::__random.get_ref()), 4) < 1)) || (randomBranch)) {
+                                if Random::nextBoolean(&(*utils::__random.get_ref())) {
                                     Gene::setBranch(&(this.get(|__o| __o._genes.at(i))), (-1i32));
                                 } else {
-                                    Gene::setBranch(&(this.get(|__o| __o._genes.at(i))), Random::nextInt_bound(&(utils::random()), (i + 1)));
+                                    Gene::setBranch(&(this.get(|__o| __o._genes.at(i))), Random::nextInt_bound(&(*utils::__random.get_ref()), (i + 1)));
                                 }
                             } else {
                                 Gene::setBranch(&(this.get(|__o| __o._genes.at(i))), Gene::getBranch(&(GeneticCode::getGene(&parentCode, j))));
                                 if (clonedGene == 1) {
                                     if (Gene::getBranch(&(this.get(|__o| __o._genes.at(i)))) == (-1i32)) {
-                                        if Random::nextBoolean(&(utils::random())) {
+                                        if Random::nextBoolean(&(*utils::__random.get_ref())) {
                                             Gene::setBranch(&(this.get(|__o| __o._genes.at(i))), (i - 1));
                                         } else {
-                                            if Random::nextBoolean(&(utils::random())) {
+                                            if Random::nextBoolean(&(*utils::__random.get_ref())) {
                                                 Gene::setBranch(&(this.get(|__o| __o._genes.at(i))), i);
                                             }
                                         }
                                     } else {
-                                        if Random::nextBoolean(&(utils::random())) {
-                                            if Random::nextBoolean(&(utils::random())) {
+                                        if Random::nextBoolean(&(*utils::__random.get_ref())) {
+                                            if Random::nextBoolean(&(*utils::__random.get_ref())) {
                                                 Gene::setBranch(&(this.get(|__o| __o._genes.at(i))), (-1i32));
                                             } else {
                                                 Gene::setBranch(&(this.get(|__o| __o._genes.at(i))), i);
@@ -775,30 +775,30 @@ impl GeneticCode {
                                 Gene::setTheta(&(this.get(|__o| __o._genes.at(i))), Gene::getTheta(&(GeneticCode::getGene(&parentCode, j))));
                             }
                             if randomRadial {
-                                if Random::nextBoolean(&(utils::random())) {
-                                    if Random::nextBoolean(&(utils::random())) {
-                                        if Random::nextBoolean(&(utils::random())) {
-                                            if Random::nextBoolean(&(utils::random())) {
+                                if Random::nextBoolean(&(*utils::__random.get_ref())) {
+                                    if Random::nextBoolean(&(*utils::__random.get_ref())) {
+                                        if Random::nextBoolean(&(*utils::__random.get_ref())) {
+                                            if Random::nextBoolean(&(*utils::__random.get_ref())) {
                                                 Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 0);
                                             } else {
                                                 Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 90);
                                             }
                                         } else {
-                                            if Random::nextBoolean(&(utils::random())) {
+                                            if Random::nextBoolean(&(*utils::__random.get_ref())) {
                                                 Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 120);
                                             } else {
                                                 Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 135);
                                             }
                                         }
                                     } else {
-                                        if Random::nextBoolean(&(utils::random())) {
-                                            if Random::nextBoolean(&(utils::random())) {
+                                        if Random::nextBoolean(&(*utils::__random.get_ref())) {
+                                            if Random::nextBoolean(&(*utils::__random.get_ref())) {
                                                 Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 180);
                                             } else {
                                                 Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 240);
                                             }
                                         } else {
-                                            if Random::nextBoolean(&(utils::random())) {
+                                            if Random::nextBoolean(&(*utils::__random.get_ref())) {
                                                 Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 270);
                                             } else {
                                                 Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 360);
@@ -806,16 +806,16 @@ impl GeneticCode {
                                         }
                                     }
                                 } else {
-                                    Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), Random::nextInt_bound(&(utils::random()), 361));
+                                    Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), Random::nextInt_bound(&(*utils::__random.get_ref()), 361));
                                 }
                             } else {
                                 Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), Gene::getRadial(&(GeneticCode::getGene(&parentCode, j))));
                             }
                             if randomBranch {
-                                if Random::nextBoolean(&(utils::random())) {
+                                if Random::nextBoolean(&(*utils::__random.get_ref())) {
                                     Gene::setBranch(&(this.get(|__o| __o._genes.at(i))), (-1i32));
                                 } else {
-                                    Gene::setBranch(&(this.get(|__o| __o._genes.at(i))), Random::nextInt_bound(&(utils::random()), (i + 1)));
+                                    Gene::setBranch(&(this.get(|__o| __o._genes.at(i))), Random::nextInt_bound(&(*utils::__random.get_ref()), (i + 1)));
                                 }
                             } else {
                                 Gene::setBranch(&(this.get(|__o| __o._genes.at(i))), Gene::getBranch(&(GeneticCode::getGene(&parentCode, j))));
@@ -825,15 +825,15 @@ impl GeneticCode {
                             }
                         }
                         if randomStack {
-                            if Random::nextBoolean(&(utils::random())) {
-                                if Random::nextBoolean(&(utils::random())) {
-                                    if Random::nextBoolean(&(utils::random())) {
+                            if Random::nextBoolean(&(*utils::__random.get_ref())) {
+                                if Random::nextBoolean(&(*utils::__random.get_ref())) {
+                                    if Random::nextBoolean(&(*utils::__random.get_ref())) {
                                         Gene::setStack(&(this.get(|__o| __o._genes.at(i))), 1);
                                     } else {
                                         Gene::setStack(&(this.get(|__o| __o._genes.at(i))), 2);
                                     }
                                 } else {
-                                    if Random::nextBoolean(&(utils::random())) {
+                                    if Random::nextBoolean(&(*utils::__random.get_ref())) {
                                         Gene::setStack(&(this.get(|__o| __o._genes.at(i))), (-1i32));
                                     } else {
                                         Gene::setStack(&(this.get(|__o| __o._genes.at(i))), (-2i32));
@@ -846,13 +846,13 @@ impl GeneticCode {
                             Gene::setStack(&(this.get(|__o| __o._genes.at(i))), Gene::getStack(&(GeneticCode::getGene(&parentCode, j))));
                         }
                         if randomChiral {
-                            Gene::setChiral(&(this.get(|__o| __o._genes.at(i))), (((Random::nextInt_bound(&(utils::random()), 4) * 2)) - 3));
+                            Gene::setChiral(&(this.get(|__o| __o._genes.at(i))), (((Random::nextInt_bound(&(*utils::__random.get_ref()), 4) * 2)) - 3));
                         } else {
                             Gene::setChiral(&(this.get(|__o| __o._genes.at(i))), Gene::getChiral(&(GeneticCode::getGene(&parentCode, j))));
                         }
                         if randomFold {
-                            if Random::nextBoolean(&(utils::random())) {
-                                Gene::setFold(&(this.get(|__o| __o._genes.at(i))), (Random::nextInt_bound(&(utils::random()), 6) + 1));
+                            if Random::nextBoolean(&(*utils::__random.get_ref())) {
+                                Gene::setFold(&(this.get(|__o| __o._genes.at(i))), (Random::nextInt_bound(&(*utils::__random.get_ref()), 6) + 1));
                             } else {
                                 Gene::setFold(&(this.get(|__o| __o._genes.at(i))), 0);
                             }
@@ -1078,134 +1078,134 @@ impl GeneticCode {
                             clonedGene = 0;
                         }
                     } else {
-                        (this.get(|o| o._genes.clone())).put(i, GeneticCode::getGene(&parentCode, j));
+                        (*this.get(|o| unsafe { o._genes.share() })).put(i, GeneticCode::getGene(&parentCode, j));
                     }
                 }
                 i = i + 1;
                 j = j + 1;
             }
         }
-        if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+        if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
             GeneticCode::randomActivity(this);
         } else {
             this.setf(|o| &mut o._activity, GeneticCode::getActivity(&parentCode));
         }
-        if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+        if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
             GeneticCode::randomModifiesmaroon(this);
         } else {
             this.setf(|o| &mut o._modifiesmaroon, GeneticCode::getModifiesmaroon(&parentCode));
         }
-        if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+        if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
             GeneticCode::randomModifiescream(this);
         } else {
             this.setf(|o| &mut o._modifiescream, GeneticCode::getModifiescream(&parentCode));
         }
-        if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+        if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
             GeneticCode::randomModifiescrimson(this);
         } else {
             this.setf(|o| &mut o._modifiescrimson, GeneticCode::getModifiescrimson(&parentCode));
         }
-        if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+        if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
             GeneticCode::randomModifiesfallow(this);
         } else {
             this.setf(|o| &mut o._modifiesfallow, GeneticCode::getModifiesfallow(&parentCode));
         }
-        if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+        if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
             GeneticCode::randomModifiesspore(this);
         } else {
             this.setf(|o| &mut o._modifiesspore, GeneticCode::getModifiesspore(&parentCode));
         }
-        if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+        if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
             GeneticCode::randomAdaptspore(this);
         } else {
             this.setf(|o| &mut o._adaptspore, GeneticCode::getAdaptspore(&parentCode));
         }
-        if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+        if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
             GeneticCode::randomModifiesblack(this);
         } else {
             this.setf(|o| &mut o._modifiesblack, GeneticCode::getModifiesblack(&parentCode));
         }
-        if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+        if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
             GeneticCode::randomAdaptblack(this);
         } else {
             this.setf(|o| &mut o._adaptblack, GeneticCode::getAdaptblack(&parentCode));
         }
-        if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+        if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
             GeneticCode::randomPlague(this);
         } else {
             this.setf(|o| &mut o._plague, GeneticCode::getPlague(&parentCode));
         }
-        if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+        if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
             GeneticCode::randomDisperseChildren(this);
         } else {
             this.setf(|o| &mut o._disperseChildren, GeneticCode::getDisperseChildren(&parentCode));
         }
-        if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+        if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
             GeneticCode::randomGenerationBattle(this);
         } else {
             this.setf(|o| &mut o._generationBattle, GeneticCode::getGenerationBattle(&parentCode));
         }
-        if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+        if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
             GeneticCode::randomSiblingBattle(this);
         } else {
             this.setf(|o| &mut o._siblingBattle, GeneticCode::getSiblingBattle(&parentCode));
         }
-        if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+        if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
             GeneticCode::randomAltruist(this);
         } else {
             this.setf(|o| &mut o._altruist, GeneticCode::getAltruist(&parentCode));
         }
-        if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+        if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
             GeneticCode::randomFamilial(this);
         } else {
             this.setf(|o| &mut o._familial, GeneticCode::getFamilial(&parentCode));
         }
-        if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+        if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
             GeneticCode::randomSocial(this);
         } else {
             this.setf(|o| &mut o._social, GeneticCode::getSocial(&parentCode));
         }
-        if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+        if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
             GeneticCode::randomPeaceful(this);
         } else {
             this.setf(|o| &mut o._peaceful, GeneticCode::getPeaceful(&parentCode));
         }
-        if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+        if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
             GeneticCode::randomPassive(this);
         } else {
             this.setf(|o| &mut o._passive, GeneticCode::getPassive(&parentCode));
         }
-        if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+        if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
             GeneticCode::randomClockwise(this);
         } else {
             this.setf(|o| &mut o._clockwise, GeneticCode::getClockwise(&parentCode));
         }
-        if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+        if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
             GeneticCode::randomModifiesdrift(this);
         } else {
             this.setf(|o| &mut o._modifiesdrift, GeneticCode::getModifiesdrift(&parentCode));
         }
-        if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+        if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
             GeneticCode::randomModifiespink(this);
         } else {
             this.setf(|o| &mut o._modifiespink, GeneticCode::getModifiespink(&parentCode));
         }
-        if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+        if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
             GeneticCode::randomModifieslilac(this);
         } else {
             this.setf(|o| &mut o._modifieslilac, GeneticCode::getModifieslilac(&parentCode));
         }
-        if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+        if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
             GeneticCode::randomModifiessky(this);
         } else {
             this.setf(|o| &mut o._modifiessky, GeneticCode::getModifiessky(&parentCode));
         }
-        if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+        if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
             GeneticCode::randomModifiesleaf(this);
         } else {
             this.setf(|o| &mut o._modifiesleaf, GeneticCode::getModifiesleaf(&parentCode));
         }
-        if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
+        if (Random::nextInt_bound(&(*utils::__random.get_ref()), 10000) < this.get(|o| o._mutationrate)) {
             GeneticCode::randomSelfish(this);
         } else {
             this.setf(|o| &mut o._selfish, GeneticCode::getSelfish(&parentCode));
@@ -1421,179 +1421,179 @@ impl GeneticCode {
 
     /// Java: GeneticCode.java:572 void randomMirror()
     pub fn randomMirror(this: &JRef<Self>) {
-        this.setf(|o| &mut o._mirror, Random::nextInt_bound(&(utils::random()), 2));
+        this.setf(|o| &mut o._mirror, Random::nextInt_bound(&(*utils::__random.get_ref()), 2));
     }
 
     /// Java: GeneticCode.java:578 void randomSymmetry()
     pub fn randomSymmetry(this: &JRef<Self>) {
-        this.setf(|o| &mut o._symmetry, (Random::nextInt_bound(&(utils::random()), 8) + 1));
+        this.setf(|o| &mut o._symmetry, (Random::nextInt_bound(&(*utils::__random.get_ref()), 8) + 1));
     }
 
     /// Java: GeneticCode.java:584 void randomHox()
     pub fn randomHox(this: &JRef<Self>) {
-        this.setf(|o| &mut o._hox, (Random::nextInt_bound(&(utils::random()), 4) + 1));
+        this.setf(|o| &mut o._hox, (Random::nextInt_bound(&(*utils::__random.get_ref()), 4) + 1));
     }
 
     /// Java: GeneticCode.java:591 void randomMutationrate()
     pub fn randomMutationrate(this: &JRef<Self>) {
-        this.setf(|o| &mut o._mutationrate, (Random::nextInt_bound(&(utils::random()), ((utils::MAX_MUTATION_RATE() - utils::MIN_MUTATION_RATE()) + 1)) + utils::MIN_MUTATION_RATE()));
+        this.setf(|o| &mut o._mutationrate, (Random::nextInt_bound(&(*utils::__random.get_ref()), ((utils::MAX_MUTATION_RATE() - utils::MIN_MUTATION_RATE()) + 1)) + utils::MIN_MUTATION_RATE()));
     }
 
     /// Java: GeneticCode.java:597 void increaseMutationrate()
     pub fn increaseMutationrate(this: &JRef<Self>) {
         if (this.get(|o| o._mutationrate) < utils::MAX_MUTATION_RATE()) {
-            this.setf(|o| &mut o._mutationrate, (Random::nextInt_bound(&(utils::random()), ((utils::MAX_MUTATION_RATE() - this.get(|o| o._mutationrate)) + 1)) + this.get(|o| o._mutationrate)));
+            this.setf(|o| &mut o._mutationrate, (Random::nextInt_bound(&(*utils::__random.get_ref()), ((utils::MAX_MUTATION_RATE() - this.get(|o| o._mutationrate)) + 1)) + this.get(|o| o._mutationrate)));
         }
     }
 
     /// Java: GeneticCode.java:605 void decreaseMutationrate()
     pub fn decreaseMutationrate(this: &JRef<Self>) {
         if (this.get(|o| o._mutationrate) > utils::MIN_MUTATION_RATE()) {
-            this.setf(|o| &mut o._mutationrate, (Random::nextInt_bound(&(utils::random()), ((this.get(|o| o._mutationrate) - utils::MIN_MUTATION_RATE()) + 1)) + utils::MIN_MUTATION_RATE()));
+            this.setf(|o| &mut o._mutationrate, (Random::nextInt_bound(&(*utils::__random.get_ref()), ((this.get(|o| o._mutationrate) - utils::MIN_MUTATION_RATE()) + 1)) + utils::MIN_MUTATION_RATE()));
         }
     }
 
     /// Java: GeneticCode.java:613 void randomClonerate()
     pub fn randomClonerate(this: &JRef<Self>) {
-        this.setf(|o| &mut o._clonerate, (Random::nextInt_bound(&(utils::random()), ((utils::MAX_CLONE_RATE() - utils::MIN_CLONE_RATE()) + 1)) + utils::MIN_CLONE_RATE()));
+        this.setf(|o| &mut o._clonerate, (Random::nextInt_bound(&(*utils::__random.get_ref()), ((utils::MAX_CLONE_RATE() - utils::MIN_CLONE_RATE()) + 1)) + utils::MIN_CLONE_RATE()));
     }
 
     /// Java: GeneticCode.java:619 void increaseClonerate()
     pub fn increaseClonerate(this: &JRef<Self>) {
         if (this.get(|o| o._clonerate) < utils::MAX_CLONE_RATE()) {
-            this.setf(|o| &mut o._clonerate, (Random::nextInt_bound(&(utils::random()), ((utils::MAX_CLONE_RATE() - this.get(|o| o._clonerate)) + 1)) + this.get(|o| o._clonerate)));
+            this.setf(|o| &mut o._clonerate, (Random::nextInt_bound(&(*utils::__random.get_ref()), ((utils::MAX_CLONE_RATE() - this.get(|o| o._clonerate)) + 1)) + this.get(|o| o._clonerate)));
         }
     }
 
     /// Java: GeneticCode.java:627 void decreaseClonerate()
     pub fn decreaseClonerate(this: &JRef<Self>) {
         if (this.get(|o| o._clonerate) > utils::MIN_CLONE_RATE()) {
-            this.setf(|o| &mut o._clonerate, (Random::nextInt_bound(&(utils::random()), ((this.get(|o| o._clonerate) - utils::MIN_CLONE_RATE()) + 1)) + utils::MIN_CLONE_RATE()));
+            this.setf(|o| &mut o._clonerate, (Random::nextInt_bound(&(*utils::__random.get_ref()), ((this.get(|o| o._clonerate) - utils::MIN_CLONE_RATE()) + 1)) + utils::MIN_CLONE_RATE()));
         }
     }
 
     /// Java: GeneticCode.java:635 void randomHomeX()
     pub fn randomHomeX(this: &JRef<Self>) {
-        if Random::nextBoolean(&(utils::random())) {
+        if Random::nextBoolean(&(*utils::__random.get_ref())) {
             this.setf(|o| &mut o._homeX, (-1f64));
         } else {
-            this.setf(|o| &mut o._homeX, (Random::nextDouble(&(utils::random())) * 100.0f64));
+            this.setf(|o| &mut o._homeX, (Random::nextDouble(&(*utils::__random.get_ref())) * 100.0f64));
         }
     }
 
     /// Java: GeneticCode.java:645 void randomHomeY()
     pub fn randomHomeY(this: &JRef<Self>) {
-        if Random::nextBoolean(&(utils::random())) {
+        if Random::nextBoolean(&(*utils::__random.get_ref())) {
             this.setf(|o| &mut o._homeY, (-1f64));
         } else {
-            this.setf(|o| &mut o._homeY, (Random::nextDouble(&(utils::random())) * 100.0f64));
+            this.setf(|o| &mut o._homeY, (Random::nextDouble(&(*utils::__random.get_ref())) * 100.0f64));
         }
     }
 
     /// Java: GeneticCode.java:655 void randomBase1X()
     pub fn randomBase1X(this: &JRef<Self>) {
-        if (Random::nextInt_bound(&(utils::random()), 4) < 1) {
+        if (Random::nextInt_bound(&(*utils::__random.get_ref()), 4) < 1) {
             this.setf(|o| &mut o._base1X, (-1f64));
         } else {
-            this.setf(|o| &mut o._base1X, (Random::nextDouble(&(utils::random())) * 100.0f64));
+            this.setf(|o| &mut o._base1X, (Random::nextDouble(&(*utils::__random.get_ref())) * 100.0f64));
         }
     }
 
     /// Java: GeneticCode.java:665 void randomBase1Y()
     pub fn randomBase1Y(this: &JRef<Self>) {
-        if (Random::nextInt_bound(&(utils::random()), 4) < 1) {
+        if (Random::nextInt_bound(&(*utils::__random.get_ref()), 4) < 1) {
             this.setf(|o| &mut o._base1Y, (-1f64));
         } else {
-            this.setf(|o| &mut o._base1Y, (Random::nextDouble(&(utils::random())) * 100.0f64));
+            this.setf(|o| &mut o._base1Y, (Random::nextDouble(&(*utils::__random.get_ref())) * 100.0f64));
         }
     }
 
     /// Java: GeneticCode.java:675 void randomBase2X()
     pub fn randomBase2X(this: &JRef<Self>) {
-        if (Random::nextInt_bound(&(utils::random()), 7) < 1) {
+        if (Random::nextInt_bound(&(*utils::__random.get_ref()), 7) < 1) {
             this.setf(|o| &mut o._base2X, (-1f64));
         } else {
-            this.setf(|o| &mut o._base2X, (Random::nextDouble(&(utils::random())) * 100.0f64));
+            this.setf(|o| &mut o._base2X, (Random::nextDouble(&(*utils::__random.get_ref())) * 100.0f64));
         }
     }
 
     /// Java: GeneticCode.java:685 void randomBase2Y()
     pub fn randomBase2Y(this: &JRef<Self>) {
-        if (Random::nextInt_bound(&(utils::random()), 7) < 1) {
+        if (Random::nextInt_bound(&(*utils::__random.get_ref()), 7) < 1) {
             this.setf(|o| &mut o._base2Y, (-1f64));
         } else {
-            this.setf(|o| &mut o._base2Y, (Random::nextDouble(&(utils::random())) * 100.0f64));
+            this.setf(|o| &mut o._base2Y, (Random::nextDouble(&(*utils::__random.get_ref())) * 100.0f64));
         }
     }
 
     /// Java: GeneticCode.java:695 void increaseHomeX()
     pub fn increaseHomeX(this: &JRef<Self>) {
-        this.setf(|o| &mut o._homeX, (this.get(|o| o._homeX) + Random::nextDouble(&(utils::random()))));
+        this.setf(|o| &mut o._homeX, (this.get(|o| o._homeX) + Random::nextDouble(&(*utils::__random.get_ref()))));
     }
 
     /// Java: GeneticCode.java:701 void increaseHomeY()
     pub fn increaseHomeY(this: &JRef<Self>) {
-        this.setf(|o| &mut o._homeY, (this.get(|o| o._homeY) + Random::nextDouble(&(utils::random()))));
+        this.setf(|o| &mut o._homeY, (this.get(|o| o._homeY) + Random::nextDouble(&(*utils::__random.get_ref()))));
     }
 
     /// Java: GeneticCode.java:707 void increaseBase1X()
     pub fn increaseBase1X(this: &JRef<Self>) {
-        this.setf(|o| &mut o._base1X, (this.get(|o| o._base1X) + Random::nextDouble(&(utils::random()))));
+        this.setf(|o| &mut o._base1X, (this.get(|o| o._base1X) + Random::nextDouble(&(*utils::__random.get_ref()))));
     }
 
     /// Java: GeneticCode.java:713 void increaseBase1Y()
     pub fn increaseBase1Y(this: &JRef<Self>) {
-        this.setf(|o| &mut o._base1Y, (this.get(|o| o._base1Y) + Random::nextDouble(&(utils::random()))));
+        this.setf(|o| &mut o._base1Y, (this.get(|o| o._base1Y) + Random::nextDouble(&(*utils::__random.get_ref()))));
     }
 
     /// Java: GeneticCode.java:719 void increaseBase2X()
     pub fn increaseBase2X(this: &JRef<Self>) {
-        this.setf(|o| &mut o._base2X, (this.get(|o| o._base2X) + Random::nextDouble(&(utils::random()))));
+        this.setf(|o| &mut o._base2X, (this.get(|o| o._base2X) + Random::nextDouble(&(*utils::__random.get_ref()))));
     }
 
     /// Java: GeneticCode.java:725 void increaseBase2Y()
     pub fn increaseBase2Y(this: &JRef<Self>) {
-        this.setf(|o| &mut o._base2Y, (this.get(|o| o._base2Y) + Random::nextDouble(&(utils::random()))));
+        this.setf(|o| &mut o._base2Y, (this.get(|o| o._base2Y) + Random::nextDouble(&(*utils::__random.get_ref()))));
     }
 
     /// Java: GeneticCode.java:731 void decreaseHomeX()
     pub fn decreaseHomeX(this: &JRef<Self>) {
-        this.setf(|o| &mut o._homeX, (this.get(|o| o._homeX) - Random::nextDouble(&(utils::random()))));
+        this.setf(|o| &mut o._homeX, (this.get(|o| o._homeX) - Random::nextDouble(&(*utils::__random.get_ref()))));
     }
 
     /// Java: GeneticCode.java:737 void decreaseHomeY()
     pub fn decreaseHomeY(this: &JRef<Self>) {
-        this.setf(|o| &mut o._homeY, (this.get(|o| o._homeY) - Random::nextDouble(&(utils::random()))));
+        this.setf(|o| &mut o._homeY, (this.get(|o| o._homeY) - Random::nextDouble(&(*utils::__random.get_ref()))));
     }
 
     /// Java: GeneticCode.java:743 void decreaseBase1X()
     pub fn decreaseBase1X(this: &JRef<Self>) {
-        this.setf(|o| &mut o._base1X, (this.get(|o| o._base1X) - Random::nextDouble(&(utils::random()))));
+        this.setf(|o| &mut o._base1X, (this.get(|o| o._base1X) - Random::nextDouble(&(*utils::__random.get_ref()))));
     }
 
     /// Java: GeneticCode.java:749 void decreaseBase1Y()
     pub fn decreaseBase1Y(this: &JRef<Self>) {
-        this.setf(|o| &mut o._base1Y, (this.get(|o| o._base1Y) - Random::nextDouble(&(utils::random()))));
+        this.setf(|o| &mut o._base1Y, (this.get(|o| o._base1Y) - Random::nextDouble(&(*utils::__random.get_ref()))));
     }
 
     /// Java: GeneticCode.java:755 void decreaseBase2X()
     pub fn decreaseBase2X(this: &JRef<Self>) {
-        this.setf(|o| &mut o._base2X, (this.get(|o| o._base2X) - Random::nextDouble(&(utils::random()))));
+        this.setf(|o| &mut o._base2X, (this.get(|o| o._base2X) - Random::nextDouble(&(*utils::__random.get_ref()))));
     }
 
     /// Java: GeneticCode.java:761 void decreaseBase2Y()
     pub fn decreaseBase2Y(this: &JRef<Self>) {
-        this.setf(|o| &mut o._base2Y, (this.get(|o| o._base2Y) - Random::nextDouble(&(utils::random()))));
+        this.setf(|o| &mut o._base2Y, (this.get(|o| o._base2Y) - Random::nextDouble(&(*utils::__random.get_ref()))));
     }
 
     /// Java: GeneticCode.java:767 void randomActivity()
     pub fn randomActivity(this: &JRef<Self>) {
-        this.setf(|o| &mut o._activity, (Random::nextInt_bound(&(utils::random()), 3) * 2));
+        this.setf(|o| &mut o._activity, (Random::nextInt_bound(&(*utils::__random.get_ref()), 3) * 2));
     }
 
     /// Java: GeneticCode.java:775 void randomGenes()
     pub fn randomGenes(this: &JRef<Self>) {
-        let mut nSegments: i32 = (((1 + Random::nextInt_bound(&(utils::random()), utils::INITIAL_COMPLEXITY()))) * this.get(|o| o._symmetry));
+        let mut nSegments: i32 = (((1 + Random::nextInt_bound(&(*utils::__random.get_ref()), utils::INITIAL_COMPLEXITY()))) * this.get(|o| o._symmetry));
         if (i32::wrapping_rem(nSegments, this.get(|o| o._symmetry)) != 0) {
             nSegments = (nSegments + ((this.get(|o| o._symmetry) - (i32::wrapping_rem(nSegments, this.get(|o| o._symmetry))))));
         }
@@ -1602,22 +1602,22 @@ impl GeneticCode {
         {
             let mut i: i32 = 0;
             while (i < nGenes) {
-                (this.get(|o| o._genes.clone())).put(i, Gene::new());
+                (*this.get(|o| unsafe { o._genes.share() })).put(i, Gene::new());
                 Gene::randomize(&(this.get(|__o| __o._genes.at(i))));
-                if Random::nextBoolean(&(utils::random())) {
+                if Random::nextBoolean(&(*utils::__random.get_ref())) {
                     Gene::setBranch(&(this.get(|__o| __o._genes.at(i))), (-1i32));
                 } else {
-                    Gene::setBranch(&(this.get(|__o| __o._genes.at(i))), Random::nextInt_bound(&(utils::random()), (i + 1)));
+                    Gene::setBranch(&(this.get(|__o| __o._genes.at(i))), Random::nextInt_bound(&(*utils::__random.get_ref()), (i + 1)));
                 }
-                if Random::nextBoolean(&(utils::random())) {
-                    if Random::nextBoolean(&(utils::random())) {
-                        if Random::nextBoolean(&(utils::random())) {
+                if Random::nextBoolean(&(*utils::__random.get_ref())) {
+                    if Random::nextBoolean(&(*utils::__random.get_ref())) {
+                        if Random::nextBoolean(&(*utils::__random.get_ref())) {
                             Gene::setStack(&(this.get(|__o| __o._genes.at(i))), 1);
                         } else {
                             Gene::setStack(&(this.get(|__o| __o._genes.at(i))), 2);
                         }
                     } else {
-                        if Random::nextBoolean(&(utils::random())) {
+                        if Random::nextBoolean(&(*utils::__random.get_ref())) {
                             Gene::setStack(&(this.get(|__o| __o._genes.at(i))), (-1i32));
                         } else {
                             Gene::setStack(&(this.get(|__o| __o._genes.at(i))), (-2i32));
@@ -1626,36 +1626,36 @@ impl GeneticCode {
                 } else {
                     Gene::setStack(&(this.get(|__o| __o._genes.at(i))), 0);
                 }
-                if Random::nextBoolean(&(utils::random())) {
-                    Gene::setFold(&(this.get(|__o| __o._genes.at(i))), (Random::nextInt_bound(&(utils::random()), 6) + 1));
+                if Random::nextBoolean(&(*utils::__random.get_ref())) {
+                    Gene::setFold(&(this.get(|__o| __o._genes.at(i))), (Random::nextInt_bound(&(*utils::__random.get_ref()), 6) + 1));
                 } else {
                     Gene::setFold(&(this.get(|__o| __o._genes.at(i))), 0);
                 }
-                Gene::setChiral(&(this.get(|__o| __o._genes.at(i))), (((Random::nextInt_bound(&(utils::random()), 4) * 2)) - 3));
-                if Random::nextBoolean(&(utils::random())) {
-                    if Random::nextBoolean(&(utils::random())) {
-                        if Random::nextBoolean(&(utils::random())) {
-                            if Random::nextBoolean(&(utils::random())) {
+                Gene::setChiral(&(this.get(|__o| __o._genes.at(i))), (((Random::nextInt_bound(&(*utils::__random.get_ref()), 4) * 2)) - 3));
+                if Random::nextBoolean(&(*utils::__random.get_ref())) {
+                    if Random::nextBoolean(&(*utils::__random.get_ref())) {
+                        if Random::nextBoolean(&(*utils::__random.get_ref())) {
+                            if Random::nextBoolean(&(*utils::__random.get_ref())) {
                                 Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 0);
                             } else {
                                 Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 90);
                             }
                         } else {
-                            if Random::nextBoolean(&(utils::random())) {
+                            if Random::nextBoolean(&(*utils::__random.get_ref())) {
                                 Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 120);
                             } else {
                                 Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 135);
                             }
                         }
                     } else {
-                        if Random::nextBoolean(&(utils::random())) {
-                            if Random::nextBoolean(&(utils::random())) {
+                        if Random::nextBoolean(&(*utils::__random.get_ref())) {
+                            if Random::nextBoolean(&(*utils::__random.get_ref())) {
                                 Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 180);
                             } else {
                                 Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 240);
                             }
                         } else {
-                            if Random::nextBoolean(&(utils::random())) {
+                            if Random::nextBoolean(&(*utils::__random.get_ref())) {
                                 Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 270);
                             } else {
                                 Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 360);
@@ -1663,7 +1663,7 @@ impl GeneticCode {
                         }
                     }
                 } else {
-                    Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), Random::nextInt_bound(&(utils::random()), 361));
+                    Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), Random::nextInt_bound(&(*utils::__random.get_ref()), 361));
                 }
                 i = i + 1;
             }
@@ -1672,126 +1672,126 @@ impl GeneticCode {
 
     /// Java: GeneticCode.java:850 void randomPlague()
     pub fn randomPlague(this: &JRef<Self>) {
-        this.setf(|o| &mut o._plague, Random::nextBoolean(&(utils::random())));
+        this.setf(|o| &mut o._plague, Random::nextBoolean(&(*utils::__random.get_ref())));
     }
 
     /// Java: GeneticCode.java:857 void randomDisperseChildren()
     pub fn randomDisperseChildren(this: &JRef<Self>) {
-        this.setf(|o| &mut o._disperseChildren, Random::nextBoolean(&(utils::random())));
+        this.setf(|o| &mut o._disperseChildren, Random::nextBoolean(&(*utils::__random.get_ref())));
     }
 
     /// Java: GeneticCode.java:864 void randomGenerationBattle()
     pub fn randomGenerationBattle(this: &JRef<Self>) {
-        this.setf(|o| &mut o._generationBattle, Random::nextBoolean(&(utils::random())));
+        this.setf(|o| &mut o._generationBattle, Random::nextBoolean(&(*utils::__random.get_ref())));
     }
 
     /// Java: GeneticCode.java:871 void randomSiblingBattle()
     pub fn randomSiblingBattle(this: &JRef<Self>) {
-        this.setf(|o| &mut o._siblingBattle, Random::nextBoolean(&(utils::random())));
+        this.setf(|o| &mut o._siblingBattle, Random::nextBoolean(&(*utils::__random.get_ref())));
     }
 
     /// Java: GeneticCode.java:878 void randomAltruist()
     pub fn randomAltruist(this: &JRef<Self>) {
-        this.setf(|o| &mut o._altruist, Random::nextBoolean(&(utils::random())));
+        this.setf(|o| &mut o._altruist, Random::nextBoolean(&(*utils::__random.get_ref())));
     }
 
     /// Java: GeneticCode.java:885 void randomFamilial()
     pub fn randomFamilial(this: &JRef<Self>) {
-        this.setf(|o| &mut o._familial, Random::nextBoolean(&(utils::random())));
+        this.setf(|o| &mut o._familial, Random::nextBoolean(&(*utils::__random.get_ref())));
     }
 
     /// Java: GeneticCode.java:892 void randomSocial()
     pub fn randomSocial(this: &JRef<Self>) {
-        this.setf(|o| &mut o._social, Random::nextBoolean(&(utils::random())));
+        this.setf(|o| &mut o._social, Random::nextBoolean(&(*utils::__random.get_ref())));
     }
 
     /// Java: GeneticCode.java:899 void randomPeaceful()
     pub fn randomPeaceful(this: &JRef<Self>) {
-        this.setf(|o| &mut o._peaceful, Random::nextBoolean(&(utils::random())));
+        this.setf(|o| &mut o._peaceful, Random::nextBoolean(&(*utils::__random.get_ref())));
     }
 
     /// Java: GeneticCode.java:906 void randomPassive()
     pub fn randomPassive(this: &JRef<Self>) {
-        this.setf(|o| &mut o._passive, Random::nextBoolean(&(utils::random())));
+        this.setf(|o| &mut o._passive, Random::nextBoolean(&(*utils::__random.get_ref())));
     }
 
     /// Java: GeneticCode.java:913 void randomClockwise()
     pub fn randomClockwise(this: &JRef<Self>) {
-        this.setf(|o| &mut o._clockwise, Random::nextBoolean(&(utils::random())));
+        this.setf(|o| &mut o._clockwise, Random::nextBoolean(&(*utils::__random.get_ref())));
     }
 
     /// Java: GeneticCode.java:919 void randomModifiesdrift()
     pub fn randomModifiesdrift(this: &JRef<Self>) {
-        this.setf(|o| &mut o._modifiesdrift, Random::nextBoolean(&(utils::random())));
+        this.setf(|o| &mut o._modifiesdrift, Random::nextBoolean(&(*utils::__random.get_ref())));
     }
 
     /// Java: GeneticCode.java:925 void randomModifiespink()
     pub fn randomModifiespink(this: &JRef<Self>) {
-        this.setf(|o| &mut o._modifiespink, Random::nextBoolean(&(utils::random())));
+        this.setf(|o| &mut o._modifiespink, Random::nextBoolean(&(*utils::__random.get_ref())));
     }
 
     /// Java: GeneticCode.java:931 void randomModifiesmaroon()
     pub fn randomModifiesmaroon(this: &JRef<Self>) {
-        if (Random::nextInt_bound(&(utils::random()), 3) == 0) {
+        if (Random::nextInt_bound(&(*utils::__random.get_ref()), 3) == 0) {
             this.setf(|o| &mut o._modifiesmaroon, 10);
         } else {
-            this.setf(|o| &mut o._modifiesmaroon, Random::nextInt_bound(&(utils::random()), 10));
+            this.setf(|o| &mut o._modifiesmaroon, Random::nextInt_bound(&(*utils::__random.get_ref()), 10));
         }
     }
 
     /// Java: GeneticCode.java:941 void randomModifiescream()
     pub fn randomModifiescream(this: &JRef<Self>) {
-        this.setf(|o| &mut o._modifiescream, (Random::nextInt_bound(&(utils::random()), 3) + 1));
+        this.setf(|o| &mut o._modifiescream, (Random::nextInt_bound(&(*utils::__random.get_ref()), 3) + 1));
     }
 
     /// Java: GeneticCode.java:947 void randomModifiescrimson()
     pub fn randomModifiescrimson(this: &JRef<Self>) {
-        this.setf(|o| &mut o._modifiescrimson, Random::nextInt_bound(&(utils::random()), 4));
+        this.setf(|o| &mut o._modifiescrimson, Random::nextInt_bound(&(*utils::__random.get_ref()), 4));
     }
 
     /// Java: GeneticCode.java:953 void randomModifiesspore()
     pub fn randomModifiesspore(this: &JRef<Self>) {
-        this.setf(|o| &mut o._modifiesspore, (Random::nextInt_bound(&(utils::random()), 12) + 1));
+        this.setf(|o| &mut o._modifiesspore, (Random::nextInt_bound(&(*utils::__random.get_ref()), 12) + 1));
     }
 
     /// Java: GeneticCode.java:959 void randomAdaptspore()
     pub fn randomAdaptspore(this: &JRef<Self>) {
-        this.setf(|o| &mut o._adaptspore, (Random::nextInt_bound(&(utils::random()), 70) + 1));
+        this.setf(|o| &mut o._adaptspore, (Random::nextInt_bound(&(*utils::__random.get_ref()), 70) + 1));
     }
 
     /// Java: GeneticCode.java:965 void randomModifiesblack()
     pub fn randomModifiesblack(this: &JRef<Self>) {
-        this.setf(|o| &mut o._modifiesblack, (Random::nextInt_bound(&(utils::random()), 6) + 1));
+        this.setf(|o| &mut o._modifiesblack, (Random::nextInt_bound(&(*utils::__random.get_ref()), 6) + 1));
     }
 
     /// Java: GeneticCode.java:971 void randomAdaptblack()
     pub fn randomAdaptblack(this: &JRef<Self>) {
-        this.setf(|o| &mut o._adaptblack, (Random::nextInt_bound(&(utils::random()), 25) + 1));
+        this.setf(|o| &mut o._adaptblack, (Random::nextInt_bound(&(*utils::__random.get_ref()), 25) + 1));
     }
 
     /// Java: GeneticCode.java:977 void randomModifieslilac()
     pub fn randomModifieslilac(this: &JRef<Self>) {
-        this.setf(|o| &mut o._modifieslilac, Random::nextBoolean(&(utils::random())));
+        this.setf(|o| &mut o._modifieslilac, Random::nextBoolean(&(*utils::__random.get_ref())));
     }
 
     /// Java: GeneticCode.java:983 void randomModifiesfallow()
     pub fn randomModifiesfallow(this: &JRef<Self>) {
-        this.setf(|o| &mut o._modifiesfallow, (Random::nextInt_bound(&(utils::random()), 4) + 1));
+        this.setf(|o| &mut o._modifiesfallow, (Random::nextInt_bound(&(*utils::__random.get_ref()), 4) + 1));
     }
 
     /// Java: GeneticCode.java:989 void randomModifiessky()
     pub fn randomModifiessky(this: &JRef<Self>) {
-        this.setf(|o| &mut o._modifiessky, Random::nextBoolean(&(utils::random())));
+        this.setf(|o| &mut o._modifiessky, Random::nextBoolean(&(*utils::__random.get_ref())));
     }
 
     /// Java: GeneticCode.java:995 void randomModifiesleaf()
     pub fn randomModifiesleaf(this: &JRef<Self>) {
-        this.setf(|o| &mut o._modifiesleaf, Random::nextBoolean(&(utils::random())));
+        this.setf(|o| &mut o._modifiesleaf, Random::nextBoolean(&(*utils::__random.get_ref())));
     }
 
     /// Java: GeneticCode.java:1001 void randomSelfish()
     pub fn randomSelfish(this: &JRef<Self>) {
-        this.setf(|o| &mut o._selfish, Random::nextBoolean(&(utils::random())));
+        this.setf(|o| &mut o._selfish, Random::nextBoolean(&(*utils::__random.get_ref())));
     }
 
     /// Java: GeneticCode.java:2153 Object clone()

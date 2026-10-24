@@ -128,7 +128,7 @@ impl WorldStatistics {
 
     /// Java: WorldStatistics.java:218 WorldStatistics(MainWindowInterface)
     pub fn new(mut mainWindowInterface: Stub) -> JRef<Self> {
-        let this = &{ static RECYCLER: JRecycler<WorldStatistics, 4> = JRecycler::new(); RECYCLER.new_object() };
+        let this = &{ thread_local! { static RECYCLER: JRecycler<WorldStatistics, 4> = const { JRecycler::new() }; } RECYCLER.with(|r| r.new_object()) };
         Self::__init(this);
         Self::__ctor_new(this, mainWindowInterface);
         this.clone()
@@ -144,12 +144,12 @@ impl WorldStatistics {
     /// Java: WorldStatistics.java:225 void saveGameLoaded(MainWindowInterface)
     pub fn saveGameLoaded(this: &JRef<Self>, mut mainWindowInterface: Stub) {
         this.setf(|o| &mut o.mainWindowInterface, mainWindowInterface);
-        if ((this.get(|o| o.distinctCladesList.clone())).is_null()) {
+        if ((*this.get(|o| unsafe { o.distinctCladesList.share() })).is_null()) {
             this.setf(|o| &mut o.distinctCladesList, JList::from_vec(Vec::new()));
             {
                 let mut i: i32 = 0;
-                while (i < (this.get(|o| o.populationList.clone())).len()) {
-                    (this.get(|o| o.distinctCladesList.clone())).add(0f64);
+                while (i < (*this.get(|o| unsafe { o.populationList.alias() })).len()) {
+                    (*this.get(|o| unsafe { o.distinctCladesList.share() })).add(0f64);
                     i = i + 1;
                 }
             }
@@ -769,77 +769,77 @@ impl WorldStatistics {
         if (this.get(|o| o.deathLastTime) > this.get(|o| o.maxDeaths)) {
             this.setf(|o| &mut o.maxDeaths, this.get(|o| o.deathLastTime));
         }
-        if ((this.get(|o| o.populationList.clone())).len() == world_statistics::MAX_STATS_COUNT) {
-            (this.get(|o| o.populationList.clone())).remove_at(0);
+        if ((*this.get(|o| unsafe { o.populationList.alias() })).len() == world_statistics::MAX_STATS_COUNT) {
+            (*this.get(|o| unsafe { o.populationList.alias() })).remove_at(0);
         }
-        (this.get(|o| o.populationList.clone())).add((population as f64));
-        if ((this.get(|o| o.distinctCladesList.clone())).len() == world_statistics::MAX_STATS_COUNT) {
-            (this.get(|o| o.distinctCladesList.clone())).remove_at(0);
+        (*this.get(|o| unsafe { o.populationList.alias() })).add((population as f64));
+        if ((*this.get(|o| unsafe { o.distinctCladesList.share() })).len() == world_statistics::MAX_STATS_COUNT) {
+            (*this.get(|o| unsafe { o.distinctCladesList.share() })).remove_at(0);
         }
-        (this.get(|o| o.distinctCladesList.clone())).add((distinctClades as f64));
-        if ((this.get(|o| o.deathList.clone())).len() == world_statistics::MAX_STATS_COUNT) {
-            (this.get(|o| o.deathList.clone())).remove_at(0);
+        (*this.get(|o| unsafe { o.distinctCladesList.share() })).add((distinctClades as f64));
+        if ((*this.get(|o| unsafe { o.deathList.alias() })).len() == world_statistics::MAX_STATS_COUNT) {
+            (*this.get(|o| unsafe { o.deathList.alias() })).remove_at(0);
         }
-        (this.get(|o| o.deathList.clone())).add((this.get(|o| o.deathLastTime) as f64));
-        if ((this.get(|o| o.birthList.clone())).len() == world_statistics::MAX_STATS_COUNT) {
-            (this.get(|o| o.birthList.clone())).remove_at(0);
+        (*this.get(|o| unsafe { o.deathList.alias() })).add((this.get(|o| o.deathLastTime) as f64));
+        if ((*this.get(|o| unsafe { o.birthList.alias() })).len() == world_statistics::MAX_STATS_COUNT) {
+            (*this.get(|o| unsafe { o.birthList.alias() })).remove_at(0);
         }
-        (this.get(|o| o.birthList.clone())).add((this.get(|o| o.birthLastTime) as f64));
-        if ((this.get(|o| o.oxygenList.clone())).len() == world_statistics::MAX_STATS_COUNT) {
-            (this.get(|o| o.oxygenList.clone())).remove_at(0);
+        (*this.get(|o| unsafe { o.birthList.alias() })).add((this.get(|o| o.birthLastTime) as f64));
+        if ((*this.get(|o| unsafe { o.oxygenList.alias() })).len() == world_statistics::MAX_STATS_COUNT) {
+            (*this.get(|o| unsafe { o.oxygenList.alias() })).remove_at(0);
         }
         if (O2 <= 100f64) {
-            (this.get(|o| o.oxygenList.clone())).add(0.0f64);
+            (*this.get(|o| unsafe { o.oxygenList.alias() })).add(0.0f64);
         } else {
-            (this.get(|o| o.oxygenList.clone())).add(jmath::log10((O2 / 100f64)));
+            (*this.get(|o| unsafe { o.oxygenList.alias() })).add(jmath::log10((O2 / 100f64)));
         }
-        if ((this.get(|o| o.carbonDioxideList.clone())).len() == world_statistics::MAX_STATS_COUNT) {
-            (this.get(|o| o.carbonDioxideList.clone())).remove_at(0);
+        if ((*this.get(|o| unsafe { o.carbonDioxideList.alias() })).len() == world_statistics::MAX_STATS_COUNT) {
+            (*this.get(|o| unsafe { o.carbonDioxideList.alias() })).remove_at(0);
         }
         if (CO2 <= 100f64) {
-            (this.get(|o| o.carbonDioxideList.clone())).add(0.0f64);
+            (*this.get(|o| unsafe { o.carbonDioxideList.alias() })).add(0.0f64);
         } else {
-            (this.get(|o| o.carbonDioxideList.clone())).add(jmath::log10((CO2 / 100f64)));
+            (*this.get(|o| unsafe { o.carbonDioxideList.alias() })).add(jmath::log10((CO2 / 100f64)));
         }
-        if ((this.get(|o| o.carbonMonoxideList.clone())).len() == world_statistics::MAX_STATS_COUNT) {
-            (this.get(|o| o.carbonMonoxideList.clone())).remove_at(0);
+        if ((*this.get(|o| unsafe { o.carbonMonoxideList.alias() })).len() == world_statistics::MAX_STATS_COUNT) {
+            (*this.get(|o| unsafe { o.carbonMonoxideList.alias() })).remove_at(0);
         }
         if (CO1 <= 100f64) {
-            (this.get(|o| o.carbonMonoxideList.clone())).add(0.0f64);
+            (*this.get(|o| unsafe { o.carbonMonoxideList.alias() })).add(0.0f64);
         } else {
-            (this.get(|o| o.carbonMonoxideList.clone())).add(jmath::log10((CO1 / 100f64)));
+            (*this.get(|o| unsafe { o.carbonMonoxideList.alias() })).add(jmath::log10((CO1 / 100f64)));
         }
-        if ((this.get(|o| o.methaneList.clone())).len() == world_statistics::MAX_STATS_COUNT) {
-            (this.get(|o| o.methaneList.clone())).remove_at(0);
+        if ((*this.get(|o| unsafe { o.methaneList.alias() })).len() == world_statistics::MAX_STATS_COUNT) {
+            (*this.get(|o| unsafe { o.methaneList.alias() })).remove_at(0);
         }
         if (CH4 <= 100f64) {
-            (this.get(|o| o.methaneList.clone())).add(0.0f64);
+            (*this.get(|o| unsafe { o.methaneList.alias() })).add(0.0f64);
         } else {
-            (this.get(|o| o.methaneList.clone())).add(jmath::log10((CH4 / 100f64)));
+            (*this.get(|o| unsafe { o.methaneList.alias() })).add(jmath::log10((CH4 / 100f64)));
         }
-        if ((this.get(|o| o.detritusList.clone())).len() == world_statistics::MAX_STATS_COUNT) {
-            (this.get(|o| o.detritusList.clone())).remove_at(0);
+        if ((*this.get(|o| unsafe { o.detritusList.alias() })).len() == world_statistics::MAX_STATS_COUNT) {
+            (*this.get(|o| unsafe { o.detritusList.alias() })).remove_at(0);
         }
         if (detritus <= 100f64) {
-            (this.get(|o| o.detritusList.clone())).add(0.0f64);
+            (*this.get(|o| unsafe { o.detritusList.alias() })).add(0.0f64);
         } else {
-            (this.get(|o| o.detritusList.clone())).add(jmath::log10((detritus / 100f64)));
+            (*this.get(|o| unsafe { o.detritusList.alias() })).add(jmath::log10((detritus / 100f64)));
         }
-        if ((this.get(|o| o.nitrogenList.clone())).len() == world_statistics::MAX_STATS_COUNT) {
-            (this.get(|o| o.nitrogenList.clone())).remove_at(0);
+        if ((*this.get(|o| unsafe { o.nitrogenList.alias() })).len() == world_statistics::MAX_STATS_COUNT) {
+            (*this.get(|o| unsafe { o.nitrogenList.alias() })).remove_at(0);
         }
         if (N2 <= 100f64) {
-            (this.get(|o| o.nitrogenList.clone())).add(0.0f64);
+            (*this.get(|o| unsafe { o.nitrogenList.alias() })).add(0.0f64);
         } else {
-            (this.get(|o| o.nitrogenList.clone())).add(jmath::log10((N2 / 100f64)));
+            (*this.get(|o| unsafe { o.nitrogenList.alias() })).add(jmath::log10((N2 / 100f64)));
         }
-        if ((this.get(|o| o.ammoniaList.clone())).len() == world_statistics::MAX_STATS_COUNT) {
-            (this.get(|o| o.ammoniaList.clone())).remove_at(0);
+        if ((*this.get(|o| unsafe { o.ammoniaList.alias() })).len() == world_statistics::MAX_STATS_COUNT) {
+            (*this.get(|o| unsafe { o.ammoniaList.alias() })).remove_at(0);
         }
         if (NH3 <= 100f64) {
-            (this.get(|o| o.ammoniaList.clone())).add(0.0f64);
+            (*this.get(|o| unsafe { o.ammoniaList.alias() })).add(0.0f64);
         } else {
-            (this.get(|o| o.ammoniaList.clone())).add(jmath::log10((NH3 / 100f64)));
+            (*this.get(|o| unsafe { o.ammoniaList.alias() })).add(jmath::log10((NH3 / 100f64)));
         }
         this.setf(|o| &mut o.deathLastTime, 0);
         this.setf(|o| &mut o.birthLastTime, 0);
@@ -873,6 +873,7 @@ impl WorldStatistics {
         this.setf(|o| &mut o.maxGeneration, 0);
         let mut generationCounter: JRef<JHashMap<i32, i32>> = JRef::<JHashMap<i32, i32>>::new_map();
         {
+            let __sync1 = crate::rt::parallel::lock_object(JRef::identity(&organisms));
             {
                 let mut it: JIter<JRef<Organism>> = organisms.iterator();
                 while it.hasNext() {
@@ -907,7 +908,7 @@ impl WorldStatistics {
                             this.setf(|o| &mut o.aliveOrganismHighestGenerationNumber, generation);
                             this.setf(|o| &mut o.aliveOrganismHighestGeneration, org.clone());
                         }
-                        let mut size: i32 = (jmath::max_f64({ let __r1 = &org; __r1.get(|o| o.__super.getWidth()) }, { let __r2 = &org; __r2.get(|o| o.__super.getHeight()) }) as i32);
+                        let mut size: i32 = (jmath::max_f64({ let __r2 = &org; __r2.get(|o| o.__super.getWidth()) }, { let __r3 = &org; __r3.get(|o| o.__super.getHeight()) }) as i32);
                         if (size > this.get(|o| o.aliveOrganismBiggestNumber)) {
                             this.setf(|o| &mut o.aliveOrganismBiggestNumber, size);
                             this.setf(|o| &mut o.aliveOrganismBiggest, org.clone());
@@ -924,7 +925,7 @@ impl WorldStatistics {
         {
             let mut i: i32 = this.get(|o| o.minGeneration);
             while (i <= this.get(|o| o.maxGeneration)) {
-                (this.get(|o| o.generationHistogramList.clone())).add((generationCounter.getOrDefault(i, 0) as f64));
+                (*this.get(|o| unsafe { o.generationHistogramList.share() })).add((generationCounter.getOrDefault(i, 0) as f64));
                 i = i + 1;
             }
         }

@@ -7,7 +7,7 @@
 //! ConcurrentModificationException if the collection changed meanwhile, which
 //! the translated code doesn't do.
 
-use std::rc::Rc;
+use std::sync::Arc;
 
 use super::color::Color;
 use super::dump::{JDump, JDumpTarget};
@@ -182,7 +182,7 @@ fn obj_equals<T: JObject>(a: &T, b: &T) -> bool {
 impl<T: JObject + JDump + 'static> JRef<Vec<T>> {
     /// Use as a `Collection` (Java's implicit upcast).
     pub fn as_collection(self) -> JCollection<T> {
-        self.map_rc(|rc| rc as Rc<super::jref::JCell<dyn JCollectionT<T>>>)
+        self.map_rc(|rc| rc as Arc<super::jref::JCell<dyn JCollectionT<T>>>)
     }
 
     /// `list.remove(Object)`
@@ -221,40 +221,57 @@ impl<T: JObject + JDump + 'static> JRef<JHashSet<T>> {
 
     /// Use as a `Collection`/`Set` (Java's implicit upcast).
     pub fn as_collection(self) -> JCollection<T> {
-        self.map_rc(|rc| rc as Rc<super::jref::JCell<dyn JCollectionT<T>>>)
+        self.map_rc(|rc| rc as Arc<super::jref::JCell<dyn JCollectionT<T>>>)
     }
 }
 
+/// Each operation holds the collection's monitor while organisms move on
+/// several threads, if code synchronizes on the collection (`World._organisms`
+/// is a `Collections.synchronizedSet` in Java), see rt/parallel.rs.
 impl<T: Clone + 'static> JRef<dyn JCollectionT<T>> {
+    #[inline]
+    fn sync(&self) -> super::parallel::JMonitorGuard<'static> {
+        super::parallel::collection_guard(self.identity())
+    }
     pub fn size(&self) -> i32 {
+        let _g = self.sync();
         self.get(|c| c.size())
     }
     pub fn isEmpty(&self) -> bool {
         self.size() == 0
     }
     pub fn add(&self, x: T) -> bool {
+        let _g = self.sync();
         self.set(|c| c.add(x))
     }
     pub fn remove(&self, x: &T) -> bool {
+        let _g = self.sync();
         self.set(|c| c.remove(x))
     }
     pub fn contains(&self, x: &T) -> bool {
+        let _g = self.sync();
         self.get(|c| c.contains(x))
     }
     pub fn clear(&self) {
+        let _g = self.sync();
         self.set(|c| c.clear())
     }
     /// The elements, for a for-each loop.
     pub fn snapshot_array(&self) -> JArray<T> {
+        let _g = self.sync();
         JArray::from_vec(self.get(|c| c.snapshot()))
     }
     /// `toArray(a)`: as `List.toArray`.
     pub fn to_array(&self, a: &JArray<T>, null: T) -> JArray<T> {
-        let items: JList<T> = JRef::new(self.get(|c| c.snapshot()));
+        let items: JList<T> = {
+            let _g = self.sync();
+            JRef::new(self.get(|c| c.snapshot()))
+        };
         items.to_array(a, null)
     }
     /// `iterator()`
     pub fn iterator(&self) -> JIter<T> {
+        let _g = self.sync();
         JRef::new(IterState { items: self.get(|c| c.snapshot()), pos: 0, src: self.clone(), last: None })
     }
 }

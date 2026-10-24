@@ -21,7 +21,7 @@ impl OrganismBuckets {
 
     /// Java: OrganismBuckets.java:34 OrganismBuckets(int, int, int)
     pub fn new(mut mapWidth: i32, mut mapHeight: i32, mut bucketSize: i32) -> JRef<Self> {
-        let this = &{ static RECYCLER: JRecycler<OrganismBuckets, 4> = JRecycler::new(); RECYCLER.new_object() };
+        let this = &{ thread_local! { static RECYCLER: JRecycler<OrganismBuckets, 4> = const { JRecycler::new() }; } RECYCLER.with(|r| r.new_object()) };
         Self::__init(this);
         Self::__ctor_new(this, mapWidth, mapHeight, bucketSize);
         this.clone()
