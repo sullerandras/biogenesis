@@ -13,7 +13,10 @@ output. The idea is that this can run in CI on every upstream drop.
 
 - `transpiler/J2R.java`: the translator (JavaParser with type resolution).
   `transpiler/classes.txt` lists the classes it translates; static members of
-  other classes (`Utils`) come in when used. Constructs it doesn't support
+  other classes (`Utils`) come in when used. `source` lines add files that
+  are only parsed for their statics (the JDK's `StrictMath` and `FdLibm`,
+  which `transpile.sh` takes from the JDK's `src.zip`), `static` lines force
+  a static method in. Constructs it doesn't support
   are listed in `core/src/generated/unsupported.txt` and become
   `unimplemented!()`, so that file is the to-do list.
 - `core/src/generated/`: output. Committed so upstream changes show up as a
@@ -22,7 +25,7 @@ output. The idea is that this can run in CI on every upstream drop.
   mutable objects), arrays/lists, `java.util.Random` (bit-exact, including
   `nextGaussian` with fdlibm's `log`), `Math` edge cases (`max`/`min` with
   NaN and -0.0, `round`), `Color` as a value, and the dump.
-- `verify/`: the Java side of the comparison (`Dump.java` writes the same
+- `verify/`: the Java side of the comparisons (`Dump.java` writes the same
   format as `rt/dump.rs`: fields sorted by name, doubles as raw bits, shared
   objects as `@id`, so aliasing is compared too).
 
@@ -39,6 +42,17 @@ output. The idea is that this can run in CI on every upstream drop.
   `/` and `%` use `wrapping_div`/`wrapping_rem` (Java's `MIN / -1`), and shifts
   use `wrapping_shl`/`wrapping_shr` (Java masks the shift count).
 - Casts use `as`, which has Java's semantics (saturating, NaN to 0).
+- `Math.sin`, `cos`, `atan2`, `log10`, `pow`... are `StrictMath`'s, translated
+  from the JDK's `StrictMath.java`/`FdLibm.java` like any other code. HotSpot's
+  `Math.sin`/`cos` don't give fdlibm's bits on arm64 (about 1 call in 16
+  differs in the last bit, interpreted or compiled; on x86_64 `log`, `pow`,
+  `exp` are intrinsics too), so Java's `Math` is not the same on every
+  machine. The reference is `StrictMath`: `verify.sh` compiles the Java side
+  with `Math.sin(` etc. replaced by `StrictMath.sin(`. Shipping the same
+  replacement in the Java build would make Java runs reproducible across
+  machines too.
+- Strings are `JStr` (`Rc<str>`, nullable). `+` and `+=` become one
+  `JStr::cat` of all parts; `char` is a UTF-16 unit (`u16`) as in Java.
 - Statics are thread-locals with getters/setters (`utils::random()`,
   `utils::set_MAX_MUTATION_RATE(..)`). Compile-time constants become `const`.
 - Overloads get the arity appended (`GeneticCode::new1(parent)`,
@@ -47,23 +61,25 @@ output. The idea is that this can run in CI on every upstream drop.
 ## Status
 
 Translated and verified: `Gene`, `GeneticCode` (except `draw`), and the
-parts of `Utils` they use, about 4,000 lines of Java. `verify.sh` compares 10
-runs (5 seeds, normal and high mutation rates, 20 lineages × 60 generations,
-about 1.8M dump lines). They are identical, including which genes a child
-shares with its parent. Changing one constant in the generated code makes the
-comparison fail.
+parts of `Utils` they use, about 4,000 lines of Java, plus `StrictMath`'s 18
+fdlibm functions (`sin` ... `tanh`, 3,500 lines of JDK code). `verify.sh`
+compares 10 genetic code runs (5 seeds, normal and high mutation rates, 20
+lineages × 60 generations, about 1.8M dump lines), including which genes a
+child shares with its parent, and every fdlibm function on 400,000 random
+arguments (NaN, infinities and huge values included). They are identical.
+Changing one constant in the generated code makes the comparison fail.
 
 A trial run on `Organism` + `World` + `Vector2D` + `ExLine2DDouble` (34k lines)
-reports 180 unsupported constructs. What they are:
+compiles, and reports 92 unsupported constructs (down from 180: strings and
+math are done). What is left:
 
 | What | Count | Work |
 |------|------:|------|
-| `Integer.toHexString`, string `+`/`+=`, `toCharArray` (clade IDs) | ~55 | String support in rt (Java's int/double formatting) |
-| `extends Rectangle` / `Line2D.Double`, `intersectsLine`, `setLine`, `setBounds` | ~25 | Base classes in rt, ported from the JDK's geometry code |
-| `Math.sin/cos/atan2/log10/pow` | ~25 | fdlibm ports. **Caveat:** HotSpot uses intrinsics for some of these (Intel libm on x86_64), so Java itself may not give the same bits on every machine. Check on each platform, or decide which one is the reference. |
-| `VisibleWorldInterface`, `InfoToolbar`, `WorldStatistics`, `Graphics`, `BufferedImage` | ~25 | GUI/statistics links: skip or stub (config `skip` lines) |
-| Corridors, `OrganismBuckets`, `ParallelExecutor`, `Iterator`/`Collection` | ~20 | More classes in the list, plus collections in rt |
+| `extends Rectangle` / `Line2D.Double`, `intersectsLine`, `setLine`, `setBounds`, `Point`, `Point2D`, `Dimension` | ~30 | Base classes in rt, ported from the JDK's geometry code |
+| `VisibleWorldInterface`, `InfoToolbar`, `WorldStatistics`, `Graphics`, `BufferedImage`, `ObjectInputStream` | ~30 | GUI/statistics links: skip or stub (config `skip` lines) |
+| `Iterator`/`Collection`, Corridors, `OrganismBuckets`, `ParallelExecutor`, `Stream.count` | ~25 | More classes in the list, plus collections in rt |
 | `switch` fall-through | 4 | Translator: lower to a chain of labeled blocks |
+| `equals(Object)` with `instanceof` | 1 | Translator |
 
 ## Not done / next steps
 
