@@ -215,3 +215,36 @@ mod tests {
         assert_eq!(round_f32(-2.5), -2);
     }
 }
+
+/// `Math.scalb(double, int)`, the JDK 25 algorithm (Math.java): d × 2^n with
+/// a single rounding, done as products of exact powers of two.
+pub fn scalb(d: f64, n: i32) -> f64 {
+    const EXP_BIAS: i32 = 1023;
+    const PRECISION: i32 = 53;
+    const F_UP: f64 = f64::from_bits(0x7FE0_0000_0000_0000); // 2^1023
+    const F_DOWN: f64 = f64::from_bits(0x0008_0000_0000_0000); // 2^-1023
+    if n > -EXP_BIAS {
+        if n <= EXP_BIAS {
+            return d * power_of_two_d(n);
+        }
+        if n <= 2 * EXP_BIAS {
+            return d * power_of_two_d(n - EXP_BIAS) * F_UP;
+        }
+        if n < 2 * EXP_BIAS + PRECISION - 1 {
+            return d * power_of_two_d(n - 2 * EXP_BIAS) * F_UP * F_UP;
+        }
+        return d * F_UP * F_UP * F_UP;
+    }
+    if n > -2 * EXP_BIAS {
+        return d * power_of_two_d(n + EXP_BIAS) * F_DOWN;
+    }
+    if n > -2 * EXP_BIAS - PRECISION {
+        return d * power_of_two_d(n + 2 * EXP_BIAS) * F_DOWN * F_DOWN;
+    }
+    d * f64::from_bits(1) * f64::from_bits(1)
+}
+
+/// `Math.powerOfTwoD(int)`: 2^n for n in the normal range.
+pub fn power_of_two_d(n: i32) -> f64 {
+    f64::from_bits(((n + 1023) as i64 as u64) << 52)
+}

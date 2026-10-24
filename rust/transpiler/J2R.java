@@ -45,11 +45,13 @@ import java.util.TreeMap;
 /**
  * Translates a subset of Java (the Biogenesis simulation classes) to Rust.
  *
- * Usage: J2R <java src root> <config> <out dir> [jars for type resolution...]
+ * Usage: J2R <java src root>[:<more roots>] <config> <out dir> [jars for type resolution...]
  *
  * The config lists the classes to translate:
  *   class biogenesis.Gene                       instance fields, constructors, methods
  *   skip biogenesis.GeneticCode.draw(java.awt.Graphics, int, int)
+ *   source java.lang.StrictMath                 parse this file too, for its statics
+ *   static java.lang.StrictMath.sin(double)     translate this static method even if unused
  * Static fields and methods of any class are translated only when the
  * translated code uses them (transitively), so Utils comes in on demand.
  *
@@ -173,7 +175,7 @@ public class J2R {
 	final List<String> problems = new ArrayList<>();
 
 	/** Static members (MethodDeclaration or VariableDeclarator) to emit, in the order they were needed. */
-	final Set<Node> neededStatics = new java.util.HashSet<>();
+	final Set<Node> neededStatics = java.util.Collections.newSetFromMap(new java.util.IdentityHashMap<>()); // Node.equals is structural
 	final Deque<Node> staticWork = new ArrayDeque<>();
 
 	/** Rust names of methods and constructors: "cls.signature" -> name. */
@@ -181,16 +183,19 @@ public class J2R {
 
 	public static void main(String[] args) throws IOException {
 		if (args.length < 3) {
-			System.err.println("usage: J2R <java src root> <config> <out dir> [jars...]");
+			System.err.println("usage: J2R <java src root>[:<more roots>] <config> <out dir> [jars...]");
 			System.exit(2);
 		}
 		J2R t = new J2R();
-		int rc = t.run(Paths.get(args[0]), Paths.get(args[1]), Paths.get(args[2]), java.util.Arrays.copyOfRange(args, 3, args.length));
+		List<Path> roots = new ArrayList<>();
+		for (String r : args[0].split(":")) roots.add(Paths.get(r));
+		int rc = t.run(roots, Paths.get(args[1]), Paths.get(args[2]), java.util.Arrays.copyOfRange(args, 3, args.length));
 		System.exit(rc);
 	}
 
-	int run(Path srcRoot, Path configFile, Path outDir, String[] jars) throws IOException {
-		CombinedTypeSolver types = new CombinedTypeSolver(new ReflectionTypeSolver(true), new JavaParserTypeSolver(srcRoot));
+	int run(List<Path> roots, Path configFile, Path outDir, String[] jars) throws IOException {
+		CombinedTypeSolver types = new CombinedTypeSolver(new ReflectionTypeSolver(true));
+		for (Path r : roots) types.add(new JavaParserTypeSolver(r));
 		for (String j : jars) types.add(new JarTypeSolver(Paths.get(j)));
 		ParserConfiguration pc = new ParserConfiguration()
 				.setLanguageLevel(ParserConfiguration.LanguageLevel.JAVA_17)
@@ -198,32 +203,43 @@ public class J2R {
 		JavaParser parser = new JavaParser(pc);
 
 		List<String> wanted = new ArrayList<>();
+		List<String> sources = new ArrayList<>();
+		List<String> forced = new ArrayList<>();
 		for (String line : Files.readAllLines(configFile)) {
 			line = line.replaceAll("#.*", "").trim();
 			if (line.isEmpty()) continue;
 			String[] w = line.split("\\s+", 2);
 			if (w[0].equals("class")) wanted.add(w[1]);
 			else if (w[0].equals("skip")) skip.add(w[1].replace(" ", ""));
+			else if (w[0].equals("source")) sources.add(w[1]);
+			else if (w[0].equals("static")) forced.add(w[1].replace(" ", ""));
 			else throw new IllegalArgumentException("config: " + line);
 		}
 
 		// Parse every file of the package(s) the wanted classes are in, so
 		// statics of other classes (Utils) can be found.
-		Set<Path> dirs = new LinkedHashSet<>();
-		for (String q : wanted) dirs.add(srcRoot.resolve(q.substring(0, q.lastIndexOf('.')).replace('.', '/')));
-		for (Path dir : dirs) {
+		Set<Path> files = new LinkedHashSet<>();
+		for (String q : wanted) {
+			Path dir = find(roots, q.substring(0, q.lastIndexOf('.')).replace('.', '/'));
 			try (java.util.stream.Stream<Path> s = Files.list(dir)) {
-				for (Path f : (Iterable<Path>) s.filter(p -> p.toString().endsWith(".java")).sorted()::iterator) {
-					ParseResult<CompilationUnit> r = parser.parse(new String(Files.readAllBytes(f), StandardCharsets.UTF_8));
-					if (!r.isSuccessful()) throw new IllegalStateException(f + ": " + r.getProblems());
-					CompilationUnit cu = r.getResult().get();
-					for (ClassOrInterfaceDeclaration c : cu.findAll(ClassOrInterfaceDeclaration.class)) {
-						c.getFullyQualifiedName().ifPresent(q -> {
-							allTypes.put(q, c);
-							fileOf.put(q, f.getFileName().toString());
-						});
-					}
-				}
+				s.filter(p -> p.toString().endsWith(".java")).sorted().forEach(files::add);
+			}
+		}
+		for (String q : sources) files.add(find(roots, q.replace('.', '/') + ".java"));
+		for (Path f : files) {
+			ParseResult<CompilationUnit> r = parser.parse(new String(Files.readAllBytes(f), StandardCharsets.UTF_8));
+			if (!r.isSuccessful()) throw new IllegalStateException(f + ": " + r.getProblems());
+			CompilationUnit cu = r.getResult().get();
+			for (ClassOrInterfaceDeclaration c : cu.findAll(ClassOrInterfaceDeclaration.class)) {
+				c.getFullyQualifiedName().ifPresent(q -> {
+					allTypes.put(q, c);
+					fileOf.put(q, f.getFileName().toString());
+					// Nested classes are named after the whole chain: FdLibm.Sin -> fd_libm_sin
+					String chain = c.getNameAsString();
+					for (Node n = c.getParentNode().orElse(null); n instanceof ClassOrInterfaceDeclaration; n = n.getParentNode().orElse(null))
+						chain = ((ClassOrInterfaceDeclaration) n).getNameAsString() + chain;
+					moduleOf.put(q, snake(chain));
+				});
 			}
 		}
 		for (String q : wanted) {
@@ -232,11 +248,18 @@ public class J2R {
 			classes.put(q, c);
 		}
 		for (ClassOrInterfaceDeclaration c : classes.values()) nameCallables(c);
+		for (String r : forced) {
+			int dot = r.lastIndexOf('.', r.indexOf('('));
+			String owner = r.substring(0, dot);
+			if (!allTypes.containsKey(owner)) throw new IllegalArgumentException("config: no source for " + owner);
+			nameCallables(allTypes.get(owner));
+			needStatic(method(owner, r.substring(dot + 1)));
+		}
 
 		Files.createDirectories(outDir);
-		Map<String, StringBuilder> files = new TreeMap<>();
+		Map<String, StringBuilder> out = new TreeMap<>();
 		for (Map.Entry<String, ClassOrInterfaceDeclaration> e : classes.entrySet()) {
-			files.put(e.getKey(), new StringBuilder(translateClass(e.getValue())));
+			out.put(e.getKey(), new StringBuilder(translateClass(e.getValue())));
 		}
 		// Statics, on demand (translating one may need more).
 		Map<String, StringBuilder> staticOut = new LinkedHashMap<>();
@@ -248,23 +271,23 @@ public class J2R {
 			staticOut.computeIfAbsent(owner, o -> new StringBuilder()).append(code);
 		}
 		for (Map.Entry<String, StringBuilder> e : staticOut.entrySet()) {
-			files.computeIfAbsent(e.getKey(), k -> new StringBuilder()).append("\n// ---- statics\n").append(e.getValue());
+			out.computeIfAbsent(e.getKey(), k -> new StringBuilder()).append("\n// ---- statics\n").append(e.getValue());
 		}
 
 		StringBuilder mod = new StringBuilder(HEADER_MOD);
-		for (String q : files.keySet()) {
+		for (String q : out.keySet()) {
 			String m = moduleName(q);
 			mod.append("pub mod ").append(m).append(";\n");
 		}
 		mod.append("\n");
-		for (String q : files.keySet()) {
+		for (String q : out.keySet()) {
 			if (classes.containsKey(q)) mod.append("pub use ").append(moduleName(q)).append("::").append(simple(q)).append(";\n");
 		}
 		write(outDir.resolve("mod.rs"), mod.toString());
-		for (Map.Entry<String, StringBuilder> e : files.entrySet()) {
+		for (Map.Entry<String, StringBuilder> e : out.entrySet()) {
 			String src = "// Generated by rust/transpiler/J2R.java from " + fileOf.get(e.getKey()) + ". Do not edit.\n\n"
 					+ "#![allow(non_snake_case, non_upper_case_globals, unused_mut, unused_parens, unused_variables,\n"
-					+ "    unused_assignments, unused_labels, unreachable_code, dead_code, clippy::all)]\n\n"
+					+ "    unused_assignments, unused_labels, unused_imports, unreachable_code, dead_code, while_true, clippy::all)]\n\n"
 					+ "use crate::rt::*;\nuse super::*;\n\n" + e.getValue();
 			write(outDir.resolve(moduleName(e.getKey()) + ".rs"), src);
 		}
@@ -272,7 +295,7 @@ public class J2R {
 		StringBuilder report = new StringBuilder();
 		for (String p : problems) report.append(p).append('\n');
 		write(outDir.resolve("unsupported.txt"), report.toString());
-		System.out.println("J2R: " + files.size() + " modules, " + problems.size() + " unsupported constructs"
+		System.out.println("J2R: " + out.size() + " modules, " + problems.size() + " unsupported constructs"
 				+ (problems.isEmpty() ? "" : " (see " + outDir.resolve("unsupported.txt") + ")"));
 		for (int i = 0; i < Math.min(problems.size(), 20); i++) System.out.println("  " + problems.get(i));
 		return problems.isEmpty() ? 0 : 1;
@@ -286,8 +309,19 @@ public class J2R {
 
 	static String simple(String q) { return q.substring(q.lastIndexOf('.') + 1); }
 
-	static String moduleName(String q) {
-		return simple(q).replaceAll("([a-z0-9])([A-Z])", "$1_$2").toLowerCase();
+	static Path find(List<Path> roots, String rel) {
+		for (Path r : roots) if (Files.exists(r.resolve(rel))) return r.resolve(rel);
+		throw new IllegalArgumentException("not found in source roots: " + rel);
+	}
+
+	final Map<String, String> moduleOf = new HashMap<>();
+
+	String moduleName(String q) {
+		return moduleOf.getOrDefault(q, snake(simple(q)));
+	}
+
+	static String snake(String name) {
+		return name.replaceAll("([a-z0-9])([A-Z])", "$1_$2").toLowerCase();
 	}
 
 	String ownerOf(Node n) {
@@ -964,7 +998,7 @@ public class J2R {
 		}
 		if (e.isIntegerLiteralExpr()) {
 			Number v = e.asIntegerLiteralExpr().asNumber();
-			Ex r = new Ex(v.intValue() < 0 ? "(" + v + ")" : v.toString(), INT, true);
+			Ex r = new Ex(v.intValue() < 0 ? "(" + v + "i32)" : v.toString(), INT, true);
 			r.intLit = v.longValue();
 			return r;
 		}
@@ -975,7 +1009,7 @@ public class J2R {
 			return r;
 		}
 		if (e.isDoubleLiteralExpr()) {
-			String s = e.asDoubleLiteralExpr().getValue();
+			String s = e.asDoubleLiteralExpr().getValue().replace("_", "");
 			boolean isFloat = s.endsWith("f") || s.endsWith("F");
 			if (isFloat) return new Ex(floatLit(Float.parseFloat(s)), FLOAT, true);
 			return new Ex(doubleLit(Double.parseDouble(s)), DOUBLE, true);
@@ -1190,7 +1224,9 @@ public class J2R {
 				x = coerce(x, t, u);
 				Ex r = new Ex("-" + paren(x.code), t, x.pure);
 				if (x.intLit != null) {
-					r = new Ex("(-" + x.code + ")", t, true);
+					// suffixed: in `(-5) as u32` Rust would infer the literal as u32
+					boolean digits = x.code.matches("[0-9]+");
+					r = new Ex("(-" + x.code + (digits && t.k == K.INT ? "i32" : "") + ")", t, true);
 					r.intLit = -x.intLit;
 				}
 				return r;
@@ -1549,6 +1585,8 @@ public class J2R {
 			case "java.awt.Color": return colorCall(m, name, sig);
 			case "java.lang.String": return stringCall(m, name, sig);
 			case "java.lang.Integer": return integerCall(m, sig);
+			case "java.lang.Double": return doubleCall(m, sig);
+			case "java.lang.Long": return longCall(m, sig);
 			case "java.util.List":
 			case "java.util.ArrayList":
 			case "java.util.Collection":
@@ -1630,10 +1668,56 @@ public class J2R {
 			case "round(double)": return new Ex("jmath::round_f64(" + coerce(a[0], DOUBLE, m).code + ")", LONG, pure);
 			case "round(float)": return new Ex("jmath::round_f32(" + coerce(a[0], FLOAT, m).code + ")", INT, pure);
 			case "signum(double)": return new Ex("jmath::signum_f64(" + coerce(a[0], DOUBLE, m).code + ")", DOUBLE, pure);
-			case "log(double)":
-				if (owner.equals("java.lang.StrictMath")) return new Ex("jmath::strict_log(" + coerce(a[0], DOUBLE, m).code + ")", DOUBLE, pure);
-				// fall through: Math.log may be a HotSpot intrinsic, see README
-			default: throw new Unsupported(simple(owner) + "." + sig);
+			case "powerOfTwoD(int)": return new Ex("jmath::power_of_two_d(" + coerce(a[0], INT, m).code + ")", DOUBLE, pure);
+			case "scalb(double,int)": return new Ex("jmath::scalb(" + coerce(a[0], DOUBLE, m).code + ", " + coerce(a[1], INT, m).code + ")", DOUBLE, pure);
+			default: break;
+		}
+		if (FDLIBM.contains(name) && sig.matches(name + "\\(double(,double)?\\)")) {
+			// Math.sin etc. are StrictMath's (fdlibm) results here, translated from
+			// the JDK's own source. HotSpot's Math.sin differs from it on some
+			// platforms, so the Java side of the comparison uses StrictMath too.
+			List<String> codes = new ArrayList<>();
+			for (Ex x : a) codes.add(coerce(x, DOUBLE, m).code);
+			return callStatic("java.lang.StrictMath", sig, codes, DOUBLE);
+		}
+		throw new Unsupported(simple(owner) + "." + sig);
+	}
+
+	static final Set<String> FDLIBM = new java.util.HashSet<>(java.util.Arrays.asList("sin", "cos", "tan", "asin", "acos", "atan",
+			"atan2", "exp", "log", "log10", "log1p", "expm1", "pow", "cbrt", "hypot", "sinh", "cosh", "tanh"));
+
+	/** A static method translated from source (pulled in on demand). */
+	Ex callStatic(String owner, String sig, List<String> args, JT ret) {
+		if (!allTypes.containsKey(owner)) throw new Unsupported(simple(owner) + "." + sig + " needs 'source " + owner + "' in the config");
+		MethodDeclaration md = method(owner, sig);
+		if (!callableNames.containsKey(owner + "." + sig)) nameCallables(allTypes.get(owner));
+		needStatic(md);
+		return new Ex(moduleName(owner) + "::" + callableNames.get(owner + "." + sig) + "(" + String.join(", ", args) + ")", ret, false);
+	}
+
+	/** Integer/Long.compareUnsigned: -1, 0 or 1, like the JDK's. */
+	Ex compareUnsigned(MethodCallExpr m, JT t) {
+		String u = t.k == K.LONG ? "u64" : "u32";
+		String a = coerce(expr(m.getArguments().get(0)), t, m).code, b = coerce(expr(m.getArguments().get(1)), t, m).code;
+		return new Ex("((" + a + " as " + u + ").cmp(&(" + b + " as " + u + ")) as i32)", INT, false);
+	}
+
+	Ex longCall(MethodCallExpr m, String sig) {
+		switch (sig) {
+			case "compareUnsigned(long,long)": return compareUnsigned(m, LONG);
+			default: throw new Unsupported("Long." + sig);
+		}
+	}
+
+	Ex doubleCall(MethodCallExpr m, String sig) {
+		List<Expression> as = m.getArguments();
+		switch (sig) {
+			case "doubleToRawLongBits(double)": return new Ex("(" + paren(coerce(expr(as.get(0)), DOUBLE, m).code) + ".to_bits() as i64)", LONG, false);
+			case "longBitsToDouble(long)": return new Ex("f64::from_bits(" + coerce(expr(as.get(0)), LONG, m).code + " as u64)", DOUBLE, false);
+			case "isNaN(double)": return new Ex(paren(coerce(expr(as.get(0)), DOUBLE, m).code) + ".is_nan()", BOOL, false);
+			case "isInfinite(double)": return new Ex(paren(coerce(expr(as.get(0)), DOUBLE, m).code) + ".is_infinite()", BOOL, false);
+			case "isFinite(double)": return new Ex(paren(coerce(expr(as.get(0)), DOUBLE, m).code) + ".is_finite()", BOOL, false);
+			default: throw new Unsupported("Double." + sig);
 		}
 	}
 
@@ -1671,6 +1755,7 @@ public class J2R {
 		switch (sig) {
 			case "toHexString(int)": return new Ex("jstr::to_hex_string(" + coerce(expr(m.getArguments().get(0)), INT, m).code + ")", STRING, false);
 			case "toString(int)": return new Ex("jstr::int_to_string(" + coerce(expr(m.getArguments().get(0)), INT, m).code + ")", STRING, false);
+			case "compareUnsigned(int,int)": return compareUnsigned(m, INT);
 			default: throw new Unsupported("Integer." + sig);
 		}
 	}

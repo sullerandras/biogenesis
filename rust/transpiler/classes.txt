@@ -5,3 +5,26 @@ class biogenesis.GeneticCode
 
 # Not part of the simulation: drawing for the GUI.
 skip biogenesis.GeneticCode.draw(java.awt.Graphics,int,int)
+
+# Math.sin, Math.log etc. are translated from the JDK's StrictMath (fdlibm).
+source java.lang.StrictMath
+source java.lang.FdLibm
+# Always translated, so rust/verify.sh can compare them (MathCheck).
+static java.lang.StrictMath.sin(double)
+static java.lang.StrictMath.cos(double)
+static java.lang.StrictMath.tan(double)
+static java.lang.StrictMath.asin(double)
+static java.lang.StrictMath.acos(double)
+static java.lang.StrictMath.atan(double)
+static java.lang.StrictMath.atan2(double,double)
+static java.lang.StrictMath.exp(double)
+static java.lang.StrictMath.log(double)
+static java.lang.StrictMath.log10(double)
+static java.lang.StrictMath.log1p(double)
+static java.lang.StrictMath.expm1(double)
+static java.lang.StrictMath.pow(double,double)
+static java.lang.StrictMath.cbrt(double)
+static java.lang.StrictMath.hypot(double,double)
+static java.lang.StrictMath.sinh(double)
+static java.lang.StrictMath.cosh(double)
+static java.lang.StrictMath.tanh(double)
