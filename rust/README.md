@@ -138,6 +138,18 @@ translation is exact but not yet fast; see below.
 
 ## Not done / next steps
 
+Picking up: `rust/transpile.sh && rust/verify.sh` must print only "same"
+lines (about 3 minutes). Speed baseline, to compare against after changes:
+
+    java --add-opens java.base/java.util=ALL-UNNAMED -cp rust/build/java-classes:lib/gson-2.10.1.jar \
+        biogenesis.WorldCheck new 3 3000 3000 3000 2000 every 0      # 43 s
+    rust/core/target/release/world_check new 3 3000 3000 3000 2000 every 0   # 74 s
+    # both print: frame 2000 population 13213 organisms 13760 hash 82c26c3df8ccda5a
+
+When a world run differs, `full N` prints the whole state of frame N on
+both sides (as a save file); diff the two to find the first wrong field.
+
+
 1. Performance: `RefCell` checks and `Rc` clones on every access are the
    price of correctness so far. Now that it is exact, swap `JRef` internals
    (`UnsafeCell`, fewer clones of `this` fields), keep the collision checks'
