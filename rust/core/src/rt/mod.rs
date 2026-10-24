@@ -5,6 +5,7 @@
 
 pub mod color;
 pub mod dump;
+pub mod geom;
 pub mod jmath;
 pub mod jref;
 pub mod jstr;
@@ -12,6 +13,7 @@ pub mod random;
 
 pub use color::Color;
 pub use dump::{Dumper, JDump, JDumpTarget};
+pub use geom::{Line2D, Line2DT, Point, Point2D, Rectangle, RectangleT};
 pub use jref::{JArray, JList, JRef};
 pub use jstr::{JStr, JToString};
 pub use random::Random;

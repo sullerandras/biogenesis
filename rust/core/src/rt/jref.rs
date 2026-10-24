@@ -11,7 +11,9 @@ use std::rc::Rc;
 
 use super::throw;
 
-pub struct JRef<T>(Option<Rc<RefCell<T>>>);
+/// `T` may be a trait object (`JRef<dyn RectangleT>`), for variables of a
+/// class type that subclasses are assigned to.
+pub struct JRef<T: ?Sized>(Option<Rc<RefCell<T>>>);
 
 /// A Java array: a reference to a fixed-length vector.
 pub type JArray<T> = JRef<Vec<T>>;
@@ -19,14 +21,14 @@ pub type JArray<T> = JRef<Vec<T>>;
 /// A `java.util.List` (always an `ArrayList` in the code we translate).
 pub type JList<T> = JRef<Vec<T>>;
 
-impl<T> Clone for JRef<T> {
+impl<T: ?Sized> Clone for JRef<T> {
     #[inline]
     fn clone(&self) -> Self {
         JRef(self.0.clone())
     }
 }
 
-impl<T> Default for JRef<T> {
+impl<T: ?Sized> Default for JRef<T> {
     #[inline]
     fn default() -> Self {
         JRef(None)
@@ -39,6 +41,15 @@ impl<T> JRef<T> {
         JRef(Some(Rc::new(RefCell::new(value))))
     }
 
+    /// The same object (or null) as another type: used for upcasts to trait
+    /// objects, `self.map_rc(|rc| rc as Rc<RefCell<dyn Trait>>)`.
+    #[inline]
+    pub fn map_rc<U: ?Sized>(self, f: impl FnOnce(Rc<RefCell<T>>) -> Rc<RefCell<U>>) -> JRef<U> {
+        JRef(self.0.map(f))
+    }
+}
+
+impl<T: ?Sized> JRef<T> {
     #[inline]
     pub const fn null() -> Self {
         JRef(None)
@@ -57,11 +68,12 @@ impl<T> JRef<T> {
         }
     }
 
-    /// Java `==` on references.
+    /// Java `==` on references (the static types may differ: a subclass
+    /// object and a base class variable).
     #[inline]
-    pub fn ptr_eq(a: &Self, b: &Self) -> bool {
+    pub fn ptr_eq<U: ?Sized>(a: &Self, b: &JRef<U>) -> bool {
         match (&a.0, &b.0) {
-            (Some(x), Some(y)) => Rc::ptr_eq(x, y),
+            (Some(x), Some(y)) => std::ptr::addr_eq(Rc::as_ptr(x), Rc::as_ptr(y)),
             (None, None) => true,
             _ => false,
         }

@@ -64,7 +64,7 @@ pub trait JDumpTarget {
     fn dump_target(&self, d: &mut Dumper, id: usize);
 }
 
-impl<T: JDumpTarget + 'static> JDump for JRef<T> {
+impl<T: JDumpTarget + ?Sized + 'static> JDump for JRef<T> {
     fn dump(&self, d: &mut Dumper) {
         let Some(ptr) = self.identity() else {
             d.raw("null");

@@ -34,6 +34,7 @@ check() {
 }
 for seed in 1 2; do
 	check "math-$seed" MathCheck math_check "$seed" 200000
+	check "geom-$seed" GeomCheck geom_check "$seed" 300000
 done
 for seed in 1 2 3 42 1234567; do
 	check "genetic-$seed" GeneticCodeCheck genetic_code_check "$seed" 20 60

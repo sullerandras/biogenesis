@@ -64,12 +64,12 @@ public class J2R {
 
 	// ---------------------------------------------------------------- types
 
-	enum K { INT, LONG, DOUBLE, FLOAT, BOOL, CHAR, BYTE, SHORT, VOID, STRING, COLOR, RANDOM, CLASS, ARRAY, LIST, NULL, OBJECT }
+	enum K { INT, LONG, DOUBLE, FLOAT, BOOL, CHAR, BYTE, SHORT, VOID, STRING, COLOR, RANDOM, CLASS, ARRAY, LIST, NULL, OBJECT, GEOM }
 
 	/** A Java type, as far as the translation cares. */
 	static final class JT {
 		final K k;
-		final String cls;  // CLASS: qualified name
+		final String cls;  // CLASS: qualified name; GEOM: the rt struct (see GEO)
 		final JT elem;     // ARRAY, LIST
 		JT(K k, String cls, JT elem) { this.k = k; this.cls = cls; this.elem = elem; }
 		static JT of(K k) { return new JT(k, null, null); }
@@ -128,6 +128,7 @@ public class J2R {
 				}
 			}
 			if (classes.containsKey(q)) return new JT(K.CLASS, q, null);
+			if (GEO_TYPES.containsKey(q)) return new JT(K.GEOM, GEO_TYPES.get(q), null);
 			throw new Unsupported("type " + q);
 		}
 		throw new Unsupported("type " + t.describe());
@@ -148,6 +149,10 @@ public class J2R {
 			case COLOR: return "Color";
 			case RANDOM: return "JRef<Random>";
 			case CLASS: return "JRef<" + simple(t.cls) + ">";
+			case GEOM: {
+				Geo g = GEO.get(t.cls);
+				return g.trait != null ? "JRef<dyn " + g.trait + ">" : "JRef<" + t.cls + ">";
+			}
 			case ARRAY: return "JArray<" + rust(t.elem) + ">";
 			case LIST: return "JList<" + rust(t.elem) + ">";
 			default: throw new Unsupported("rust type for " + t);
@@ -164,6 +169,94 @@ public class J2R {
 			case COLOR: return "Color::NULL";
 			default: return "JRef::null()";
 		}
+	}
+
+	// ---------------------------------------------------------------- java.awt geometry
+
+	/**
+	 * The JDK geometry classes are hand-written structs in rt/geom.rs. The ones
+	 * the simulation extends (Rectangle, Line2D.Double) are used through a trait,
+	 * so a variable of that type is a JRef<dyn RectangleT> and can hold a
+	 * subclass; a translated subclass keeps its base part in `__super`.
+	 */
+	static final class Geo {
+		final String trait, acc, upcast; // null for the ones nobody extends
+		final List<String> fields;       // instance fields, sorted (dump order)
+		Geo(String trait, String acc, String upcast, String... fields) {
+			this.trait = trait; this.acc = acc; this.upcast = upcast; this.fields = java.util.Arrays.asList(fields);
+		}
+	}
+
+	static final Map<String, Geo> GEO = new HashMap<>();
+	/** Java types of variables -> rt struct. */
+	static final Map<String, String> GEO_TYPES = new HashMap<>();
+	/** Classes declaring the fields and methods -> rt struct. */
+	static final Map<String, String> GEO_OWNERS = new HashMap<>();
+	static {
+		GEO.put("Rectangle", new Geo("RectangleT", "rect", "as_rectangle", "height", "width", "x", "y"));
+		GEO.put("Line2D", new Geo("Line2DT", "line", "as_line2d", "x1", "x2", "y1", "y2"));
+		GEO.put("Point", new Geo(null, null, null, "x", "y"));
+		GEO.put("Point2D", new Geo(null, null, null, "x", "y"));
+		GEO_TYPES.put("java.awt.Rectangle", "Rectangle");
+		GEO_TYPES.put("java.awt.geom.Line2D", "Line2D"); // only ever a Line2D.Double here
+		GEO_TYPES.put("java.awt.geom.Line2D.Double", "Line2D");
+		GEO_TYPES.put("java.awt.Point", "Point");
+		GEO_TYPES.put("java.awt.geom.Point2D.Double", "Point2D");
+		GEO_OWNERS.putAll(GEO_TYPES);
+		GEO_OWNERS.put("java.awt.geom.Rectangle2D", "Rectangle");
+		GEO_OWNERS.put("java.awt.geom.RectangularShape", "Rectangle");
+		GEO_OWNERS.put("java.awt.geom.Point2D", "Point2D");
+	}
+
+	/** A JDK geometry method: rt method name, whether it changes the object, return type. */
+	static final class GeoMethod {
+		final String rust; final boolean mut; final JT ret;
+		GeoMethod(String rust, boolean mut, JT ret) { this.rust = rust; this.mut = mut; this.ret = ret; }
+	}
+
+	static final Map<String, GeoMethod> GEO_METHODS = new HashMap<>();
+	static {
+		GEO_METHODS.put("setBounds(int,int,int,int)", new GeoMethod("setBounds", true, VOID));
+		GEO_METHODS.put("setBounds(java.awt.Rectangle)", new GeoMethod("setBounds_rect", true, VOID));
+		GEO_METHODS.put("intersects(java.awt.Rectangle)", new GeoMethod("intersects", false, BOOL));
+		GEO_METHODS.put("contains(int,int)", new GeoMethod("contains", false, BOOL));
+		GEO_METHODS.put("intersectsLine(java.awt.geom.Line2D)", new GeoMethod("intersectsLine", false, BOOL));
+		GEO_METHODS.put("intersectsLine(double,double,double,double)", new GeoMethod("intersectsLine_xy", false, BOOL));
+		GEO_METHODS.put("isEmpty()", new GeoMethod("isEmpty", false, BOOL));
+		GEO_METHODS.put("getX()", new GeoMethod("getX", false, DOUBLE));
+		GEO_METHODS.put("getY()", new GeoMethod("getY", false, DOUBLE));
+		GEO_METHODS.put("getWidth()", new GeoMethod("getWidth", false, DOUBLE));
+		GEO_METHODS.put("getHeight()", new GeoMethod("getHeight", false, DOUBLE));
+		GEO_METHODS.put("setLine(double,double,double,double)", new GeoMethod("setLine", true, VOID));
+		GEO_METHODS.put("getX1()", new GeoMethod("getX1", false, DOUBLE));
+		GEO_METHODS.put("getY1()", new GeoMethod("getY1", false, DOUBLE));
+		GEO_METHODS.put("getX2()", new GeoMethod("getX2", false, DOUBLE));
+		GEO_METHODS.put("getY2()", new GeoMethod("getY2", false, DOUBLE));
+		GEO_METHODS.put("distanceSq(java.awt.geom.Point2D)", new GeoMethod("distanceSq", false, DOUBLE));
+		GEO_METHODS.put("getP1()", new GeoMethod("getP1", false, new JT(K.GEOM, "Point2D", null)));
+		GEO_METHODS.put("getP2()", new GeoMethod("getP2", false, new JT(K.GEOM, "Point2D", null)));
+	}
+
+	/** Translated classes extending a geometry class -> its rt struct. */
+	final Map<String, String> superGeom = new HashMap<>();
+
+	/** Path from an object of type t (the closure's `o`) to the geometry struct inside it. */
+	String geoPath(JT t, boolean write) {
+		if (t.k == K.CLASS) {
+			if (!superGeom.containsKey(t.cls)) throw new Unsupported("geometry member of " + t.cls);
+			return "o.__super";
+		}
+		if (t.k == K.GEOM) {
+			Geo g = GEO.get(t.cls);
+			return g.trait == null ? "o" : "o." + g.acc + (write ? "_mut()" : "()");
+		}
+		throw new Unsupported("geometry member of " + t);
+	}
+
+	/** A copy of the geometry struct of x (arguments of JDK methods). */
+	String geoValue(Ex x) {
+		String p = geoPath(x.t, false);
+		return recvRef(x) + ".get(|o| " + (p.endsWith(")") || p.equals("o") ? "*" + p : p) + ")";
 	}
 
 	// ---------------------------------------------------------------- setup
@@ -248,6 +341,11 @@ public class J2R {
 			classes.put(q, c);
 		}
 		for (ClassOrInterfaceDeclaration c : classes.values()) nameCallables(c);
+		for (Map.Entry<String, ClassOrInterfaceDeclaration> e : classes.entrySet()) {
+			if (e.getValue().getExtendedTypes().size() != 1) continue;
+			String base = e.getValue().getExtendedTypes().get(0).resolve().asReferenceType().getQualifiedName();
+			if (GEO_TYPES.containsKey(base) && GEO.get(GEO_TYPES.get(base)).trait != null) superGeom.put(e.getKey(), GEO_TYPES.get(base));
+		}
 		for (String r : forced) {
 			int dot = r.lastIndexOf('.', r.indexOf('('));
 			String owner = r.substring(0, dot);
@@ -378,7 +476,8 @@ public class J2R {
 		curClass = q;
 		String name = simple(q);
 		StringBuilder out = new StringBuilder();
-		if (c.getExtendedTypes().size() > 0) problem(c, "class extends " + c.getExtendedTypes());
+		String base = superGeom.get(q);
+		if (c.getExtendedTypes().size() > 0 && base == null) problem(c, "class extends " + c.getExtendedTypes());
 
 		List<VariableDeclarator> fields = new ArrayList<>();
 		List<VariableDeclarator> inits = new ArrayList<>();
@@ -391,6 +490,7 @@ public class J2R {
 		}
 		out.append("/// Java: ").append(fileOf.get(q)).append(":").append(line(c)).append("\n");
 		out.append("#[derive(Clone, Default)]\npub struct ").append(name).append(" {\n");
+		if (base != null) out.append("    /// Java: extends ").append(c.getExtendedTypes().get(0)).append("\n    pub __super: ").append(base).append(",\n");
 		List<VariableDeclarator> failed = new ArrayList<>();
 		for (VariableDeclarator v : fields) {
 			try {
@@ -433,14 +533,21 @@ public class J2R {
 		}
 		out.append("}\n\n");
 
-		// Dump, fields sorted by name (the Java harness sorts the same way).
-		List<VariableDeclarator> sorted = new ArrayList<>(fields);
-		sorted.removeAll(failed);
-		sorted.sort((a, b) -> a.getNameAsString().compareTo(b.getNameAsString()));
+		if (base != null) {
+			Geo g = GEO.get(base);
+			out.append("impl ").append(g.trait).append(" for ").append(name).append(" {\n");
+			out.append("    fn ").append(g.acc).append("(&self) -> &").append(base).append(" {\n        &self.__super\n    }\n");
+			out.append("    fn ").append(g.acc).append("_mut(&mut self) -> &mut ").append(base).append(" {\n        &mut self.__super\n    }\n}\n\n");
+		}
+
+		// Dump, fields (inherited ones too) sorted by name (the Java harness sorts the same way).
+		TreeMap<String, String> dumped = new TreeMap<>();
+		for (VariableDeclarator v : fields) if (!failed.contains(v)) dumped.put(v.getNameAsString(), rustIdent(v.getNameAsString()));
+		if (base != null) for (String f : GEO.get(base).fields) dumped.put(f, "__super." + f);
 		out.append("impl JDumpTarget for ").append(name).append(" {\n    fn dump_target(&self, d: &mut Dumper, id: usize) {\n");
 		out.append("        d.object(\"").append(name).append("\", id, |d| {\n");
-		for (VariableDeclarator v : sorted) {
-			out.append("            d.field(\"").append(v.getNameAsString()).append("\", &self.").append(rustIdent(v.getNameAsString())).append(");\n");
+		for (Map.Entry<String, String> f : dumped.entrySet()) {
+			out.append("            d.field(\"").append(f.getKey()).append("\", &self.").append(f.getValue()).append(");\n");
 		}
 		out.append("        });\n    }\n}\n");
 		return out.toString();
@@ -1115,16 +1222,26 @@ public class J2R {
 			String path = moduleName(owner) + "::" + rustIdent(v.getNameAsString());
 			return new Ex(isConst ? path : path + "()", t, isConst);
 		}
-		if (!classes.containsKey(owner)) throw new Unsupported("field of " + owner);
 		String obj;
+		JT objT;
 		if (scopeExpr == null || scopeExpr.isThisExpr()) {
 			if (inStatic) throw new Unsupported("instance field in static context");
 			obj = "this";
+			objT = new JT(K.CLASS, curClass, null);
 		} else {
-			obj = recv(scopeExpr, expr(scopeExpr));
+			Ex o = expr(scopeExpr);
+			obj = recv(scopeExpr, o);
+			objT = o.t;
 		}
-		String fname = rustIdent(fd.getName());
-		return new Ex(obj + ".get(|o| o." + fname + (t.copy() ? "" : ".clone()") + ")", t, false);
+		String path = fieldPath(owner, objT, fd.getName(), false);
+		return new Ex(obj + ".get(|o| " + path + (t.copy() ? "" : ".clone()") + ")", t, false);
+	}
+
+	/** o.f, or o.__super.f / o.rect().f for fields declared in a JDK geometry class. */
+	String fieldPath(String owner, JT objT, String f, boolean write) {
+		if (GEO_OWNERS.containsKey(owner)) return geoPath(objT, write) + "." + f;
+		if (!classes.containsKey(owner)) throw new Unsupported("field of " + owner);
+		return "o." + rustIdent(f);
 	}
 
 	static final Set<String> BOXES = new java.util.HashSet<>(java.util.Arrays.asList("java.lang.Double", "java.lang.Float",
@@ -1194,6 +1311,8 @@ public class J2R {
 			return new Ex("(" + x.code + " as " + rust(to) + ")", to, x.pure);
 		}
 		if (to.k == K.OBJECT && x.t.ref()) return x;
+		if (to.k == K.GEOM && x.t.k == K.CLASS && to.cls.equals(superGeom.get(x.t.cls)))
+			return new Ex(paren(x.code) + "." + GEO.get(to.cls).upcast + "()", to, x.pure);
 		throw new Unsupported("conversion " + x.t + " -> " + to);
 	}
 
@@ -1286,7 +1405,7 @@ public class J2R {
 				String neg = op == BinaryExpr.Operator.EQUALS ? "" : "!";
 				if (r.t.k == K.NULL && l.t.ref()) return new Ex("(" + neg + recv(b.getLeft(), l) + ".is_null())", BOOL, false);
 				if (l.t.k == K.NULL && r.t.ref()) return new Ex("(" + neg + recv(b.getRight(), r) + ".is_null())", BOOL, false);
-				if (l.t.k == K.CLASS || l.t.k == K.ARRAY || l.t.k == K.LIST || l.t.k == K.RANDOM)
+				if (l.t.k == K.CLASS || l.t.k == K.ARRAY || l.t.k == K.LIST || l.t.k == K.RANDOM || l.t.k == K.GEOM)
 					return new Ex("(" + neg + "JRef::ptr_eq(&" + l.code + ", &" + r.code + "))", BOOL, false);
 				throw new Unsupported("== on " + l.t + " (identity of value-typed objects)");
 			}
@@ -1422,17 +1541,24 @@ public class J2R {
 			lv.writeSuffix = ")";
 			return lv;
 		}
-		if (!classes.containsKey(owner)) throw new Unsupported("field of " + owner);
-		String f = rustIdent(fd.getName());
 		String obj;
+		Ex o = null;
+		JT objT;
 		if (scopeExpr == null || scopeExpr.isThisExpr()) {
 			if (inStatic) throw new Unsupported("instance field in static context");
-			obj = "this";
-			lv.directPrefix = "this.setf(|o| &mut o." + f + ", ";
+			objT = new JT(K.CLASS, curClass, null);
 		} else {
-			Ex o = expr(scopeExpr);
+			o = expr(scopeExpr);
+			objT = o.t;
+		}
+		String f = fieldPath(owner, objT, fd.getName(), false).substring(2);  // without "o."
+		String fw = fieldPath(owner, objT, fd.getName(), true).substring(2);
+		if (o == null) {
+			obj = "this";
+			lv.directPrefix = "this.setf(|o| &mut o." + fw + ", ";
+		} else {
 			String r = recv(scopeExpr, o);
-			lv.directPrefix = r + ".setf(|o| &mut o." + f + ", ";
+			lv.directPrefix = r + ".setf(|o| &mut o." + fw + ", ";
 			if (isSimplePath(r)) obj = r;
 			else {
 				int n = ++tmpCounter;
@@ -1441,7 +1567,7 @@ public class J2R {
 			}
 		}
 		lv.read = obj + ".get(|o| o." + f + (lv.t.copy() ? "" : ".clone()") + ")";
-		lv.writePrefix = obj + ".setf(|o| &mut o." + f + ", ";
+		lv.writePrefix = obj + ".setf(|o| &mut o." + fw + ", ";
 		lv.writeSuffix = ")";
 		return lv;
 	}
@@ -1591,7 +1717,8 @@ public class J2R {
 			case "java.util.ArrayList":
 			case "java.util.Collection":
 			case "java.util.AbstractList": return listCall(m, name, sig);
-			default: break;
+			default: if (GEO_OWNERS.containsKey(owner)) return geomCall(m, owner, sig);
+				break;
 		}
 		if (!allTypes.containsKey(owner)) throw new Unsupported("call " + owner + "." + sig);
 		JT ret;
@@ -1620,6 +1747,56 @@ public class J2R {
 	String scopeRecv(MethodCallExpr m) {
 		Expression s = m.getScope().orElseThrow(() -> new Unsupported("call without receiver"));
 		return "&" + recv(s, expr(s));
+	}
+
+	/** A borrowed reference to x's object: `&name` or `&(expr)`. */
+	String recvRef(Ex x) {
+		if (x.code.equals("this.clone()")) return "this"; // already a reference
+		if (x.code.endsWith(".clone()") && isSimplePath(x.code.substring(0, x.code.length() - 8))) return "&" + x.code.substring(0, x.code.length() - 8);
+		return "&(" + x.code + ")";
+	}
+
+	/**
+	 * A method of a JDK geometry class. Receiver and arguments are evaluated
+	 * first (Java's order), geometry arguments as copies, then the rt method
+	 * runs on the borrowed struct.
+	 */
+	Ex geomCall(MethodCallExpr m, String owner, String sig) {
+		GeoMethod gm = GEO_METHODS.get(sig);
+		if (gm == null) throw new Unsupported(simple(owner) + "." + sig);
+		StringBuilder b = new StringBuilder("{ ");
+		JT recvT;
+		String r;
+		if (!m.getScope().isPresent() || m.getScope().get().isThisExpr()) {
+			if (inStatic) throw new Unsupported("instance call in static context");
+			recvT = new JT(K.CLASS, curClass, null);
+			r = "this";
+		} else {
+			Ex x = expr(m.getScope().get());
+			recvT = x.t;
+			r = recvRef(x);
+		}
+		// A subclass overriding the method would need dynamic dispatch.
+		String key = recvT.k == K.GEOM ? recvT.cls : superGeom.get(recvT.cls);
+		for (Map.Entry<String, String> e : superGeom.entrySet()) {
+			if (!e.getValue().equals(key)) continue;
+			for (MethodDeclaration md : classes.get(e.getKey()).getMethods())
+				if (sig(md).equals(sig)) throw new Unsupported(simple(e.getKey()) + " overrides " + sig);
+		}
+		int n = ++tmpCounter;
+		b.append("let __r").append(n).append(" = ").append(r).append("; ");
+		List<String> args = new ArrayList<>();
+		ResolvedMethodDeclaration rm = m.resolve();
+		for (int i = 0; i < m.getArguments().size(); i++) {
+			Ex a = expr(m.getArguments().get(i));
+			boolean geo = a.t.k == K.GEOM || a.t.k == K.CLASS;
+			String code = geo ? geoValue(a) : coerce(a, jt(rm.getParam(i).getType()), m).code;
+			b.append("let __p").append(n).append('_').append(i).append(" = ").append(code).append("; ");
+			args.add((geo ? "&" : "") + "__p" + n + "_" + i);
+		}
+		b.append("__r").append(n).append(gm.mut ? ".set" : ".get").append("(|o| ").append(geoPath(recvT, gm.mut)).append(".").append(gm.rust)
+				.append("(").append(String.join(", ", args)).append(")) }");
+		return new Ex(b.toString(), gm.ret, false);
 	}
 
 	Ex randomCall(MethodCallExpr m, ResolvedMethodDeclaration rm, String sig) {
@@ -1793,6 +1970,20 @@ public class J2R {
 				if (sig.equals("Color(int,int,int,int)"))
 					return new Ex("Color::rgba(" + args(as, rc::getParam, rc.getNumberOfParams(), o, false) + ")", COLOR, true);
 				throw new Unsupported("new Color" + sig);
+			case "java.awt.Rectangle":
+				if (as.isEmpty()) return new Ex("Rectangle::new_ref()", new JT(K.GEOM, "Rectangle", null), false);
+				throw new Unsupported("new Rectangle" + sig);
+			case "java.awt.geom.Line2D.Double":
+				if (as.isEmpty()) return new Ex("Line2D::new_ref()", new JT(K.GEOM, "Line2D", null), false);
+				throw new Unsupported("new Line2D.Double" + sig);
+			case "java.awt.Point":
+				if (sig.equals("Point(int,int)"))
+					return new Ex("Point::new_ref(" + args(as, rc::getParam, rc.getNumberOfParams(), o, false) + ")", new JT(K.GEOM, "Point", null), false);
+				throw new Unsupported("new Point" + sig);
+			case "java.awt.geom.Point2D.Double":
+				if (sig.equals("Double(double,double)"))
+					return new Ex("Point2D::new_ref(" + args(as, rc::getParam, rc.getNumberOfParams(), o, false) + ")", new JT(K.GEOM, "Point2D", null), false);
+				throw new Unsupported("new Point2D.Double" + sig);
 			case "java.util.ArrayList": {
 				JT t = jt(o.calculateResolvedType());
 				if (as.isEmpty() || sig.equals("ArrayList(int)")) return new Ex("JList::from_vec(Vec::new())", t, false);
