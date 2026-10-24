@@ -1,0 +1,4 @@
+# J2R config for the translator tests (rust/verify/j2rtest), output in
+# rust/core/src/samples.
+source j2rtest.Samples
+static j2rtest.Samples.run(int)

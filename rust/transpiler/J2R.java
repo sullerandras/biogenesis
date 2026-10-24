@@ -998,17 +998,43 @@ public class J2R {
 			pending = new ArrayList<>();
 			pendingDefault = false;
 		}
+		boolean fallThrough = false;
 		for (int i = 0; i < bodies.size() - 1; i++) {
 			NodeList<Statement> b = bodies.get(i);
 			Statement last = b.get(b.size() - 1);
 			if (last.isBlockStmt() && !last.asBlockStmt().getStatements().isEmpty())
 				last = last.asBlockStmt().getStatements().get(last.asBlockStmt().getStatements().size() - 1);
-			if (!(last.isBreakStmt() || last.isReturnStmt() || last.isContinueStmt() || last.isThrowStmt()))
-				throw new Unsupported("switch fall-through");
+			if (!(last.isBreakStmt() || last.isReturnStmt() || last.isContinueStmt() || last.isThrowStmt())) fallThrough = true;
 		}
 		StringBuilder body = new StringBuilder();
 		String in = ind + "    ";
 		body.append(in).append("let __s").append(n).append(" = ").append(sel.code).append(";\n");
+		if (fallThrough) {
+			// __k = the group the selector jumps to; then every group from there
+			// on runs in order (Java's fall-through) until a break.
+			body.append(in).append("let __k").append(n).append(" = ");
+			for (int i = 0; i < labels.size(); i++) {
+				if (i == defaultIdx) continue;
+				StringBuilder c = new StringBuilder();
+				for (Expression l : labels.get(i)) {
+					if (c.length() > 0) c.append(" || ");
+					c.append("__s").append(n).append(" == ").append(coerce(expr(l), promote(sel.t), l).code);
+				}
+				body.append("if ").append(c).append(" { ").append(i).append(" } else ");
+			}
+			body.append("{ ").append(defaultIdx >= 0 ? defaultIdx : labels.size()).append(" };\n");
+			for (int i = 0; i < labels.size(); i++) {
+				body.append(in).append("if __k").append(n).append(" <= ").append(i).append(" {\n");
+				Scope saved = scope;
+				scope = new Scope(scope);
+				for (Statement st : bodies.get(i)) stmt(st, body, in + "    ");
+				scope = saved;
+				body.append(in).append("}\n");
+			}
+			targets.pop();
+			out.append(ind).append(t.breakLabel).append(": {\n").append(body).append(ind).append("}\n");
+			return;
+		}
 		boolean first = true;
 		for (int i = 0; i < labels.size(); i++) {
 			if (i == defaultIdx) continue;

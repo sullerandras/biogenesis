@@ -6,3 +6,5 @@
 
 pub mod rt;
 pub mod generated;
+/// Translator tests: J2R output for rust/verify/j2rtest.
+pub mod samples;
