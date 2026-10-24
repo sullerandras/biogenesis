@@ -421,7 +421,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "biogenesis-gui"
+name = "biogenesis-rust"
 version = "0.1.0"
 dependencies = [
  "biogenesis-core",

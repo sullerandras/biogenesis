@@ -11,7 +11,7 @@ pub const VIEWPORT: &str = "statistics";
 /// Shows the window while `open`; clears it when the window is closed.
 /// Returns whether the window has the keyboard focus.
 pub fn show(ctx: &egui::Context, stats: Option<&Stats>, open: &mut bool) -> bool {
-    let builder = egui::ViewportBuilder::default().with_title("Statistics").with_inner_size([1000.0, 760.0]);
+    let builder = egui::ViewportBuilder::default().with_title("Statistics (Rust)").with_inner_size([1000.0, 760.0]);
     ctx.show_viewport_immediate(egui::ViewportId::from_hash_of(VIEWPORT), builder, |ui, _class| {
         if ui.input(|i| i.viewport().close_requested()) {
             *open = false;

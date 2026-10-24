@@ -1,7 +1,7 @@
 //! Biogenesis window for the Rust translation: the world, a status line, the
 //! statistics window. The simulation runs on its own thread (sim.rs).
 //!
-//! biogenesis-gui [random seed | save file]  (Java: java -jar biogenesis.jar [random seed])
+//! biogenesis-rust [random seed | save file]  (Java: java -jar biogenesis.jar [random seed])
 
 mod sim;
 mod stats;
@@ -107,7 +107,7 @@ fn main() -> eframe::Result {
     let background = std::env::var_os("BIOGENESIS_SCREENSHOT").is_some();
     let mut options = eframe::NativeOptions {
         viewport: egui::ViewportBuilder::default()
-            .with_title("Biogenesis")
+            .with_title("Biogenesis (Rust)")
             .with_inner_size([1280.0, 860.0])
             .with_visible(!background)
             .with_active(!background),

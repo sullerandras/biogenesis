@@ -105,7 +105,7 @@ And it has a window (see The GUI):
   with `Math.sin(` etc. replaced by `StrictMath.sin(`, and `make
   STRICT_MATH=1 run` builds the Java app so (with the perf patches too: they
   keep the world bit-identical, `Dump.java` skips the caches they add). From
-  the same seed and parameters, that app and `biogenesis-gui` then show the
+  the same seed and parameters, that app and `biogenesis-rust` then show the
   same world. Java's `Math.x(` calls go through `rt::jmath`, which is
   `StrictMath`'s unless the `platform-math` cargo feature takes Rust's
   (`cargo run --release --features platform-math`): no faster on Apple
@@ -171,11 +171,11 @@ Keys: drag, scroll or WASD (shift: faster) moves; Q/E or a trackpad pinch
 zooms; R is 1:1, F fits the world; space pauses, `.` steps one frame.
 
 For checking a change without a window on the screen:
-`BIOGENESIS_SCREENSHOT=<dir> [BIOGENESIS_STATS=1] biogenesis-gui [save]`
+`BIOGENESIS_SCREENSHOT=<dir> [BIOGENESIS_STATS=1] biogenesis-rust [save]`
 keeps the window hidden (no focus, no dock icon, the statistics window drawn
 inside the main one) and writes `<dir>/main.ppm` after 8 seconds
 (`sips -s format png main.ppm --out main.png`). Quit it with `pkill
-biogenesis-gui`.
+biogenesis-rust`.
 `BIOGENESIS_PAINT_HIDDEN=1` draws the hidden window anyway,
 `BIOGENESIS_LOG_FPS=1` prints the frames per second to stderr (and the ms a
 frame spent on the world, on drawing and on the statistics), and
@@ -184,7 +184,7 @@ frame spent on the world, on drawing and on the statistics), and
 50-55 frames/s without the limit, repainted at 1:1 at 50, and with the
 whole world in view at 42 (drawing all organisms each frame).
 
-`biogenesis-gui <seed>` makes a new world with that seed, as `java -jar
+`biogenesis-rust <seed>` makes a new world with that seed, as `java -jar
 biogenesis.jar <seed>` does. It is the world `world_check new <seed> 7200
 7200 12500 ...` makes, so a headless run with `every`/`full` can follow it.
 The Java app reads its saved parameters (the parameters dialog), this one
