@@ -19,8 +19,20 @@ WORLD ?= runs/1.bgw.gz
 FRAMES ?= 500
 THREADS ?= 1
 
+# Arguments of the Rust GUI: make run-rust ARGS=42 (a seed) or ARGS=my.save
+ARGS ?=
+
 run: build
 	SKIP_OPENGL=true java -Dsun.java2d.opengl=True -Dsun.java2d.opengl.fbobject=false -jar biogenesis.jar
+
+# The Rust translation's GUI (rust/gui). It uses StrictMath, so its worlds are
+# those of Java built with STRICT_MATH=1; run-rust-platform-math takes Math.sin
+# etc. from the platform instead, so its worlds differ from Java's.
+run-rust:
+	cargo run --release --manifest-path rust/gui/Cargo.toml -- $(ARGS)
+
+run-rust-platform-math:
+	cargo run --release --manifest-path rust/gui/Cargo.toml --features platform-math -- $(ARGS)
 
 run-analyzer: build-analyzer
 	SKIP_OPENGL=true java -Dsun.java2d.opengl=True -Dsun.java2d.opengl.fbobject=false -jar biogenesis-analyzer.jar
@@ -116,4 +128,4 @@ benchmark: compile
 	javac -nowarn -cp classes:lib/gson-2.10.1.jar benchmark/biogenesis/Benchmark.java -source 8 -target 8 -d classes
 	java -Djava.awt.headless=true -cp lib/gson-2.10.1.jar:classes biogenesis.Benchmark $(WORLD) $(FRAMES) $(THREADS)
 
-.PHONY: run run-analyzer test build build-analyzer build-src-jar src-utf8 compile compile-analyzer compile-tests clean benchmark
+.PHONY: run run-rust run-rust-platform-math run-analyzer test build build-analyzer build-src-jar src-utf8 compile compile-analyzer compile-tests clean benchmark
