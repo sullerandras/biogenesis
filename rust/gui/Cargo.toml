@@ -1,0 +1,32 @@
+[package]
+name = "biogenesis-gui"
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+[dependencies]
+biogenesis-core = { path = "../core" }
+eframe = "0.37"
+egui_plot = "0.38"
+# Native open/save dialogs.
+rfd = "0.17"
+mimalloc = { version = "0.1", default-features = false }
+
+# As in core/Cargo.toml (profiles are taken from the package being built):
+# Java's int and long arithmetic wraps.
+[profile.dev]
+overflow-checks = false
+
+[profile.release]
+overflow-checks = false
+debug = 1
+
+# The simulation is unusably slow unoptimized.
+[profile.dev.package.biogenesis-core]
+opt-level = 3
+
+[target.'cfg(target_os = "macos")'.dependencies]
+# The hidden screenshot mode (main.rs) sets the app's activation policy.
+winit = "0.30"
+# Opting out of App Nap (sim.rs).
+objc2-foundation = { version = "0.3", default-features = false, features = ["std", "NSProcessInfo", "NSString", "NSObject"] }

@@ -23,13 +23,11 @@ stub biogenesis.InCorridor
 stub biogenesis.OutCorridor
 stub biogenesis.Corridor
 stub java.awt.Dimension
-stub java.awt.Graphics
 stub biogenesis.Utils.addRepaintWorldChangeListener(biogenesis.RepaintWorldChangeListener)
 
 # Not part of the simulation: drawing, saved games (Java serialization), and
 # statistics only the GUI reads.
 skip biogenesis.GeneticCode.draw(java.awt.Graphics,int,int)
-skip biogenesis.Organism.draw(java.awt.Graphics)
 skip biogenesis.Organism.getImage()
 skip biogenesis.World.draw(java.awt.Graphics,boolean)
 skip biogenesis.World.readObject(java.io.ObjectInputStream)
@@ -39,7 +37,6 @@ skip biogenesis.WorldStatistics.getMaxPopulationFromList()
 skip biogenesis.WorldStatistics.getMaxDistinctClades()
 skip biogenesis.WorldStatistics.getMaxBirthFromList()
 skip biogenesis.WorldStatistics.getMaxDeathsFromList()
-skip biogenesis.WorldStatistics.findBestAliveBeings(java.util.Collection<biogenesis.Organism>)
 # Threads: THREAD_COUNT is 1, the serial path.
 skip biogenesis.parallel_executor.ParallelExecutor.progressAllOrganismsInParallel(int,int)
 skip biogenesis.parallel_executor.ParallelExecutor.progressLineInBucket(int)

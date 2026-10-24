@@ -6955,8 +6955,53 @@ impl Organism {
     }
 
     /// Java: Organism.java:7651 void draw(Graphics)
-    pub fn draw(this: &JRef<Self>, mut g: Stub) {
-        crate::rt::throw("J2R: skipped biogenesis.Organism.draw(java.awt.Graphics)")
+    pub fn draw(this: &JRef<Self>, mut g: &mut dyn crate::rt::Graphics) {
+        let mut i: i32 = 0;
+        if (this.get(|o| o._framesColor) != 0) {
+            if this.get(|o| o._haseyes) {
+                {
+                    i = 0;
+                    while (i < this.get(|o| o._segments)) {
+                        if (this.get(|__o| __o._mphoto.at(i)) == -0.4f64) {
+                            (g).setColor(this.get(|__o| __o._segColor.at(i)));
+                        } else {
+                            (g).setColor(this.get(|o| o._color));
+                        }
+                        (g).drawLine((this.get(|__o| __o.x1.at(i)) + this.get(|o| o._centerX)), (this.get(|__o| __o.y1.at(i)) + this.get(|o| o._centerY)), (this.get(|__o| __o.x2.at(i)) + this.get(|o| o._centerX)), (this.get(|__o| __o.y2.at(i)) + this.get(|o| o._centerY)));
+                        i = i + 1;
+                    }
+                }
+            } else {
+                (g).setColor(this.get(|o| o._color));
+                {
+                    i = 0;
+                    while (i < this.get(|o| o._segments)) {
+                        (g).drawLine((this.get(|__o| __o.x1.at(i)) + this.get(|o| o._centerX)), (this.get(|__o| __o.y1.at(i)) + this.get(|o| o._centerY)), (this.get(|__o| __o.x2.at(i)) + this.get(|o| o._centerX)), (this.get(|__o| __o.y2.at(i)) + this.get(|o| o._centerY)));
+                        i = i + 1;
+                    }
+                }
+            }
+        } else {
+            if ((this.get(|o| o.alive)) || (this.get(|o| o._haseyes))) {
+                {
+                    i = 0;
+                    while (i < this.get(|o| o._segments)) {
+                        (g).setColor(this.get(|__o| __o._segColor.at(i)));
+                        (g).drawLine((this.get(|__o| __o.x1.at(i)) + this.get(|o| o._centerX)), (this.get(|__o| __o.y1.at(i)) + this.get(|o| o._centerY)), (this.get(|__o| __o.x2.at(i)) + this.get(|o| o._centerX)), (this.get(|__o| __o.y2.at(i)) + this.get(|o| o._centerY)));
+                        i = i + 1;
+                    }
+                }
+            } else {
+                (g).setColor(utils::ColorBROWN);
+                {
+                    i = 0;
+                    while (i < this.get(|o| o._segments)) {
+                        (g).drawLine((this.get(|__o| __o.x1.at(i)) + this.get(|o| o._centerX)), (this.get(|__o| __o.y1.at(i)) + this.get(|o| o._centerY)), (this.get(|__o| __o.x2.at(i)) + this.get(|o| o._centerX)), (this.get(|__o| __o.y2.at(i)) + this.get(|o| o._centerY)));
+                        i = i + 1;
+                    }
+                }
+            }
+        }
     }
 
     /// Java: Organism.java:7706 void calculateBounds()

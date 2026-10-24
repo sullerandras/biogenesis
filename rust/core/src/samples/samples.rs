@@ -24,10 +24,11 @@ pub fn run(mut seed: i32) -> JStr {
     s = JStr::cat(&[&s.clone(), &JStr::cat(&[&JStr::from("|"), &samples::arithmetic(seed)])]);
     s = JStr::cat(&[&s.clone(), &JStr::cat(&[&JStr::from("|"), &samples::collections(seed)])]);
     s = JStr::cat(&[&s.clone(), &JStr::cat(&[&JStr::from("|"), &samples::arrays(seed)])]);
+    s = JStr::cat(&[&s.clone(), &JStr::cat(&[&JStr::from("|"), &samples::maps(seed)])]);
     return s.clone();
 }
 
-/// Java: Samples.java:52 int fallThrough(int)
+/// Java: Samples.java:65 int fallThrough(int)
 pub fn fallThrough(mut x: i32) -> i32 {
     let mut r: i32 = 0;
     's1: {
@@ -56,7 +57,7 @@ pub fn fallThrough(mut x: i32) -> i32 {
     return r;
 }
 
-/// Java: Samples.java:95 String strings(int)
+/// Java: Samples.java:108 String strings(int)
 pub fn strings(mut seed: i32) -> JStr {
     let mut c: u16 = ((((65u16 as i32) + i32::wrapping_rem(seed, 26))) as u16);
     let mut s: JStr = JStr::cat(&[&JStr::from("x"), &c, &1, &2]);
@@ -83,7 +84,7 @@ pub fn strings(mut seed: i32) -> JStr {
     return JStr::cat(&[&s.replace_char(120u16, 121u16), &count]);
 }
 
-/// Java: Samples.java:73 String switchInLoop(int)
+/// Java: Samples.java:86 String switchInLoop(int)
 pub fn switchInLoop(mut seed: i32) -> JStr {
     let mut s: JStr = JStr::from("");
     {
@@ -119,7 +120,7 @@ pub fn switchInLoop(mut seed: i32) -> JStr {
     return s.clone();
 }
 
-/// Java: Samples.java:111 String arithmetic(int)
+/// Java: Samples.java:124 String arithmetic(int)
 pub fn arithmetic(mut seed: i32) -> JStr {
     let mut a: i32 = ((2147483647i32) - seed);
     a = (a + 7);
@@ -129,7 +130,7 @@ pub fn arithmetic(mut seed: i32) -> JStr {
     return JStr::cat(&[&a, &JStr::from(" "), &b, &JStr::from(" "), &l, &JStr::from(" "), &(d as i32), &JStr::from(" "), &(-d as i64), &JStr::from(" "), &(i32::wrapping_div((-2147483648i32), (-1i32)))]);
 }
 
-/// Java: Samples.java:22 String collections(int)
+/// Java: Samples.java:23 String collections(int)
 pub fn collections(mut seed: i32) -> JStr {
     let mut b: JRef<Bag> = Bag::new();
     let mut s: JStr = JStr::from("");
@@ -180,7 +181,7 @@ pub fn collections(mut seed: i32) -> JStr {
     return s.clone();
 }
 
-/// Java: Samples.java:125 String arrays(int)
+/// Java: Samples.java:138 String arrays(int)
 pub fn arrays(mut seed: i32) -> JStr {
     let y = &JStackArray::<f64, 2>::new(0f64);
     let k = &JStackArray::from([0.5f64, 1.5f64]);
@@ -196,26 +197,48 @@ pub fn arrays(mut seed: i32) -> JStr {
     return JStr::cat(&[&n, &JStr::from(" "), &((((y).at(0) * 1000f64)) as i64), &JStr::from(" "), &((((y).at(1) * 1000f64)) as i64), &JStr::from(" "), &(y).len(), &JStr::from(" "), &samples::__kept.with(|__o| __o.at(1)), &JStr::from(" "), &b.get(|__o| __o.slots.at(0)), &JStr::from(","), &b.get(|__o| __o.slots.at(1)), &JStr::from(","), &b.get(|__o| __o.slots.at(2)), &JStr::from(" "), &samples::__counts.with(|__o| __o.at(1))]);
 }
 
-/// Java: Samples.java:141 int split(double, double[], double[])
+/// Java: Samples.java:53 String maps(int)
+pub fn maps(mut seed: i32) -> JStr {
+    let mut counts: JRef<JHashMap<i32, i32>> = JRef::<JHashMap<i32, i32>>::new_map();
+    {
+        let mut i: i32 = 0;
+        while (i < 50) {
+            let mut k: i32 = (i32::wrapping_rem((((i * 31) + seed)), 7) - 2);
+            counts.put(k, (counts.getOrDefault(k, 0) + i));
+            i = i + 1;
+        }
+    }
+    let mut s: JStr = JStr::cat(&[&JStr::from(""), &counts.size(), &((if counts.containsKey(i32::wrapping_rem(seed, 5)) { JStr::from("y") } else { JStr::from("n") }))]);
+    {
+        let mut k: i32 = (-3i32);
+        while (k < 6) {
+            s = JStr::cat(&[&s.clone(), &JStr::cat(&[&JStr::from(","), &counts.getOrDefault(k, (-1i32))])]);
+            k = k + 1;
+        }
+    }
+    return s.clone();
+}
+
+/// Java: Samples.java:154 int split(double, double[], double[])
 pub fn split(mut x: f64, out: &impl JArr<f64>, k: &impl JArr<f64>) -> i32 {
     (out).put(0, (x * (k).at(0)));
     (out).put(1, (x * (k).at(1)));
     return ((out).len() + samples::bump(out));
 }
-// Java: Samples.java:122
+// Java: Samples.java:135
 pub static __kept: JStatic<JArray<i32>> = JStatic::new(JRef::null());
 #[inline] pub fn kept() -> JArray<i32> { __kept.get() }
 pub fn set_kept(v: JArray<i32>) { __kept.set(v) }
-// Java: Samples.java:120
+// Java: Samples.java:133
 pub static __TABLE: JStatic<JArray<i32>> = JStatic::lazy(|| JArray::from_vec(vec![3, 1, 4, 1, 5, 9, 2, 6]));
 #[inline] pub fn TABLE() -> JArray<i32> { __TABLE.get() }
 pub fn set_TABLE(v: JArray<i32>) { __TABLE.set(v) }
-// Java: Samples.java:121
+// Java: Samples.java:134
 pub static __counts: JStatic<JArray<i32>> = JStatic::lazy(|| JArray::new_array(4, 0));
 #[inline] pub fn counts() -> JArray<i32> { __counts.get() }
 pub fn set_counts(v: JArray<i32>) { __counts.set(v) }
 
-/// Java: Samples.java:147 int bump(double[])
+/// Java: Samples.java:160 int bump(double[])
 pub fn bump(a: &impl JArr<f64>) -> i32 {
     { let __a1 = a; let __i1 = 1; __a1.put(__i1, (__a1.at(__i1) + 1f64)); };
     return ((a).at(1) as i32);

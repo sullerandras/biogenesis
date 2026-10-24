@@ -850,7 +850,84 @@ impl WorldStatistics {
 
     /// Java: WorldStatistics.java:829 void findBestAliveBeings(Collection<Organism>)
     pub fn findBestAliveBeings(this: &JRef<Self>, mut organisms: JCollection<JRef<Organism>>) {
-        crate::rt::throw("J2R: skipped biogenesis.WorldStatistics.findBestAliveBeings(java.util.Collection<biogenesis.Organism>)")
+        this.setf(|o| &mut o.aliveOrganismMostChildren, JRef::null());
+        this.setf(|o| &mut o.aliveOrganismMostChildrenNumber, 0);
+        this.setf(|o| &mut o.aliveOrganismMostKills, JRef::null());
+        this.setf(|o| &mut o.aliveOrganismMostKillsNumber, 0);
+        this.setf(|o| &mut o.aliveOrganismMostInfections, JRef::null());
+        this.setf(|o| &mut o.aliveOrganismMostInfectionsNumber, 0);
+        this.setf(|o| &mut o.aliveOrganismMostMass, JRef::null());
+        this.setf(|o| &mut o.aliveOrganismMostMassNumber, 0f64);
+        this.setf(|o| &mut o.aliveOrganismOldest, JRef::null());
+        this.setf(|o| &mut o.aliveOrganismOldestNumber, 0);
+        this.setf(|o| &mut o.aliveOrganismLowestGeneration, JRef::null());
+        this.setf(|o| &mut o.aliveOrganismLowestGenerationNumber, (2147483647i32));
+        this.setf(|o| &mut o.aliveOrganismHighestGeneration, JRef::null());
+        this.setf(|o| &mut o.aliveOrganismHighestGenerationNumber, 0);
+        this.setf(|o| &mut o.aliveOrganismBiggest, JRef::null());
+        this.setf(|o| &mut o.aliveOrganismBiggestNumber, 0);
+        this.setf(|o| &mut o.totalMass, 0f64);
+        this.setf(|o| &mut o.totalEnergy, 0f64);
+        this.setf(|o| &mut o.generationHistogramList, JList::from_vec(Vec::new()));
+        this.setf(|o| &mut o.minGeneration, (2147483647i32));
+        this.setf(|o| &mut o.maxGeneration, 0);
+        let mut generationCounter: JRef<JHashMap<i32, i32>> = JRef::<JHashMap<i32, i32>>::new_map();
+        {
+            {
+                let mut it: JIter<JRef<Organism>> = organisms.iterator();
+                while it.hasNext() {
+                    let mut org: JRef<Organism> = it.next();
+                    if Organism::isAlive(&org) {
+                        if (Organism::getTotalChildren(&org) > this.get(|o| o.aliveOrganismMostChildrenNumber)) {
+                            this.setf(|o| &mut o.aliveOrganismMostChildrenNumber, Organism::getTotalChildren(&org));
+                            this.setf(|o| &mut o.aliveOrganismMostChildren, org.clone());
+                        }
+                        if (Organism::getTotalKills(&org) > this.get(|o| o.aliveOrganismMostKillsNumber)) {
+                            this.setf(|o| &mut o.aliveOrganismMostKillsNumber, Organism::getTotalKills(&org));
+                            this.setf(|o| &mut o.aliveOrganismMostKills, org.clone());
+                        }
+                        if (Organism::getTotalInfected(&org) > this.get(|o| o.aliveOrganismMostInfectionsNumber)) {
+                            this.setf(|o| &mut o.aliveOrganismMostInfectionsNumber, Organism::getTotalInfected(&org));
+                            this.setf(|o| &mut o.aliveOrganismMostInfections, org.clone());
+                        }
+                        if (Organism::getMass(&org) > this.get(|o| o.aliveOrganismMostMassNumber)) {
+                            this.setf(|o| &mut o.aliveOrganismMostMassNumber, Organism::getMass(&org));
+                            this.setf(|o| &mut o.aliveOrganismMostMass, org.clone());
+                        }
+                        if (Organism::getAge(&org) > this.get(|o| o.aliveOrganismOldestNumber)) {
+                            this.setf(|o| &mut o.aliveOrganismOldestNumber, Organism::getAge(&org));
+                            this.setf(|o| &mut o.aliveOrganismOldest, org.clone());
+                        }
+                        let mut generation: i32 = GeneticCode::getGeneration(&(Organism::getGeneticCode(&org)));
+                        if (generation < this.get(|o| o.aliveOrganismLowestGenerationNumber)) {
+                            this.setf(|o| &mut o.aliveOrganismLowestGenerationNumber, generation);
+                            this.setf(|o| &mut o.aliveOrganismLowestGeneration, org.clone());
+                        }
+                        if (generation > this.get(|o| o.aliveOrganismHighestGenerationNumber)) {
+                            this.setf(|o| &mut o.aliveOrganismHighestGenerationNumber, generation);
+                            this.setf(|o| &mut o.aliveOrganismHighestGeneration, org.clone());
+                        }
+                        let mut size: i32 = (jmath::max_f64({ let __r1 = &org; __r1.get(|o| o.__super.getWidth()) }, { let __r2 = &org; __r2.get(|o| o.__super.getHeight()) }) as i32);
+                        if (size > this.get(|o| o.aliveOrganismBiggestNumber)) {
+                            this.setf(|o| &mut o.aliveOrganismBiggestNumber, size);
+                            this.setf(|o| &mut o.aliveOrganismBiggest, org.clone());
+                        }
+                        this.setf(|o| &mut o.totalMass, (this.get(|o| o.totalMass) + Organism::getMass(&org)));
+                        this.setf(|o| &mut o.totalEnergy, (this.get(|o| o.totalEnergy) + Organism::getEnergy(&org)));
+                        generationCounter.put(generation, (generationCounter.getOrDefault(generation, 0) + 1));
+                        this.setf(|o| &mut o.minGeneration, std::cmp::min(this.get(|o| o.minGeneration), generation));
+                        this.setf(|o| &mut o.maxGeneration, std::cmp::max(this.get(|o| o.maxGeneration), generation));
+                    }
+                }
+            }
+        }
+        {
+            let mut i: i32 = this.get(|o| o.minGeneration);
+            while (i <= this.get(|o| o.maxGeneration)) {
+                (this.get(|o| o.generationHistogramList.clone())).add((generationCounter.getOrDefault(i, 0) as f64));
+                i = i + 1;
+            }
+        }
     }
 }
 

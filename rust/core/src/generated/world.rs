@@ -482,7 +482,7 @@ impl World {
     }
 
     /// Java: World.java:860 void draw(Graphics, boolean)
-    pub fn draw(this: &JRef<Self>, mut g: Stub, mut fullRedraw: bool) {
+    pub fn draw(this: &JRef<Self>, mut g: &mut dyn crate::rt::Graphics, mut fullRedraw: bool) {
         crate::rt::throw("J2R: skipped biogenesis.World.draw(java.awt.Graphics,boolean)")
     }
 

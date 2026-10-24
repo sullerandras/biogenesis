@@ -15,6 +15,11 @@ frame identical to Java, and saves and loads games (see Saved games):
     rust/core/target/release/world_check new 1 2000 2000 1000 5000 every 100 save 5000 my.save
     rust/core/target/release/world_check load my.save 1000 every 100
 
+And it has a window (see The GUI):
+
+    (cd rust/gui && cargo run --release)            # a new world, Java's default parameters
+    (cd rust/gui && cargo run --release -- my.save)  # a saved game
+
 ## Layout
 
 - `transpiler/J2R.java`: the translator (JavaParser with type resolution).
@@ -38,6 +43,8 @@ frame identical to Java, and saves and loads games (see Saved games):
   NaN and -0.0, `round`), `Color` as a value, and the dump and its loader.
 - `core/src/save.rs`: saved games (the world and the statics).
 - `core/src/bin/world_check.rs`: the headless world runner.
+- `gui/`: the window (egui), a separate crate so the core stays free of
+  GUI dependencies.
 - `core/src/samples/`: J2R output for `verify/j2rtest/Samples.java`, the
   translator's own test cases (fall-through, string conversions, wrapping
   arithmetic...). Add a case there when J2R learns a construct.
@@ -117,7 +124,12 @@ frame identical to Java, and saves and loads games (see Saved games):
   `HashMap` algorithm (table growth, resize split, bins that become
   red-black trees at 8 entries), checked against `java.util.HashSet` by
   `HashSetCheck`. `equals(Object)` methods take their own class.
-- The GUI (`VisibleWorldInterface`, `InfoToolbar`, `Graphics`...) and the
+- `java.awt.Graphics` is `&mut dyn rt::Graphics` (`setColor`, `drawLine`,
+  `drawRect`): `Organism.draw` is translated, and the GUI implements the
+  trait. `java.util.Map`/`HashMap` with int or long keys is `rt::JHashMap`,
+  lookups only (`put`, `getOrDefault`, `containsKey`, `size`): iterating
+  would need the JDK's order, as `HashSet` has, so J2R refuses it.
+- The rest of the GUI (`VisibleWorldInterface`, `InfoToolbar`...) and the
   corridors are `stub` types: values are `rt::Stub`, calls do nothing and
   return null (as `benchmark/Benchmark.java`'s stubs do), and a call that
   would need a number throws. Arguments of such calls are still evaluated.
@@ -126,6 +138,40 @@ frame identical to Java, and saves and loads games (see Saved games):
   copies of what they capture, behind `JFn<dyn Fn(...)>`.
 - Threads: `THREAD_COUNT` is 1 (the Java default), so `ParallelExecutor`
   takes its serial path; the parallel one is skipped.
+
+## The GUI
+
+`gui/` is an [egui](https://github.com/emilk/egui) window (eframe, and
+egui_plot for the charts): the world, a status line, menus (new world, open,
+save; run, pause, step; zoom) and a statistics window with Java's charts
+(population, clades, atmosphere, generations) and numbers.
+
+As in Java, the simulation runs on its own thread (`gui/src/sim.rs`), which
+owns everything of the translated code (`Rc` objects and statics are
+single-threaded). The window gets copies: the lines of the organisms in
+view, recorded from the translated `Organism.draw` through `rt::Graphics`,
+and the statistics (`findBestAliveBeings`, as Java's statistics window
+calls it). Java's repaint settings are under View: repaint the world
+always, only while the main window has the focus, or while any of the
+app's windows has it; while repainting, a frame takes at least "ms per
+frame" (Utils.DELAY, 20 ms: 50 frames/s, as in Java), otherwise the
+simulation runs as fast as it can. The process opts out of App Nap, so a
+window in the background doesn't slow the simulation down (a background
+priority makes `world_check` 5 times slower).
+
+Keys: drag, scroll or WASD (shift: faster) moves; Q/E or a trackpad pinch
+zooms; R is 1:1, F fits the world; space pauses, `.` steps one frame.
+
+For checking a change without a window on the screen:
+`BIOGENESIS_SCREENSHOT=<dir> [BIOGENESIS_STATS=1] biogenesis-gui [save]`
+keeps the window hidden (no focus, no dock icon, the statistics window drawn
+inside the main one) and writes `<dir>/main.ppm` after 8 seconds
+(`sips -s format png main.ppm --out main.png`). Quit it with `pkill
+biogenesis-gui`.
+
+Not there yet (Java has them): selecting an organism (its info and genetic
+code), tracking, feeding/killing, the parameters dialog, remembered
+settings.
 
 ## Saved games
 
@@ -181,8 +227,9 @@ can't change in it) was tried and gained under 1%.
 
 Where it stands (2026-10-24): the translation is complete and verified,
 single-threaded Rust is ~20% faster than Java, and a frame allocates
-almost nothing. Next candidates, biggest first: multi-threading (item 1
-below), a renderer (2), then gzip saves (3) and CI (4).
+almost nothing, and the GUI shows it (with charts). Next candidates:
+multi-threading (item 1 below), more of the GUI (2), then gzip saves (3)
+and CI (4).
 
 Picking up: `rust/transpile.sh && rust/verify.sh` must print only "same"
 lines (about 4 minutes). Speed baseline, to compare against after changes:
@@ -203,8 +250,10 @@ both sides (as a save file); diff the two to find the first wrong field.
    takes, and change the simulation (Java would need the same table). The
    multi-threaded executor is the big win left (Java's isn't deterministic
    either); it needs `Rc` to become something `Send`.
-2. A front end: the Rust world has no GUI. Drawing (`Organism.draw` etc.)
-   is skipped now; a renderer would read the world's state.
+2. The GUI: see the list at the end of The GUI. Selecting an organism
+   needs `World.findOrganismFromPosition` (translated) and
+   `GeneticCode.draw` (skipped now; with `rt::Graphics` it would translate
+   like `Organism.draw`).
 3. Compressed saves (gzip): the text format compresses well.
 4. CI: a workflow that runs `transpile.sh`, `cargo build`, `verify.sh` on every
    upstream drop and opens a PR with the regenerated `generated/`.

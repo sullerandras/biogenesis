@@ -1812,7 +1812,7 @@ impl GeneticCode {
     }
 
     /// Java: GeneticCode.java:2175 void draw(Graphics, int, int)
-    pub fn draw(this: &JRef<Self>, mut g: Stub, mut width: i32, mut height: i32) {
+    pub fn draw(this: &JRef<Self>, mut g: &mut dyn crate::rt::Graphics, mut width: i32, mut height: i32) {
         crate::rt::throw("J2R: skipped biogenesis.GeneticCode.draw(java.awt.Graphics,int,int)")
     }
 }

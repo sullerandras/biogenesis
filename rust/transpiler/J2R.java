@@ -70,25 +70,28 @@ public class J2R {
 	// ---------------------------------------------------------------- types
 
 	enum K { INT, LONG, DOUBLE, FLOAT, BOOL, CHAR, BYTE, SHORT, VOID, STRING, COLOR, RANDOM, CLASS, ARRAY, LIST, NULL, OBJECT, GEOM,
-		COLL, HSET, ITER, FN, STUB }
+		COLL, HSET, ITER, FN, STUB, GRAPHICS, MAP }
 
 	/** A Java type, as far as the translation cares. */
 	static final class JT {
 		final K k;
 		final String cls;  // CLASS, FN, STUB: qualified name; GEOM: the rt struct (see GEO)
-		final JT elem;     // ARRAY, LIST, COLL, HSET, ITER
-		JT(K k, String cls, JT elem) { this.k = k; this.cls = cls; this.elem = elem; }
+		final JT elem;     // ARRAY, LIST, COLL, HSET, ITER; MAP: the value
+		final JT key;      // MAP
+		JT(K k, String cls, JT elem) { this(k, cls, elem, null); }
+		JT(K k, String cls, JT elem, JT key) { this.k = k; this.cls = cls; this.elem = elem; this.key = key; }
 		static JT of(K k) { return new JT(k, null, null); }
 		boolean prim() { return k.ordinal() <= K.SHORT.ordinal(); }
 		boolean numeric() { return prim() && k != K.BOOL; }
 		boolean integral() { return k == K.INT || k == K.LONG || k == K.CHAR || k == K.BYTE || k == K.SHORT; }
 		/** Copied by value in Rust (no clone needed). */
-		boolean copy() { return prim() || k == K.COLOR || k == K.STUB; }
+		boolean copy() { return prim() || k == K.COLOR || k == K.STUB || k == K.GRAPHICS; }
 		boolean ref() { return !prim() && k != K.VOID; }
 		@Override public boolean equals(Object o) {
 			if (!(o instanceof JT)) return false;
 			JT t = (JT) o;
-			return k == t.k && java.util.Objects.equals(cls, t.cls) && java.util.Objects.equals(elem, t.elem);
+			return k == t.k && java.util.Objects.equals(cls, t.cls) && java.util.Objects.equals(elem, t.elem)
+					&& java.util.Objects.equals(key, t.key);
 		}
 		@Override public int hashCode() { return k.hashCode(); }
 		@Override public String toString() { return k + (cls != null ? "(" + cls + ")" : "") + (elem != null ? "[" + elem + "]" : ""); }
@@ -124,6 +127,7 @@ public class J2R {
 			switch (q) {
 				case "java.lang.String": return STRING;
 				case "java.awt.Color": return COLOR;
+				case "java.awt.Graphics": return JT.of(K.GRAPHICS);
 				case "java.util.Random": return JT.of(K.RANDOM);
 				case "java.lang.Object": return OBJECT;
 				case "java.util.List":
@@ -132,6 +136,14 @@ public class J2R {
 				case "java.util.Set": return new JT(K.COLL, null, typeArg(t, q));
 				case "java.util.HashSet": return new JT(K.HSET, null, typeArg(t, q));
 				case "java.util.Iterator": return new JT(K.ITER, null, typeArg(t, q));
+				case "java.util.Map":
+				case "java.util.HashMap": {
+					List<ResolvedType> tp = t.asReferenceType().typeParametersValues();
+					if (tp.size() != 2) throw new Unsupported("raw " + q);
+					JT key = boxed(tp.get(0));
+					if (key.k != K.INT && key.k != K.LONG) throw new Unsupported("Map key " + key);
+					return new JT(K.MAP, null, boxed(tp.get(1)), key);
+				}
 			}
 			if (stubTypes.contains(q)) return new JT(K.STUB, q, null);
 			if (classes.containsKey(q)) return new JT(K.CLASS, q, null);
@@ -146,7 +158,11 @@ public class J2R {
 	JT typeArg(ResolvedType t, String q) {
 		List<ResolvedType> tp = t.asReferenceType().typeParametersValues();
 		if (tp.size() != 1) throw new Unsupported("raw " + q);
-		ResolvedType a = tp.get(0);
+		return boxed(tp.get(0));
+	}
+
+	/** A type argument: boxes are their value here. */
+	JT boxed(ResolvedType a) {
 		if (a.isReferenceType()) {
 			switch (a.asReferenceType().getQualifiedName()) {
 				case "java.lang.Double": return DOUBLE;
@@ -209,9 +225,12 @@ public class J2R {
 			case LIST: return "JList<" + rust(t.elem) + ">";
 			case COLL: return "JCollection<" + rust(t.elem) + ">";
 			case HSET: return "JRef<JHashSet<" + rust(t.elem) + ">>";
+			case MAP: return "JRef<JHashMap<" + rust(t.key) + ", " + rust(t.elem) + ">>";
 			case ITER: return "JIter<" + rust(t.elem) + ">";
 			case FN: return "JFn<" + fnType(t.cls) + ">";
 			case STUB: return "Stub";
+			// A parameter only: drawing goes to whatever the front end passes.
+			case GRAPHICS: return "&mut dyn crate::rt::Graphics";
 			default: throw new Unsupported("rust type for " + t);
 		}
 	}
@@ -2310,6 +2329,7 @@ public class J2R {
 			case "java.lang.Math":
 			case "java.lang.StrictMath": return mathCall(m, owner, name, sig);
 			case "java.awt.Color": return colorCall(m, name, sig);
+			case "java.awt.Graphics": return graphicsCall(m, name, sig);
 			case "java.lang.String": return stringCall(m, name, sig);
 			case "java.lang.Integer": return integerCall(m, sig);
 			case "java.lang.Double": return doubleCall(m, sig);
@@ -2322,6 +2342,8 @@ public class J2R {
 			case "java.util.AbstractCollection":
 			case "java.util.AbstractList": return collectionCall(m, name, sig);
 			case "java.util.Iterator": return iteratorCall(m, sig);
+			case "java.util.Map":
+			case "java.util.HashMap": return mapCall(m, sig);
 			default: if (GEO_OWNERS.containsKey(owner)) return geomCall(m, owner, sig);
 				break;
 		}
@@ -2522,6 +2544,42 @@ public class J2R {
 		}
 	}
 
+	/** java.util.Map: lookups only (see rt/hashmap.rs). */
+	Ex mapCall(MethodCallExpr m, String sig) {
+		Expression se = m.getScope().get();
+		Ex s = expr(se);
+		String r = recv(se, s);
+		List<Expression> as = m.getArguments();
+		switch (sig) {
+			case "put(K,V)":
+				if (!(m.getParentNode().orElse(null) instanceof com.github.javaparser.ast.stmt.ExpressionStmt))
+					throw new Unsupported("Map.put's result");
+				return new Ex(r + ".put(" + coerce(expr(as.get(0)), s.t.key, m).code + ", " + coerce(expr(as.get(1)), s.t.elem, m).code + ")", VOID, false);
+			case "getOrDefault(java.lang.Object,V)":
+				return new Ex(r + ".getOrDefault(" + coerce(expr(as.get(0)), s.t.key, m).code + ", " + coerce(expr(as.get(1)), s.t.elem, m).code + ")", s.t.elem, false);
+			case "containsKey(java.lang.Object)":
+				return new Ex(r + ".containsKey(" + coerce(expr(as.get(0)), s.t.key, m).code + ")", BOOL, false);
+			case "size()": return new Ex(r + ".size()", INT, false);
+			default: throw new Unsupported("Map." + sig);
+		}
+	}
+
+	/** java.awt.Graphics: the calls of rt::Graphics, same names. */
+	Ex graphicsCall(MethodCallExpr m, String name, String sig) {
+		String r = recv(m.getScope().get(), expr(m.getScope().get()));
+		List<Expression> as = m.getArguments();
+		switch (sig) {
+			case "setColor(java.awt.Color)":
+				return new Ex(r + ".setColor(" + coerce(expr(as.get(0)), COLOR, m).code + ")", VOID, false);
+			case "drawLine(int,int,int,int)": case "drawRect(int,int,int,int)": {
+				StringBuilder a = new StringBuilder();
+				for (Expression x : as) a.append(a.length() > 0 ? ", " : "").append(coerce(expr(x), INT, m).code);
+				return new Ex(r + "." + name + "(" + a + ")", VOID, false);
+			}
+			default: throw new Unsupported("Graphics." + sig);
+		}
+	}
+
 	Ex stringCall(MethodCallExpr m, String name, String sig) {
 		String r = recv(m.getScope().get(), expr(m.getScope().get()));
 		if (sig.equals("equals(java.lang.Object)")) {
@@ -2697,6 +2755,12 @@ public class J2R {
 						? new JT(K.HSET, null, expected.elem) : jt(o.calculateResolvedType());
 				if (as.isEmpty()) return new Ex("JRef::<JHashSet<" + rust(t.elem) + ">>::new_set()", t, false);
 				throw new Unsupported("new HashSet" + sig);
+			}
+			case "java.util.HashMap": {
+				JT t = o.getType().isUsingDiamondOperator() && expected != null && expected.k == K.MAP
+						? expected : jt(o.calculateResolvedType());
+				if (as.isEmpty()) return new Ex("JRef::<JHashMap<" + rust(t.key) + ", " + rust(t.elem) + ">>::new_map()", t, false);
+				throw new Unsupported("new HashMap" + sig);
 			}
 			case "java.util.Random":
 				if (as.isEmpty()) return new Ex("Random::new()", JT.of(K.RANDOM), false);

@@ -15,6 +15,7 @@ public class Samples {
 		s += "|" + arithmetic(seed);
 		s += "|" + collections(seed);
 		s += "|" + arrays(seed);
+		s += "|" + maps(seed);
 		return s;
 	}
 
@@ -45,6 +46,18 @@ public class Samples {
 		s += "|" + b.weights.size() + (b.weights.get(0) > 3 ? "big" : "small");
 		Item[] a = b.items.toArray(new Item[0]);
 		s += "|" + a.length + (a.length > 0 ? "," + a[0].id : "");
+		return s;
+	}
+
+	/** HashMap lookups with int keys (WorldStatistics' generation counter). */
+	static String maps(int seed) {
+		java.util.Map<Integer, Integer> counts = new java.util.HashMap<>();
+		for (int i = 0; i < 50; i++) {
+			int k = (i * 31 + seed) % 7 - 2;
+			counts.put(k, counts.getOrDefault(k, 0) + i);
+		}
+		String s = "" + counts.size() + (counts.containsKey(seed % 5) ? "y" : "n");
+		for (int k = -3; k < 6; k++) s += "," + counts.getOrDefault(k, -1);
 		return s;
 	}
 
