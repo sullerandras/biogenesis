@@ -833,6 +833,7 @@ public class J2R {
 			FieldDeclaration f = (FieldDeclaration) v.getParentNode().get();
 			String doc = "/// Java: " + fileOf.get(owner) + ":" + line(v) + "\n";
 			if (isMonitorField(v)) return doc + "pub static __" + v.getNameAsString() + ": JMonitor = JMonitor::new();\n";
+			if (isThreadLocalField(v)) return doc + "pub static __" + v.getNameAsString() + ": JThreadLocal<" + rust(threadLocalType(v)) + "> = JThreadLocal::new();\n";
 			JT t = jt(v.getType().resolve());
 			String n = rustIdent(v.getNameAsString());
 			Expression init = v.getInitializer().orElse(null);
@@ -863,6 +864,38 @@ public class J2R {
 		FieldDeclaration f = (FieldDeclaration) v.getParentNode().get();
 		return f.isStatic() && f.isFinal() && v.getType().asString().equals("Object")
 				&& v.getInitializer().map(i -> i.isObjectCreationExpr() && i.asObjectCreationExpr().getType().getNameAsString().equals("Object")).orElse(false);
+	}
+
+	/** `static final ThreadLocal<T> x = new ThreadLocal<>()`: a JThreadLocal, used only by x.get() and x.set(v). */
+	static boolean isThreadLocalField(VariableDeclarator v) {
+		FieldDeclaration f = (FieldDeclaration) v.getParentNode().get();
+		return f.isStatic() && f.isFinal() && v.getType().isClassOrInterfaceType()
+				&& v.getType().asClassOrInterfaceType().getNameAsString().equals("ThreadLocal")
+				&& v.getInitializer().map(i -> i.isObjectCreationExpr() && i.asObjectCreationExpr().getType().getNameAsString().equals("ThreadLocal")
+						&& i.asObjectCreationExpr().getArguments().isEmpty()).orElse(false);
+	}
+
+	/** T of a ThreadLocal<T> field. */
+	JT threadLocalType(VariableDeclarator v) {
+		return jt(v.getType().asClassOrInterfaceType().getTypeArguments().get().get(0).resolve());
+	}
+
+	/** x.get(), x.set(v) on a ThreadLocal static (see isThreadLocalField). */
+	Ex threadLocalCall(MethodCallExpr m, String name, String sig) {
+		Expression sc = m.getScope().orElse(null);
+		ResolvedValueDeclaration r = sc != null && sc.isNameExpr() ? sc.asNameExpr().resolve()
+				: sc != null && sc.isFieldAccessExpr() ? sc.asFieldAccessExpr().resolve() : null;
+		if (r == null || !r.isField() || !r.asField().isStatic()) throw new Unsupported("ThreadLocal other than a static final field");
+		VariableDeclarator v = staticVar(r.asField());
+		if (!isThreadLocalField(v)) throw new Unsupported("ThreadLocal other than `static final ThreadLocal<T> x = new ThreadLocal<>()`");
+		needStatic(v);
+		String cell = moduleName(r.asField().declaringType().getQualifiedName()) + "::__" + v.getNameAsString();
+		JT t = threadLocalType(v);
+		switch (sig) {
+			case "get()": return new Ex(cell + ".get()", t, false);
+			case "set(T)": return new Ex(cell + ".set(" + coerce(expr(m.getArgument(0)), t, m).code + ")", VOID, false);
+			default: throw new Unsupported("ThreadLocal." + sig);
+		}
 	}
 
 	/** The guard of `synchronized (e)`: a monitor static's lock, or the object's monitor. */
@@ -1524,6 +1557,14 @@ public class J2R {
 		return false;
 	}
 
+	/** `x == null`. A field is tested in place, without a clone of its reference
+	 * (which would write the count of the object it refers to). */
+	String isNull(Expression javaExpr, Ex x) {
+		java.util.regex.Matcher m = FIELD_READ.matcher(x.code);
+		if (x.borrowed == null && m.matches()) return m.group(1) + ".get(|o| o" + m.group(2) + ".is_null())";
+		return recv(javaExpr, x) + ".is_null()";
+	}
+
 	String recv(Expression javaExpr, Ex x) {
 		if (x.borrowed != null) return "(*" + x.borrowed + ")";
 		if (x.code.endsWith(".clone()") && isSimplePath(x.code.substring(0, x.code.length() - 8))) return x.code.substring(0, x.code.length() - 8);
@@ -1837,8 +1878,8 @@ public class J2R {
 				if (l.t.k == K.BOOL && r.t.k == K.BOOL) return new Ex("(" + l.code + o + r.code + ")", BOOL, pure);
 				// reference comparison
 				String neg = op == BinaryExpr.Operator.EQUALS ? "" : "!";
-				if (r.t.k == K.NULL && l.t.ref()) return new Ex("(" + neg + recv(b.getLeft(), l) + ".is_null())", BOOL, false);
-				if (l.t.k == K.NULL && r.t.ref()) return new Ex("(" + neg + recv(b.getRight(), r) + ".is_null())", BOOL, false);
+				if (r.t.k == K.NULL && l.t.ref()) return new Ex("(" + neg + isNull(b.getLeft(), l) + ")", BOOL, false);
+				if (l.t.k == K.NULL && r.t.ref()) return new Ex("(" + neg + isNull(b.getRight(), r) + ")", BOOL, false);
 				if (l.t.k == K.CLASS || l.t.k == K.ARRAY || l.t.k == K.LIST || l.t.k == K.RANDOM || l.t.k == K.GEOM || l.t.k == K.COLL || l.t.k == K.HSET)
 					return new Ex("(" + neg + "JRef::ptr_eq(" + recvRef(l) + ", " + recvRef(r) + "))", BOOL, false);
 				throw new Unsupported("== on " + l.t + " (identity of value-typed objects)");
@@ -2431,6 +2472,7 @@ public class J2R {
 		}
 		switch (owner) {
 			case "java.util.Random": return randomCall(m, rm, sig);
+			case "java.lang.ThreadLocal": return threadLocalCall(m, name, sig);
 			case "java.lang.Math":
 			case "java.lang.StrictMath": return mathCall(m, owner, name, sig);
 			case "java.awt.Color": return colorCall(m, name, sig);

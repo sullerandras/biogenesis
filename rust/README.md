@@ -202,26 +202,47 @@ ones aren't protected, as in Java: the simulation doesn't change shared
 lists while organisms move. A panic in a worker ends the process (the
 other threads may wait for its columns).
 
+The atmosphere: every organism breathes every frame (`World.respiration`,
+about 13,000 calls a frame in the default world, `photosynthesis` 4,300),
+and each call used to take `_O2_monitor` and a second monitor, so threads
+spent most of their time passing those between cores. Now a worker thread
+collects its changes to the atmosphere in an `AtmosphereChanges` (a
+`ThreadLocal` in `World`, translated to `rt::JThreadLocal`) and adds them to
+the world after every line of buckets (`World.flushAtmosphereChanges`, a few
+hundred monitor operations a frame). The transfers that don't depend on the
+atmosphere's amounts (respiration, decomposition, `add*`...) are exact but
+for rounding order; the draws that do (`photosynthesis` and the like, capped
+by the amount of their gas) still take that gas's monitor, but not
+`_O2_monitor`, and see the other threads' changes up to a line late (a line
+is about 1 CO2 of the ~900 in the air, of ~100 a frame moved). On the
+simulation thread (THREAD_COUNT 1) nothing is collected: the same code as
+before, bit for bit.
+
 Speed (M1 Pro: 8 performance cores; the GUI's default world, 7200x7200,
-12,500 organisms, 600 frames, back to back, including the 2 s `genesis()`):
+12,500 organisms, 600 frames, back to back, including the 2 s
+single-threaded `genesis()`):
 
-    threads    1      4      6      8
-    Rust       9.9 s  6.5 s  6.8 s  6.9 s
-    Java      12.4 s  8.8 s  8.7 s  8.7 s
+    threads              1      4      6      8
+    Rust                 8.4 s  4.7 s  4.2 s  4.0 s
+    Rust, before         8.2 s  6.2 s  6.2 s  6.3 s
 
-Without `genesis()`, 4 threads move the organisms 2.2-2.4 times as fast
-as 1, and the GUI runs at 110 frames/s instead of 57. Both stop gaining
-at 4: every organism takes the atmosphere's monitors (`_CO2_monitor`,
-`_O2_monitor`) several times a frame, about 75,000 critical sections, and
-each moves a few cache lines between cores, so with more threads the time
-goes to waiting for them (at 8 threads the workers use 5 times the CPU
-time of the serial run). That is Java's design; per-thread atmosphere
-deltas would scale, but change the simulation. About 1 ms a frame is
-serial (`World.time()` refilling the buckets). Found on the way: monitors
-side by side in memory shared a cache line (now each has its own, as do
-`parallel::active()`'s flag and `Random`), and a cleverer `checkedOrganisms`
-set changed nothing (the machine's speed drifts by 25% within minutes
-while other apps run: compare alternating runs only).
+From a saved world (no `genesis()`, no loading), 400 frames take 5.1 s
+on one thread, 1.9 s on 4, 1.45 s on 8 (2.8 s and 3.0 s before the
+atmosphere change); Java (perf patches, warmed up) takes 4.8 s, about
+2.3 s, about 2 s. Switching monitors off altogether would gain only 3-4%
+more. What's left at more
+threads: the machine (with every core busy, threads land on slower or
+shared cores), the ranges' balance (the slowest thread takes ~25% longer
+than the average in a frame) and ~1 ms a frame of serial work (filling the
+buckets). Tried and dropped, all slower here than the column ranges: 2D
+tiles in 4 phases with work stealing, ranges recomputed every frame from
+organism counts or times, filling the buckets on all threads, spinning
+instead of sleeping while waiting. Found on the way: monitors side by side
+in memory shared a cache line (now each has its own, as do
+`parallel::active()`'s flag and `Random`), and on macOS `yield_now` can
+take a waiting thread off its core for milliseconds. The machine's speed
+drifts by 25% within minutes while other apps run: compare alternating
+runs only.
 
 ## The GUI
 

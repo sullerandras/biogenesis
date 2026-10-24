@@ -2821,7 +2821,7 @@ impl Organism {
         let mut sporeremember: i32 = 0;
         let mut inheritReproduceEnergy: i32 = 1;
         if (parent.get(|o| o._sporeversion) > 0) {
-            if (!(parent.get(|o| o._infectedGeneticCode.clone())).is_null()) {
+            if (!parent.get(|o| o._infectedGeneticCode.is_null())) {
                 if parent.get(|o| o._isreproductive) {
                     if (parent.get(|o| o._nVirusChildren) == 0) {
                         inheritReproduceEnergy = (14 + (i32::wrapping_div(parent.get(|o| o._symmetry), 2)));
@@ -2915,7 +2915,7 @@ impl Organism {
                 }
             }
         } else {
-            if (!(parent.get(|o| o._infectedGeneticCode.clone())).is_null()) {
+            if (!parent.get(|o| o._infectedGeneticCode.is_null())) {
                 inheritGeneticCode = parent.get(|o| o._infectedGeneticCode.clone());
                 inheritReproduceEnergy = parent.get(|o| o._infectedReproduceEnergy);
             } else {
@@ -2973,7 +2973,7 @@ impl Organism {
         }
         if (sporeremember == (-2i32)) {
             this.setf(|o| &mut o._geneticCode, parent.get(|o| o._geneticCode.clone()));
-        } else if (((!(parent.get(|o| o._savedGeneticCode.clone())).is_null())) && ((sporeremember >= 0))) {
+        } else if (((!parent.get(|o| o._savedGeneticCode.is_null()))) && ((sporeremember >= 0))) {
             this.setf(|o| &mut o._geneticCode, parent.get(|o| o._savedGeneticCode.clone()));
         } else {
             this.setf(|o| &mut o._geneticCode, GeneticCode::new1(inheritGeneticCode.clone()));
@@ -3914,7 +3914,7 @@ impl Organism {
                 (*this.get(|o| unsafe { o._geneticCode.share() })).setf(|o| &mut o._updateClade, 0);
             }
         } else {
-            if ((((parent.get(|o| o._savedGeneticCode.clone())).is_null())) && ((sporeremember >= 0))) {
+            if (((parent.get(|o| o._savedGeneticCode.is_null()))) && ((sporeremember >= 0))) {
                 parent.setf(|o| &mut o._savedGeneticCode, this.get(|o| o._geneticCode.clone()));
             }
         }
@@ -11496,7 +11496,7 @@ impl Organism {
                     if __s7 == organism::BROWN {
                         break 's7;
                     } else if __s7 == organism::MINT {
-                        if (!(org.get(|o| o._infectedGeneticCode.clone())).is_null()) {
+                        if (!org.get(|o| o._infectedGeneticCode.is_null())) {
                             if ((Organism::useEnergy(&org, (utils::MINT_ENERGY_CONSUMPTION() / 2f64))) && (Organism::useEnergy(this, (utils::MINT_ENERGY_CONSUMPTION() / 2f64)))) {
                                 org.setf(|o| &mut o._infectedGeneticCode, JRef::null());
                                 org.setf(|o| &mut o._savedGeneticCode, JRef::null());
@@ -11514,7 +11514,7 @@ impl Organism {
                         break 's7;
                     } else {
                         if (this.get(|o| o._altruist) && org.get(|o| o._altruist)) {
-                            if (((!JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() })))) && ((!(org.get(|o| o._infectedGeneticCode.clone())).is_null()))) {
+                            if (((!JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() })))) && ((!org.get(|o| o._infectedGeneticCode.is_null())))) {
                                 if ((Organism::useEnergy(&org, (utils::MINT_ENERGY_CONSUMPTION() / 2f64))) && (Organism::useEnergy(this, (utils::MINT_ENERGY_CONSUMPTION() / 2f64)))) {
                                     org.setf(|o| &mut o._infectedGeneticCode, JRef::null());
                                     org.setf(|o| &mut o._savedGeneticCode, JRef::null());
@@ -11530,7 +11530,7 @@ impl Organism {
                                 }
                             }
                         } else if ((this.get(|o| o._familial)) && (((((((this.get(|o| o._lengthfriend) == org.get(|o| o._lengthfriend))) || ((this.get(|o| o._thetafriend) == org.get(|o| o._thetafriend)))) || ((this.get(|o| o._parentID) == org.get(|o| o._ID)))) || ((this.get(|o| o._ID) == org.get(|o| o._parentID)))) || (((this.get(|o| o._parentID) == org.get(|o| o._parentID)) && (this.get(|o| o._parentID) != (-1i32))))))) {
-                            if (((!JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() })))) && ((!(org.get(|o| o._infectedGeneticCode.clone())).is_null()))) {
+                            if (((!JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() })))) && ((!org.get(|o| o._infectedGeneticCode.is_null())))) {
                                 if ((Organism::useEnergy(&org, (utils::MINT_ENERGY_CONSUMPTION() / 2f64))) && (Organism::useEnergy(this, (utils::MINT_ENERGY_CONSUMPTION() / 2f64)))) {
                                     org.setf(|o| &mut o._infectedGeneticCode, JRef::null());
                                     org.setf(|o| &mut o._savedGeneticCode, JRef::null());
@@ -19742,7 +19742,7 @@ impl Organism {
                                     }
                                 }
                             }
-                            if (!(org.get(|o| o._infectedGeneticCode.clone())).is_null()) {
+                            if (!org.get(|o| o._infectedGeneticCode.is_null())) {
                                 org.setf(|o| &mut o._infectedGeneticCode, JRef::null());
                                 org.setf(|o| &mut o._savedGeneticCode, JRef::null());
                             }
@@ -19999,7 +19999,7 @@ impl Organism {
                 's3: {
                     let __s3 = organism::getTypeColor(org.get(|__o| __o._segColor.at(oseg)));
                     if __s3 == organism::WHITE || __s3 == organism::PLAGUE {
-                        if (((((JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() })))) || (((!(this.get(|o| o._isinfectious))) && ((!(org.get(|o| o._infectedGeneticCode.clone())).is_null())))))) && (org.get(|o| o._isinfectious))) {
+                        if (((((JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() })))) || (((!(this.get(|o| o._isinfectious))) && ((!org.get(|o| o._infectedGeneticCode.is_null()))))))) && (org.get(|o| o._isinfectious))) {
                             if (((((((this.get(|o| o._plagueversion) == 2)) || (!(this.get(|o| o._isinfectious))))) && (org.get(|o| o._isaconsumer)))) || ((((this.get(|o| o._plagueversion) == 1)) && (org.get(|o| o._isaplant))))) {
                                 if (org.get(|o| o._lavender) > 0) {
                                     if (this.get(|o| o._blackversion) == (-1i32)) {
@@ -20051,7 +20051,7 @@ impl Organism {
                         }
                         break 's3;
                     } else if __s3 == organism::SILVER {
-                        if (((JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() })))) || (((!(this.get(|o| o._isinfectious))) && ((!(org.get(|o| o._infectedGeneticCode.clone())).is_null()))))) {
+                        if (((JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() })))) || (((!(this.get(|o| o._isinfectious))) && ((!org.get(|o| o._infectedGeneticCode.is_null())))))) {
                             if ((org.get(|o| o._isenhanced)) || ((this.get(|o| o._nTotalInfected) >= org.get(|o| o._nTotalInfected)))) {
                                 if (((((((this.get(|o| o._plagueversion) == 2)) || (!(this.get(|o| o._isinfectious))))) && (org.get(|o| o._isaconsumer)))) || ((((this.get(|o| o._plagueversion) == 1)) && (org.get(|o| o._isaplant))))) {
                                     if (org.get(|o| o._lavender) > 0) {
@@ -20127,7 +20127,7 @@ impl Organism {
                         }
                         break 's3;
                     } else if __s3 == organism::LEAF {
-                        if (((JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() })))) || (((!(this.get(|o| o._isinfectious))) && ((!(org.get(|o| o._infectedGeneticCode.clone())).is_null()))))) {
+                        if (((JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() })))) || (((!(this.get(|o| o._isinfectious))) && ((!org.get(|o| o._infectedGeneticCode.is_null())))))) {
                             if (this.get(|o| o._plagueversion) == 1) {
                                 if ((org.get(|o| o._dodge)) && (Organism::useEnergy(&org, utils::DODGE_ENERGY_CONSUMPTION()))) {
                                     Organism::setColor(&org, utils::ColorTEAL);
@@ -20189,7 +20189,7 @@ impl Organism {
                         }
                         break 's3;
                     } else if __s3 == organism::GREEN || __s3 == organism::GRASS || __s3 == organism::FOREST || __s3 == organism::SPRING || __s3 == organism::SUMMER || __s3 == organism::WINTER || __s3 == organism::LIME || __s3 == organism::C4 || __s3 == organism::JADE || __s3 == organism::DARKJADE {
-                        if (((JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() })))) || (((!(this.get(|o| o._isinfectious))) && ((!(org.get(|o| o._infectedGeneticCode.clone())).is_null()))))) {
+                        if (((JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() })))) || (((!(this.get(|o| o._isinfectious))) && ((!org.get(|o| o._infectedGeneticCode.is_null())))))) {
                             if (this.get(|o| o._plagueversion) == 1) {
                                 if ((org.get(|o| o._dodge)) && (Organism::useEnergy(&org, utils::DODGE_ENERGY_CONSUMPTION()))) {
                                     Organism::setColor(&org, utils::ColorTEAL);
@@ -20246,7 +20246,7 @@ impl Organism {
                         }
                         break 's3;
                     } else if __s3 == organism::IVY || __s3 == organism::DARKGREEN || __s3 == organism::PLANKTON || __s3 == organism::PURPLE {
-                        if (((JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() })))) || (((!(this.get(|o| o._isinfectious))) && ((!(org.get(|o| o._infectedGeneticCode.clone())).is_null()))))) {
+                        if (((JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() })))) || (((!(this.get(|o| o._isinfectious))) && ((!org.get(|o| o._infectedGeneticCode.is_null())))))) {
                             if (this.get(|o| o._plagueversion) == 1) {
                                 if ((org.get(|o| o._dodge)) && (Organism::useEnergy(&org, utils::DODGE_ENERGY_CONSUMPTION()))) {
                                     Organism::setColor(&org, utils::ColorTEAL);
@@ -20289,7 +20289,7 @@ impl Organism {
                         }
                         break 's3;
                     } else if __s3 == organism::BLUE {
-                        if (((JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() })))) || (((!(this.get(|o| o._isinfectious))) && ((!(org.get(|o| o._infectedGeneticCode.clone())).is_null()))))) {
+                        if (((JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() })))) || (((!(this.get(|o| o._isinfectious))) && ((!org.get(|o| o._infectedGeneticCode.is_null())))))) {
                             if (((this.get(|o| o._plagueversion) == 1)) && (org.get(|o| o._isaplant))) {
                                 if Organism::useEnergy(&org, utils::BLUE_ENERGY_CONSUMPTION()) {
                                     if org.get(|o| o._isenhanced) {
@@ -20339,7 +20339,7 @@ impl Organism {
                         }
                         break 's3;
                     } else if __s3 == organism::OCHRE || __s3 == organism::BARK || __s3 == organism::OLDBARK {
-                        if (((JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() })))) || (((!(this.get(|o| o._isinfectious))) && ((!(org.get(|o| o._infectedGeneticCode.clone())).is_null()))))) {
+                        if (((JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() })))) || (((!(this.get(|o| o._isinfectious))) && ((!org.get(|o| o._infectedGeneticCode.is_null())))))) {
                             if (((this.get(|o| o._plagueversion) == 1)) && (org.get(|o| o._isaplant))) {
                                 if (org.get(|o| o._lavender) > 0) {
                                     if (this.get(|o| o._blackversion) == (-1i32)) {
@@ -20376,7 +20376,7 @@ impl Organism {
                         }
                         break 's3;
                     } else if __s3 == organism::SKY || __s3 == organism::DEEPSKY || __s3 == organism::FALLOW {
-                        if (((((JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() })))) && (this.get(|o| o._isenhanced)))) || (((!(this.get(|o| o._isinfectious))) && ((!(org.get(|o| o._infectedGeneticCode.clone())).is_null()))))) {
+                        if (((((JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() })))) && (this.get(|o| o._isenhanced)))) || (((!(this.get(|o| o._isinfectious))) && ((!org.get(|o| o._infectedGeneticCode.is_null())))))) {
                             if ((((this.get(|o| o._plagueversion) == 1)) && (org.get(|o| o._isaplant))) && ((org.get(|o| o._createlavender) == 0))) {
                                 if (org.get(|o| o._lavender) > 0) {
                                     if (this.get(|o| o._blackversion) == (-1i32)) {
@@ -20413,7 +20413,7 @@ impl Organism {
                         }
                         break 's3;
                     } else if __s3 == organism::OLIVE {
-                        if ((((!(this.get(|o| o._isinfectious))) && (!(this.get(|o| o._isaconsumer)))) && (!(this.get(|o| o._isafungus)))) && ((!(org.get(|o| o._infectedGeneticCode.clone())).is_null()))) {
+                        if ((((!(this.get(|o| o._isinfectious))) && (!(this.get(|o| o._isaconsumer)))) && (!(this.get(|o| o._isafungus)))) && ((!org.get(|o| o._infectedGeneticCode.is_null())))) {
                             if ((((this.get(|o| o._plagueversion) == 1)) && (org.get(|o| o._isaplant))) && ((org.get(|o| o._createlavender) == 0))) {
                                 if (org.get(|o| o._lavender) > 0) {
                                     if (this.get(|o| o._blackversion) == (-1i32)) {
@@ -20436,7 +20436,7 @@ impl Organism {
                         }
                         break 's3;
                     } else if __s3 == organism::CRIMSON || __s3 == organism::ORANGE || __s3 == organism::FIRE {
-                        if (((JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() })))) || (((!(this.get(|o| o._isinfectious))) && ((!(org.get(|o| o._infectedGeneticCode.clone())).is_null()))))) {
+                        if (((JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() })))) || (((!(this.get(|o| o._isinfectious))) && ((!org.get(|o| o._infectedGeneticCode.is_null())))))) {
                             if (((this.get(|o| o._plagueversion) == 2)) || (!(this.get(|o| o._isinfectious)))) {
                                 if (org.get(|o| o._lavender) > 0) {
                                     if (this.get(|o| o._blackversion) == (-1i32)) {
@@ -20473,7 +20473,7 @@ impl Organism {
                         }
                         break 's3;
                     } else if __s3 == organism::MAROON {
-                        if (((JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() })))) || (((!(this.get(|o| o._isinfectious))) && ((!(org.get(|o| o._infectedGeneticCode.clone())).is_null()))))) {
+                        if (((JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() })))) || (((!(this.get(|o| o._isinfectious))) && ((!org.get(|o| o._infectedGeneticCode.is_null())))))) {
                             if (((((this.get(|o| o._plagueversion) == 2)) || (!(this.get(|o| o._isinfectious))))) && ((org.get(|o| o._createlavender) == 0))) {
                                 if (org.get(|o| o._lavender) > 0) {
                                     if (this.get(|o| o._blackversion) == (-1i32)) {
@@ -20510,7 +20510,7 @@ impl Organism {
                         }
                         break 's3;
                     } else if __s3 == organism::RED || __s3 == organism::CREAM {
-                        if (((((JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() })))) && (this.get(|o| o._isenhanced)))) || (((!(this.get(|o| o._isinfectious))) && ((!(org.get(|o| o._infectedGeneticCode.clone())).is_null()))))) {
+                        if (((((JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() })))) && (this.get(|o| o._isenhanced)))) || (((!(this.get(|o| o._isinfectious))) && ((!org.get(|o| o._infectedGeneticCode.is_null())))))) {
                             if (((((this.get(|o| o._plagueversion) == 2)) || (!(this.get(|o| o._isinfectious))))) && ((org.get(|o| o._createlavender) == 0))) {
                                 if (org.get(|o| o._lavender) > 0) {
                                     if (this.get(|o| o._blackversion) == (-1i32)) {
@@ -20547,7 +20547,7 @@ impl Organism {
                         }
                         break 's3;
                     } else if __s3 == organism::PINK {
-                        if (((((JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() })))) && (((org.get(|o| o._modifiespink)) || (((((this.get(|o| o._isauburn)) && (!(this.get(|o| o._isaplant)))) && (!(this.get(|o| o._isaconsumer)))) && (!(this.get(|o| o._isafungus))))))))) || (((!(this.get(|o| o._isinfectious))) && ((!(org.get(|o| o._infectedGeneticCode.clone())).is_null()))))) {
+                        if (((((JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() })))) && (((org.get(|o| o._modifiespink)) || (((((this.get(|o| o._isauburn)) && (!(this.get(|o| o._isaplant)))) && (!(this.get(|o| o._isaconsumer)))) && (!(this.get(|o| o._isafungus))))))))) || (((!(this.get(|o| o._isinfectious))) && ((!org.get(|o| o._infectedGeneticCode.is_null())))))) {
                             if (((this.get(|o| o._plagueversion) == 2)) || (!(this.get(|o| o._isinfectious)))) {
                                 if (org.get(|o| o._lavender) > 0) {
                                     if (this.get(|o| o._blackversion) == (-1i32)) {
@@ -20585,7 +20585,7 @@ impl Organism {
                         break 's3;
                     } else if __s3 == organism::SPIKE {
                         if ((org.get(|o| o._isaplant)) || (org.get(|o| o._isenhanced))) {
-                            if (((JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() })))) || (((!(this.get(|o| o._isinfectious))) && ((!(org.get(|o| o._infectedGeneticCode.clone())).is_null()))))) {
+                            if (((JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() })))) || (((!(this.get(|o| o._isinfectious))) && ((!org.get(|o| o._infectedGeneticCode.is_null())))))) {
                                 if (((((((this.get(|o| o._plagueversion) == 2)) || (!(this.get(|o| o._isinfectious))))) && (org.get(|o| o._isenhanced)))) || ((((this.get(|o| o._plagueversion) == 1)) && (org.get(|o| o._isaplant))))) {
                                     if (org.get(|o| o._lavender) > 0) {
                                         if (this.get(|o| o._blackversion) == (-1i32)) {
@@ -20654,7 +20654,7 @@ impl Organism {
                         }
                         break 's3;
                     } else if __s3 == organism::SPORE {
-                        if (((JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() })))) || (((!(this.get(|o| o._isinfectious))) && ((!(org.get(|o| o._infectedGeneticCode.clone())).is_null()))))) {
+                        if (((JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() })))) || (((!(this.get(|o| o._isinfectious))) && ((!org.get(|o| o._infectedGeneticCode.is_null())))))) {
                             if (((((((this.get(|o| o._plagueversion) == 2)) || (!(this.get(|o| o._isinfectious))))) && (org.get(|o| o._isaconsumer)))) || ((((this.get(|o| o._plagueversion) == 1)) && (org.get(|o| o._isaplant))))) {
                                 if (((org.get(|o| o._sporeversion) >= 1)) && (org.get(|o| o._isaconsumer))) {
                                     if ((org.get(|o| o._dodge)) && (Organism::useEnergy(&org, utils::DODGE_ENERGY_CONSUMPTION()))) {
@@ -20702,7 +20702,7 @@ impl Organism {
                         }
                         break 's3;
                     } else if __s3 == organism::CYAN || __s3 == organism::TEAL || __s3 == organism::DRIFT || __s3 == organism::SPIN || __s3 == organism::YELLOW || __s3 == organism::AUBURN || __s3 == organism::BLOND || __s3 == organism::FLOWER || __s3 == organism::DARKGRAY || __s3 == organism::GOLD {
-                        if (((JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() })))) || (((!(this.get(|o| o._isinfectious))) && ((!(org.get(|o| o._infectedGeneticCode.clone())).is_null()))))) {
+                        if (((JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() })))) || (((!(this.get(|o| o._isinfectious))) && ((!org.get(|o| o._infectedGeneticCode.is_null())))))) {
                             if (((((((this.get(|o| o._plagueversion) == 2)) || (!(this.get(|o| o._isinfectious))))) && (org.get(|o| o._isaconsumer)))) || ((((this.get(|o| o._plagueversion) == 1)) && (org.get(|o| o._isaplant))))) {
                                 if ((org.get(|o| o._dodge)) && (Organism::useEnergy(&org, utils::DODGE_ENERGY_CONSUMPTION()))) {
                                     Organism::setColor(&org, utils::ColorTEAL);
@@ -20745,7 +20745,7 @@ impl Organism {
                         }
                         break 's3;
                     } else if __s3 == organism::MAGENTA || __s3 == organism::ROSE {
-                        if (((((JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() })))) || (((!(this.get(|o| o._isinfectious))) && ((!(org.get(|o| o._infectedGeneticCode.clone())).is_null())))))) && (!(this.get(|o| o._altruist)))) {
+                        if (((((JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() })))) || (((!(this.get(|o| o._isinfectious))) && ((!org.get(|o| o._infectedGeneticCode.is_null()))))))) && (!(this.get(|o| o._altruist)))) {
                             if (((((((this.get(|o| o._plagueversion) == 2)) || (!(this.get(|o| o._isinfectious))))) && (org.get(|o| o._isaconsumer)))) || ((((this.get(|o| o._plagueversion) == 1)) && (org.get(|o| o._isaplant))))) {
                                 if ((org.get(|o| o._dodge)) && (Organism::useEnergy(&org, utils::DODGE_ENERGY_CONSUMPTION()))) {
                                     Organism::setColor(&org, utils::ColorTEAL);
@@ -20789,7 +20789,7 @@ impl Organism {
                         break 's3;
                     } else if __s3 == organism::SPIKEPOINT {
                         if org.get(|o| o._isenhanced) {
-                            if (((JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() })))) || (((!(this.get(|o| o._isinfectious))) && ((!(org.get(|o| o._infectedGeneticCode.clone())).is_null()))))) {
+                            if (((JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() })))) || (((!(this.get(|o| o._isinfectious))) && ((!org.get(|o| o._infectedGeneticCode.is_null())))))) {
                                 if (((((((this.get(|o| o._plagueversion) == 2)) || (!(this.get(|o| o._isinfectious))))) && (org.get(|o| o._isenhanced)))) || ((((this.get(|o| o._plagueversion) == 1)) && (org.get(|o| o._isaplant))))) {
                                     if (org.get(|o| o._lavender) > 0) {
                                         if (this.get(|o| o._blackversion) == (-1i32)) {
@@ -20833,7 +20833,7 @@ impl Organism {
                             if (((org.get(|o| o._framesColor) <= 7)) && ((org.get(|o| o._blackversion) >= (-1i32)))) {
                                 Organism::mimicColor(&org);
                             } else {
-                                if (((JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() })))) || (((!(this.get(|o| o._isinfectious))) && ((!(org.get(|o| o._infectedGeneticCode.clone())).is_null()))))) {
+                                if (((JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() })))) || (((!(this.get(|o| o._isinfectious))) && ((!org.get(|o| o._infectedGeneticCode.is_null())))))) {
                                     if (((((((this.get(|o| o._plagueversion) == 2)) || (!(this.get(|o| o._isinfectious))))) && (org.get(|o| o._isaconsumer)))) || ((((this.get(|o| o._plagueversion) == 1)) && (org.get(|o| o._isaplant))))) {
                                         if (org.get(|o| o._lavender) > 0) {
                                             if (this.get(|o| o._blackversion) == (-1i32)) {
@@ -20874,7 +20874,7 @@ impl Organism {
                     } else if __s3 == organism::MINT || __s3 == organism::CORAL || __s3 == organism::BROWN {
                         break 's3;
                     } else {
-                        if (((JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() })))) || (((!(this.get(|o| o._isinfectious))) && ((!(org.get(|o| o._infectedGeneticCode.clone())).is_null()))))) {
+                        if (((JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() })))) || (((!(this.get(|o| o._isinfectious))) && ((!org.get(|o| o._infectedGeneticCode.is_null())))))) {
                             if (((((((this.get(|o| o._plagueversion) == 2)) || (!(this.get(|o| o._isinfectious))))) && (org.get(|o| o._isaconsumer)))) || ((((this.get(|o| o._plagueversion) == 1)) && (org.get(|o| o._isaplant))))) {
                                 if (org.get(|o| o._lavender) > 0) {
                                     if (this.get(|o| o._blackversion) == (-1i32)) {
@@ -23603,7 +23603,7 @@ impl Organism {
                     let __s26 = organism::getTypeColor(org.get(|__o| __o._segColor.at(oseg)));
                     if __s26 == organism::GREEN || __s26 == organism::GRASS || __s26 == organism::FOREST || __s26 == organism::SPRING || __s26 == organism::SUMMER || __s26 == organism::WINTER || __s26 == organism::LIME || __s26 == organism::LEAF || __s26 == organism::C4 || __s26 == organism::JADE || __s26 == organism::DARKJADE {
                         if (((!JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() })))) && ((this.get(|o| o._sporeversion) == 1))) {
-                            if (((!(org.get(|o| o._infectedGeneticCode.clone())).is_null())) || ((org.get(|o| o._sporeversion) != 1))) {
+                            if (((!org.get(|o| o._infectedGeneticCode.is_null()))) || ((org.get(|o| o._sporeversion) != 1))) {
                                 if ((org.get(|o| o._dodge)) && (Organism::useEnergy(&org, utils::DODGE_ENERGY_CONSUMPTION()))) {
                                     if (((org.get(|o| o._isonlyc4) != 2)) || ((org.get(|o| o._framesColor) > 8))) {
                                         org.setf(|o| &mut o._hasdodged, true);
@@ -23655,7 +23655,7 @@ impl Organism {
                     } else if __s26 == organism::IVY || __s26 == organism::DARKGREEN || __s26 == organism::PLANKTON || __s26 == organism::PURPLE || __s26 == organism::TEAL || __s26 == organism::CYAN || __s26 == organism::DRIFT || __s26 == organism::SPIN || __s26 == organism::YELLOW || __s26 == organism::AUBURN || __s26 == organism::BLOND || __s26 == organism::FLOWER || __s26 == organism::DARKGRAY || __s26 == organism::GOLD {
                         if (((!JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() })))) && ((this.get(|o| o._sporeversion) == 1))) {
                             if org.get(|o| o._isaplant) {
-                                if (((!(org.get(|o| o._infectedGeneticCode.clone())).is_null())) || ((org.get(|o| o._sporeversion) != 1))) {
+                                if (((!org.get(|o| o._infectedGeneticCode.is_null()))) || ((org.get(|o| o._sporeversion) != 1))) {
                                     if ((org.get(|o| o._dodge)) && (Organism::useEnergy(&org, utils::DODGE_ENERGY_CONSUMPTION()))) {
                                         if (((org.get(|o| o._isonlyc4) != 2)) || ((org.get(|o| o._framesColor) > 8))) {
                                             org.setf(|o| &mut o._hasdodged, true);
@@ -23676,7 +23676,7 @@ impl Organism {
                     } else if __s26 == organism::SPORE {
                         if (((!JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() })))) && ((this.get(|o| o._sporeversion) == 1))) {
                             if org.get(|o| o._isaplant) {
-                                if (((((!(org.get(|o| o._infectedGeneticCode.clone())).is_null())) || ((org.get(|o| o._sporeversion) != 1)))) && ((org.get(|o| o._sporeversion) > 0))) {
+                                if (((((!org.get(|o| o._infectedGeneticCode.is_null()))) || ((org.get(|o| o._sporeversion) != 1)))) && ((org.get(|o| o._sporeversion) > 0))) {
                                     if ((org.get(|o| o._dodge)) && (Organism::useEnergy(&org, utils::DODGE_ENERGY_CONSUMPTION()))) {
                                         if (((org.get(|o| o._isonlyc4) != 2)) || ((org.get(|o| o._framesColor) > 8))) {
                                             org.setf(|o| &mut o._hasdodged, true);
@@ -23713,7 +23713,7 @@ impl Organism {
                     } else if __s26 == organism::MAGENTA || __s26 == organism::ROSE {
                         if ((((!JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() })))) && ((this.get(|o| o._sporeversion) == 1))) && (!(this.get(|o| o._altruist)))) {
                             if org.get(|o| o._isaplant) {
-                                if (((!(org.get(|o| o._infectedGeneticCode.clone())).is_null())) || ((org.get(|o| o._sporeversion) != 1))) {
+                                if (((!org.get(|o| o._infectedGeneticCode.is_null()))) || ((org.get(|o| o._sporeversion) != 1))) {
                                     if ((org.get(|o| o._dodge)) && (Organism::useEnergy(&org, utils::DODGE_ENERGY_CONSUMPTION()))) {
                                         if (((org.get(|o| o._isonlyc4) != 2)) || ((org.get(|o| o._framesColor) > 8))) {
                                             org.setf(|o| &mut o._hasdodged, true);
@@ -23738,7 +23738,7 @@ impl Organism {
                             } else {
                                 if (this.get(|o| o._sporeversion) == 1) {
                                     if org.get(|o| o._isaplant) {
-                                        if (((!(org.get(|o| o._infectedGeneticCode.clone())).is_null())) || ((org.get(|o| o._sporeversion) != 1))) {
+                                        if (((!org.get(|o| o._infectedGeneticCode.is_null()))) || ((org.get(|o| o._sporeversion) != 1))) {
                                             Organism::infectedByFruit(&org, this.clone());
                                             takenEnergyFruit = utils::between3_1((this.get(|o| o._energy) - 2.0E-7f64), 0f64, this.get(|o| o._energy));
                                             org.setf(|o| &mut o._energy, (org.get(|o| o._energy) + takenEnergyFruit));
@@ -23754,7 +23754,7 @@ impl Organism {
                     } else if __s26 == organism::SKY {
                         if ((((org.get(|o| o._skyversion) == 2)) && ((!JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() }))))) && ((this.get(|o| o._sporeversion) == 1))) {
                             if org.get(|o| o._isaplant) {
-                                if (((!(org.get(|o| o._infectedGeneticCode.clone())).is_null())) || ((org.get(|o| o._sporeversion) != 1))) {
+                                if (((!org.get(|o| o._infectedGeneticCode.is_null()))) || ((org.get(|o| o._sporeversion) != 1))) {
                                     if Organism::useEnergy(&org, utils::SKY_ENERGY_CONSUMPTION()) {
                                         org.get(|__o| __o._segColor.put(oseg, utils::ColorDEEPSKY));
                                         org.get(|__o| __o._mphoto.put(oseg, (-20f64)));
@@ -23779,7 +23779,7 @@ impl Organism {
                     } else if __s26 == organism::SPIKE || __s26 == organism::DEEPSKY || __s26 == organism::OLIVE || __s26 == organism::DARKOLIVE || __s26 == organism::BARK || __s26 == organism::OLDBARK || __s26 == organism::OCHRE || __s26 == organism::FALLOW {
                         if (((!JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() })))) && ((this.get(|o| o._sporeversion) == 1))) {
                             if org.get(|o| o._isaplant) {
-                                if (((!(org.get(|o| o._infectedGeneticCode.clone())).is_null())) || ((org.get(|o| o._sporeversion) != 1))) {
+                                if (((!org.get(|o| o._infectedGeneticCode.is_null()))) || ((org.get(|o| o._sporeversion) != 1))) {
                                     if ((((this.get(|o| o._isenhanced)) && (!(this.get(|o| o._isblond))))) || (org.get(|o| o._isblond))) {
                                         Organism::infectedByFruit(&org, this.clone());
                                     } else {
@@ -23797,7 +23797,7 @@ impl Organism {
                     } else if __s26 == organism::PLAGUE {
                         if (((!JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() })))) && ((this.get(|o| o._sporeversion) == 1))) {
                             if org.get(|o| o._isaplant) {
-                                if (((!(org.get(|o| o._infectedGeneticCode.clone())).is_null())) || ((org.get(|o| o._sporeversion) != 1))) {
+                                if (((!org.get(|o| o._infectedGeneticCode.is_null()))) || ((org.get(|o| o._sporeversion) != 1))) {
                                     if (((!(org.get(|o| o._isinfectious))) && (!(org.get(|o| o._isaconsumer)))) && (!(org.get(|o| o._isafungus)))) {
                                         Organism::infectedByFruitWeak(&org, this.clone());
                                         org.setf(|o| &mut o._infectedReproduceEnergy, 4);
@@ -23816,7 +23816,7 @@ impl Organism {
                     } else if __s26 == organism::LAVENDER {
                         if (((!JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() })))) && ((this.get(|o| o._sporeversion) == 1))) {
                             if org.get(|o| o._isaplant) {
-                                if (((!(org.get(|o| o._infectedGeneticCode.clone())).is_null())) || ((org.get(|o| o._sporeversion) != 1))) {
+                                if (((!org.get(|o| o._infectedGeneticCode.is_null()))) || ((org.get(|o| o._sporeversion) != 1))) {
                                     if org.get(|o| o._isenhanced) {
                                         Organism::useEnergy(this, utils::between3_1((1f64 / utils::LAVENDER_ENERGY_CONSUMPTION()), 0f64, this.get(|o| o._energy)));
                                         if (org.get(|o| o._lavender) < utils::LAVENDER_SHIELD()) {
@@ -23849,7 +23849,7 @@ impl Organism {
                     } else {
                         if (((!JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() })))) && ((this.get(|o| o._sporeversion) == 1))) {
                             if org.get(|o| o._isaplant) {
-                                if (((!(org.get(|o| o._infectedGeneticCode.clone())).is_null())) || ((org.get(|o| o._sporeversion) != 1))) {
+                                if (((!org.get(|o| o._infectedGeneticCode.is_null()))) || ((org.get(|o| o._sporeversion) != 1))) {
                                     Organism::infectedByFruit(&org, this.clone());
                                     takenEnergyFruit = utils::between3_1((this.get(|o| o._energy) - 2.0E-7f64), 0f64, this.get(|o| o._energy));
                                     org.setf(|o| &mut o._energy, (org.get(|o| o._energy) + takenEnergyFruit));
@@ -24665,7 +24665,7 @@ impl Organism {
                             }
                         }
                         if (this.get(|o| o._altruist) && org.get(|o| o._altruist)) {
-                            if (((!JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() })))) && ((!(org.get(|o| o._infectedGeneticCode.clone())).is_null()))) {
+                            if (((!JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() })))) && ((!org.get(|o| o._infectedGeneticCode.is_null())))) {
                                 if ((Organism::useEnergy(&org, (utils::MINT_ENERGY_CONSUMPTION() / 2f64))) && (Organism::useEnergy(this, (utils::MINT_ENERGY_CONSUMPTION() / 2f64)))) {
                                     org.setf(|o| &mut o._infectedGeneticCode, JRef::null());
                                     org.setf(|o| &mut o._savedGeneticCode, JRef::null());
@@ -24693,7 +24693,7 @@ impl Organism {
                             }
                         }
                         if (this.get(|o| o._altruist) && org.get(|o| o._altruist)) {
-                            if (((!JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() })))) && ((!(org.get(|o| o._infectedGeneticCode.clone())).is_null()))) {
+                            if (((!JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() })))) && ((!org.get(|o| o._infectedGeneticCode.is_null())))) {
                                 if ((Organism::useEnergy(&org, (utils::MINT_ENERGY_CONSUMPTION() / 2f64))) && (Organism::useEnergy(this, (utils::MINT_ENERGY_CONSUMPTION() / 2f64)))) {
                                     org.setf(|o| &mut o._infectedGeneticCode, JRef::null());
                                     org.setf(|o| &mut o._savedGeneticCode, JRef::null());
@@ -24724,7 +24724,7 @@ impl Organism {
                             }
                         }
                         if (this.get(|o| o._altruist) && org.get(|o| o._altruist)) {
-                            if (((!JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() })))) && ((!(org.get(|o| o._infectedGeneticCode.clone())).is_null()))) {
+                            if (((!JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() })))) && ((!org.get(|o| o._infectedGeneticCode.is_null())))) {
                                 if ((Organism::useEnergy(&org, (utils::MINT_ENERGY_CONSUMPTION() / 2f64))) && (Organism::useEnergy(this, (utils::MINT_ENERGY_CONSUMPTION() / 2f64)))) {
                                     org.setf(|o| &mut o._infectedGeneticCode, JRef::null());
                                     org.setf(|o| &mut o._savedGeneticCode, JRef::null());
@@ -24815,7 +24815,7 @@ impl Organism {
                             }
                         }
                         if (this.get(|o| o._altruist) && org.get(|o| o._altruist)) {
-                            if (((!JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() })))) && ((!(org.get(|o| o._infectedGeneticCode.clone())).is_null()))) {
+                            if (((!JRef::ptr_eq(&(org.get(|o| o._infectedGeneticCode.clone())), &*this.get(|o| unsafe { o._geneticCode.share() })))) && ((!org.get(|o| o._infectedGeneticCode.is_null())))) {
                                 if ((Organism::useEnergy(&org, (utils::MINT_ENERGY_CONSUMPTION() / 2f64))) && (Organism::useEnergy(this, (utils::MINT_ENERGY_CONSUMPTION() / 2f64)))) {
                                     org.setf(|o| &mut o._infectedGeneticCode, JRef::null());
                                     org.setf(|o| &mut o._savedGeneticCode, JRef::null());

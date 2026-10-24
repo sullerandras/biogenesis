@@ -4,12 +4,16 @@ class biogenesis.Gene
 class biogenesis.GeneticCode
 class biogenesis.Organism
 class biogenesis.World
+class biogenesis.AtmosphereChanges
 class biogenesis.WorldStatistics
 class biogenesis.OrganismBuckets
 class biogenesis.Vector2D
 class biogenesis.ExLine2DDouble
 # Only its static methods (World.time calls progressAllOrganisms).
 source biogenesis.parallel_executor.ParallelExecutor
+# Called by core/src/native/parallel_executor.rs's worker threads.
+static biogenesis.World.collectAtmosphereChanges()
+static biogenesis.World.flushAtmosphereChanges()
 # The parallel executor's ranges (used by core/src/native/parallel_executor.rs).
 source biogenesis.parallel_executor.ThreadStartIndexes
 static biogenesis.parallel_executor.ThreadStartIndexes.initialize(int,int)

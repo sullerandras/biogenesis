@@ -11,7 +11,9 @@
 //! apart: organisms that touch each other never move at the same time. The
 //! ranges are adjusted after each frame, from the slowest and the fastest
 //! thread's times. While the threads run, `rt::parallel` is active (monitors,
-//! deferred drops: see there).
+//! deferred drops: see there). As in Java, a worker collects its changes to
+//! the atmosphere and adds them to the world after every line
+//! (World.collectAtmosphereChanges, flushAtmosphereChanges).
 
 use std::panic::{AssertUnwindSafe, catch_unwind};
 use std::sync::mpsc::{Receiver, Sender, channel};
@@ -20,7 +22,7 @@ use std::sync::{Arc, Condvar, Mutex};
 use std::thread::JoinHandle;
 use std::time::Instant;
 
-use crate::generated::{Organism, OrganismBuckets, parallel_executor, thread_start_indexes};
+use crate::generated::{Organism, OrganismBuckets, parallel_executor, thread_start_indexes, world};
 use crate::rt::parallel;
 use crate::rt::*;
 
@@ -218,6 +220,8 @@ impl Job {
         let mut index = self.startIndex;
         while index <= self.endIndex {
             progressLineInBucket(index, &self.checked);
+            // after each line, so that other threads see this one's changes soon
+            world::flushAtmosphereChanges();
             lines.unlock(index - RANGE_TO_CLEAR);
             index += 1;
             lines.lock(index + RANGE_TO_CLEAR);
@@ -265,6 +269,7 @@ impl Pool {
                 .name(format!("WorkerThread-{i}"))
                 .stack_size(STACK_SIZE)
                 .spawn(move || {
+                    world::collectAtmosphereChanges();
                     while let Ok(job) = rx.recv() {
                         // A panic is an exception in Java: the simulation is over. The
                         // other threads may wait for this one's lines, so end the process

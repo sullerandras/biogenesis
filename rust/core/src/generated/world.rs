@@ -37,7 +37,7 @@ impl World {
     fn __init(this: &JRef<Self>) {
     }
 
-    /// Java: World.java:758 World(VisibleWorldInterface)
+    /// Java: World.java:895 World(VisibleWorldInterface)
     pub fn new(mut visibleWorld: Stub) -> JRef<Self> {
         let this = &{ thread_local! { static RECYCLER: JRecycler<World, 4> = const { JRecycler::new() }; } RECYCLER.with(|r| r.new_object()) };
         Self::__init(this);
@@ -189,53 +189,35 @@ impl World {
 
     /// Java: World.java:390 void addCO2(double)
     pub fn addCO2(this: &JRef<Self>, mut q: f64) {
-        {
-            let __sync1 = world::___CO2_monitor.lock();
-            this.setf(|o| &mut o._CO2, (this.get(|o| o._CO2) + q));
-        }
+        World::changeCO2(this, q);
     }
 
-    /// Java: World.java:400 void addCH4(double)
+    /// Java: World.java:398 void addCH4(double)
     pub fn addCH4(this: &JRef<Self>, mut q: f64) {
-        {
-            let __sync1 = world::___CH4_monitor.lock();
-            this.setf(|o| &mut o._CH4, (this.get(|o| o._CH4) + q));
-        }
+        World::changeCH4(this, q);
     }
 
-    /// Java: World.java:410 void addCO1(double)
+    /// Java: World.java:406 void addCO1(double)
     pub fn addCO1(this: &JRef<Self>, mut q: f64) {
-        {
-            let __sync1 = world::___CO1_monitor.lock();
-            this.setf(|o| &mut o._CO1, (this.get(|o| o._CO1) + q));
-        }
+        World::changeCO1(this, q);
     }
 
-    /// Java: World.java:420 void addDetritus(double)
+    /// Java: World.java:414 void addDetritus(double)
     pub fn addDetritus(this: &JRef<Self>, mut q: f64) {
-        {
-            let __sync1 = world::___detritus_monitor.lock();
-            this.setf(|o| &mut o._detritus, (this.get(|o| o._detritus) + q));
-        }
+        World::changeDetritus(this, q);
     }
 
-    /// Java: World.java:430 void addN2(double)
+    /// Java: World.java:422 void addN2(double)
     pub fn addN2(this: &JRef<Self>, mut q: f64) {
-        {
-            let __sync1 = world::___N2_monitor.lock();
-            this.setf(|o| &mut o._N2, (this.get(|o| o._N2) + q));
-        }
+        World::changeN2(this, q);
     }
 
-    /// Java: World.java:440 void addNH3(double)
+    /// Java: World.java:430 void addNH3(double)
     pub fn addNH3(this: &JRef<Self>, mut q: f64) {
-        {
-            let __sync1 = world::___NH3_monitor.lock();
-            this.setf(|o| &mut o._NH3, (this.get(|o| o._NH3) + q));
-        }
+        World::changeNH3(this, q);
     }
 
-    /// Java: World.java:451 void decreaseCO2(double)
+    /// Java: World.java:439 void decreaseCO2(double)
     pub fn decreaseCO2(this: &JRef<Self>, mut q: f64) {
         {
             let __sync1 = world::___CO2_monitor.lock();
@@ -243,7 +225,7 @@ impl World {
         }
     }
 
-    /// Java: World.java:461 void decreaseCH4(double)
+    /// Java: World.java:449 void decreaseCH4(double)
     pub fn decreaseCH4(this: &JRef<Self>, mut q: f64) {
         {
             let __sync1 = world::___CH4_monitor.lock();
@@ -251,7 +233,7 @@ impl World {
         }
     }
 
-    /// Java: World.java:471 void decreaseCO1(double)
+    /// Java: World.java:459 void decreaseCO1(double)
     pub fn decreaseCO1(this: &JRef<Self>, mut q: f64) {
         {
             let __sync1 = world::___CO1_monitor.lock();
@@ -259,7 +241,7 @@ impl World {
         }
     }
 
-    /// Java: World.java:481 void decreaseDetritus(double)
+    /// Java: World.java:469 void decreaseDetritus(double)
     pub fn decreaseDetritus(this: &JRef<Self>, mut q: f64) {
         {
             let __sync1 = world::___detritus_monitor.lock();
@@ -267,7 +249,7 @@ impl World {
         }
     }
 
-    /// Java: World.java:491 void decreaseN2(double)
+    /// Java: World.java:479 void decreaseN2(double)
     pub fn decreaseN2(this: &JRef<Self>, mut q: f64) {
         {
             let __sync1 = world::___N2_monitor.lock();
@@ -275,7 +257,7 @@ impl World {
         }
     }
 
-    /// Java: World.java:501 void decreaseNH3(double)
+    /// Java: World.java:489 void decreaseNH3(double)
     pub fn decreaseNH3(this: &JRef<Self>, mut q: f64) {
         {
             let __sync1 = world::___NH3_monitor.lock();
@@ -283,147 +265,103 @@ impl World {
         }
     }
 
-    /// Java: World.java:515 double convertCO2ToO2(double)
+    /// Java: World.java:503 double convertCO2ToO2(double)
     pub fn convertCO2ToO2(this: &JRef<Self>, mut q: f64) -> f64 {
+        let mut d: f64 = 0f64;
         {
             let __sync1 = world::___CO2_monitor.lock();
-            {
-                let __sync2 = world::___O2_monitor.lock();
-                let mut d: f64 = jmath::min_f64(q, this.get(|o| o._CO2));
-                this.setf(|o| &mut o._CO2, (this.get(|o| o._CO2) - d));
-                this.setf(|o| &mut o._O2, (this.get(|o| o._O2) + d));
-                return d;
-            }
+            d = jmath::min_f64(q, this.get(|o| o._CO2));
+            this.setf(|o| &mut o._CO2, (this.get(|o| o._CO2) - d));
         }
+        World::changeO2(this, d);
+        return d;
     }
 
-    /// Java: World.java:533 double respiration(double)
+    /// Java: World.java:520 double respiration(double)
     pub fn respiration(this: &JRef<Self>, mut q: f64) -> f64 {
-        {
-            let __sync1 = world::___CO2_monitor.lock();
-            {
-                let __sync2 = world::___O2_monitor.lock();
-                this.setf(|o| &mut o._O2, (this.get(|o| o._O2) - q));
-                this.setf(|o| &mut o._CO2, (this.get(|o| o._CO2) + q));
-                return q;
-            }
-        }
+        World::changeO2(this, -q);
+        World::changeCO2(this, q);
+        return q;
     }
 
-    /// Java: World.java:549 double decomposition(double)
+    /// Java: World.java:532 double decomposition(double)
     pub fn decomposition(this: &JRef<Self>, mut q: f64) -> f64 {
-        {
-            let __sync1 = world::___CH4_monitor.lock();
-            {
-                let __sync2 = world::___O2_monitor.lock();
-                this.setf(|o| &mut o._O2, (this.get(|o| o._O2) - q));
-                this.setf(|o| &mut o._CH4, (this.get(|o| o._CH4) + q));
-                return q;
-            }
-        }
+        World::changeO2(this, -q);
+        World::changeCH4(this, q);
+        return q;
     }
 
-    /// Java: World.java:565 double energyuse(double)
+    /// Java: World.java:544 double energyuse(double)
     pub fn energyuse(this: &JRef<Self>, mut q: f64) -> f64 {
-        {
-            let __sync1 = world::___CO1_monitor.lock();
-            {
-                let __sync2 = world::___O2_monitor.lock();
-                this.setf(|o| &mut o._O2, (this.get(|o| o._O2) - q));
-                this.setf(|o| &mut o._CO1, (this.get(|o| o._CO1) + q));
-                return q;
-            }
-        }
+        World::changeO2(this, -q);
+        World::changeCO1(this, q);
+        return q;
     }
 
-    /// Java: World.java:581 double detritusproduction(double)
+    /// Java: World.java:556 double detritusproduction(double)
     pub fn detritusproduction(this: &JRef<Self>, mut q: f64) -> f64 {
-        {
-            let __sync1 = world::___detritus_monitor.lock();
-            {
-                let __sync2 = world::___O2_monitor.lock();
-                this.setf(|o| &mut o._O2, (this.get(|o| o._O2) - q));
-                this.setf(|o| &mut o._detritus, (this.get(|o| o._detritus) + q));
-                return q;
-            }
-        }
+        World::changeO2(this, -q);
+        World::changeDetritus(this, q);
+        return q;
     }
 
-    /// Java: World.java:593 double nitrogenrelease(double)
+    /// Java: World.java:564 double nitrogenrelease(double)
     pub fn nitrogenrelease(this: &JRef<Self>, mut q: f64) -> f64 {
-        {
-            let __sync1 = world::___N2_monitor.lock();
-            this.setf(|o| &mut o._N2, (this.get(|o| o._N2) + q));
-            return q;
-        }
+        World::changeN2(this, q);
+        return q;
     }
 
-    /// Java: World.java:602 double ammoniarelease(double)
+    /// Java: World.java:571 double ammoniarelease(double)
     pub fn ammoniarelease(this: &JRef<Self>, mut q: f64) -> f64 {
-        {
-            let __sync1 = world::___NH3_monitor.lock();
-            this.setf(|o| &mut o._NH3, (this.get(|o| o._NH3) + q));
-            return q;
-        }
+        World::changeNH3(this, q);
+        return q;
     }
 
-    /// Java: World.java:625 double photosynthesis(double)
+    /// Java: World.java:592 double photosynthesis(double)
     pub fn photosynthesis(this: &JRef<Self>, mut q: f64) -> f64 {
         {
             let __sync1 = world::___CO2_monitor.lock();
-            {
-                let __sync2 = world::___O2_monitor.lock();
-                q = utils::min3_1(q, ((q * this.get(|o| o._CO2)) / (utils::DRAIN_SUBS_DIVISOR() as f64)), this.get(|o| o._CO2));
-                this.setf(|o| &mut o._CO2, (this.get(|o| o._CO2) - q));
-                this.setf(|o| &mut o._O2, (this.get(|o| o._O2) + q));
-                return q;
-            }
+            q = utils::min3_1(q, ((q * this.get(|o| o._CO2)) / (utils::DRAIN_SUBS_DIVISOR() as f64)), this.get(|o| o._CO2));
+            this.setf(|o| &mut o._CO2, (this.get(|o| o._CO2) - q));
         }
+        World::changeO2(this, q);
+        return q;
     }
 
-    /// Java: World.java:652 double methanotrophy(double)
+    /// Java: World.java:617 double methanotrophy(double)
     pub fn methanotrophy(this: &JRef<Self>, mut q: f64) -> f64 {
         {
             let __sync1 = world::___CH4_monitor.lock();
-            {
-                let __sync2 = world::___O2_monitor.lock();
-                q = utils::min3_1(q, ((q * this.get(|o| o._CH4)) / (utils::DRAIN_SUBS_DIVISOR() as f64)), this.get(|o| o._CH4));
-                this.setf(|o| &mut o._CH4, (this.get(|o| o._CH4) - q));
-                this.setf(|o| &mut o._O2, (this.get(|o| o._O2) + q));
-                return q;
-            }
+            q = utils::min3_1(q, ((q * this.get(|o| o._CH4)) / (utils::DRAIN_SUBS_DIVISOR() as f64)), this.get(|o| o._CH4));
+            this.setf(|o| &mut o._CH4, (this.get(|o| o._CH4) - q));
         }
+        World::changeO2(this, q);
+        return q;
     }
 
-    /// Java: World.java:679 double COphotosynthesis(double)
+    /// Java: World.java:642 double COphotosynthesis(double)
     pub fn COphotosynthesis(this: &JRef<Self>, mut q: f64) -> f64 {
         {
             let __sync1 = world::___CO1_monitor.lock();
-            {
-                let __sync2 = world::___O2_monitor.lock();
-                q = utils::min3_1(q, ((q * this.get(|o| o._CO1)) / (utils::DRAIN_SUBS_DIVISOR() as f64)), this.get(|o| o._CO1));
-                this.setf(|o| &mut o._CO1, (this.get(|o| o._CO1) - q));
-                this.setf(|o| &mut o._O2, (this.get(|o| o._O2) + q));
-                return q;
-            }
+            q = utils::min3_1(q, ((q * this.get(|o| o._CO1)) / (utils::DRAIN_SUBS_DIVISOR() as f64)), this.get(|o| o._CO1));
+            this.setf(|o| &mut o._CO1, (this.get(|o| o._CO1) - q));
         }
+        World::changeO2(this, q);
+        return q;
     }
 
-    /// Java: World.java:706 double filterfeeding(double)
+    /// Java: World.java:667 double filterfeeding(double)
     pub fn filterfeeding(this: &JRef<Self>, mut q: f64) -> f64 {
         {
             let __sync1 = world::___detritus_monitor.lock();
-            {
-                let __sync2 = world::___O2_monitor.lock();
-                q = utils::min3_1(q, ((q * this.get(|o| o._detritus)) / (utils::DRAIN_SUBS_DIVISOR() as f64)), this.get(|o| o._detritus));
-                this.setf(|o| &mut o._detritus, (this.get(|o| o._detritus) - q));
-                this.setf(|o| &mut o._O2, (this.get(|o| o._O2) + q));
-                return q;
-            }
+            q = utils::min3_1(q, ((q * this.get(|o| o._detritus)) / (utils::DRAIN_SUBS_DIVISOR() as f64)), this.get(|o| o._detritus));
+            this.setf(|o| &mut o._detritus, (this.get(|o| o._detritus) - q));
         }
+        World::changeO2(this, q);
+        return q;
     }
 
-    /// Java: World.java:727 double nitrogenfixation(double)
+    /// Java: World.java:686 double nitrogenfixation(double)
     pub fn nitrogenfixation(this: &JRef<Self>, mut q: f64) -> f64 {
         {
             let __sync1 = world::___N2_monitor.lock();
@@ -433,7 +371,7 @@ impl World {
         }
     }
 
-    /// Java: World.java:745 double ammoniafixation(double)
+    /// Java: World.java:704 double ammoniafixation(double)
     pub fn ammoniafixation(this: &JRef<Self>, mut q: f64) -> f64 {
         {
             let __sync1 = world::___NH3_monitor.lock();
@@ -443,7 +381,172 @@ impl World {
         }
     }
 
-    /// Java: World.java:780 void init(VisibleWorldInterface)
+    /// Java: World.java:740 void addAtmosphereChanges(AtmosphereChanges)
+    pub fn addAtmosphereChanges(this: &JRef<Self>, mut c: JRef<AtmosphereChanges>) {
+        if (c.get(|o| o.O2) != 0f64) {
+            {
+                let __sync1 = world::___O2_monitor.lock();
+                this.setf(|o| &mut o._O2, (this.get(|o| o._O2) + c.get(|o| o.O2)));
+            }
+            c.setf(|o| &mut o.O2, 0f64);
+        }
+        if (c.get(|o| o.CO2) != 0f64) {
+            {
+                let __sync2 = world::___CO2_monitor.lock();
+                this.setf(|o| &mut o._CO2, (this.get(|o| o._CO2) + c.get(|o| o.CO2)));
+            }
+            c.setf(|o| &mut o.CO2, 0f64);
+        }
+        if (c.get(|o| o.CH4) != 0f64) {
+            {
+                let __sync3 = world::___CH4_monitor.lock();
+                this.setf(|o| &mut o._CH4, (this.get(|o| o._CH4) + c.get(|o| o.CH4)));
+            }
+            c.setf(|o| &mut o.CH4, 0f64);
+        }
+        if (c.get(|o| o.CO1) != 0f64) {
+            {
+                let __sync4 = world::___CO1_monitor.lock();
+                this.setf(|o| &mut o._CO1, (this.get(|o| o._CO1) + c.get(|o| o.CO1)));
+            }
+            c.setf(|o| &mut o.CO1, 0f64);
+        }
+        if (c.get(|o| o.detritus) != 0f64) {
+            {
+                let __sync5 = world::___detritus_monitor.lock();
+                this.setf(|o| &mut o._detritus, (this.get(|o| o._detritus) + c.get(|o| o.detritus)));
+            }
+            c.setf(|o| &mut o.detritus, 0f64);
+        }
+        if (c.get(|o| o.N2) != 0f64) {
+            {
+                let __sync6 = world::___N2_monitor.lock();
+                this.setf(|o| &mut o._N2, (this.get(|o| o._N2) + c.get(|o| o.N2)));
+            }
+            c.setf(|o| &mut o.N2, 0f64);
+        }
+        if (c.get(|o| o.NH3) != 0f64) {
+            {
+                let __sync7 = world::___NH3_monitor.lock();
+                this.setf(|o| &mut o._NH3, (this.get(|o| o._NH3) + c.get(|o| o.NH3)));
+            }
+            c.setf(|o| &mut o.NH3, 0f64);
+        }
+    }
+
+    /// Java: World.java:786 void changeO2(double)
+    pub fn changeO2(this: &JRef<Self>, mut q: f64) {
+        let mut c: JRef<AtmosphereChanges> = world::__atmosphereChanges.get();
+        if (!c.is_null()) {
+            c.setf(|o| &mut o.O2, (c.get(|o| o.O2) + q));
+            if (c.get(|o| o.world.is_null())) {
+                c.setf(|o| &mut o.world, this.clone());
+            }
+            return;
+        }
+        {
+            let __sync1 = world::___O2_monitor.lock();
+            this.setf(|o| &mut o._O2, (this.get(|o| o._O2) + q));
+        }
+    }
+
+    /// Java: World.java:801 void changeCO2(double)
+    pub fn changeCO2(this: &JRef<Self>, mut q: f64) {
+        let mut c: JRef<AtmosphereChanges> = world::__atmosphereChanges.get();
+        if (!c.is_null()) {
+            c.setf(|o| &mut o.CO2, (c.get(|o| o.CO2) + q));
+            if (c.get(|o| o.world.is_null())) {
+                c.setf(|o| &mut o.world, this.clone());
+            }
+            return;
+        }
+        {
+            let __sync1 = world::___CO2_monitor.lock();
+            this.setf(|o| &mut o._CO2, (this.get(|o| o._CO2) + q));
+        }
+    }
+
+    /// Java: World.java:816 void changeCH4(double)
+    pub fn changeCH4(this: &JRef<Self>, mut q: f64) {
+        let mut c: JRef<AtmosphereChanges> = world::__atmosphereChanges.get();
+        if (!c.is_null()) {
+            c.setf(|o| &mut o.CH4, (c.get(|o| o.CH4) + q));
+            if (c.get(|o| o.world.is_null())) {
+                c.setf(|o| &mut o.world, this.clone());
+            }
+            return;
+        }
+        {
+            let __sync1 = world::___CH4_monitor.lock();
+            this.setf(|o| &mut o._CH4, (this.get(|o| o._CH4) + q));
+        }
+    }
+
+    /// Java: World.java:831 void changeCO1(double)
+    pub fn changeCO1(this: &JRef<Self>, mut q: f64) {
+        let mut c: JRef<AtmosphereChanges> = world::__atmosphereChanges.get();
+        if (!c.is_null()) {
+            c.setf(|o| &mut o.CO1, (c.get(|o| o.CO1) + q));
+            if (c.get(|o| o.world.is_null())) {
+                c.setf(|o| &mut o.world, this.clone());
+            }
+            return;
+        }
+        {
+            let __sync1 = world::___CO1_monitor.lock();
+            this.setf(|o| &mut o._CO1, (this.get(|o| o._CO1) + q));
+        }
+    }
+
+    /// Java: World.java:846 void changeDetritus(double)
+    pub fn changeDetritus(this: &JRef<Self>, mut q: f64) {
+        let mut c: JRef<AtmosphereChanges> = world::__atmosphereChanges.get();
+        if (!c.is_null()) {
+            c.setf(|o| &mut o.detritus, (c.get(|o| o.detritus) + q));
+            if (c.get(|o| o.world.is_null())) {
+                c.setf(|o| &mut o.world, this.clone());
+            }
+            return;
+        }
+        {
+            let __sync1 = world::___detritus_monitor.lock();
+            this.setf(|o| &mut o._detritus, (this.get(|o| o._detritus) + q));
+        }
+    }
+
+    /// Java: World.java:861 void changeN2(double)
+    pub fn changeN2(this: &JRef<Self>, mut q: f64) {
+        let mut c: JRef<AtmosphereChanges> = world::__atmosphereChanges.get();
+        if (!c.is_null()) {
+            c.setf(|o| &mut o.N2, (c.get(|o| o.N2) + q));
+            if (c.get(|o| o.world.is_null())) {
+                c.setf(|o| &mut o.world, this.clone());
+            }
+            return;
+        }
+        {
+            let __sync1 = world::___N2_monitor.lock();
+            this.setf(|o| &mut o._N2, (this.get(|o| o._N2) + q));
+        }
+    }
+
+    /// Java: World.java:876 void changeNH3(double)
+    pub fn changeNH3(this: &JRef<Self>, mut q: f64) {
+        let mut c: JRef<AtmosphereChanges> = world::__atmosphereChanges.get();
+        if (!c.is_null()) {
+            c.setf(|o| &mut o.NH3, (c.get(|o| o.NH3) + q));
+            if (c.get(|o| o.world.is_null())) {
+                c.setf(|o| &mut o.world, this.clone());
+            }
+            return;
+        }
+        {
+            let __sync1 = world::___NH3_monitor.lock();
+            this.setf(|o| &mut o._NH3, (this.get(|o| o._NH3) + q));
+        }
+    }
+
+    /// Java: World.java:917 void init(VisibleWorldInterface)
     pub fn init(this: &JRef<Self>, mut visibleWorld: Stub) {
         ();
         this.setf(|o| &mut o._visibleWorld, visibleWorld);
@@ -452,7 +555,7 @@ impl World {
         { let _ = this.get(|o| o._visibleWorld); () };
     }
 
-    /// Java: World.java:791 void genesis()
+    /// Java: World.java:928 void genesis()
     pub fn genesis(this: &JRef<Self>) {
         this.setf(|o| &mut o.nFrames, 0);
         ();
@@ -487,7 +590,7 @@ impl World {
         }
     }
 
-    /// Java: World.java:828 void disperseAll()
+    /// Java: World.java:965 void disperseAll()
     pub fn disperseAll(this: &JRef<Self>) {
         let __sync = crate::rt::parallel::lock_object(this.identity());
         let mut b: JRef<Organism> = JRef::null();
@@ -506,7 +609,7 @@ impl World {
         }
     }
 
-    /// Java: World.java:843 void killAll()
+    /// Java: World.java:980 void killAll()
     pub fn killAll(this: &JRef<Self>) {
         let __sync = crate::rt::parallel::lock_object(this.identity());
         let mut org: JRef<Organism> = JRef::null();
@@ -524,12 +627,12 @@ impl World {
         }
     }
 
-    /// Java: World.java:860 void draw(Graphics, boolean)
+    /// Java: World.java:997 void draw(Graphics, boolean)
     pub fn draw(this: &JRef<Self>, mut g: &mut dyn crate::rt::Graphics, mut fullRedraw: bool) {
         crate::rt::throw("J2R: skipped biogenesis.World.draw(java.awt.Graphics,boolean)")
     }
 
-    /// Java: World.java:920 void time()
+    /// Java: World.java:1057 void time()
     pub fn time(this: &JRef<Self>) {
         let __sync = crate::rt::parallel::lock_object(this.identity());
         if this.get(|o| o._corridorexists) {
@@ -616,19 +719,19 @@ impl World {
         }
     }
 
-    /// Java: World.java:998 void addCorridors(InCorridor, OutCorridor)
+    /// Java: World.java:1135 void addCorridors(InCorridor, OutCorridor)
     pub fn addCorridors(this: &JRef<Self>, mut r#in: Stub, mut out: Stub) {
         (*this.get(|o| unsafe { o.inCorridors.share() })).add(r#in);
         (*this.get(|o| unsafe { o.outCorridors.share() })).add(out);
         this.setf(|o| &mut o._corridorexists, true);
     }
 
-    /// Java: World.java:1012 void removeCorridors(InCorridor, OutCorridor)
+    /// Java: World.java:1149 void removeCorridors(InCorridor, OutCorridor)
     pub fn removeCorridors(this: &JRef<Self>, mut r#in: Stub, mut out: Stub) {
         crate::rt::throw("J2R: skipped biogenesis.World.removeCorridors(biogenesis.InCorridor,biogenesis.OutCorridor)")
     }
 
-    /// Java: World.java:1031 OutCorridor checkHitCorridor(Organism)
+    /// Java: World.java:1168 OutCorridor checkHitCorridor(Organism)
     pub fn checkHitCorridor(this: &JRef<Self>, mut org: JRef<Organism>) -> Stub {
         let mut c: Stub = Stub::NULL;
         {
@@ -646,7 +749,7 @@ impl World {
         return Stub::NULL;
     }
 
-    /// Java: World.java:1051 Organism genesisCheckHit(Organism)
+    /// Java: World.java:1188 Organism genesisCheckHit(Organism)
     pub fn genesisCheckHit(this: &JRef<Self>, mut b1: JRef<Organism>) -> JRef<Organism> {
         let mut b: JRef<Organism> = JRef::null();
         {
@@ -666,7 +769,7 @@ impl World {
         return JRef::null();
     }
 
-    /// Java: World.java:1078 Organism fastCheckHit(Organism)
+    /// Java: World.java:1215 Organism fastCheckHit(Organism)
     pub fn fastCheckHit(this: &JRef<Self>, mut b1: JRef<Organism>) -> JRef<Organism> {
         return OrganismBuckets::findFirst(&(*this.get(|o| unsafe { o.organismBuckets.share() })), b1.clone(), &|mut org: JRef<Organism>| -> bool {
         if (!JRef::ptr_eq(&b1, &org)) {
@@ -678,7 +781,7 @@ impl World {
     });
     }
 
-    /// Java: World.java:1100 Organism transformCheckHit(Organism)
+    /// Java: World.java:1237 Organism transformCheckHit(Organism)
     pub fn transformCheckHit(this: &JRef<Self>, mut b1: JRef<Organism>) -> JRef<Organism> {
         return OrganismBuckets::findFirst(&(*this.get(|o| unsafe { o.organismBuckets.share() })), b1.clone(), &|mut org: JRef<Organism>| -> bool {
         if ((((!JRef::ptr_eq(&b1, &org))) && ((b1.get(|o| o._ID) != org.get(|o| o._parentID)))) && ((b1.get(|o| o._parentID) != org.get(|o| o._ID)))) {
@@ -690,7 +793,7 @@ impl World {
     });
     }
 
-    /// Java: World.java:1117 Organism checkHit(Organism)
+    /// Java: World.java:1254 Organism checkHit(Organism)
     pub fn checkHit(this: &JRef<Self>, mut org1: JRef<Organism>) -> JRef<Organism> {
         return OrganismBuckets::findFirst(&(*this.get(|o| unsafe { o.organismBuckets.share() })), org1.clone(), &|mut collidingOrganism: JRef<Organism>| -> bool {
         if (!JRef::ptr_eq(&collidingOrganism, &org1)) {
@@ -706,7 +809,7 @@ impl World {
     });
     }
 
-    /// Java: World.java:1143 void addOrganism(Organism, Organism)
+    /// Java: World.java:1280 void addOrganism(Organism, Organism)
     pub fn addOrganism(this: &JRef<Self>, mut child: JRef<Organism>, mut parent: JRef<Organism>) {
         (*this.get(|o| unsafe { o._organisms.alias() })).add(child.clone());
         if (JRef::ptr_eq(&parent, &({ let _ = this.get(|o| o._visibleWorld); <JRef<Organism>>::default() }))) {
@@ -719,7 +822,7 @@ impl World {
         World::increasePopulation(this);
     }
 
-    /// Java: World.java:1159 void organismHasDied(Organism, Organism)
+    /// Java: World.java:1296 void organismHasDied(Organism, Organism)
     pub fn organismHasDied(this: &JRef<Self>, mut dyingOrganism: JRef<Organism>, mut killingOrganism: JRef<Organism>) {
         WorldStatistics::eventOrganismDie(&(*this.get(|o| unsafe { o.worldStatistics.share() })), dyingOrganism.clone(), killingOrganism.clone());
         if (JRef::ptr_eq(&killingOrganism, &({ let _ = this.get(|o| o._visibleWorld); <JRef<Organism>>::default() }))) {
@@ -730,7 +833,7 @@ impl World {
         }
     }
 
-    /// Java: World.java:1172 void organismHasBeenInfected(Organism, Organism)
+    /// Java: World.java:1309 void organismHasBeenInfected(Organism, Organism)
     pub fn organismHasBeenInfected(this: &JRef<Self>, mut infectedOrganism: JRef<Organism>, mut infectingOrganism: JRef<Organism>) {
         WorldStatistics::eventOrganismInfects(&(*this.get(|o| unsafe { o.worldStatistics.share() })), infectedOrganism.clone(), infectingOrganism.clone());
         if (JRef::ptr_eq(&infectingOrganism, &({ let _ = this.get(|o| o._visibleWorld); <JRef<Organism>>::default() }))) {
@@ -880,6 +983,19 @@ impl JLoad for JRef<World> {
 }
 
 // ---- statics
+
+/// Java: World.java:725 void collectAtmosphereChanges()
+pub fn collectAtmosphereChanges() {
+    world::__atmosphereChanges.set(AtmosphereChanges::new());
+}
+
+/// Java: World.java:733 void flushAtmosphereChanges()
+pub fn flushAtmosphereChanges() {
+    let mut c: JRef<AtmosphereChanges> = world::__atmosphereChanges.get();
+    if ((!c.is_null()) && (!c.get(|o| o.world.is_null()))) {
+        World::addAtmosphereChanges(&(c.get(|o| o.world.clone())), c.clone());
+    }
+}
 /// Java: World.java:95
 pub static __NEXT_ID_monitor: JMonitor = JMonitor::new();
 /// Java: World.java:101
@@ -900,3 +1016,5 @@ pub static ___N2_monitor: JMonitor = JMonitor::new();
 pub static ___NH3_monitor: JMonitor = JMonitor::new();
 /// Java: World.java:118
 pub static ___O2_monitor: JMonitor = JMonitor::new();
+/// Java: World.java:719
+pub static __atmosphereChanges: JThreadLocal<JRef<AtmosphereChanges>> = JThreadLocal::new();
