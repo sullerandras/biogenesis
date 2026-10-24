@@ -453,7 +453,7 @@ impl GeneticCode {
                 }
             }
         }
-        this.setf(|o| &mut o._genes, { let __d2 = nGenes; JArray::new_array(__d2, JRef::null()) });
+        this.setf(|o| &mut o._genes, { let __d1 = nGenes; JArray::new_array(__d1, JRef::null()) });
         {
             i = 0;
             j = 0;
@@ -548,7 +548,7 @@ impl GeneticCode {
                             break 'c1;
                         }
                     }
-                    { let __v4 = false; randomColor = __v4; let __v5 = __v4; randomfriendReaction = __v5; let __v6 = __v5; randomsickReaction = __v6; let __v7 = __v6; randombrokenReaction = __v7; let __v8 = __v7; randomiceReaction = __v8; let __v9 = __v8; randombrownReaction = __v9; let __v10 = __v9; randomgreenbrownReaction = __v10; let __v11 = __v10; randomlightbrownReaction = __v11; let __v12 = __v11; randomfireReaction = __v12; let __v13 = __v12; randomlilacReaction = __v13; let __v14 = __v13; randomskyReaction = __v14; let __v15 = __v14; randomochreReaction = __v15; let __v16 = __v15; randomlightblueReaction = __v16; let __v17 = __v16; randomfallowReaction = __v17; let __v18 = __v17; randomspikeReaction = __v18; let __v19 = __v18; randomcreamReaction = __v19; let __v20 = __v19; randomlavenderReaction = __v20; let __v21 = __v20; randommintReaction = __v21; let __v22 = __v21; randomoliveReaction = __v22; let __v23 = __v22; randomcrimsonReaction = __v23; let __v24 = __v23; randommaroonReaction = __v24; let __v25 = __v24; randomvirusReaction = __v25; let __v26 = __v25; randomvioletReaction = __v26; let __v27 = __v26; randomivyReaction = __v27; let __v28 = __v27; randombarkReaction = __v28; let __v29 = __v28; randomorangeReaction = __v29; let __v30 = __v29; randomcoralReaction = __v30; let __v31 = __v30; randompinkReaction = __v31; let __v32 = __v31; randomroseReaction = __v32; let __v33 = __v32; randommagentaReaction = __v33; let __v34 = __v33; randomplantReaction = __v34; let __v35 = __v34; randomconsumerReaction = __v35; let __v36 = __v35; randomdefaultReaction = __v36; let __v37 = __v36; randomsilverReaction = __v37; let __v38 = __v37; randomgrayReaction = __v38; let __v39 = __v38; randomwhiteReaction = __v39; let __v40 = __v39; randomscourgeReaction = __v40; let __v41 = __v40; randomplagueReaction = __v41; let __v42 = __v41; randomblueReaction = __v42; let __v43 = __v42; randomgreenReaction = __v43; let __v44 = __v43; randomredReaction = __v44; let __v45 = __v44; randomRadial = __v45; let __v46 = __v45; randomChiral = __v46; let __v47 = __v46; randomFold = __v47; let __v48 = __v47; randomStack = __v48; let __v49 = __v48; randomBranch = __v49; let __v50 = __v49; randomTheta = __v50; let __v51 = __v50; randomLength = __v51; };
+                    { let __v3 = false; randomColor = __v3; let __v4 = __v3; randomfriendReaction = __v4; let __v5 = __v4; randomsickReaction = __v5; let __v6 = __v5; randombrokenReaction = __v6; let __v7 = __v6; randomiceReaction = __v7; let __v8 = __v7; randombrownReaction = __v8; let __v9 = __v8; randomgreenbrownReaction = __v9; let __v10 = __v9; randomlightbrownReaction = __v10; let __v11 = __v10; randomfireReaction = __v11; let __v12 = __v11; randomlilacReaction = __v12; let __v13 = __v12; randomskyReaction = __v13; let __v14 = __v13; randomochreReaction = __v14; let __v15 = __v14; randomlightblueReaction = __v15; let __v16 = __v15; randomfallowReaction = __v16; let __v17 = __v16; randomspikeReaction = __v17; let __v18 = __v17; randomcreamReaction = __v18; let __v19 = __v18; randomlavenderReaction = __v19; let __v20 = __v19; randommintReaction = __v20; let __v21 = __v20; randomoliveReaction = __v21; let __v22 = __v21; randomcrimsonReaction = __v22; let __v23 = __v22; randommaroonReaction = __v23; let __v24 = __v23; randomvirusReaction = __v24; let __v25 = __v24; randomvioletReaction = __v25; let __v26 = __v25; randomivyReaction = __v26; let __v27 = __v26; randombarkReaction = __v27; let __v28 = __v27; randomorangeReaction = __v28; let __v29 = __v28; randomcoralReaction = __v29; let __v30 = __v29; randompinkReaction = __v30; let __v31 = __v30; randomroseReaction = __v31; let __v32 = __v31; randommagentaReaction = __v32; let __v33 = __v32; randomplantReaction = __v33; let __v34 = __v33; randomconsumerReaction = __v34; let __v35 = __v34; randomdefaultReaction = __v35; let __v36 = __v35; randomsilverReaction = __v36; let __v37 = __v36; randomgrayReaction = __v37; let __v38 = __v37; randomwhiteReaction = __v38; let __v39 = __v38; randomscourgeReaction = __v39; let __v40 = __v39; randomplagueReaction = __v40; let __v41 = __v40; randomblueReaction = __v41; let __v42 = __v41; randomgreenReaction = __v42; let __v43 = __v42; randomredReaction = __v43; let __v44 = __v43; randomRadial = __v44; let __v45 = __v44; randomChiral = __v45; let __v46 = __v45; randomFold = __v46; let __v47 = __v46; randomStack = __v47; let __v48 = __v47; randomBranch = __v48; let __v49 = __v48; randomTheta = __v49; let __v50 = __v49; randomLength = __v50; };
                     if (Random::nextInt_bound(&(utils::random()), 10000) < this.get(|o| o._mutationrate)) {
                         randomLength = true;
                     }
@@ -1598,7 +1598,7 @@ impl GeneticCode {
             nSegments = (nSegments + ((this.get(|o| o._symmetry) - (i32::wrapping_rem(nSegments, this.get(|o| o._symmetry))))));
         }
         let mut nGenes: i32 = i32::wrapping_div(nSegments, this.get(|o| o._symmetry));
-        this.setf(|o| &mut o._genes, { let __d54 = nGenes; JArray::new_array(__d54, JRef::null()) });
+        this.setf(|o| &mut o._genes, { let __d1 = nGenes; JArray::new_array(__d1, JRef::null()) });
         {
             let mut i: i32 = 0;
             while (i < nGenes) {
@@ -1799,7 +1799,7 @@ impl GeneticCode {
         let mut newCode: JRef<GeneticCode> = JRef::null();
         {
             newCode = JRef::new(this.get(|o| o.clone()));
-            newCode.setf(|o| &mut o._genes, { let __d56 = (this.get(|o| o._genes.clone())).len(); JArray::new_array(__d56, JRef::null()) });
+            newCode.setf(|o| &mut o._genes, { let __d1 = (this.get(|o| o._genes.clone())).len(); JArray::new_array(__d1, JRef::null()) });
             {
                 let mut i: i32 = 0;
                 while (i < (this.get(|o| o._genes.clone())).len()) {
@@ -1809,6 +1809,26 @@ impl GeneticCode {
             }
         }
         return newCode.clone();
+    }
+
+    /// Java: GeneticCode.java:2175 void draw(Graphics, int, int)
+    pub fn draw(this: &JRef<Self>, mut g: Stub, mut width: i32, mut height: i32) {
+        crate::rt::throw("J2R: skipped biogenesis.GeneticCode.draw(java.awt.Graphics,int,int)")
+    }
+}
+
+impl JObject for JRef<GeneticCode> {
+    fn hash_code(&self) -> i32 {
+        crate::rt::collections::identity_hash_code()
+    }
+    fn equals(&self, other: &Self) -> bool {
+        JRef::ptr_eq(self, other)
+    }
+    fn same(&self, other: &Self) -> bool {
+        JRef::ptr_eq(self, other)
+    }
+    fn is_null(&self) -> bool {
+        self.identity().is_none()
     }
 }
 
@@ -1856,5 +1876,173 @@ impl JDumpTarget for GeneticCode {
             d.field("_symmetry", &self._symmetry);
             d.field("_updateClade", &self._updateClade);
         });
+    }
+}
+
+impl JLoad for JRef<GeneticCode> {
+    fn load(l: &mut Loader) -> Self {
+        l.object("GeneticCode", || JRef::new(GeneticCode::default()), |l, this, n| match n {
+            "_activity" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._activity = v)
+            }
+            "_adaptblack" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._adaptblack = v)
+            }
+            "_adaptspore" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._adaptspore = v)
+            }
+            "_altruist" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._altruist = v)
+            }
+            "_base1X" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._base1X = v)
+            }
+            "_base1Y" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._base1Y = v)
+            }
+            "_base2X" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._base2X = v)
+            }
+            "_base2Y" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._base2Y = v)
+            }
+            "_cladeID" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._cladeID = v)
+            }
+            "_clockwise" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._clockwise = v)
+            }
+            "_clonerate" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._clonerate = v)
+            }
+            "_disperseChildren" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._disperseChildren = v)
+            }
+            "_familial" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._familial = v)
+            }
+            "_generation" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._generation = v)
+            }
+            "_generationBattle" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._generationBattle = v)
+            }
+            "_genes" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._genes = v)
+            }
+            "_homeX" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._homeX = v)
+            }
+            "_homeY" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._homeY = v)
+            }
+            "_hox" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._hox = v)
+            }
+            "_mirror" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._mirror = v)
+            }
+            "_modifiesblack" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._modifiesblack = v)
+            }
+            "_modifiescream" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._modifiescream = v)
+            }
+            "_modifiescrimson" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._modifiescrimson = v)
+            }
+            "_modifiesdrift" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._modifiesdrift = v)
+            }
+            "_modifiesfallow" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._modifiesfallow = v)
+            }
+            "_modifiesleaf" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._modifiesleaf = v)
+            }
+            "_modifieslilac" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._modifieslilac = v)
+            }
+            "_modifiesmaroon" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._modifiesmaroon = v)
+            }
+            "_modifiespink" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._modifiespink = v)
+            }
+            "_modifiessky" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._modifiessky = v)
+            }
+            "_modifiesspore" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._modifiesspore = v)
+            }
+            "_mutationrate" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._mutationrate = v)
+            }
+            "_passive" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._passive = v)
+            }
+            "_peaceful" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._peaceful = v)
+            }
+            "_plague" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._plague = v)
+            }
+            "_selfish" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._selfish = v)
+            }
+            "_siblingBattle" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._siblingBattle = v)
+            }
+            "_social" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._social = v)
+            }
+            "_symmetry" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._symmetry = v)
+            }
+            "_updateClade" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._updateClade = v)
+            }
+            _ => l.unknown_field("GeneticCode", n),
+        }, JRef::null())
     }
 }

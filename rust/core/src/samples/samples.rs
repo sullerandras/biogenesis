@@ -22,10 +22,11 @@ pub fn run(mut seed: i32) -> JStr {
     s = JStr::cat(&[&s.clone(), &JStr::cat(&[&JStr::from("|"), &samples::strings(seed)])]);
     s = JStr::cat(&[&s.clone(), &JStr::cat(&[&JStr::from("|"), &samples::switchInLoop(seed)])]);
     s = JStr::cat(&[&s.clone(), &JStr::cat(&[&JStr::from("|"), &samples::arithmetic(seed)])]);
+    s = JStr::cat(&[&s.clone(), &JStr::cat(&[&JStr::from("|"), &samples::collections(seed)])]);
     return s.clone();
 }
 
-/// Java: Samples.java:20 int fallThrough(int)
+/// Java: Samples.java:49 int fallThrough(int)
 pub fn fallThrough(mut x: i32) -> i32 {
     let mut r: i32 = 0;
     's1: {
@@ -54,7 +55,7 @@ pub fn fallThrough(mut x: i32) -> i32 {
     return r;
 }
 
-/// Java: Samples.java:63 String strings(int)
+/// Java: Samples.java:92 String strings(int)
 pub fn strings(mut seed: i32) -> JStr {
     let mut c: u16 = ((((65u16 as i32) + i32::wrapping_rem(seed, 26))) as u16);
     let mut s: JStr = JStr::cat(&[&JStr::from("x"), &c, &1, &2]);
@@ -81,7 +82,7 @@ pub fn strings(mut seed: i32) -> JStr {
     return JStr::cat(&[&s.replace_char(120u16, 121u16), &count]);
 }
 
-/// Java: Samples.java:41 String switchInLoop(int)
+/// Java: Samples.java:70 String switchInLoop(int)
 pub fn switchInLoop(mut seed: i32) -> JStr {
     let mut s: JStr = JStr::from("");
     {
@@ -117,7 +118,7 @@ pub fn switchInLoop(mut seed: i32) -> JStr {
     return s.clone();
 }
 
-/// Java: Samples.java:79 String arithmetic(int)
+/// Java: Samples.java:108 String arithmetic(int)
 pub fn arithmetic(mut seed: i32) -> JStr {
     let mut a: i32 = ((2147483647i32) - seed);
     a = (a + 7);
@@ -125,4 +126,51 @@ pub fn arithmetic(mut seed: i32) -> JStr {
     let mut l: i64 = (((a as i64) * (a as i64)) + (i64::wrapping_shl(1i64, (40) as u32)));
     let mut d: f64 = (1.0E308f64 * 10f64);
     return JStr::cat(&[&a, &JStr::from(" "), &b, &JStr::from(" "), &l, &JStr::from(" "), &(d as i32), &JStr::from(" "), &(-d as i64), &JStr::from(" "), &(i32::wrapping_div((-2147483648i32), (-1i32)))]);
+}
+
+/// Java: Samples.java:21 String collections(int)
+pub fn collections(mut seed: i32) -> JStr {
+    let mut b: JRef<Bag> = Bag::new();
+    let mut s: JStr = JStr::from("");
+    {
+        let mut i: i32 = 0;
+        while (i < 40) {
+            (b.get(|o| o.items.clone())).add(Item::new(i32::wrapping_rem((((i * 37) + seed)), 50), ((i as f64) * 0.5f64)));
+            i = i + 1;
+        }
+    }
+    s = JStr::cat(&[&s.clone(), &(b.get(|o| o.items.clone())).size()]);
+    let mut limit: i32 = (20 + i32::wrapping_rem(seed, 5));
+    let mut f: JRef<Item> = Bag::find(&b, { let limit = limit; JFn::new(std::rc::Rc::new(move |mut it: JRef<Item>| -> bool {
+        ((it.get(|o| o.id) > limit) && (it.get(|o| o.w) < 15f64))
+    }) as std::rc::Rc<dyn Fn(JRef<Item>) -> bool>) });
+    s = JStr::cat(&[&s.clone(), &(if (f.is_null()) { JStr::from("none") } else { JStr::cat(&[&JStr::from("f"), &f.get(|o| o.id)]) })]);
+    let mut h: JRef<Item> = Bag::heavy(&b);
+    s = JStr::cat(&[&s.clone(), &(if (h.is_null()) { JStr::from("none") } else { JStr::cat(&[&JStr::from("h"), &h.get(|o| o.id)]) })]);
+    {
+        let mut it: JIter<JRef<Item>> = (b.get(|o| o.items.clone())).iterator();
+        while it.hasNext() {
+            let mut x: JRef<Item> = it.next();
+            if (i32::wrapping_rem(x.get(|o| o.id), 3) == 0) {
+                it.remove();
+            }
+        }
+    }
+    {
+        let __a3 = (b.get(|o| o.items.clone())).snapshot_array();
+        let mut __i3 = 0;
+        'l3: while __i3 < __a3.len() {
+            let mut x: JRef<Item> = __a3.at(__i3);
+            __i3 += 1;
+            s = JStr::cat(&[&s.clone(), &JStr::cat(&[&JStr::from(","), &x.get(|o| o.id)])]);
+            (b.get(|o| o.weights.clone())).add(x.get(|o| o.w));
+        }
+    }
+    (b.get(|o| o.items.clone())).remove(&Item::new(i32::wrapping_rem(seed, 50), 0f64));
+    s = JStr::cat(&[&s.clone(), &JStr::cat(&[&JStr::from("|"), &(b.get(|o| o.items.clone())).size(), &((if (b.get(|o| o.items.clone())).contains(&Item::new(1, 0f64)) { JStr::from("y") } else { JStr::from("n") }))])]);
+    (b.get(|o| o.weights.clone())).remove_at(0);
+    s = JStr::cat(&[&s.clone(), &JStr::cat(&[&JStr::from("|"), &(b.get(|o| o.weights.clone())).len(), &((if ((b.get(|o| o.weights.clone())).at(0) > 3f64) { JStr::from("big") } else { JStr::from("small") }))])]);
+    let mut a: JArray<JRef<Item>> = (b.get(|o| o.items.clone())).to_array(&(JArray::new_array(0, JRef::null())), JRef::null());
+    s = JStr::cat(&[&s.clone(), &JStr::cat(&[&JStr::from("|"), &a.len(), &((if (a.len() > 0) { JStr::cat(&[&JStr::from(","), &(a.at(0)).get(|o| o.id)]) } else { JStr::from("") }))])]);
+    return s.clone();
 }

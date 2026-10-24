@@ -2,9 +2,50 @@
 # (Utils...) are pulled in when translated code uses them.
 class biogenesis.Gene
 class biogenesis.GeneticCode
+class biogenesis.Organism
+class biogenesis.World
+class biogenesis.WorldStatistics
+class biogenesis.OrganismBuckets
+class biogenesis.Vector2D
+class biogenesis.ExLine2DDouble
+# Only its static methods (World.time calls progressAllOrganisms).
+source biogenesis.parallel_executor.ParallelExecutor
 
-# Not part of the simulation: drawing for the GUI.
+# The GUI and networking: values are rt::Stub, calls on them do nothing (as
+# the stubs in benchmark/Benchmark.java do). A headless world has no
+# corridors (_corridorexists stays false), so their calls are never reached.
+stub biogenesis.VisibleWorldInterface
+stub biogenesis.VisibleWorld
+stub biogenesis.MainWindowInterface
+stub biogenesis.InfoToolbar
+stub biogenesis.BioFile
+stub biogenesis.InCorridor
+stub biogenesis.OutCorridor
+stub biogenesis.Corridor
+stub java.awt.Dimension
+stub java.awt.Graphics
+stub biogenesis.Utils.addRepaintWorldChangeListener(biogenesis.RepaintWorldChangeListener)
+
+# Not part of the simulation: drawing, saved games (Java serialization), and
+# statistics only the GUI reads.
 skip biogenesis.GeneticCode.draw(java.awt.Graphics,int,int)
+skip biogenesis.Organism.draw(java.awt.Graphics)
+skip biogenesis.Organism.getImage()
+skip biogenesis.World.draw(java.awt.Graphics,boolean)
+skip biogenesis.World.readObject(java.io.ObjectInputStream)
+# Networking only
+skip biogenesis.World.removeCorridors(biogenesis.InCorridor,biogenesis.OutCorridor)
+skip biogenesis.WorldStatistics.getMaxPopulationFromList()
+skip biogenesis.WorldStatistics.getMaxDistinctClades()
+skip biogenesis.WorldStatistics.getMaxBirthFromList()
+skip biogenesis.WorldStatistics.getMaxDeathsFromList()
+skip biogenesis.WorldStatistics.findBestAliveBeings(java.util.Collection<biogenesis.Organism>)
+# Threads: THREAD_COUNT is 1, the serial path.
+skip biogenesis.parallel_executor.ParallelExecutor.progressAllOrganismsInParallel(int,int)
+skip biogenesis.parallel_executor.ParallelExecutor.progressLineInBucket(int)
+
+# Stream pipelines, hand-written in core/src/native/.
+native biogenesis.World.getDistinctCladeIDCount(int)
 
 # Math.sin, Math.log etc. are translated from the JDK's StrictMath (fdlibm).
 source java.lang.StrictMath

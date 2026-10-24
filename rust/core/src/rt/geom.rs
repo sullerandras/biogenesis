@@ -78,6 +78,19 @@ impl Rectangle {
     pub fn getHeight(&self) -> f64 {
         self.height as f64
     }
+    /// RectangularShape: getMinX() = getX(), getMaxX() = getX() + getWidth()
+    pub fn getMinX(&self) -> f64 {
+        self.getX()
+    }
+    pub fn getMinY(&self) -> f64 {
+        self.getY()
+    }
+    pub fn getMaxX(&self) -> f64 {
+        self.getX() + self.getWidth()
+    }
+    pub fn getMaxY(&self) -> f64 {
+        self.getY() + self.getHeight()
+    }
 
     pub fn isEmpty(&self) -> bool {
         self.width <= 0 || self.height <= 0

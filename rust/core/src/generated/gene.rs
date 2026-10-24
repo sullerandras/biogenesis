@@ -1137,6 +1137,21 @@ impl Gene {
     }
 }
 
+impl JObject for JRef<Gene> {
+    fn hash_code(&self) -> i32 {
+        crate::rt::collections::identity_hash_code()
+    }
+    fn equals(&self, other: &Self) -> bool {
+        JRef::ptr_eq(self, other)
+    }
+    fn same(&self, other: &Self) -> bool {
+        JRef::ptr_eq(self, other)
+    }
+    fn is_null(&self) -> bool {
+        self.identity().is_none()
+    }
+}
+
 impl JDumpTarget for Gene {
     fn dump_target(&self, d: &mut Dumper, id: usize) {
         d.object("Gene", id, |d| {
@@ -1189,5 +1204,205 @@ impl JDumpTarget for Gene {
             d.field("_virusreaction", &self._virusreaction);
             d.field("_whitereaction", &self._whitereaction);
         });
+    }
+}
+
+impl JLoad for JRef<Gene> {
+    fn load(l: &mut Loader) -> Self {
+        l.object("Gene", || JRef::new(Gene::default()), |l, this, n| match n {
+            "_barkreaction" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._barkreaction = v)
+            }
+            "_bluereaction" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._bluereaction = v)
+            }
+            "_branch" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._branch = v)
+            }
+            "_brokenreaction" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._brokenreaction = v)
+            }
+            "_brownreaction" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._brownreaction = v)
+            }
+            "_chiral" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._chiral = v)
+            }
+            "_color" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._color = v)
+            }
+            "_consumerreaction" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._consumerreaction = v)
+            }
+            "_coralreaction" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._coralreaction = v)
+            }
+            "_creamreaction" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._creamreaction = v)
+            }
+            "_crimsonreaction" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._crimsonreaction = v)
+            }
+            "_defaultreaction" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._defaultreaction = v)
+            }
+            "_fallowreaction" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._fallowreaction = v)
+            }
+            "_firereaction" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._firereaction = v)
+            }
+            "_fold" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._fold = v)
+            }
+            "_friendreaction" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._friendreaction = v)
+            }
+            "_grayreaction" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._grayreaction = v)
+            }
+            "_greenbrownreaction" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._greenbrownreaction = v)
+            }
+            "_greenreaction" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._greenreaction = v)
+            }
+            "_icereaction" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._icereaction = v)
+            }
+            "_ivyreaction" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._ivyreaction = v)
+            }
+            "_lavenderreaction" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._lavenderreaction = v)
+            }
+            "_length" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._length = v)
+            }
+            "_lightbluereaction" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._lightbluereaction = v)
+            }
+            "_lightbrownreaction" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._lightbrownreaction = v)
+            }
+            "_lilacreaction" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._lilacreaction = v)
+            }
+            "_magentareaction" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._magentareaction = v)
+            }
+            "_maroonreaction" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._maroonreaction = v)
+            }
+            "_mintreaction" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._mintreaction = v)
+            }
+            "_ochrereaction" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._ochrereaction = v)
+            }
+            "_olivereaction" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._olivereaction = v)
+            }
+            "_orangereaction" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._orangereaction = v)
+            }
+            "_pinkreaction" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._pinkreaction = v)
+            }
+            "_plaguereaction" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._plaguereaction = v)
+            }
+            "_plantreaction" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._plantreaction = v)
+            }
+            "_radial" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._radial = v)
+            }
+            "_redreaction" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._redreaction = v)
+            }
+            "_rosereaction" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._rosereaction = v)
+            }
+            "_scourgereaction" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._scourgereaction = v)
+            }
+            "_sickreaction" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._sickreaction = v)
+            }
+            "_silverreaction" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._silverreaction = v)
+            }
+            "_skyreaction" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._skyreaction = v)
+            }
+            "_spikereaction" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._spikereaction = v)
+            }
+            "_stack" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._stack = v)
+            }
+            "_theta" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._theta = v)
+            }
+            "_violetreaction" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._violetreaction = v)
+            }
+            "_virusreaction" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._virusreaction = v)
+            }
+            "_whitereaction" => {
+                let v = JLoad::load(l);
+                this.set(|o| o._whitereaction = v)
+            }
+            _ => l.unknown_field("Gene", n),
+        }, JRef::null())
     }
 }

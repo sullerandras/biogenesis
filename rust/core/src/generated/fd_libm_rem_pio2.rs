@@ -94,7 +94,7 @@ pub fn __ieee754_rem_pio2(mut x: f64, mut y: JArray<f64>) -> i32 {
         }
     }
     if (ix >= fd_libm::EXP_BITS) {
-        { let __a79 = y.clone(); let __i79 = 0; let __a80 = y.clone(); let __i80 = 1; let __v81 = (x - x); __a80.put(__i80, __v81); let __v82 = __v81; __a79.put(__i79, __v82); };
+        { let __a19 = y.clone(); let __i19 = 0; let __a20 = y.clone(); let __i20 = 1; let __v21 = (x - x); __a20.put(__i20, __v21); let __v22 = __v21; __a19.put(__i19, __v22); };
         return 0;
     }
     z = fd_libm::__LO2(z, fd_libm::__LO1(x));

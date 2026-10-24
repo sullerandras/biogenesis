@@ -52,6 +52,11 @@ import java.util.TreeMap;
  *   skip biogenesis.GeneticCode.draw(java.awt.Graphics, int, int)
  *   source java.lang.StrictMath                 parse this file too, for its statics
  *   static java.lang.StrictMath.sin(double)     translate this static method even if unused
+ *   stub biogenesis.VisibleWorldInterface       a GUI type: values are rt::Stub, calls do nothing
+ *   stub biogenesis.Utils.addRepaintWorldChangeListener(biogenesis.RepaintWorldChangeListener)
+ *                                               calls to this method do nothing
+ *   native biogenesis.World.getDistinctCladeIDCount(int)
+ *                                               body is hand-written in core/src/native/
  * Static fields and methods of any class are translated only when the
  * translated code uses them (transitively), so Utils comes in on demand.
  *
@@ -64,20 +69,21 @@ public class J2R {
 
 	// ---------------------------------------------------------------- types
 
-	enum K { INT, LONG, DOUBLE, FLOAT, BOOL, CHAR, BYTE, SHORT, VOID, STRING, COLOR, RANDOM, CLASS, ARRAY, LIST, NULL, OBJECT, GEOM }
+	enum K { INT, LONG, DOUBLE, FLOAT, BOOL, CHAR, BYTE, SHORT, VOID, STRING, COLOR, RANDOM, CLASS, ARRAY, LIST, NULL, OBJECT, GEOM,
+		COLL, HSET, ITER, FN, STUB }
 
 	/** A Java type, as far as the translation cares. */
 	static final class JT {
 		final K k;
-		final String cls;  // CLASS: qualified name; GEOM: the rt struct (see GEO)
-		final JT elem;     // ARRAY, LIST
+		final String cls;  // CLASS, FN, STUB: qualified name; GEOM: the rt struct (see GEO)
+		final JT elem;     // ARRAY, LIST, COLL, HSET, ITER
 		JT(K k, String cls, JT elem) { this.k = k; this.cls = cls; this.elem = elem; }
 		static JT of(K k) { return new JT(k, null, null); }
 		boolean prim() { return k.ordinal() <= K.SHORT.ordinal(); }
 		boolean numeric() { return prim() && k != K.BOOL; }
 		boolean integral() { return k == K.INT || k == K.LONG || k == K.CHAR || k == K.BYTE || k == K.SHORT; }
 		/** Copied by value in Rust (no clone needed). */
-		boolean copy() { return prim() || k == K.COLOR; }
+		boolean copy() { return prim() || k == K.COLOR || k == K.STUB; }
 		boolean ref() { return !prim() && k != K.VOID; }
 		@Override public boolean equals(Object o) {
 			if (!(o instanceof JT)) return false;
@@ -121,17 +127,63 @@ public class J2R {
 				case "java.util.Random": return JT.of(K.RANDOM);
 				case "java.lang.Object": return OBJECT;
 				case "java.util.List":
-				case "java.util.ArrayList": {
-					List<ResolvedType> tp = t.asReferenceType().typeParametersValues();
-					if (tp.size() != 1) throw new Unsupported("raw " + q);
-					return new JT(K.LIST, null, jt(tp.get(0)));
-				}
+				case "java.util.ArrayList": return new JT(K.LIST, null, typeArg(t, q));
+				case "java.util.Collection":
+				case "java.util.Set": return new JT(K.COLL, null, typeArg(t, q));
+				case "java.util.HashSet": return new JT(K.HSET, null, typeArg(t, q));
+				case "java.util.Iterator": return new JT(K.ITER, null, typeArg(t, q));
 			}
+			if (stubTypes.contains(q)) return new JT(K.STUB, q, null);
 			if (classes.containsKey(q)) return new JT(K.CLASS, q, null);
+			if (sam(q) != null) return new JT(K.FN, q, null);
 			if (GEO_TYPES.containsKey(q)) return new JT(K.GEOM, GEO_TYPES.get(q), null);
 			throw new Unsupported("type " + q);
 		}
 		throw new Unsupported("type " + t.describe());
+	}
+
+	/** The element type of List<E> etc. Boxed elements are their primitive (never null here). */
+	JT typeArg(ResolvedType t, String q) {
+		List<ResolvedType> tp = t.asReferenceType().typeParametersValues();
+		if (tp.size() != 1) throw new Unsupported("raw " + q);
+		ResolvedType a = tp.get(0);
+		if (a.isReferenceType()) {
+			switch (a.asReferenceType().getQualifiedName()) {
+				case "java.lang.Double": return DOUBLE;
+				case "java.lang.Integer": return INT;
+				case "java.lang.Long": return LONG;
+				case "java.lang.Boolean": return BOOL;
+				default: break;
+			}
+		}
+		return jt(a);
+	}
+
+	/** The single abstract method of a functional interface from the sources, or null. */
+	MethodDeclaration sam(String q) {
+		ClassOrInterfaceDeclaration c = allTypes.get(q);
+		if (c == null || !c.isInterface()) return null;
+		MethodDeclaration found = null;
+		for (MethodDeclaration m : c.getMethods()) {
+			if (m.isStatic() || m.isDefault()) continue;
+			if (found != null) return null;
+			found = m;
+		}
+		return found;
+	}
+
+	/** dyn Fn(params) -> ret of a functional interface. */
+	String fnType(String q) {
+		MethodDeclaration m = sam(q);
+		StringBuilder s = new StringBuilder("dyn Fn(");
+		for (int i = 0; i < m.getParameters().size(); i++) {
+			if (i > 0) s.append(", ");
+			s.append(rust(jt(m.getParameter(i).getType().resolve())));
+		}
+		s.append(")");
+		JT r = jt(m.getType().resolve());
+		if (r.k != K.VOID) s.append(" -> ").append(rust(r));
+		return s.toString();
 	}
 
 	String rust(JT t) {
@@ -155,6 +207,11 @@ public class J2R {
 			}
 			case ARRAY: return "JArray<" + rust(t.elem) + ">";
 			case LIST: return "JList<" + rust(t.elem) + ">";
+			case COLL: return "JCollection<" + rust(t.elem) + ">";
+			case HSET: return "JRef<JHashSet<" + rust(t.elem) + ">>";
+			case ITER: return "JIter<" + rust(t.elem) + ">";
+			case FN: return "JFn<" + fnType(t.cls) + ">";
+			case STUB: return "Stub";
 			default: throw new Unsupported("rust type for " + t);
 		}
 	}
@@ -167,6 +224,8 @@ public class J2R {
 			case BOOL: return "false";
 			case STRING: return "JStr::NULL";
 			case COLOR: return "Color::NULL";
+			case STUB: return "Stub::NULL";
+			case FN: return "JFn::null()";
 			default: return "JRef::null()";
 		}
 	}
@@ -227,6 +286,10 @@ public class J2R {
 		GEO_METHODS.put("getY()", new GeoMethod("getY", false, DOUBLE));
 		GEO_METHODS.put("getWidth()", new GeoMethod("getWidth", false, DOUBLE));
 		GEO_METHODS.put("getHeight()", new GeoMethod("getHeight", false, DOUBLE));
+		GEO_METHODS.put("getMinX()", new GeoMethod("getMinX", false, DOUBLE));
+		GEO_METHODS.put("getMinY()", new GeoMethod("getMinY", false, DOUBLE));
+		GEO_METHODS.put("getMaxX()", new GeoMethod("getMaxX", false, DOUBLE));
+		GEO_METHODS.put("getMaxY()", new GeoMethod("getMaxY", false, DOUBLE));
 		GEO_METHODS.put("setLine(double,double,double,double)", new GeoMethod("setLine", true, VOID));
 		GEO_METHODS.put("getX1()", new GeoMethod("getX1", false, DOUBLE));
 		GEO_METHODS.put("getY1()", new GeoMethod("getY1", false, DOUBLE));
@@ -265,6 +328,9 @@ public class J2R {
 	final Map<String, ClassOrInterfaceDeclaration> allTypes = new HashMap<>();      // every parsed class
 	final Map<String, String> fileOf = new HashMap<>();
 	final Set<String> skip = new LinkedHashSet<>();
+	final Set<String> stubTypes = new LinkedHashSet<>();
+	final Set<String> stubMethods = new LinkedHashSet<>();
+	final Set<String> natives = new LinkedHashSet<>();
 	final List<String> problems = new ArrayList<>();
 
 	/** Static members (MethodDeclaration or VariableDeclarator) to emit, in the order they were needed. */
@@ -273,6 +339,9 @@ public class J2R {
 
 	/** Rust names of methods and constructors: "cls.signature" -> name. */
 	final Map<String, String> callableNames = new HashMap<>();
+	final Set<String> nativeUsed = new LinkedHashSet<>();
+	/** Non-final statics of the simulation (a save holds them): Java name -> "getter|setter". */
+	final Map<String, String> savedStatics = new TreeMap<>();
 
 	public static void main(String[] args) throws IOException {
 		if (args.length < 3) {
@@ -306,6 +375,8 @@ public class J2R {
 			else if (w[0].equals("skip")) skip.add(w[1].replace(" ", ""));
 			else if (w[0].equals("source")) sources.add(w[1]);
 			else if (w[0].equals("static")) forced.add(w[1].replace(" ", ""));
+			else if (w[0].equals("stub")) (w[1].contains("(") ? stubMethods : stubTypes).add(w[1].replace(" ", ""));
+			else if (w[0].equals("native")) natives.add(w[1].replace(" ", ""));
 			else throw new IllegalArgumentException("config: " + line);
 		}
 
@@ -381,7 +452,21 @@ public class J2R {
 		for (String q : out.keySet()) {
 			if (classes.containsKey(q)) mod.append("pub use ").append(moduleName(q)).append("::").append(simple(q)).append(";\n");
 		}
+		// The statics a save holds, by Java name (rust/verify/biogenesis reads statics.txt).
+		mod.append("\nuse crate::rt::*;\n\n/// The non-final statics of the simulation's classes, sorted by Java name.\n");
+		mod.append("pub fn dump_statics(d: &mut Dumper) {\n");
+		if (savedStatics.isEmpty()) mod.append("    let _ = d;\n");
+		for (Map.Entry<String, String> e : savedStatics.entrySet())
+			mod.append("    d.field(\"").append(e.getKey()).append("\", &").append(e.getValue().split("\\|")[0]).append("());\n");
+		mod.append("}\n\n/// Sets a static from a save. False if there's no such static.\n");
+		mod.append("pub fn load_static(l: &mut Loader, name: &str) -> bool {\n");
+		if (savedStatics.isEmpty()) mod.append("    let _ = (l, name);\n    false\n}\n");
+		else mod.append("    match name {\n");
+		for (Map.Entry<String, String> e : savedStatics.entrySet())
+			mod.append("        \"").append(e.getKey()).append("\" => ").append(e.getValue().split("\\|")[1]).append("(JLoad::load(l)),\n");
+		if (!savedStatics.isEmpty()) mod.append("        _ => return false,\n    }\n    true\n}\n");
 		write(outDir.resolve("mod.rs"), mod.toString());
+		write(outDir.resolve("statics.txt"), String.join("\n", savedStatics.keySet()) + "\n");
 		for (Map.Entry<String, StringBuilder> e : out.entrySet()) {
 			String src = "// Generated by rust/transpiler/J2R.java from " + fileOf.get(e.getKey()) + ". Do not edit.\n\n"
 					+ "#![allow(non_snake_case, non_upper_case_globals, unused_mut, unused_parens, unused_variables,\n"
@@ -390,6 +475,7 @@ public class J2R {
 			write(outDir.resolve(moduleName(e.getKey()) + ".rs"), src);
 		}
 
+		for (String n : natives) if (!nativeUsed.contains(n)) problems.add("config: native " + n + " was not translated");
 		StringBuilder report = new StringBuilder();
 		for (String p : problems) report.append(p).append('\n');
 		write(outDir.resolve("unsupported.txt"), report.toString());
@@ -506,6 +592,7 @@ public class J2R {
 		// Field initializers, run by every constructor that doesn't call this(...).
 		out.append("    fn __init(this: &JRef<Self>) {\n");
 		inStatic = false;
+		tmpCounter = 0;
 		for (VariableDeclarator v : inits) {
 			try {
 				JT ft = jt(v.getType().resolve());
@@ -527,11 +614,24 @@ public class J2R {
 		}
 		for (MethodDeclaration m : c.getMethods()) {
 			if (m.isStatic()) continue; // emitted on demand with the statics
-			if (skipped(q, m)) continue;
 			if (m.isAbstract() || !m.getBody().isPresent()) { problem(m, "abstract method"); continue; }
 			out.append(translateCallable(m, q));
 		}
 		out.append("}\n\n");
+
+		// Collections use Java's hashCode/equals/==.
+		boolean hash = false, eq = false;
+		for (MethodDeclaration m : c.getMethods()) {
+			if (m.isStatic()) continue;
+			String sg = sig(m);
+			if (sg.equals("hashCode()")) hash = true;
+			if (sg.equals("equals(java.lang.Object)")) eq = true;
+		}
+		out.append("impl JObject for JRef<").append(name).append("> {\n");
+		out.append("    fn hash_code(&self) -> i32 {\n        ").append(hash ? name + "::hashCode(self)" : "crate::rt::collections::identity_hash_code()").append("\n    }\n");
+		out.append("    fn equals(&self, other: &Self) -> bool {\n        ").append(eq ? name + "::equals(self, other.clone())" : "JRef::ptr_eq(self, other)").append("\n    }\n");
+		out.append("    fn same(&self, other: &Self) -> bool {\n        JRef::ptr_eq(self, other)\n    }\n");
+		out.append("    fn is_null(&self) -> bool {\n        self.identity().is_none()\n    }\n}\n\n");
 
 		if (base != null) {
 			Geo g = GEO.get(base);
@@ -549,7 +649,22 @@ public class J2R {
 		for (Map.Entry<String, String> f : dumped.entrySet()) {
 			out.append("            d.field(\"").append(f.getKey()).append("\", &self.").append(f.getValue()).append(");\n");
 		}
-		out.append("        });\n    }\n}\n");
+		out.append("        });\n    }\n}\n\n");
+
+		// Load: the dump read back (save files).
+		out.append("impl JLoad for JRef<").append(name).append("> {\n    fn load(l: &mut Loader) -> Self {\n");
+		out.append("        l.object(\"").append(name).append("\", || JRef::new(").append(name).append("::default()), |l, this, n| match n {\n");
+		for (Map.Entry<String, String> f : dumped.entrySet()) {
+			String path = f.getValue();
+			if (path.startsWith("__super.")) {
+				String fn = base.equals("Rectangle") ? "load_rectangle_field" : "load_line2d_field";
+				out.append("            \"").append(f.getKey()).append("\" => {\n                let mut g = this.get(|o| o.__super);\n                crate::rt::load::")
+						.append(fn).append("(l, &mut g, n);\n                this.set(|o| o.__super = g)\n            }\n");
+			} else {
+				out.append("            \"").append(f.getKey()).append("\" => {\n                let v = JLoad::load(l);\n                this.set(|o| o.").append(path).append(" = v)\n            }\n");
+			}
+		}
+		out.append("            _ => l.unknown_field(\"").append(name).append("\", n),\n        }, JRef::null())\n    }\n}\n");
 		return out.toString();
 	}
 
@@ -588,6 +703,10 @@ public class J2R {
 		scope = new Scope(null);
 		inStatic = isStatic;
 		labelCounter = 0;
+		tmpCounter = 0; // per method, so changes elsewhere don't renumber this one
+		boolean skipped = skipped(q, d);
+		String nativeName = natives.contains(q + "." + sig(d)) ? "crate::native::" + moduleName(q) + "::" + name : null;
+		if (nativeName != null) nativeUsed.add(q + "." + sig(d));
 		try {
 			JT ret;
 			if (ctor) ret = VOID;
@@ -604,7 +723,8 @@ public class J2R {
 			StringBuilder args = new StringBuilder();
 			if (!isStatic) params.append("this: &JRef<Self>");
 			for (Parameter p : d.getParameters()) {
-				JT pt = jt(p.getType().resolve());
+				// equals(Object) is only ever called with the same class here.
+				JT pt = !ctor && !isStatic && sig(d).equals("equals(java.lang.Object)") ? new JT(K.CLASS, q, null) : jt(p.getType().resolve());
 				String pn = rustIdent(p.getNameAsString());
 				scope.declare(p.getNameAsString(), pn, pt);
 				if (params.length() > 0) params.append(", ");
@@ -637,12 +757,20 @@ public class J2R {
 				out.append(" {\n");
 			}
 			StringBuilder b = new StringBuilder();
-			for (Statement s : body.getStatements()) stmt(s, b, ind + "    ");
+			if (skipped) {
+				b.append(ind).append("    crate::rt::throw(\"J2R: skipped ").append(esc(q + "." + sig(d))).append("\")\n");
+			} else if (nativeName != null) {
+				b.append(ind).append("    ").append(nativeName).append("(").append(isStatic ? "" : args.length() > 0 ? "this, " : "this").append(args).append(")\n");
+			} else {
+				for (Statement s : body.getStatements()) stmt(s, b, ind + "    ");
+			}
 			out.append(b);
 			out.append(ind).append("}\n");
 		} catch (RuntimeException e) {
-			problem(d, e);
-			out.append("    // ").append(d.getNameAsString()).append(": not translated\n");
+			// A skipped method whose signature can't be translated is left out.
+			if (!skipped) problem(d, e);
+			out.setLength(0);
+			out.append(skipped ? "" : "    // " + d.getNameAsString() + ": not translated\n");
 		} finally {
 			scope = saved;
 		}
@@ -665,6 +793,7 @@ public class J2R {
 	String translateStaticVar(String owner, VariableDeclarator v) {
 		curClass = owner;
 		inStatic = true;
+		tmpCounter = 0;
 		Scope saved = scope;
 		scope = new Scope(null);
 		try {
@@ -677,6 +806,7 @@ public class J2R {
 				Ex val = coerce(expr(init), t, v);
 				return doc + "pub const " + n + ": " + rust(t) + " = " + val.code + ";\n";
 			}
+			if (!f.isFinal() && owner.startsWith("biogenesis.")) savedStatics.put(owner + "." + v.getNameAsString(), moduleName(owner) + "::" + n + "|" + moduleName(owner) + "::set_" + v.getNameAsString());
 			String cell = t.copy() ? "Cell" : "RefCell";
 			String initCode = init == null ? defaultValue(t) : init(init, t, v).code;
 			boolean constInit = init == null || isConstExpr(init);
@@ -852,6 +982,8 @@ public class J2R {
 		} else if (s.isForEachStmt()) {
 			ForEachStmt f = s.asForEachStmt();
 			Ex it = expr(f.getIterable());
+			if (it.t.k == K.COLL) it = new Ex(recv(f.getIterable(), it) + ".snapshot_array()", new JT(K.ARRAY, null, it.t.elem), false);
+			if (it.t.k == K.HSET) it = new Ex("(" + it.code + ").as_collection().snapshot_array()", new JT(K.ARRAY, null, it.t.elem), false);
 			if (it.t.k != K.ARRAY && it.t.k != K.LIST) throw new Unsupported("for-each over " + it.t);
 			int n = ++labelCounter;
 			Scope saved = scope;
@@ -876,7 +1008,7 @@ public class J2R {
 			scope = saved;
 		} else if (s.isReturnStmt()) {
 			ReturnStmt r = s.asReturnStmt();
-			if (r.getExpression().isPresent()) out.append(ind).append("return ").append(coerce(expr(r.getExpression().get()), curReturn, r).code).append(";\n");
+			if (r.getExpression().isPresent()) out.append(ind).append("return ").append(exprTo(r.getExpression().get(), curReturn, r).code).append(";\n");
 			else out.append(ind).append("return;\n");
 		} else if (s.isBreakStmt()) {
 			BreakStmt b = s.asBreakStmt();
@@ -913,7 +1045,7 @@ public class J2R {
 		} else if (s.isThrowStmt()) {
 			Expression e = s.asThrowStmt().getExpression();
 			String what = e.isObjectCreationExpr() ? e.asObjectCreationExpr().getType().getNameAsString() : "exception";
-			out.append(ind).append("rt::throw(\"").append(esc(what)).append("\");\n");
+			out.append(ind).append("crate::rt::throw(\"").append(esc(what)).append("\");\n");
 		} else if (s.isTryStmt()) {
 			TryStmt t = s.asTryStmt();
 			if (t.getFinallyBlock().isPresent() || !t.getResources().isEmpty()) throw new Unsupported("try with finally/resources");
@@ -1165,7 +1297,7 @@ public class J2R {
 			return new Ex(recv(a.getName(), arr) + ".at(" + idx.code + ")", arr.t.elem, false);
 		}
 		if (e.isMethodCallExpr()) return call(e.asMethodCallExpr());
-		if (e.isObjectCreationExpr()) return create(e.asObjectCreationExpr());
+		if (e.isObjectCreationExpr()) return create(e.asObjectCreationExpr(), null);
 		if (e.isArrayCreationExpr()) return newArray(e.asArrayCreationExpr());
 		if (e.isArrayInitializerExpr()) throw new Unsupported("array initializer without type");
 		if (e.isCastExpr()) return cast(e.asCastExpr());
@@ -1179,7 +1311,90 @@ public class J2R {
 			return new Ex("(if " + k.code + " { " + a.code + " } else { " + b.code + " })", t, k.pure && a.pure && b.pure);
 		}
 		if (e.isAssignExpr()) return assign(e.asAssignExpr(), true);
+		if (e.isInstanceOfExpr()) {
+			InstanceOfExpr i = e.asInstanceOfExpr();
+			if (i.getPattern().isPresent()) throw new Unsupported("instanceof pattern");
+			Ex x = expr(i.getExpression());
+			JT t = jt(i.getType().resolve());
+			// Only the trivial case: the static type is already the class (equals(Object)).
+			if (!x.t.equals(t)) throw new Unsupported("instanceof " + t + " on " + x.t);
+			return new Ex("!" + recv(i.getExpression(), x) + ".is_null()", BOOL, false);
+		}
 		throw new Unsupported("expression " + e.getClass().getSimpleName() + " '" + abbreviate(e.toString()) + "'");
+	}
+
+	/**
+	 * An expression converted to type `to`. The expected type is what gives
+	 * lambdas their interface, `new HashSet<>()` its element type and raw
+	 * `new ArrayList[n]` arrays theirs.
+	 */
+	Ex exprTo(Expression e, JT to, Node at) {
+		if (e.isEnclosedExpr()) return exprTo(e.asEnclosedExpr().getInner(), to, at);
+		if (e.isLambdaExpr()) return lambda(e.asLambdaExpr(), to);
+		if (e.isArrayCreationExpr() && !e.asArrayCreationExpr().getInitializer().isPresent()) return coerce(newArray(e.asArrayCreationExpr(), to), to, at);
+		if (e.isObjectCreationExpr() && e.asObjectCreationExpr().getType().isUsingDiamondOperator()) return coerce(create(e.asObjectCreationExpr(), to), to, at);
+		if (e.isMethodCallExpr() && e.asMethodCallExpr().getArguments().size() == 1) {
+			// Collections.synchronizedSet(x) etc.: x itself (no threads here)
+			ResolvedMethodDeclaration rm = e.asMethodCallExpr().resolve();
+			if (rm.declaringType().getQualifiedName().equals("java.util.Collections") && rm.getName().startsWith("synchronized"))
+				return exprTo(e.asMethodCallExpr().getArgument(0), to, at);
+		}
+		return coerce(expr(e), to, at);
+	}
+
+	/**
+	 * A lambda: a closure owning copies of the variables it uses (Java's
+	 * captures are effectively final) and of `this`.
+	 */
+	Ex lambda(LambdaExpr l, JT to) {
+		if (to.k != K.FN) throw new Unsupported("lambda as " + to);
+		MethodDeclaration m = sam(to.cls);
+		if (m.getParameters().size() != l.getParameters().size()) throw new Unsupported("lambda arity");
+		Set<String> params = new java.util.HashSet<>();
+		for (Parameter p : l.getParameters()) params.add(p.getNameAsString());
+		Set<String> captured = new java.util.TreeSet<>();
+		for (NameExpr n : l.getBody().findAll(NameExpr.class))
+			if (!params.contains(n.getNameAsString()) && scope.find(n.getNameAsString()) != null) captured.add(n.getNameAsString());
+		StringBuilder pre = new StringBuilder("{ ");
+		if (!inStatic) pre.append("let __this = this.clone(); ");
+		for (String c : captured) {
+			Var v = scope.find(c);
+			pre.append("let ").append(v.rust).append(" = ").append(v.t.copy() ? v.rust : v.rust + ".clone()").append("; ");
+		}
+		Scope saved = scope;
+		JT savedReturn = curReturn;
+		Deque<Target> savedTargets = new ArrayDeque<>(targets);
+		targets.clear();
+		scope = new Scope(scope);
+		try {
+			StringBuilder sigs = new StringBuilder();
+			for (int i = 0; i < m.getParameters().size(); i++) {
+				JT pt = jt(m.getParameter(i).getType().resolve());
+				String pn = rustIdent(l.getParameter(i).getNameAsString());
+				scope.declare(l.getParameter(i).getNameAsString(), pn, pt);
+				if (i > 0) sigs.append(", ");
+				sigs.append("mut ").append(pn).append(": ").append(rust(pt));
+			}
+			JT ret = jt(m.getType().resolve());
+			curReturn = ret;
+			StringBuilder body = new StringBuilder();
+			String ind = "        ";
+			if (!inStatic) body.append(ind).append("let this = &__this;\n");
+			Statement b = l.getBody();
+			if (b.isExpressionStmt() && ret.k != K.VOID) {
+				body.append(ind).append(exprTo(b.asExpressionStmt().getExpression(), ret, l).code).append("\n");
+			} else {
+				block(b, body, ind);
+			}
+			String fn = fnType(to.cls);
+			return new Ex(pre + "JFn::new(std::rc::Rc::new(move |" + sigs + "|" + (ret.k != K.VOID ? " -> " + rust(ret) : "") + " {\n" + body
+					+ "    }) as std::rc::Rc<" + fn + ">) }", to, false);
+		} finally {
+			scope = saved;
+			curReturn = savedReturn;
+			targets.clear();
+			targets.addAll(savedTargets);
+		}
 	}
 
 	static String doubleLit(double d) {
@@ -1234,6 +1449,7 @@ public class J2R {
 	Ex field(ResolvedFieldDeclaration fd, Expression scopeExpr, Node at) {
 		String owner = fd.declaringType().getQualifiedName();
 		JT t = jt(fd.getType());
+		if (fd.isStatic() && stubTypes.contains(owner)) return new Ex("crate::rt::throw(\"J2R: stub field " + esc(simple(owner) + "." + fd.getName()) + "\")", t, false);
 		if (fd.isStatic()) {
 			if (owner.equals("java.awt.Color")) return new Ex("Color::" + fd.getName(), COLOR, true);
 			if (BOXES.contains(owner)) return boxConstant(owner, fd.getName());
@@ -1337,6 +1553,8 @@ public class J2R {
 			return new Ex("(" + x.code + " as " + rust(to) + ")", to, x.pure);
 		}
 		if (to.k == K.OBJECT && x.t.ref()) return x;
+		if (to.k == K.COLL && (x.t.k == K.LIST || x.t.k == K.HSET) && x.t.elem.equals(to.elem))
+			return new Ex(paren(x.code) + ".as_collection()", to, x.pure);
 		if (to.k == K.GEOM && x.t.k == K.CLASS && to.cls.equals(superGeom.get(x.t.cls)))
 			return new Ex(paren(x.code) + "." + GEO.get(to.cls).upcast + "()", to, x.pure);
 		throw new Unsupported("conversion " + x.t + " -> " + to);
@@ -1431,7 +1649,7 @@ public class J2R {
 				String neg = op == BinaryExpr.Operator.EQUALS ? "" : "!";
 				if (r.t.k == K.NULL && l.t.ref()) return new Ex("(" + neg + recv(b.getLeft(), l) + ".is_null())", BOOL, false);
 				if (l.t.k == K.NULL && r.t.ref()) return new Ex("(" + neg + recv(b.getRight(), r) + ".is_null())", BOOL, false);
-				if (l.t.k == K.CLASS || l.t.k == K.ARRAY || l.t.k == K.LIST || l.t.k == K.RANDOM || l.t.k == K.GEOM)
+				if (l.t.k == K.CLASS || l.t.k == K.ARRAY || l.t.k == K.LIST || l.t.k == K.RANDOM || l.t.k == K.GEOM || l.t.k == K.COLL || l.t.k == K.HSET)
 					return new Ex("(" + neg + "JRef::ptr_eq(&" + l.code + ", &" + r.code + "))", BOOL, false);
 				throw new Unsupported("== on " + l.t + " (identity of value-typed objects)");
 			}
@@ -1598,15 +1816,26 @@ public class J2R {
 		return lv;
 	}
 
+	boolean isStubStaticField(Expression target) {
+		if (!target.isFieldAccessExpr() && !target.isNameExpr()) return false;
+		if (target.isNameExpr() && scope.find(target.asNameExpr().getNameAsString()) != null) return false;
+		ResolvedValueDeclaration r = target.isNameExpr() ? target.asNameExpr().resolve() : target.asFieldAccessExpr().resolve();
+		return r.isField() && r.asField().isStatic() && stubTypes.contains(r.asField().declaringType().getQualifiedName());
+	}
+
 	/** x = v, x op= v. asExpr: the assignment's value is used. */
 	Ex assign(AssignExpr a, boolean asExpr) {
 		AssignExpr.Operator op = a.getOperator();
 		if (!asExpr && op == AssignExpr.Operator.ASSIGN && a.getValue().isAssignExpr()) return assignChain(a);
+		if (!asExpr && op == AssignExpr.Operator.ASSIGN && isStubStaticField(a.getTarget())) {
+			// VisibleWorld.zoomFactor = 1: the GUI's, dropped
+			requireNoSideEffects(a.getValue());
+			return new Ex("()", VOID, true);
+		}
 		LValue lv = lvalue(a.getTarget());
 		String value;
 		if (op == AssignExpr.Operator.ASSIGN) {
-			Ex v = a.getValue().isAssignExpr() ? assign(a.getValue().asAssignExpr(), true) : expr(a.getValue());
-			value = coerce(v, lv.t, a).code;
+			value = a.getValue().isAssignExpr() ? coerce(assign(a.getValue().asAssignExpr(), true), lv.t, a).code : exprTo(a.getValue(), lv.t, a).code;
 			if (!asExpr) return new Ex(lv.direct(value), VOID, false);
 		} else {
 			// Java: read the target, evaluate the value, store (T)(old op value).
@@ -1714,7 +1943,7 @@ public class J2R {
 		for (int i = 0; i < as.size(); i++) {
 			if (s.length() > 0 || leadingComma) s.append(", ");
 			JT pt = jt(param.apply(i).getType());
-			s.append(coerce(expr(as.get(i)), pt, at).code);
+			s.append(exprTo(as.get(i), pt, at).code);
 		}
 		return s.toString();
 	}
@@ -1730,6 +1959,15 @@ public class J2R {
 		if (name.equals("clone") && as.isEmpty() && m.getScope().isPresent() && m.getScope().get().isSuperExpr()) {
 			return new Ex("JRef::new(this.get(|o| o.clone()))", OBJECT, false);
 		}
+		if (isStubCall(m, rm)) return stubCall(m, rm);
+		// A lambda's method
+		if (m.getScope().isPresent() && sam(owner) != null && !rm.isStatic()) {
+			Ex f = expr(m.getScope().get());
+			if (f.t.k == K.FN) {
+				String a = args(as, rm::getParam, rm.getNumberOfParams(), m, false);
+				return new Ex("(" + recv(m.getScope().get(), f) + ".f())(" + a + ")", jt(rm.getReturnType()), false);
+			}
+		}
 		switch (owner) {
 			case "java.util.Random": return randomCall(m, rm, sig);
 			case "java.lang.Math":
@@ -1742,7 +1980,11 @@ public class J2R {
 			case "java.util.List":
 			case "java.util.ArrayList":
 			case "java.util.Collection":
-			case "java.util.AbstractList": return listCall(m, name, sig);
+			case "java.util.Set":
+			case "java.util.HashSet":
+			case "java.util.AbstractCollection":
+			case "java.util.AbstractList": return collectionCall(m, name, sig);
+			case "java.util.Iterator": return iteratorCall(m, sig);
 			default: if (GEO_OWNERS.containsKey(owner)) return geomCall(m, owner, sig);
 				break;
 		}
@@ -1920,6 +2162,8 @@ public class J2R {
 			case "isNaN(double)": return new Ex(paren(coerce(expr(as.get(0)), DOUBLE, m).code) + ".is_nan()", BOOL, false);
 			case "isInfinite(double)": return new Ex(paren(coerce(expr(as.get(0)), DOUBLE, m).code) + ".is_infinite()", BOOL, false);
 			case "isFinite(double)": return new Ex(paren(coerce(expr(as.get(0)), DOUBLE, m).code) + ".is_finite()", BOOL, false);
+			case "valueOf(double)": return coerce(expr(as.get(0)), DOUBLE, m); // boxes are their value here
+			case "doubleValue()": return coerce(expr(m.getScope().get()), DOUBLE, m);
 			default: throw new Unsupported("Double." + sig);
 		}
 	}
@@ -1959,34 +2203,161 @@ public class J2R {
 			case "toHexString(int)": return new Ex("jstr::to_hex_string(" + coerce(expr(m.getArguments().get(0)), INT, m).code + ")", STRING, false);
 			case "toString(int)": return new Ex("jstr::int_to_string(" + coerce(expr(m.getArguments().get(0)), INT, m).code + ")", STRING, false);
 			case "compareUnsigned(int,int)": return compareUnsigned(m, INT);
+			case "valueOf(int)": return coerce(expr(m.getArguments().get(0)), INT, m);
+			case "intValue()": return coerce(expr(m.getScope().get()), INT, m);
 			default: throw new Unsupported("Integer." + sig);
 		}
 	}
 
-	Ex listCall(MethodCallExpr m, String name, String sig) {
-		Expression se = m.getScope().orElseThrow(() -> new Unsupported("list call without receiver"));
+	/** A method of List, Collection, Set: by the receiver's type. */
+	Ex collectionCall(MethodCallExpr m, String name, String sig) {
+		Expression se = m.getScope().orElseThrow(() -> new Unsupported("collection call without receiver"));
 		Ex s = expr(se);
 		String r = recv(se, s);
 		JT elem = s.t.elem;
-		switch (sig) {
-			case "size()": return new Ex(r + ".len()", INT, false);
-			case "get(int)": return new Ex(r + ".at(" + coerce(expr(m.getArguments().get(0)), INT, m).code + ")", elem, false);
-			case "add(E)": return new Ex(r + ".add(" + coerce(expr(m.getArguments().get(0)), elem, m).code + ")", BOOL, false);
-			case "toArray(T[])": {
-				Ex a = expr(m.getArguments().get(0));
-				return new Ex(r + ".to_array(&" + recv(m.getArguments().get(0), a) + ", " + defaultValue(elem) + ")", a.t, false);
+		List<Expression> as = m.getArguments();
+		if (s.t.k == K.HSET) {
+			s = new Ex(paren(s.code) + ".as_collection()", new JT(K.COLL, null, elem), false);
+			r = "(" + s.code + ")";
+		}
+		if (s.t.k == K.LIST) {
+			switch (sig) {
+				case "size()": return new Ex(r + ".len()", INT, false);
+				case "isEmpty()": return new Ex("(" + r + ".len() == 0)", BOOL, false);
+				case "get(int)": return new Ex(r + ".at(" + coerce(expr(as.get(0)), INT, m).code + ")", elem, false);
+				case "add(E)": return new Ex(r + ".add(" + exprTo(as.get(0), elem, m).code + ")", BOOL, false);
+				case "remove(int)": return new Ex(r + ".remove_at(" + coerce(expr(as.get(0)), INT, m).code + ")", elem, false);
+				case "remove(java.lang.Object)": return new Ex(r + ".remove_obj(&" + coerce(expr(as.get(0)), elem, m).code + ")", BOOL, false);
+				case "contains(java.lang.Object)": return new Ex(r + ".contains_obj(&" + coerce(expr(as.get(0)), elem, m).code + ")", BOOL, false);
+				case "clear()": return new Ex(r + ".clear()", VOID, false);
+				case "iterator()": return new Ex(paren(s.code) + ".as_collection().iterator()", new JT(K.ITER, null, elem), false);
+				case "toArray(T[])": {
+					Ex a = expr(as.get(0));
+					return new Ex(r + ".to_array(&" + recv(as.get(0), a) + ", " + defaultValue(elem) + ")", a.t, false);
+				}
+				default: throw new Unsupported("List." + sig);
 			}
-			default: throw new Unsupported("List." + sig);
+		}
+		if (s.t.k != K.COLL) throw new Unsupported("collection call on " + s.t);
+		switch (sig) {
+			case "size()": return new Ex(r + ".size()", INT, false);
+			case "isEmpty()": return new Ex(r + ".isEmpty()", BOOL, false);
+			case "add(E)": return new Ex(r + ".add(" + exprTo(as.get(0), elem, m).code + ")", BOOL, false);
+			case "remove(java.lang.Object)": return new Ex(r + ".remove(&" + coerce(expr(as.get(0)), elem, m).code + ")", BOOL, false);
+			case "contains(java.lang.Object)": return new Ex(r + ".contains(&" + coerce(expr(as.get(0)), elem, m).code + ")", BOOL, false);
+			case "clear()": return new Ex(r + ".clear()", VOID, false);
+			case "iterator()": return new Ex(r + ".iterator()", new JT(K.ITER, null, elem), false);
+			case "toArray(T[])": {
+				Ex a = expr(as.get(0));
+				return new Ex(r + ".to_array(&" + recv(as.get(0), a) + ", " + defaultValue(elem) + ")", a.t, false);
+			}
+			default: throw new Unsupported("Collection." + sig);
 		}
 	}
 
-	Ex create(ObjectCreationExpr o) {
+	Ex iteratorCall(MethodCallExpr m, String sig) {
+		Expression se = m.getScope().orElseThrow(() -> new Unsupported("iterator call without receiver"));
+		Ex s = expr(se);
+		String r = recv(se, s);
+		switch (sig) {
+			case "hasNext()": return new Ex(r + ".hasNext()", BOOL, false);
+			case "next()": return new Ex(r + ".next()", s.t.elem, false);
+			case "remove()": return new Ex(r + ".remove()", VOID, false);
+			default: throw new Unsupported("Iterator." + sig);
+		}
+	}
+
+	// ---------------------------------------------------------------- stubs
+
+	boolean isStubCall(MethodCallExpr m, ResolvedMethodDeclaration rm) {
+		String owner = rm.declaringType().getQualifiedName();
+		if (stubTypes.contains(owner) || stubMethods.contains(owner + "." + rm.getSignature().replace(" ", ""))) return true;
+		if (rm.isStatic() || !m.getScope().isPresent()) return false;
+		try {
+			ResolvedType t = m.getScope().get().calculateResolvedType();
+			return t.isReferenceType() && stubTypes.contains(t.asReferenceType().getQualifiedName());
+		} catch (RuntimeException e) {
+			return false;
+		}
+	}
+
+	/**
+	 * A call on a stub: nothing runs. Its receiver and arguments are dropped,
+	 * so they must have no side effects. Objects come back null, stubs as a
+	 * (non-null) stub; a primitive result can't be made up, so it throws.
+	 */
+	Ex stubCall(MethodCallExpr m, ResolvedMethodDeclaration rm) {
+		StringBuilder b = new StringBuilder();
+		if (m.getScope().isPresent() && !rm.isStatic()) b.append(evalOrDrop(m.getScope().get()));
+		for (Expression a : m.getArguments()) b.append(evalOrDrop(a));
+		String what = simple(rm.declaringType().getQualifiedName()) + "." + rm.getSignature().replace(" ", "");
+		ResolvedType rt = rm.getReturnType();
+		JT t = rt.isVoid() ? VOID : jt(rt);
+		String v;
+		if (t.k == K.VOID) v = "()";
+		else if (t.k == K.STUB) v = "Stub::NONNULL";
+		else if (t.ref()) v = "<" + rust(t) + ">::default()";
+		else v = "crate::rt::throw(\"J2R: stub " + esc(what) + "\")";
+		return new Ex(b.length() == 0 ? v : "{ " + b + v + " }", t, b.length() == 0);
+	}
+
+	/**
+	 * A receiver or argument of a stub call: evaluated (Java would), unless it
+	 * can't be translated (a listener class), in which case it must have no
+	 * side effects and is dropped.
+	 */
+	String evalOrDrop(Expression e) {
+		if (!e.isLambdaExpr() && !(e.isObjectCreationExpr() && e.asObjectCreationExpr().getAnonymousClassBody().isPresent())) {
+			try {
+				Ex x = expr(e);
+				return x.pure ? "" : "let _ = " + x.code + "; ";
+			} catch (Unsupported u) {
+				// fall through
+			}
+		}
+		requireNoSideEffects(e);
+		return "";
+	}
+
+	/** Expressions dropped by stub calls: no assignments, ++, or calls other than stub calls. */
+	void requireNoSideEffects(Expression e) {
+		if (e.isLambdaExpr() || e.isMethodReferenceExpr()) return;
+		if (e.isObjectCreationExpr()) {
+			ObjectCreationExpr o = e.asObjectCreationExpr();
+			if (o.getAnonymousClassBody().isPresent()) return; // creating it runs nothing
+			if (!stubTypes.contains(o.resolve().declaringType().getQualifiedName())) throw new Unsupported("side effect in a stub call: " + abbreviate(e.toString()));
+		}
+		if (e.isAssignExpr()) throw new Unsupported("side effect in a stub call: " + abbreviate(e.toString()));
+		if (e.isUnaryExpr()) {
+			UnaryExpr.Operator op = e.asUnaryExpr().getOperator();
+			if (op == UnaryExpr.Operator.PREFIX_INCREMENT || op == UnaryExpr.Operator.POSTFIX_INCREMENT
+					|| op == UnaryExpr.Operator.PREFIX_DECREMENT || op == UnaryExpr.Operator.POSTFIX_DECREMENT)
+				throw new Unsupported("side effect in a stub call: " + abbreviate(e.toString()));
+		}
+		if (e.isMethodCallExpr() && !isStubCall(e.asMethodCallExpr(), e.asMethodCallExpr().resolve()))
+			throw new Unsupported("call in a dropped stub argument: " + abbreviate(e.toString()));
+		for (Node c : e.getChildNodes()) if (c instanceof Expression) requireNoSideEffects((Expression) c);
+	}
+
+	/** expected: the type the new object is assigned to (gives `new X<>()` its type arguments). */
+	Ex create(ObjectCreationExpr o, JT expected) {
 		if (o.getAnonymousClassBody().isPresent()) throw new Unsupported("anonymous class");
 		ResolvedConstructorDeclaration rc = o.resolve();
 		String owner = rc.declaringType().getQualifiedName();
 		String sig = rc.getSignature().replace(" ", "");
 		List<Expression> as = o.getArguments();
+		if (stubTypes.contains(owner)) {
+			StringBuilder b = new StringBuilder("{ ");
+			for (Expression a : as) b.append(evalOrDrop(a));
+			return new Ex(b + "Stub::NONNULL }", new JT(K.STUB, owner, null), false);
+		}
 		switch (owner) {
+			case "java.util.HashSet": {
+				JT t = o.getType().isUsingDiamondOperator() && expected != null && expected.elem != null
+						? new JT(K.HSET, null, expected.elem) : jt(o.calculateResolvedType());
+				if (as.isEmpty()) return new Ex("JRef::<JHashSet<" + rust(t.elem) + ">>::new_set()", t, false);
+				throw new Unsupported("new HashSet" + sig);
+			}
 			case "java.util.Random":
 				if (as.isEmpty()) return new Ex("Random::new()", JT.of(K.RANDOM), false);
 				return new Ex("Random::new_seeded(" + coerce(expr(as.get(0)), LONG, o).code + ")", JT.of(K.RANDOM), false);
@@ -2011,7 +2382,8 @@ public class J2R {
 					return new Ex("Point2D::new_ref(" + args(as, rc::getParam, rc.getNumberOfParams(), o, false) + ")", new JT(K.GEOM, "Point2D", null), false);
 				throw new Unsupported("new Point2D.Double" + sig);
 			case "java.util.ArrayList": {
-				JT t = jt(o.calculateResolvedType());
+				JT t = o.getType().isUsingDiamondOperator() && expected != null && expected.elem != null
+						? new JT(K.LIST, null, expected.elem) : jt(o.calculateResolvedType());
 				if (as.isEmpty() || sig.equals("ArrayList(int)")) return new Ex("JList::from_vec(Vec::new())", t, false);
 				throw new Unsupported("new ArrayList" + sig);
 			}
@@ -2023,7 +2395,18 @@ public class J2R {
 	}
 
 	Ex newArray(ArrayCreationExpr a) {
-		JT t = jt(a.calculateResolvedType());
+		return newArray(a, null);
+	}
+
+	/** expected: the type the array is assigned to (for raw element types: new ArrayList[n]). */
+	Ex newArray(ArrayCreationExpr a, JT expected) {
+		JT t;
+		try {
+			t = jt(a.calculateResolvedType());
+		} catch (Unsupported u) {
+			if (expected == null || expected.k != K.ARRAY || !u.getMessage().startsWith("raw ")) throw u;
+			t = expected;
+		}
 		if (a.getInitializer().isPresent()) return arrayInit(a.getInitializer().get(), t);
 		List<Expression> dims = new ArrayList<>();
 		for (com.github.javaparser.ast.ArrayCreationLevel l : a.getLevels()) {
@@ -2053,7 +2436,7 @@ public class J2R {
 			if (t.k != K.ARRAY) throw new Unsupported("array initializer for " + t);
 			return arrayInit(e.asArrayInitializerExpr(), t);
 		}
-		return coerce(expr(e), t, at);
+		return exprTo(e, t, at);
 	}
 
 	Ex arrayInit(ArrayInitializerExpr init, JT t) {

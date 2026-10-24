@@ -330,6 +330,495 @@ pub fn coordinateMutation() -> bool {
 thread_local! { static __INITIAL_COMPLEXITY: std::cell::Cell<i32> = const { std::cell::Cell::new(utils::DEF_INITIAL_COMPLEXITY) }; }
 pub fn INITIAL_COMPLEXITY() -> i32 { __INITIAL_COMPLEXITY.with(|c| c.get()) }
 pub fn set_INITIAL_COMPLEXITY(v: i32) { __INITIAL_COMPLEXITY.with(|c| c.set(v)) }
+/// Java: Utils.java:1779
+pub const ColorVISION: Color = Color::rgb(232, 145, 70);
+// Java: Utils.java:1141
+thread_local! { static __DRIFT_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_DRIFT_ENERGY_CONSUMPTION) }; }
+pub fn DRIFT_ENERGY_CONSUMPTION() -> f64 { __DRIFT_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_DRIFT_ENERGY_CONSUMPTION(v: f64) { __DRIFT_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+// Java: Utils.java:1145
+thread_local! { static __SPIN_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_SPIN_ENERGY_CONSUMPTION) }; }
+pub fn SPIN_ENERGY_CONSUMPTION() -> f64 { __SPIN_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_SPIN_ENERGY_CONSUMPTION(v: f64) { __SPIN_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+// Java: Utils.java:993
+thread_local! { static __DARKJADE_DELAY: std::cell::Cell<i32> = const { std::cell::Cell::new(utils::DEF_DARKJADE_DELAY) }; }
+pub fn DARKJADE_DELAY() -> i32 { __DARKJADE_DELAY.with(|c| c.get()) }
+pub fn set_DARKJADE_DELAY(v: i32) { __DARKJADE_DELAY.with(|c| c.set(v)) }
+// Java: Utils.java:875
+thread_local! { static __MAX_AGE: std::cell::Cell<i32> = const { std::cell::Cell::new(utils::DEF_MAX_AGE) }; }
+pub fn MAX_AGE() -> i32 { __MAX_AGE.with(|c| c.get()) }
+pub fn set_MAX_AGE(v: i32) { __MAX_AGE.with(|c| c.set(v)) }
+// Java: Utils.java:880
+thread_local! { static __AGE_DIVISOR: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_AGE_DIVISOR) }; }
+pub fn AGE_DIVISOR() -> f64 { __AGE_DIVISOR.with(|c| c.get()) }
+pub fn set_AGE_DIVISOR(v: f64) { __AGE_DIVISOR.with(|c| c.set(v)) }
+// Java: Utils.java:980
+thread_local! { static __INDIGO_DIVISOR: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_INDIGO_DIVISOR) }; }
+pub fn INDIGO_DIVISOR() -> f64 { __INDIGO_DIVISOR.with(|c| c.get()) }
+pub fn set_INDIGO_DIVISOR(v: f64) { __INDIGO_DIVISOR.with(|c| c.set(v)) }
+// Java: Utils.java:1638
+thread_local! { static __scale: std::cell::RefCell<JArray<f64>> = std::cell::RefCell::new(JArray::from_vec(vec![1.0f64, 0.9f64, 0.8f64, 0.71f64, 0.63f64, 0.56f64, 0.5f64, 0.45f64, 0.4f64, 0.36f64, 0.32f64, 0.28f64, 0.25f64, 0.22f64, 0.2f64, 0.18f64])); }
+pub fn scale() -> JArray<f64> { __scale.with(|c| c.borrow().clone()) }
+pub fn set_scale(v: JArray<f64>) { __scale.with(|c| *c.borrow_mut() = v) }
+// Java: Utils.java:985
+thread_local! { static __GOLD_DIVISOR: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_GOLD_DIVISOR) }; }
+pub fn GOLD_DIVISOR() -> f64 { __GOLD_DIVISOR.with(|c| c.get()) }
+pub fn set_GOLD_DIVISOR(v: f64) { __GOLD_DIVISOR.with(|c| c.set(v)) }
+// Java: Utils.java:946
+thread_local! { static __GREEN_OBTAINED_ENERGY_DIVISOR: std::cell::Cell<i32> = const { std::cell::Cell::new(utils::DEF_GREEN_OBTAINED_ENERGY_DIVISOR) }; }
+pub fn GREEN_OBTAINED_ENERGY_DIVISOR() -> i32 { __GREEN_OBTAINED_ENERGY_DIVISOR.with(|c| c.get()) }
+pub fn set_GREEN_OBTAINED_ENERGY_DIVISOR(v: i32) { __GREEN_OBTAINED_ENERGY_DIVISOR.with(|c| c.set(v)) }
+// Java: Utils.java:1005
+thread_local! { static __GREEN_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_GREEN_ENERGY_CONSUMPTION) }; }
+pub fn GREEN_ENERGY_CONSUMPTION() -> f64 { __GREEN_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_GREEN_ENERGY_CONSUMPTION(v: f64) { __GREEN_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+// Java: Utils.java:1117
+thread_local! { static __GRASS_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_GRASS_ENERGY_CONSUMPTION) }; }
+pub fn GRASS_ENERGY_CONSUMPTION() -> f64 { __GRASS_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_GRASS_ENERGY_CONSUMPTION(v: f64) { __GRASS_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+// Java: Utils.java:1109
+thread_local! { static __BARK_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_BARK_ENERGY_CONSUMPTION) }; }
+pub fn BARK_ENERGY_CONSUMPTION() -> f64 { __BARK_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_BARK_ENERGY_CONSUMPTION(v: f64) { __BARK_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+// Java: Utils.java:1101
+thread_local! { static __SUMMER_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_SUMMER_ENERGY_CONSUMPTION) }; }
+pub fn SUMMER_ENERGY_CONSUMPTION() -> f64 { __SUMMER_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_SUMMER_ENERGY_CONSUMPTION(v: f64) { __SUMMER_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+/// Java: Utils.java:1759
+pub const ColorWINTER: Color = Color::rgb(54, 84, 0);
+// Java: Utils.java:1089
+thread_local! { static __MODLEAF_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_MODLEAF_ENERGY_CONSUMPTION) }; }
+pub fn MODLEAF_ENERGY_CONSUMPTION() -> f64 { __MODLEAF_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_MODLEAF_ENERGY_CONSUMPTION(v: f64) { __MODLEAF_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+// Java: Utils.java:1085
+thread_local! { static __LEAF_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_LEAF_ENERGY_CONSUMPTION) }; }
+pub fn LEAF_ENERGY_CONSUMPTION() -> f64 { __LEAF_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_LEAF_ENERGY_CONSUMPTION(v: f64) { __LEAF_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+// Java: Utils.java:1057
+thread_local! { static __FOREST_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_FOREST_ENERGY_CONSUMPTION) }; }
+pub fn FOREST_ENERGY_CONSUMPTION() -> f64 { __FOREST_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_FOREST_ENERGY_CONSUMPTION(v: f64) { __FOREST_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+// Java: Utils.java:1065
+thread_local! { static __IVY_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_IVY_ENERGY_CONSUMPTION) }; }
+pub fn IVY_ENERGY_CONSUMPTION() -> f64 { __IVY_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_IVY_ENERGY_CONSUMPTION(v: f64) { __IVY_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+// Java: Utils.java:1093
+thread_local! { static __LIME_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_LIME_ENERGY_CONSUMPTION) }; }
+pub fn LIME_ENERGY_CONSUMPTION() -> f64 { __LIME_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_LIME_ENERGY_CONSUMPTION(v: f64) { __LIME_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+// Java: Utils.java:1113
+thread_local! { static __JADE_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_JADE_ENERGY_CONSUMPTION) }; }
+pub fn JADE_ENERGY_CONSUMPTION() -> f64 { __JADE_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_JADE_ENERGY_CONSUMPTION(v: f64) { __JADE_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+// Java: Utils.java:1129
+thread_local! { static __C4_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_C4_ENERGY_CONSUMPTION) }; }
+pub fn C4_ENERGY_CONSUMPTION() -> f64 { __C4_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_C4_ENERGY_CONSUMPTION(v: f64) { __C4_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+// Java: Utils.java:1081
+thread_local! { static __SPRING_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_SPRING_ENERGY_CONSUMPTION) }; }
+pub fn SPRING_ENERGY_CONSUMPTION() -> f64 { __SPRING_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_SPRING_ENERGY_CONSUMPTION(v: f64) { __SPRING_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+// Java: Utils.java:1121
+thread_local! { static __PURPLE_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_PURPLE_ENERGY_CONSUMPTION) }; }
+pub fn PURPLE_ENERGY_CONSUMPTION() -> f64 { __PURPLE_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_PURPLE_ENERGY_CONSUMPTION(v: f64) { __PURPLE_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+/// Java: Utils.java:1915
+pub const ColorSPIKEPOINT: Color = Color::rgb(164, 132, 99);
+// Java: Utils.java:1125
+thread_local! { static __PLANKTON_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_PLANKTON_ENERGY_CONSUMPTION) }; }
+pub fn PLANKTON_ENERGY_CONSUMPTION() -> f64 { __PLANKTON_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_PLANKTON_ENERGY_CONSUMPTION(v: f64) { __PLANKTON_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+// Java: Utils.java:997
+thread_local! { static __HOX4_THRESHOLD: std::cell::Cell<i32> = const { std::cell::Cell::new(utils::DEF_HOX4_THRESHOLD) }; }
+pub fn HOX4_THRESHOLD() -> i32 { __HOX4_THRESHOLD.with(|c| c.get()) }
+pub fn set_HOX4_THRESHOLD(v: i32) { __HOX4_THRESHOLD.with(|c| c.set(v)) }
+// Java: Utils.java:1077
+thread_local! { static __HOX4_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_HOX4_ENERGY_CONSUMPTION) }; }
+pub fn HOX4_ENERGY_CONSUMPTION() -> f64 { __HOX4_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_HOX4_ENERGY_CONSUMPTION(v: f64) { __HOX4_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+// Java: Utils.java:1069
+thread_local! { static __SYMBIONT_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_SYMBIONT_ENERGY_CONSUMPTION) }; }
+pub fn SYMBIONT_ENERGY_CONSUMPTION() -> f64 { __SYMBIONT_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_SYMBIONT_ENERGY_CONSUMPTION(v: f64) { __SYMBIONT_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+// Java: Utils.java:975
+thread_local! { static __LAVENDER_SHIELD: std::cell::Cell<i32> = const { std::cell::Cell::new(utils::DEF_LAVENDER_SHIELD) }; }
+pub fn LAVENDER_SHIELD() -> i32 { __LAVENDER_SHIELD.with(|c| c.get()) }
+pub fn set_LAVENDER_SHIELD(v: i32) { __LAVENDER_SHIELD.with(|c| c.set(v)) }
+// Java: Utils.java:1451
+thread_local! { static __INITIAL_ENERGY: std::cell::Cell<i32> = const { std::cell::Cell::new(utils::DEF_INITIAL_ENERGY) }; }
+pub fn INITIAL_ENERGY() -> i32 { __INITIAL_ENERGY.with(|c| c.get()) }
+pub fn set_INITIAL_ENERGY(v: i32) { __INITIAL_ENERGY.with(|c| c.set(v)) }
+
+/// Java: Utils.java:1999 double between(double, double, double)
+pub fn between3_1(mut value: f64, mut min: f64, mut max: f64) -> f64 {
+    return jmath::max_f64(jmath::min_f64(max, value), min);
+}
+/// Java: Utils.java:1695
+pub const ColorBROWN: Color = Color::rgb(150, 75, 0);
+// Java: Utils.java:1149
+thread_local! { static __EYE_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_EYE_ENERGY_CONSUMPTION) }; }
+pub fn EYE_ENERGY_CONSUMPTION() -> f64 { __EYE_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_EYE_ENERGY_CONSUMPTION(v: f64) { __EYE_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+// Java: Utils.java:1225
+thread_local! { static __SPORE_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_SPORE_ENERGY_CONSUMPTION) }; }
+pub fn SPORE_ENERGY_CONSUMPTION() -> f64 { __SPORE_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_SPORE_ENERGY_CONSUMPTION(v: f64) { __SPORE_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+/// Java: Utils.java:1903
+pub const ColorFRUIT: Color = Color::rgb(255, 128, 192);
+// Java: Utils.java:830
+thread_local! { static __CLADE_COMPLEXITY: std::cell::Cell<i32> = const { std::cell::Cell::new(utils::DEF_CLADE_COMPLEXITY) }; }
+pub fn CLADE_COMPLEXITY() -> i32 { __CLADE_COMPLEXITY.with(|c| c.get()) }
+pub fn set_CLADE_COMPLEXITY(v: i32) { __CLADE_COMPLEXITY.with(|c| c.set(v)) }
+// Java: Utils.java:1592
+thread_local! { static __ACCEPT_CONNECTIONS: std::cell::Cell<bool> = const { std::cell::Cell::new(utils::DEF_ACCEPT_CONNECTIONS) }; }
+pub fn ACCEPT_CONNECTIONS() -> bool { __ACCEPT_CONNECTIONS.with(|c| c.get()) }
+pub fn set_ACCEPT_CONNECTIONS(v: bool) { __ACCEPT_CONNECTIONS.with(|c| c.set(v)) }
+// Java: Utils.java:1584
+thread_local! { static __USER_NAME: std::cell::RefCell<JStr> = std::cell::RefCell::new(utils::DEF_USER_NAME()); }
+pub fn USER_NAME() -> JStr { __USER_NAME.with(|c| c.borrow().clone()) }
+pub fn set_USER_NAME(v: JStr) { __USER_NAME.with(|c| *c.borrow_mut() = v) }
+// Java: Utils.java:1623
+thread_local! { static __side: std::cell::RefCell<JArray<JArray<i32>>> = std::cell::RefCell::new(JArray::from_vec(vec![JArray::from_vec(vec![1, 0]), JArray::from_vec(vec![1, 1]), JArray::from_vec(vec![0, 1]), JArray::from_vec(vec![(-1i32), 1]), JArray::from_vec(vec![(-1i32), 0]), JArray::from_vec(vec![(-1i32), (-1i32)]), JArray::from_vec(vec![0, (-1i32)]), JArray::from_vec(vec![1, (-1i32)])])); }
+pub fn side() -> JArray<JArray<i32>> { __side.with(|c| c.borrow().clone()) }
+pub fn set_side(v: JArray<JArray<i32>>) { __side.with(|c| *c.borrow_mut() = v) }
+
+/// Java: Utils.java:1955 double min(double, double, double)
+pub fn min3_1(mut a: f64, mut b: f64, mut c: f64) -> f64 {
+    return jmath::min_f64(jmath::min_f64(a, b), c);
+}
+
+/// Java: Utils.java:1977 double max(double, double, double)
+pub fn max3_1(mut a: f64, mut b: f64, mut c: f64) -> f64 {
+    return jmath::max_f64(jmath::max_f64(a, b), c);
+}
+// Java: Utils.java:1037
+thread_local! { static __YELLOW_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_YELLOW_ENERGY_CONSUMPTION) }; }
+pub fn YELLOW_ENERGY_CONSUMPTION() -> f64 { __YELLOW_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_YELLOW_ENERGY_CONSUMPTION(v: f64) { __YELLOW_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+// Java: Utils.java:1209
+thread_local! { static __AUBURN_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_AUBURN_ENERGY_CONSUMPTION) }; }
+pub fn AUBURN_ENERGY_CONSUMPTION() -> f64 { __AUBURN_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_AUBURN_ENERGY_CONSUMPTION(v: f64) { __AUBURN_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+
+/// Java: Utils.java:1988 int between(int, int, int)
+pub fn between3(mut value: i32, mut min: i32, mut max: i32) -> i32 {
+    return std::cmp::max(std::cmp::min(max, value), min);
+}
+// Java: Utils.java:1201
+thread_local! { static __BLOND_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_BLOND_ENERGY_CONSUMPTION) }; }
+pub fn BLOND_ENERGY_CONSUMPTION() -> f64 { __BLOND_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_BLOND_ENERGY_CONSUMPTION(v: f64) { __BLOND_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+// Java: Utils.java:970
+thread_local! { static __IMMUNE_SYSTEM: std::cell::Cell<i32> = const { std::cell::Cell::new(utils::DEF_IMMUNE_SYSTEM) }; }
+pub fn IMMUNE_SYSTEM() -> i32 { __IMMUNE_SYSTEM.with(|c| c.get()) }
+pub fn set_IMMUNE_SYSTEM(v: i32) { __IMMUNE_SYSTEM.with(|c| c.set(v)) }
+// Java: Utils.java:1165
+thread_local! { static __MINT_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_MINT_ENERGY_CONSUMPTION) }; }
+pub fn MINT_ENERGY_CONSUMPTION() -> f64 { __MINT_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_MINT_ENERGY_CONSUMPTION(v: f64) { __MINT_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+// Java: Utils.java:1646
+thread_local! { static __springscale: std::cell::RefCell<JArray<f64>> = std::cell::RefCell::new(JArray::from_vec(vec![0.01f64, 0.009f64, 0.008f64, 0.0071f64, 0.0063f64, 0.0056f64, 0.005f64, 0.0045f64, 0.004f64, 0.0036f64, 0.0032f64, 0.0028f64, 0.0025f64, 0.0022f64, 0.002f64, 0.0018f64])); }
+pub fn springscale() -> JArray<f64> { __springscale.with(|c| c.borrow().clone()) }
+pub fn set_springscale(v: JArray<f64>) { __springscale.with(|c| *c.borrow_mut() = v) }
+// Java: Utils.java:1477
+thread_local! { static __MAX_ROT: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_MAX_ROT) }; }
+pub fn MAX_ROT() -> f64 { __MAX_ROT.with(|c| c.get()) }
+pub fn set_MAX_ROT(v: f64) { __MAX_ROT.with(|c| c.set(v)) }
+/// Java: Utils.java:1618
+pub const tol: f64 = 1.0E-7f64;
+
+/// Java: Utils.java:1933 int randomSign()
+pub fn randomSign() -> i32 {
+    return ((i32::wrapping_shl(Random::nextInt_bound(&(utils::random()), 2), (1) as u32)) - 1);
+}
+// Java: Utils.java:1073
+thread_local! { static __BOOST_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_BOOST_ENERGY_CONSUMPTION) }; }
+pub fn BOOST_ENERGY_CONSUMPTION() -> f64 { __BOOST_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_BOOST_ENERGY_CONSUMPTION(v: f64) { __BOOST_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+// Java: Utils.java:1459
+thread_local! { static __SPORE1_VEL: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_SPORE1_VEL) }; }
+pub fn SPORE1_VEL() -> f64 { __SPORE1_VEL.with(|c| c.get()) }
+pub fn set_SPORE1_VEL(v: f64) { __SPORE1_VEL.with(|c| c.set(v)) }
+// Java: Utils.java:1463
+thread_local! { static __SPORE5_VEL: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_SPORE5_VEL) }; }
+pub fn SPORE5_VEL() -> f64 { __SPORE5_VEL.with(|c| c.get()) }
+pub fn set_SPORE5_VEL(v: f64) { __SPORE5_VEL.with(|c| c.set(v)) }
+// Java: Utils.java:1467
+thread_local! { static __SPORE10_VEL: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_SPORE10_VEL) }; }
+pub fn SPORE10_VEL() -> f64 { __SPORE10_VEL.with(|c| c.get()) }
+pub fn set_SPORE10_VEL(v: f64) { __SPORE10_VEL.with(|c| c.set(v)) }
+// Java: Utils.java:1614
+thread_local! { static __DECAY_ENERGY: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_DECAY_ENERGY) }; }
+pub fn DECAY_ENERGY() -> f64 { __DECAY_ENERGY.with(|c| c.get()) }
+pub fn set_DECAY_ENERGY(v: f64) { __DECAY_ENERGY.with(|c| c.set(v)) }
+/// Java: Utils.java:1711
+pub const ColorLIGHT_BLUE: Color = Color::rgb(0, 0, 128);
+/// Java: Utils.java:1847
+pub const ColorDARKFIRE: Color = Color::rgb(232, 146, 70);
+// Java: Utils.java:1221
+thread_local! { static __FALLOW_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_FALLOW_ENERGY_CONSUMPTION) }; }
+pub fn FALLOW_ENERGY_CONSUMPTION() -> f64 { __FALLOW_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_FALLOW_ENERGY_CONSUMPTION(v: f64) { __FALLOW_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+/// Java: Utils.java:1919
+pub const ColorBROKEN: Color = Color::rgb(96, 128, 96);
+/// Java: Utils.java:1699
+pub const ColorLIGHTBROWN: Color = Color::rgb(128, 112, 64);
+// Java: Utils.java:1185
+thread_local! { static __SKY_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_SKY_ENERGY_CONSUMPTION) }; }
+pub fn SKY_ENERGY_CONSUMPTION() -> f64 { __SKY_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_SKY_ENERGY_CONSUMPTION(v: f64) { __SKY_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+/// Java: Utils.java:1831
+pub const ColorICE: Color = Color::rgb(64, 96, 128);
+/// Java: Utils.java:1735
+pub const ColorDEADBARK: Color = Color::rgb(128, 96, 64);
+// Java: Utils.java:1482
+thread_local! { static __ELASTICITY: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_ELASTICITY) }; }
+pub fn ELASTICITY() -> f64 { __ELASTICITY.with(|c| c.get()) }
+pub fn set_ELASTICITY(v: f64) { __ELASTICITY.with(|c| c.set(v)) }
+// Java: Utils.java:905
+thread_local! { static __RUBBING: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_RUBBING) }; }
+pub fn RUBBING() -> f64 { __RUBBING.with(|c| c.get()) }
+pub fn set_RUBBING(v: f64) { __RUBBING.with(|c| c.set(v)) }
+/// Java: Utils.java:1731
+pub const ColorOLDBARK: Color = Color::rgb(80, 40, 0);
+// Java: Utils.java:1029
+thread_local! { static __DARKGRAY_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_DARKGRAY_ENERGY_CONSUMPTION) }; }
+pub fn DARKGRAY_ENERGY_CONSUMPTION() -> f64 { __DARKGRAY_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_DARKGRAY_ENERGY_CONSUMPTION(v: f64) { __DARKGRAY_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+/// Java: Utils.java:1707
+pub const ColorDARKGREEN: Color = Color::rgb(54, 84, 54);
+// Java: Utils.java:941
+thread_local! { static __ORGANIC_OBTAINED_ENERGY: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_ORGANIC_OBTAINED_ENERGY) }; }
+pub fn ORGANIC_OBTAINED_ENERGY() -> f64 { __ORGANIC_OBTAINED_ENERGY.with(|c| c.get()) }
+pub fn set_ORGANIC_OBTAINED_ENERGY(v: f64) { __ORGANIC_OBTAINED_ENERGY.with(|c| c.set(v)) }
+/// Java: Utils.java:1703
+pub const ColorGREENBROWN: Color = Color::rgb(128, 132, 64);
+// Java: Utils.java:1041
+thread_local! { static __MAGENTA_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_MAGENTA_ENERGY_CONSUMPTION) }; }
+pub fn MAGENTA_ENERGY_CONSUMPTION() -> f64 { __MAGENTA_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_MAGENTA_ENERGY_CONSUMPTION(v: f64) { __MAGENTA_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+// Java: Utils.java:1455
+thread_local! { static __REACTION_VEL: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_REACTION_VEL) }; }
+pub fn REACTION_VEL() -> f64 { __REACTION_VEL.with(|c| c.get()) }
+pub fn set_REACTION_VEL(v: f64) { __REACTION_VEL.with(|c| c.set(v)) }
+// Java: Utils.java:1157
+thread_local! { static __CRIMSON_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_CRIMSON_ENERGY_CONSUMPTION) }; }
+pub fn CRIMSON_ENERGY_CONSUMPTION() -> f64 { __CRIMSON_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_CRIMSON_ENERGY_CONSUMPTION(v: f64) { __CRIMSON_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+// Java: Utils.java:1009
+thread_local! { static __BLUE_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_BLUE_ENERGY_CONSUMPTION) }; }
+pub fn BLUE_ENERGY_CONSUMPTION() -> f64 { __BLUE_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_BLUE_ENERGY_CONSUMPTION(v: f64) { __BLUE_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+/// Java: Utils.java:1839
+pub const ColorDARKLILAC: Color = Color::rgb(96, 64, 96);
+// Java: Utils.java:989
+thread_local! { static __DODGE_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_DODGE_ENERGY_CONSUMPTION) }; }
+pub fn DODGE_ENERGY_CONSUMPTION() -> f64 { __DODGE_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_DODGE_ENERGY_CONSUMPTION(v: f64) { __DODGE_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+/// Java: Utils.java:1803
+pub const ColorDARKOLIVE: Color = Color::rgb(88, 88, 0);
+// Java: Utils.java:953
+thread_local! { static __ORGANIC_SUBS_PRODUCED: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_ORGANIC_SUBS_PRODUCED) }; }
+pub fn ORGANIC_SUBS_PRODUCED() -> f64 { __ORGANIC_SUBS_PRODUCED.with(|c| c.get()) }
+pub fn set_ORGANIC_SUBS_PRODUCED(v: f64) { __ORGANIC_SUBS_PRODUCED.with(|c| c.set(v)) }
+/// Java: Utils.java:1795
+pub const ColorPIERCED: Color = Color::rgb(220, 220, 160);
+// Java: Utils.java:1053
+thread_local! { static __ORANGE_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_ORANGE_ENERGY_CONSUMPTION) }; }
+pub fn ORANGE_ENERGY_CONSUMPTION() -> f64 { __ORANGE_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_ORANGE_ENERGY_CONSUMPTION(v: f64) { __ORANGE_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+/// Java: Utils.java:1827
+pub const ColorDEEPSKY: Color = Color::rgb(64, 96, 255);
+// Java: Utils.java:1193
+thread_local! { static __FIRE_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_FIRE_ENERGY_CONSUMPTION) }; }
+pub fn FIRE_ENERGY_CONSUMPTION() -> f64 { __FIRE_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_FIRE_ENERGY_CONSUMPTION(v: f64) { __FIRE_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+// Java: Utils.java:1001
+thread_local! { static __RED_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_RED_ENERGY_CONSUMPTION) }; }
+pub fn RED_ENERGY_CONSUMPTION() -> f64 { __RED_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_RED_ENERGY_CONSUMPTION(v: f64) { __RED_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+// Java: Utils.java:1045
+thread_local! { static __PINK_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_PINK_ENERGY_CONSUMPTION) }; }
+pub fn PINK_ENERGY_CONSUMPTION() -> f64 { __PINK_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_PINK_ENERGY_CONSUMPTION(v: f64) { __PINK_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+// Java: Utils.java:1153
+thread_local! { static __MAROON_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_MAROON_ENERGY_CONSUMPTION) }; }
+pub fn MAROON_ENERGY_CONSUMPTION() -> f64 { __MAROON_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_MAROON_ENERGY_CONSUMPTION(v: f64) { __MAROON_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+// Java: Utils.java:1169
+thread_local! { static __CREAM_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_CREAM_ENERGY_CONSUMPTION) }; }
+pub fn CREAM_ENERGY_CONSUMPTION() -> f64 { __CREAM_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_CREAM_ENERGY_CONSUMPTION(v: f64) { __CREAM_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+// Java: Utils.java:1217
+thread_local! { static __LAVENDER_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_LAVENDER_ENERGY_CONSUMPTION) }; }
+pub fn LAVENDER_ENERGY_CONSUMPTION() -> f64 { __LAVENDER_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_LAVENDER_ENERGY_CONSUMPTION(v: f64) { __LAVENDER_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+// Java: Utils.java:960
+thread_local! { static __CREAM_ORGANIC_SUBS_PRODUCED: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_CREAM_ORGANIC_SUBS_PRODUCED) }; }
+pub fn CREAM_ORGANIC_SUBS_PRODUCED() -> f64 { __CREAM_ORGANIC_SUBS_PRODUCED.with(|c| c.get()) }
+pub fn set_CREAM_ORGANIC_SUBS_PRODUCED(v: f64) { __CREAM_ORGANIC_SUBS_PRODUCED.with(|c| c.set(v)) }
+// Java: Utils.java:1105
+thread_local! { static __MOSQUITO_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_MOSQUITO_ENERGY_CONSUMPTION) }; }
+pub fn MOSQUITO_ENERGY_CONSUMPTION() -> f64 { __MOSQUITO_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_MOSQUITO_ENERGY_CONSUMPTION(v: f64) { __MOSQUITO_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+// Java: Utils.java:1237
+thread_local! { static __SPIKE_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_SPIKE_ENERGY_CONSUMPTION) }; }
+pub fn SPIKE_ENERGY_CONSUMPTION() -> f64 { __SPIKE_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_SPIKE_ENERGY_CONSUMPTION(v: f64) { __SPIKE_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+// Java: Utils.java:1189
+thread_local! { static __LILAC_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_LILAC_ENERGY_CONSUMPTION) }; }
+pub fn LILAC_ENERGY_CONSUMPTION() -> f64 { __LILAC_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_LILAC_ENERGY_CONSUMPTION(v: f64) { __LILAC_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+// Java: Utils.java:1033
+thread_local! { static __SILVER_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_SILVER_ENERGY_CONSUMPTION) }; }
+pub fn SILVER_ENERGY_CONSUMPTION() -> f64 { __SILVER_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_SILVER_ENERGY_CONSUMPTION(v: f64) { __SILVER_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+// Java: Utils.java:1213
+thread_local! { static __INDIGO_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_INDIGO_ENERGY_CONSUMPTION) }; }
+pub fn INDIGO_ENERGY_CONSUMPTION() -> f64 { __INDIGO_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_INDIGO_ENERGY_CONSUMPTION(v: f64) { __INDIGO_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+// Java: Utils.java:1197
+thread_local! { static __EXPERIENCE_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_EXPERIENCE_ENERGY_CONSUMPTION) }; }
+pub fn EXPERIENCE_ENERGY_CONSUMPTION() -> f64 { __EXPERIENCE_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_EXPERIENCE_ENERGY_CONSUMPTION(v: f64) { __EXPERIENCE_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+/// Java: Utils.java:1867
+pub const ColorDARKJADE: Color = Color::rgb(0, 84, 54);
+// Java: Utils.java:1025
+thread_local! { static __GRAY_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_GRAY_ENERGY_CONSUMPTION) }; }
+pub fn GRAY_ENERGY_CONSUMPTION() -> f64 { __GRAY_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_GRAY_ENERGY_CONSUMPTION(v: f64) { __GRAY_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+// Java: Utils.java:1161
+thread_local! { static __OLIVE_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_OLIVE_ENERGY_CONSUMPTION) }; }
+pub fn OLIVE_ENERGY_CONSUMPTION() -> f64 { __OLIVE_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_OLIVE_ENERGY_CONSUMPTION(v: f64) { __OLIVE_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+// Java: Utils.java:1017
+thread_local! { static __WHITE_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_WHITE_ENERGY_CONSUMPTION) }; }
+pub fn WHITE_ENERGY_CONSUMPTION() -> f64 { __WHITE_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_WHITE_ENERGY_CONSUMPTION(v: f64) { __WHITE_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+// Java: Utils.java:1021
+thread_local! { static __VIRUS_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_VIRUS_ENERGY_CONSUMPTION) }; }
+pub fn VIRUS_ENERGY_CONSUMPTION() -> f64 { __VIRUS_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_VIRUS_ENERGY_CONSUMPTION(v: f64) { __VIRUS_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+// Java: Utils.java:1229
+thread_local! { static __PLAGUE_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_PLAGUE_ENERGY_CONSUMPTION) }; }
+pub fn PLAGUE_ENERGY_CONSUMPTION() -> f64 { __PLAGUE_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_PLAGUE_ENERGY_CONSUMPTION(v: f64) { __PLAGUE_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+// Java: Utils.java:1233
+thread_local! { static __SCOURGE_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_SCOURGE_ENERGY_CONSUMPTION) }; }
+pub fn SCOURGE_ENERGY_CONSUMPTION() -> f64 { __SCOURGE_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_SCOURGE_ENERGY_CONSUMPTION(v: f64) { __SCOURGE_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+// Java: Utils.java:1133
+thread_local! { static __VIOLET_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_VIOLET_ENERGY_CONSUMPTION) }; }
+pub fn VIOLET_ENERGY_CONSUMPTION() -> f64 { __VIOLET_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_VIOLET_ENERGY_CONSUMPTION(v: f64) { __VIOLET_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+// Java: Utils.java:1181
+thread_local! { static __OCHRE_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_OCHRE_ENERGY_CONSUMPTION) }; }
+pub fn OCHRE_ENERGY_CONSUMPTION() -> f64 { __OCHRE_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_OCHRE_ENERGY_CONSUMPTION(v: f64) { __OCHRE_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+// Java: Utils.java:1049
+thread_local! { static __CORAL_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_CORAL_ENERGY_CONSUMPTION) }; }
+pub fn CORAL_ENERGY_CONSUMPTION() -> f64 { __CORAL_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_CORAL_ENERGY_CONSUMPTION(v: f64) { __CORAL_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+// Java: Utils.java:1137
+thread_local! { static __TEAL_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_TEAL_ENERGY_CONSUMPTION) }; }
+pub fn TEAL_ENERGY_CONSUMPTION() -> f64 { __TEAL_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_TEAL_ENERGY_CONSUMPTION(v: f64) { __TEAL_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+// Java: Utils.java:1013
+thread_local! { static __CYAN_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_CYAN_ENERGY_CONSUMPTION) }; }
+pub fn CYAN_ENERGY_CONSUMPTION() -> f64 { __CYAN_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_CYAN_ENERGY_CONSUMPTION(v: f64) { __CYAN_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+// Java: Utils.java:1097
+thread_local! { static __CROWDEDLIME_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_CROWDEDLIME_ENERGY_CONSUMPTION) }; }
+pub fn CROWDEDLIME_ENERGY_CONSUMPTION() -> f64 { __CROWDEDLIME_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_CROWDEDLIME_ENERGY_CONSUMPTION(v: f64) { __CROWDEDLIME_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+// Java: Utils.java:965
+thread_local! { static __HEALING: std::cell::Cell<i32> = const { std::cell::Cell::new(utils::DEF_HEALING) }; }
+pub fn HEALING() -> i32 { __HEALING.with(|c| c.get()) }
+pub fn set_HEALING(v: i32) { __HEALING.with(|c| c.set(v)) }
+// Java: Utils.java:1205
+thread_local! { static __FLOWER_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_FLOWER_ENERGY_CONSUMPTION) }; }
+pub fn FLOWER_ENERGY_CONSUMPTION() -> f64 { __FLOWER_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_FLOWER_ENERGY_CONSUMPTION(v: f64) { __FLOWER_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+// Java: Utils.java:1177
+thread_local! { static __DARK_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_DARK_ENERGY_CONSUMPTION) }; }
+pub fn DARK_ENERGY_CONSUMPTION() -> f64 { __DARK_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_DARK_ENERGY_CONSUMPTION(v: f64) { __DARK_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+// Java: Utils.java:1173
+thread_local! { static __ROSE_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_ROSE_ENERGY_CONSUMPTION) }; }
+pub fn ROSE_ENERGY_CONSUMPTION() -> f64 { __ROSE_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_ROSE_ENERGY_CONSUMPTION(v: f64) { __ROSE_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+// Java: Utils.java:936
+thread_local! { static __SEGMENT_COST_DIVISOR: std::cell::Cell<i32> = const { std::cell::Cell::new(utils::DEF_SEGMENT_COST_DIVISOR) }; }
+pub fn SEGMENT_COST_DIVISOR() -> i32 { __SEGMENT_COST_DIVISOR.with(|c| c.get()) }
+pub fn set_SEGMENT_COST_DIVISOR(v: i32) { __SEGMENT_COST_DIVISOR.with(|c| c.set(v)) }
+// Java: Utils.java:1061
+thread_local! { static __CROWDEDFOREST_ENERGY_CONSUMPTION: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_CROWDEDFOREST_ENERGY_CONSUMPTION) }; }
+pub fn CROWDEDFOREST_ENERGY_CONSUMPTION() -> f64 { __CROWDEDFOREST_ENERGY_CONSUMPTION.with(|c| c.get()) }
+pub fn set_CROWDEDFOREST_ENERGY_CONSUMPTION(v: f64) { __CROWDEDFOREST_ENERGY_CONSUMPTION.with(|c| c.set(v)) }
+// Java: Utils.java:866
+thread_local! { static __WORLD_WIDTH: std::cell::Cell<i32> = const { std::cell::Cell::new(utils::DEF_WORLD_WIDTH) }; }
+pub fn WORLD_WIDTH() -> i32 { __WORLD_WIDTH.with(|c| c.get()) }
+pub fn set_WORLD_WIDTH(v: i32) { __WORLD_WIDTH.with(|c| c.set(v)) }
+// Java: Utils.java:870
+thread_local! { static __WORLD_HEIGHT: std::cell::Cell<i32> = const { std::cell::Cell::new(utils::DEF_WORLD_HEIGHT) }; }
+pub fn WORLD_HEIGHT() -> i32 { __WORLD_HEIGHT.with(|c| c.get()) }
+pub fn set_WORLD_HEIGHT(v: i32) { __WORLD_HEIGHT.with(|c| c.set(v)) }
+// Java: Utils.java:1446
+thread_local! { static __DRAIN_SUBS_DIVISOR: std::cell::Cell<i32> = const { std::cell::Cell::new(utils::DEF_DRAIN_SUBS_DIVISOR) }; }
+pub fn DRAIN_SUBS_DIVISOR() -> i32 { __DRAIN_SUBS_DIVISOR.with(|c| c.get()) }
+pub fn set_DRAIN_SUBS_DIVISOR(v: i32) { __DRAIN_SUBS_DIVISOR.with(|c| c.set(v)) }
+// Java: Utils.java:834
+thread_local! { static __INITIAL_O2: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_INITIAL_O2) }; }
+pub fn INITIAL_O2() -> f64 { __INITIAL_O2.with(|c| c.get()) }
+pub fn set_INITIAL_O2(v: f64) { __INITIAL_O2.with(|c| c.set(v)) }
+// Java: Utils.java:838
+thread_local! { static __INITIAL_CO2: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_INITIAL_CO2) }; }
+pub fn INITIAL_CO2() -> f64 { __INITIAL_CO2.with(|c| c.get()) }
+pub fn set_INITIAL_CO2(v: f64) { __INITIAL_CO2.with(|c| c.set(v)) }
+// Java: Utils.java:842
+thread_local! { static __INITIAL_CH4: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_INITIAL_CH4) }; }
+pub fn INITIAL_CH4() -> f64 { __INITIAL_CH4.with(|c| c.get()) }
+pub fn set_INITIAL_CH4(v: f64) { __INITIAL_CH4.with(|c| c.set(v)) }
+// Java: Utils.java:846
+thread_local! { static __INITIAL_CO1: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_INITIAL_CO1) }; }
+pub fn INITIAL_CO1() -> f64 { __INITIAL_CO1.with(|c| c.get()) }
+pub fn set_INITIAL_CO1(v: f64) { __INITIAL_CO1.with(|c| c.set(v)) }
+// Java: Utils.java:850
+thread_local! { static __INITIAL_DETRITUS: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_INITIAL_DETRITUS) }; }
+pub fn INITIAL_DETRITUS() -> f64 { __INITIAL_DETRITUS.with(|c| c.get()) }
+pub fn set_INITIAL_DETRITUS(v: f64) { __INITIAL_DETRITUS.with(|c| c.set(v)) }
+// Java: Utils.java:854
+thread_local! { static __INITIAL_N2: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_INITIAL_N2) }; }
+pub fn INITIAL_N2() -> f64 { __INITIAL_N2.with(|c| c.get()) }
+pub fn set_INITIAL_N2(v: f64) { __INITIAL_N2.with(|c| c.set(v)) }
+// Java: Utils.java:858
+thread_local! { static __INITIAL_NH3: std::cell::Cell<f64> = const { std::cell::Cell::new(utils::DEF_INITIAL_NH3) }; }
+pub fn INITIAL_NH3() -> f64 { __INITIAL_NH3.with(|c| c.get()) }
+pub fn set_INITIAL_NH3(v: f64) { __INITIAL_NH3.with(|c| c.set(v)) }
+// Java: Utils.java:822
+thread_local! { static __INITIAL_ORGANISMS: std::cell::Cell<i32> = const { std::cell::Cell::new(utils::DEF_INITIAL_ORGANISMS) }; }
+pub fn INITIAL_ORGANISMS() -> i32 { __INITIAL_ORGANISMS.with(|c| c.get()) }
+pub fn set_INITIAL_ORGANISMS(v: i32) { __INITIAL_ORGANISMS.with(|c| c.set(v)) }
+// Java: Utils.java:885
+thread_local! { static __CO2_TO_CH4_DIVISOR: std::cell::Cell<i32> = const { std::cell::Cell::new(utils::DEF_CO2_TO_CH4_DIVISOR) }; }
+pub fn CO2_TO_CH4_DIVISOR() -> i32 { __CO2_TO_CH4_DIVISOR.with(|c| c.get()) }
+pub fn set_CO2_TO_CH4_DIVISOR(v: i32) { __CO2_TO_CH4_DIVISOR.with(|c| c.set(v)) }
+// Java: Utils.java:890
+thread_local! { static __CH4_TO_CO2_DIVISOR: std::cell::Cell<i32> = const { std::cell::Cell::new(utils::DEF_CH4_TO_CO2_DIVISOR) }; }
+pub fn CH4_TO_CO2_DIVISOR() -> i32 { __CH4_TO_CO2_DIVISOR.with(|c| c.get()) }
+pub fn set_CH4_TO_CO2_DIVISOR(v: i32) { __CH4_TO_CO2_DIVISOR.with(|c| c.set(v)) }
+// Java: Utils.java:895
+thread_local! { static __DETRITUS_TO_CO2_DIVISOR: std::cell::Cell<i32> = const { std::cell::Cell::new(utils::DEF_DETRITUS_TO_CO2_DIVISOR) }; }
+pub fn DETRITUS_TO_CO2_DIVISOR() -> i32 { __DETRITUS_TO_CO2_DIVISOR.with(|c| c.get()) }
+pub fn set_DETRITUS_TO_CO2_DIVISOR(v: i32) { __DETRITUS_TO_CO2_DIVISOR.with(|c| c.set(v)) }
+// Java: Utils.java:900
+thread_local! { static __CO1_TO_CO2_DIVISOR: std::cell::Cell<i32> = const { std::cell::Cell::new(utils::DEF_CO1_TO_CO2_DIVISOR) }; }
+pub fn CO1_TO_CO2_DIVISOR() -> i32 { __CO1_TO_CO2_DIVISOR.with(|c| c.get()) }
+pub fn set_CO1_TO_CO2_DIVISOR(v: i32) { __CO1_TO_CO2_DIVISOR.with(|c| c.set(v)) }
+// Java: Utils.java:1545
+thread_local! { static __AUTO_BACKUP_CSV: std::cell::Cell<bool> = const { std::cell::Cell::new(utils::DEF_AUTO_BACKUP_CSV) }; }
+pub fn AUTO_BACKUP_CSV() -> bool { __AUTO_BACKUP_CSV.with(|c| c.get()) }
+pub fn set_AUTO_BACKUP_CSV(v: bool) { __AUTO_BACKUP_CSV.with(|c| c.set(v)) }
 /// Java: Utils.java:476
 pub const DEF_RED_PROB: i32 = 1;
 /// Java: Utils.java:480
@@ -450,7 +939,221 @@ pub fn XY_MUTATION_RATE() -> i32 { __XY_MUTATION_RATE.with(|c| c.get()) }
 pub fn set_XY_MUTATION_RATE(v: i32) { __XY_MUTATION_RATE.with(|c| c.set(v)) }
 /// Java: Utils.java:61
 pub const DEF_INITIAL_COMPLEXITY: i32 = 2;
+/// Java: Utils.java:376
+pub const DEF_DRIFT_ENERGY_CONSUMPTION: f64 = 4.5f64;
+/// Java: Utils.java:380
+pub const DEF_SPIN_ENERGY_CONSUMPTION: f64 = 13.333f64;
+/// Java: Utils.java:228
+pub const DEF_DARKJADE_DELAY: i32 = 5;
+/// Java: Utils.java:110
+pub const DEF_MAX_AGE: i32 = 6;
+/// Java: Utils.java:115
+pub const DEF_AGE_DIVISOR: f64 = 4f64;
+/// Java: Utils.java:215
+pub const DEF_INDIGO_DIVISOR: f64 = 10.0f64;
+/// Java: Utils.java:220
+pub const DEF_GOLD_DIVISOR: f64 = 2f64;
+/// Java: Utils.java:181
+pub const DEF_GREEN_OBTAINED_ENERGY_DIVISOR: i32 = 1000;
+/// Java: Utils.java:240
+pub const DEF_GREEN_ENERGY_CONSUMPTION: f64 = 1.1f64;
+/// Java: Utils.java:352
+pub const DEF_GRASS_ENERGY_CONSUMPTION: f64 = 1.0f64;
+/// Java: Utils.java:344
+pub const DEF_BARK_ENERGY_CONSUMPTION: f64 = 0.7f64;
+/// Java: Utils.java:336
+pub const DEF_SUMMER_ENERGY_CONSUMPTION: f64 = 1.65f64;
+/// Java: Utils.java:324
+pub const DEF_MODLEAF_ENERGY_CONSUMPTION: f64 = 0.99f64;
+/// Java: Utils.java:320
+pub const DEF_LEAF_ENERGY_CONSUMPTION: f64 = 1.15f64;
+/// Java: Utils.java:292
+pub const DEF_FOREST_ENERGY_CONSUMPTION: f64 = 1.0f64;
+/// Java: Utils.java:296
+pub const DEF_IVY_ENERGY_CONSUMPTION: f64 = 0.33f64;
+/// Java: Utils.java:328
+pub const DEF_LIME_ENERGY_CONSUMPTION: f64 = 1.25f64;
+/// Java: Utils.java:348
+pub const DEF_JADE_ENERGY_CONSUMPTION: f64 = 1.0f64;
+/// Java: Utils.java:364
+pub const DEF_C4_ENERGY_CONSUMPTION: f64 = 0.535f64;
+/// Java: Utils.java:316
+pub const DEF_SPRING_ENERGY_CONSUMPTION: f64 = 1.0f64;
+/// Java: Utils.java:356
+pub const DEF_PURPLE_ENERGY_CONSUMPTION: f64 = 4.0f64;
+/// Java: Utils.java:360
+pub const DEF_PLANKTON_ENERGY_CONSUMPTION: f64 = 1.0f64;
+/// Java: Utils.java:232
+pub const DEF_HOX4_THRESHOLD: i32 = 900;
+/// Java: Utils.java:312
+pub const DEF_HOX4_ENERGY_CONSUMPTION: f64 = 0.28175f64;
+/// Java: Utils.java:304
+pub const DEF_SYMBIONT_ENERGY_CONSUMPTION: f64 = 0.584f64;
+/// Java: Utils.java:210
+pub const DEF_LAVENDER_SHIELD: i32 = 10000;
+/// Java: Utils.java:686
+pub const DEF_INITIAL_ENERGY: i32 = 40;
+/// Java: Utils.java:384
+pub const DEF_EYE_ENERGY_CONSUMPTION: f64 = 0.0f64;
+/// Java: Utils.java:460
+pub const DEF_SPORE_ENERGY_CONSUMPTION: f64 = 0.0f64;
+/// Java: Utils.java:65
+pub const DEF_CLADE_COMPLEXITY: i32 = (-1i32);
+/// Java: Utils.java:793
+pub const DEF_ACCEPT_CONNECTIONS: bool = false;
+// Java: Utils.java:785
+thread_local! { static __DEF_USER_NAME: std::cell::RefCell<JStr> = std::cell::RefCell::new(JStr::from("ID")); }
+pub fn DEF_USER_NAME() -> JStr { __DEF_USER_NAME.with(|c| c.borrow().clone()) }
+pub fn set_DEF_USER_NAME(v: JStr) { __DEF_USER_NAME.with(|c| *c.borrow_mut() = v) }
+/// Java: Utils.java:272
+pub const DEF_YELLOW_ENERGY_CONSUMPTION: f64 = 0.0f64;
+/// Java: Utils.java:444
+pub const DEF_AUBURN_ENERGY_CONSUMPTION: f64 = 0.0f64;
+/// Java: Utils.java:436
+pub const DEF_BLOND_ENERGY_CONSUMPTION: f64 = 0.037f64;
+/// Java: Utils.java:205
+pub const DEF_IMMUNE_SYSTEM: i32 = 40000;
+/// Java: Utils.java:400
+pub const DEF_MINT_ENERGY_CONSUMPTION: f64 = 0.07f64;
+/// Java: Utils.java:712
+pub const DEF_MAX_ROT: f64 = (std::f64::consts::PI / 16.0f64);
+/// Java: Utils.java:308
+pub const DEF_BOOST_ENERGY_CONSUMPTION: f64 = 0.12f64;
+/// Java: Utils.java:694
+pub const DEF_SPORE1_VEL: f64 = 12.0f64;
+/// Java: Utils.java:698
+pub const DEF_SPORE5_VEL: f64 = 1.33f64;
+/// Java: Utils.java:702
+pub const DEF_SPORE10_VEL: f64 = 12.0f64;
+/// Java: Utils.java:812
+pub const DEF_DECAY_ENERGY: f64 = 0.1f64;
+/// Java: Utils.java:456
+pub const DEF_FALLOW_ENERGY_CONSUMPTION: f64 = 0.0f64;
+/// Java: Utils.java:420
+pub const DEF_SKY_ENERGY_CONSUMPTION: f64 = 0.05f64;
+/// Java: Utils.java:717
+pub const DEF_ELASTICITY: f64 = 0.8f64;
+/// Java: Utils.java:140
+pub const DEF_RUBBING: f64 = 0.98f64;
+/// Java: Utils.java:264
+pub const DEF_DARKGRAY_ENERGY_CONSUMPTION: f64 = 10.0f64;
+/// Java: Utils.java:176
+pub const DEF_ORGANIC_OBTAINED_ENERGY: f64 = 2.0f64;
+/// Java: Utils.java:276
+pub const DEF_MAGENTA_ENERGY_CONSUMPTION: f64 = 0.01f64;
+/// Java: Utils.java:690
+pub const DEF_REACTION_VEL: f64 = 1.0f64;
+/// Java: Utils.java:392
+pub const DEF_CRIMSON_ENERGY_CONSUMPTION: f64 = 3.125f64;
+/// Java: Utils.java:244
+pub const DEF_BLUE_ENERGY_CONSUMPTION: f64 = 0.0f64;
+/// Java: Utils.java:224
+pub const DEF_DODGE_ENERGY_CONSUMPTION: f64 = 0.0f64;
+/// Java: Utils.java:188
+pub const DEF_ORGANIC_SUBS_PRODUCED: f64 = 0.1f64;
+/// Java: Utils.java:288
+pub const DEF_ORANGE_ENERGY_CONSUMPTION: f64 = 0.0f64;
+/// Java: Utils.java:428
+pub const DEF_FIRE_ENERGY_CONSUMPTION: f64 = 0.0f64;
+/// Java: Utils.java:236
+pub const DEF_RED_ENERGY_CONSUMPTION: f64 = 0.0f64;
+/// Java: Utils.java:280
+pub const DEF_PINK_ENERGY_CONSUMPTION: f64 = 0.0f64;
+/// Java: Utils.java:388
+pub const DEF_MAROON_ENERGY_CONSUMPTION: f64 = 2.0f64;
+/// Java: Utils.java:404
+pub const DEF_CREAM_ENERGY_CONSUMPTION: f64 = 0.0f64;
+/// Java: Utils.java:452
+pub const DEF_LAVENDER_ENERGY_CONSUMPTION: f64 = 1.0f64;
+/// Java: Utils.java:195
+pub const DEF_CREAM_ORGANIC_SUBS_PRODUCED: f64 = 0.0125f64;
+/// Java: Utils.java:340
+pub const DEF_MOSQUITO_ENERGY_CONSUMPTION: f64 = 0.0f64;
+/// Java: Utils.java:472
+pub const DEF_SPIKE_ENERGY_CONSUMPTION: f64 = 0.0f64;
+/// Java: Utils.java:424
+pub const DEF_LILAC_ENERGY_CONSUMPTION: f64 = 0.0f64;
+/// Java: Utils.java:268
+pub const DEF_SILVER_ENERGY_CONSUMPTION: f64 = 0.1f64;
+/// Java: Utils.java:448
+pub const DEF_INDIGO_ENERGY_CONSUMPTION: f64 = 1.0f64;
+/// Java: Utils.java:432
+pub const DEF_EXPERIENCE_ENERGY_CONSUMPTION: f64 = 0.0f64;
+/// Java: Utils.java:260
+pub const DEF_GRAY_ENERGY_CONSUMPTION: f64 = 0.1f64;
+/// Java: Utils.java:396
+pub const DEF_OLIVE_ENERGY_CONSUMPTION: f64 = 0.1f64;
+/// Java: Utils.java:252
+pub const DEF_WHITE_ENERGY_CONSUMPTION: f64 = 0.1f64;
+/// Java: Utils.java:256
+pub const DEF_VIRUS_ENERGY_CONSUMPTION: f64 = 0.01f64;
+/// Java: Utils.java:464
+pub const DEF_PLAGUE_ENERGY_CONSUMPTION: f64 = 10.0f64;
+/// Java: Utils.java:468
+pub const DEF_SCOURGE_ENERGY_CONSUMPTION: f64 = 0.1f64;
+/// Java: Utils.java:368
+pub const DEF_VIOLET_ENERGY_CONSUMPTION: f64 = 0.1f64;
+/// Java: Utils.java:416
+pub const DEF_OCHRE_ENERGY_CONSUMPTION: f64 = 0.4f64;
+/// Java: Utils.java:284
+pub const DEF_CORAL_ENERGY_CONSUMPTION: f64 = 0.01f64;
+/// Java: Utils.java:372
+pub const DEF_TEAL_ENERGY_CONSUMPTION: f64 = 11.88f64;
+/// Java: Utils.java:248
+pub const DEF_CYAN_ENERGY_CONSUMPTION: f64 = 12.0f64;
+/// Java: Utils.java:332
+pub const DEF_CROWDEDLIME_ENERGY_CONSUMPTION: f64 = 0.5f64;
+/// Java: Utils.java:200
+pub const DEF_HEALING: i32 = 40000;
+/// Java: Utils.java:440
+pub const DEF_FLOWER_ENERGY_CONSUMPTION: f64 = 0.01f64;
+/// Java: Utils.java:412
+pub const DEF_DARK_ENERGY_CONSUMPTION: f64 = 0.001f64;
+/// Java: Utils.java:408
+pub const DEF_ROSE_ENERGY_CONSUMPTION: f64 = 0.005f64;
+/// Java: Utils.java:171
+pub const DEF_SEGMENT_COST_DIVISOR: i32 = 5000;
+/// Java: Utils.java:300
+pub const DEF_CROWDEDFOREST_ENERGY_CONSUMPTION: f64 = 1.0f64;
+/// Java: Utils.java:101
+pub const DEF_WORLD_WIDTH: i32 = 7200;
+/// Java: Utils.java:105
+pub const DEF_WORLD_HEIGHT: i32 = 7200;
+/// Java: Utils.java:681
+pub const DEF_DRAIN_SUBS_DIVISOR: i32 = 5000;
+/// Java: Utils.java:69
+pub const DEF_INITIAL_O2: f64 = 0f64;
+/// Java: Utils.java:73
+pub const DEF_INITIAL_CO2: f64 = 500000f64;
+/// Java: Utils.java:77
+pub const DEF_INITIAL_CH4: f64 = 0f64;
+/// Java: Utils.java:81
+pub const DEF_INITIAL_CO1: f64 = 0f64;
+/// Java: Utils.java:85
+pub const DEF_INITIAL_DETRITUS: f64 = 0f64;
+/// Java: Utils.java:89
+pub const DEF_INITIAL_N2: f64 = 45000f64;
+/// Java: Utils.java:93
+pub const DEF_INITIAL_NH3: f64 = 15000f64;
+/// Java: Utils.java:57
+pub const DEF_INITIAL_ORGANISMS: i32 = 12500;
+// Java: Utils.java:1528
+thread_local! { static __THREAD_COUNT: std::cell::Cell<i32> = const { std::cell::Cell::new(utils::DEF_THREAD_COUNT) }; }
+pub fn THREAD_COUNT() -> i32 { __THREAD_COUNT.with(|c| c.get()) }
+pub fn set_THREAD_COUNT(v: i32) { __THREAD_COUNT.with(|c| c.set(v)) }
+/// Java: Utils.java:120
+pub const DEF_CO2_TO_CH4_DIVISOR: i32 = 999;
+/// Java: Utils.java:125
+pub const DEF_CH4_TO_CO2_DIVISOR: i32 = 1000;
+/// Java: Utils.java:130
+pub const DEF_DETRITUS_TO_CO2_DIVISOR: i32 = 600;
+/// Java: Utils.java:135
+pub const DEF_CO1_TO_CO2_DIVISOR: i32 = 20000;
+/// Java: Utils.java:746
+pub const DEF_AUTO_BACKUP_CSV: bool = false;
 /// Java: Utils.java:145
 pub const DEF_META_MUTATION_RATE: i32 = 1000;
 /// Java: Utils.java:149
 pub const DEF_XY_MUTATION_RATE: i32 = 1000;
+/// Java: Utils.java:729
+pub const DEF_THREAD_COUNT: i32 = 1;

@@ -18,6 +18,8 @@ pub struct Dumper {
     /// reused by a new one (Java's IdentityHashMap holds its keys the same way).
     keep: Vec<Box<dyn std::any::Any>>,
     depth: usize,
+    /// Things a save can't reproduce exactly (see rust/core/src/save.rs).
+    pub warnings: Vec<String>,
 }
 
 impl Dumper {
@@ -81,18 +83,31 @@ impl<T: JDumpTarget + ?Sized + 'static> JDump for JRef<T> {
     }
 }
 
+impl Dumper {
+    /// `[#id n<suffix>` + elements + `]`
+    pub fn sequence(&mut self, id: usize, n: usize, suffix: &str, body: impl FnOnce(&mut Dumper)) {
+        let _ = write!(self.out, "[#{id} {n}{suffix}\n");
+        self.depth += 1;
+        body(self);
+        self.depth -= 1;
+        self.indent();
+        self.out.push(']');
+    }
+
+    pub fn element(&mut self, x: &dyn JDump) {
+        self.indent();
+        x.dump(self);
+        self.out.push('\n');
+    }
+}
+
 impl<T: JDump> JDumpTarget for Vec<T> {
     fn dump_target(&self, d: &mut Dumper, id: usize) {
-        let _ = write!(d.out, "[#{id} {}\n", self.len());
-        d.depth += 1;
-        for x in self {
-            d.indent();
-            x.dump(d);
-            d.out.push('\n');
-        }
-        d.depth -= 1;
-        d.indent();
-        d.out.push(']');
+        d.sequence(id, self.len(), "", |d| {
+            for x in self {
+                d.element(x);
+            }
+        });
     }
 }
 

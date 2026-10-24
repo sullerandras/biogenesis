@@ -20,10 +20,15 @@ javac -nowarn -encoding UTF-8 -cp lib/gson-2.10.1.jar -sourcepath rust/build/ver
 (cd rust/core && cargo build --release -q --bins)
 
 fail=0
+# Arguments for one side: @SIDE@ becomes java or rust, @OTHER@ the other one.
+args_for() {
+	side="$1"; other="$2"; shift 2
+	for a; do printf '%s\n' "$a" | sed "s/@SIDE@/$side/g; s/@OTHER@/$other/g"; done
+}
 check() {
 	name="$1"; java_main="$2"; rust_bin="rust/core/target/release/$3"; shift 3
-	java -cp rust/build/java-classes:lib/gson-2.10.1.jar "$java_main" "$@" > "$out/$name.java.txt"
-	"$rust_bin" "$@" > "$out/$name.rust.txt"
+	java --add-opens java.base/java.util=ALL-UNNAMED -cp rust/build/java-classes:lib/gson-2.10.1.jar "$java_main" $(args_for java rust "$@") > "$out/$name.java.txt"
+	"$rust_bin" $(args_for rust java "$@") > "$out/$name.rust.txt"
 	if cmp -s "$out/$name.java.txt" "$out/$name.rust.txt"; then
 		echo "same  $name ($(wc -l < "$out/$name.java.txt" | tr -d ' ') lines)"
 	else
@@ -41,4 +46,30 @@ for seed in 1 2 3 42 1234567; do
 	check "genetic-$seed" biogenesis.GeneticCodeCheck genetic_code_check "$seed" 20 60
 	check "genetic-hot-$seed" biogenesis.GeneticCodeCheck genetic_code_check "$seed" 20 60 hot
 done
+for seed in 1 2; do
+	check "hashset-$seed" biogenesis.HashSetCheck hashset_check "$seed" 200000
+done
+
+# Whole worlds: a hash of the world and the statics (the save file text) after
+# every frame. 600 frames pass two statistics updates (every 256 frames).
+for seed in 1 2; do
+	check "world-$seed" biogenesis.WorldCheck world_check new "$seed" 1000 1000 200 600 save 300 "$out/world-$seed.@SIDE@.save"
+	# Java and Rust write the same save, and each continues the other's save
+	# exactly as the uninterrupted run did (frames 300 to 600).
+	if cmp -s "$out/world-$seed.java.save" "$out/world-$seed.rust.save"; then
+		echo "same  world-$seed saves ($(wc -c < "$out/world-$seed.java.save" | tr -d ' ') bytes)"
+	else
+		echo "DIFF  world-$seed saves"
+		fail=1
+	fi
+	awk 'NR>=301 {sub(/^frame [0-9]+/, "frame " NR-301); print}' "$out/world-$seed.java.txt" > "$out/world-$seed.rest.txt"
+	check "world-$seed-loaded" biogenesis.WorldCheck world_check load "$out/world-$seed.@OTHER@.save" 300
+	if cmp -s "$out/world-$seed.rest.txt" "$out/world-$seed-loaded.java.txt"; then
+		echo "same  world-$seed-loaded continues world-$seed"
+	else
+		echo "DIFF  world-$seed-loaded doesn't continue world-$seed"
+		fail=1
+	fi
+done
+check "world-big" biogenesis.WorldCheck world_check new 3 2000 1500 1000 1000 every 50
 exit $fail

@@ -48,10 +48,10 @@ pub fn __kernel_tan(mut x: f64, mut y: f64, mut iy: i32) -> f64 {
                 } else {
                     let mut a: f64 = 0f64;
                     let mut t: f64 = 0f64;
-                    { let __v87 = (x + y); w = __v87; let __v88 = __v87; z = __v88; };
+                    { let __v1 = (x + y); w = __v1; let __v2 = __v1; z = __v2; };
                     z = fd_libm::__LO2(z, 0);
                     v = (y - ((z - x)));
-                    { let __v89 = (-1.0f64 / w); a = __v89; let __v90 = __v89; t = __v90; };
+                    { let __v3 = (-1.0f64 / w); a = __v3; let __v4 = __v3; t = __v4; };
                     t = fd_libm::__LO2(t, 0);
                     s = (1.0f64 + (t * z));
                     return (t + (a * ((s + (t * v)))));
@@ -89,7 +89,7 @@ pub fn __kernel_tan(mut x: f64, mut y: f64, mut iy: i32) -> f64 {
         z = w;
         z = fd_libm::__LO2(z, 0);
         v = (r - ((z - x)));
-        { let __v91 = (-1.0f64 / w); a = __v91; let __v92 = __v91; t = __v92; };
+        { let __v5 = (-1.0f64 / w); a = __v5; let __v6 = __v5; t = __v6; };
         t = fd_libm::__LO2(t, 0);
         s = (1.0f64 + (t * z));
         return (t + (a * ((s + (t * v)))));

@@ -13,6 +13,35 @@ public class Samples {
 		s += "|" + strings(seed);
 		s += "|" + switchInLoop(seed);
 		s += "|" + arithmetic(seed);
+		s += "|" + collections(seed);
+		return s;
+	}
+
+	/** HashSet iteration order, Iterator.remove, lambdas capturing locals and this, boxed lists. */
+	static String collections(int seed) {
+		Bag b = new Bag();
+		String s = "";
+		for (int i = 0; i < 40; i++) b.items.add(new Item((i * 37 + seed) % 50, i * 0.5));
+		s += b.items.size();
+		final int limit = 20 + seed % 5;
+		Item f = b.find(it -> it.id > limit && it.w < 15);
+		s += f == null ? "none" : "f" + f.id;
+		Item h = b.heavy();
+		s += h == null ? "none" : "h" + h.id;
+		for (java.util.Iterator<Item> it = b.items.iterator(); it.hasNext();) {
+			Item x = it.next();
+			if (x.id % 3 == 0) it.remove();
+		}
+		for (Item x : b.items) {
+			s += "," + x.id;
+			b.weights.add(Double.valueOf(x.w));
+		}
+		b.items.remove(new Item(seed % 50, 0));
+		s += "|" + b.items.size() + (b.items.contains(new Item(1, 0)) ? "y" : "n");
+		b.weights.remove(0);
+		s += "|" + b.weights.size() + (b.weights.get(0) > 3 ? "big" : "small");
+		Item[] a = b.items.toArray(new Item[0]);
+		s += "|" + a.length + (a.length > 0 ? "," + a[0].id : "");
 		return s;
 	}
 

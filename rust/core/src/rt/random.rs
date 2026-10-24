@@ -167,3 +167,27 @@ mod tests {
         assert_eq!(Random::nextInt_bound(&r, 3), 1);
     }
 }
+
+/// Saves and the world dumps include `Utils.random`: its fields as
+/// java.util.Random has them (`seed` is an AtomicLong there).
+impl Random {
+    pub fn set_raw_seed(&self, seed: i64) {
+        self.seed.set(seed);
+    }
+    pub fn set_next_next_gaussian(&self, v: f64) {
+        self.next_next_gaussian.set(v);
+    }
+    pub fn set_have_next_next_gaussian(&self, v: bool) {
+        self.have_next_next_gaussian.set(v);
+    }
+}
+
+impl super::dump::JDumpTarget for Random {
+    fn dump_target(&self, d: &mut super::dump::Dumper, id: usize) {
+        d.object("Random", id, |d| {
+            d.field("haveNextNextGaussian", &self.have_next_next_gaussian.get());
+            d.field("nextNextGaussian", &self.next_next_gaussian.get());
+            d.field("seed", &self.seed.get());
+        });
+    }
+}

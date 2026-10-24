@@ -167,7 +167,7 @@ pub fn compute(mut x: f64, mut y: f64) -> f64 {
         z_h = (CP_H * p_h);
         z_l = (((CP_L * p_h) + (p_l * CP)) + DP_L.at(k));
         t = (n as f64);
-        t1 = ((((((z_h + z_l)) + DP_H.at(k))) + t));
+        t1 = (((((z_h + z_l)) + DP_H.at(k))) + t);
         t1 = fd_libm::__LO2(t1, 0);
         t2 = (z_l - ((((((t1 - t)) - DP_H.at(k))) - z_h)));
     }
@@ -211,7 +211,7 @@ pub fn compute(mut x: f64, mut y: f64) -> f64 {
         n = (j + (i32::wrapping_shr(1048576, (((k + 1))) as u32)));
         k = ((i32::wrapping_shr(((n & fd_libm::EXP_SIGNIF_BITS)), (20) as u32)) - 1023);
         t = 0.0f64;
-        t = fd_libm::__HI2(t, ((n & !(i32::wrapping_shr(1048575, (k) as u32)))));
+        t = fd_libm::__HI2(t, (n & !(i32::wrapping_shr(1048575, (k) as u32))));
         n = i32::wrapping_shr(((((n & 1048575)) | 1048576)), (((20 - k))) as u32);
         if (j < 0) {
             n = -n;

@@ -83,9 +83,9 @@ pub fn __kernel_rem_pio2(mut x: JArray<f64>, mut y: JArray<f64>, mut e0: i32, mu
         z = (z - (n as f64));
         ih = 0;
         if (q0 > 0) {
-            i = (i32::wrapping_shr(iq.at((jz - 1)), (((24 - q0))) as u32));
+            i = i32::wrapping_shr(iq.at((jz - 1)), (((24 - q0))) as u32);
             n = (n + i);
-            { let __a100 = iq.clone(); let __i100 = (jz - 1); __a100.put(__i100, (__a100.at(__i100) - i32::wrapping_shl(i, (((24 - q0))) as u32))); };
+            { let __a8 = iq.clone(); let __i8 = (jz - 1); __a8.put(__i8, (__a8.at(__i8) - i32::wrapping_shl(i, (((24 - q0))) as u32))); };
             ih = i32::wrapping_shr(iq.at((jz - 1)), (((23 - q0))) as u32);
         } else if (q0 == 0) {
             ih = i32::wrapping_shr(iq.at((jz - 1)), (23) as u32);
@@ -114,10 +114,10 @@ pub fn __kernel_rem_pio2(mut x: JArray<f64>, mut y: JArray<f64>, mut e0: i32, mu
                 's7: {
                     let __s7 = q0;
                     if __s7 == 1 {
-                        { let __a103 = iq.clone(); let __i103 = (jz - 1); __a103.put(__i103, (__a103.at(__i103) & 8388607)); };
+                        { let __a11 = iq.clone(); let __i11 = (jz - 1); __a11.put(__i11, (__a11.at(__i11) & 8388607)); };
                         break 's7;
                     } else if __s7 == 2 {
-                        { let __a104 = iq.clone(); let __i104 = (jz - 1); __a104.put(__i104, (__a104.at(__i104) & 4194303)); };
+                        { let __a12 = iq.clone(); let __i12 = (jz - 1); __a12.put(__i12, (__a12.at(__i12) & 4194303)); };
                         break 's7;
                     }
                 }
@@ -251,7 +251,7 @@ pub fn __kernel_rem_pio2(mut x: JArray<f64>, mut y: JArray<f64>, mut e0: i32, mu
                 i = jz;
                 while (i > 0) {
                     fw = (fq.at((i - 1)) + fq.at(i));
-                    { let __a115 = fq.clone(); let __i115 = i; __a115.put(__i115, (__a115.at(__i115) + (fq.at((i - 1)) - fw))); };
+                    { let __a23 = fq.clone(); let __i23 = i; __a23.put(__i23, (__a23.at(__i23) + (fq.at((i - 1)) - fw))); };
                     fq.put((i - 1), fw);
                     i = i - 1;
                 }
@@ -260,7 +260,7 @@ pub fn __kernel_rem_pio2(mut x: JArray<f64>, mut y: JArray<f64>, mut e0: i32, mu
                 i = jz;
                 while (i > 1) {
                     fw = (fq.at((i - 1)) + fq.at(i));
-                    { let __a117 = fq.clone(); let __i117 = i; __a117.put(__i117, (__a117.at(__i117) + (fq.at((i - 1)) - fw))); };
+                    { let __a25 = fq.clone(); let __i25 = i; __a25.put(__i25, (__a25.at(__i25) + (fq.at((i - 1)) - fw))); };
                     fq.put((i - 1), fw);
                     i = i - 1;
                 }

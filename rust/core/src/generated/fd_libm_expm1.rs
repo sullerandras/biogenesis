@@ -78,7 +78,7 @@ pub fn compute(mut x: f64) -> f64 {
     if (k == 0) {
         return (x - (((x * e) - hxs)));
     } else {
-        e = (((x * ((e - c))) - c));
+        e = ((x * ((e - c))) - c);
         e = (e - hxs);
         if (k == (-1i32)) {
             return ((0.5f64 * ((x - e))) - 0.5f64);
@@ -101,7 +101,7 @@ pub fn compute(mut x: f64) -> f64 {
             y = (t - ((e - x)));
             y = fd_libm::__HI2(y, (fd_libm::__HI1(y) + (i32::wrapping_shl(k, (20) as u32))));
         } else {
-            t = fd_libm::__HI2(t, (i32::wrapping_shl(((1023 - k)), (20) as u32)));
+            t = fd_libm::__HI2(t, i32::wrapping_shl(((1023 - k)), (20) as u32));
             y = (x - ((e + t)));
             y = (y + 1.0f64);
             y = fd_libm::__HI2(y, (fd_libm::__HI1(y) + (i32::wrapping_shl(k, (20) as u32))));
