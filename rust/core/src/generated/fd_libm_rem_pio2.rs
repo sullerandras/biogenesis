@@ -10,13 +10,13 @@ use super::*;
 // ---- statics
 
 /// Java: FdLibm.java:591 int __ieee754_rem_pio2(double, double[])
-pub fn __ieee754_rem_pio2(mut x: f64, mut y: JArray<f64>) -> i32 {
+pub fn __ieee754_rem_pio2(mut x: f64, y: &impl JArr<f64>) -> i32 {
     let mut z: f64 = 0.0f64;
     let mut w: f64 = 0f64;
     let mut t: f64 = 0f64;
     let mut r: f64 = 0f64;
     let mut r#fn: f64 = 0f64;
-    let mut tx: JArray<f64> = JArray::new_array(3, 0f64);
+    let tx = &JStackArray::<f64, 3>::new(0f64);
     let mut e0: i32 = 0;
     let mut i: i32 = 0;
     let mut j: i32 = 0;
@@ -27,31 +27,31 @@ pub fn __ieee754_rem_pio2(mut x: f64, mut y: JArray<f64>) -> i32 {
     hx = fd_libm::__HI1(x);
     ix = (hx & fd_libm::EXP_SIGNIF_BITS);
     if (ix <= 1072243195) {
-        y.put(0, x);
-        y.put(1, 0f64);
+        (y).put(0, x);
+        (y).put(1, 0f64);
         return 0;
     }
     if (ix < 1073928572) {
         if (hx > 0) {
             z = (x - fd_libm_rem_pio2::pio2_1);
             if (ix != 1073291771) {
-                y.put(0, (z - fd_libm_rem_pio2::pio2_1t));
-                y.put(1, (((z - y.at(0))) - fd_libm_rem_pio2::pio2_1t));
+                (y).put(0, (z - fd_libm_rem_pio2::pio2_1t));
+                (y).put(1, (((z - (y).at(0))) - fd_libm_rem_pio2::pio2_1t));
             } else {
                 z = (z - fd_libm_rem_pio2::pio2_2);
-                y.put(0, (z - fd_libm_rem_pio2::pio2_2t));
-                y.put(1, (((z - y.at(0))) - fd_libm_rem_pio2::pio2_2t));
+                (y).put(0, (z - fd_libm_rem_pio2::pio2_2t));
+                (y).put(1, (((z - (y).at(0))) - fd_libm_rem_pio2::pio2_2t));
             }
             return 1;
         } else {
             z = (x + fd_libm_rem_pio2::pio2_1);
             if (ix != 1073291771) {
-                y.put(0, (z + fd_libm_rem_pio2::pio2_1t));
-                y.put(1, (((z - y.at(0))) + fd_libm_rem_pio2::pio2_1t));
+                (y).put(0, (z + fd_libm_rem_pio2::pio2_1t));
+                (y).put(1, (((z - (y).at(0))) + fd_libm_rem_pio2::pio2_1t));
             } else {
                 z = (z + fd_libm_rem_pio2::pio2_2);
-                y.put(0, (z + fd_libm_rem_pio2::pio2_2t));
-                y.put(1, (((z - y.at(0))) + fd_libm_rem_pio2::pio2_2t));
+                (y).put(0, (z + fd_libm_rem_pio2::pio2_2t));
+                (y).put(1, (((z - (y).at(0))) + fd_libm_rem_pio2::pio2_2t));
             }
             return (-1i32);
         }
@@ -62,39 +62,39 @@ pub fn __ieee754_rem_pio2(mut x: f64, mut y: JArray<f64>) -> i32 {
         r#fn = (n as f64);
         r = (t - (r#fn * fd_libm_rem_pio2::pio2_1));
         w = (r#fn * fd_libm_rem_pio2::pio2_1t);
-        if ((n < 32) && (ix != (fd_libm_rem_pio2::npio2_hw()).at((n - 1)))) {
-            y.put(0, (r - w));
+        if ((n < 32) && (ix != fd_libm_rem_pio2::__npio2_hw.with(|__o| __o.at((n - 1))))) {
+            (y).put(0, (r - w));
         } else {
             j = i32::wrapping_shr(ix, (20) as u32);
-            y.put(0, (r - w));
-            i = (j - (((i32::wrapping_shr((fd_libm::__HI1(y.at(0))), (20) as u32)) & 2047)));
+            (y).put(0, (r - w));
+            i = (j - (((i32::wrapping_shr((fd_libm::__HI1((y).at(0))), (20) as u32)) & 2047)));
             if (i > 16) {
                 t = r;
                 w = (r#fn * fd_libm_rem_pio2::pio2_2);
                 r = (t - w);
                 w = ((r#fn * fd_libm_rem_pio2::pio2_2t) - ((((t - r)) - w)));
-                y.put(0, (r - w));
-                i = (j - (((i32::wrapping_shr((fd_libm::__HI1(y.at(0))), (20) as u32)) & 2047)));
+                (y).put(0, (r - w));
+                i = (j - (((i32::wrapping_shr((fd_libm::__HI1((y).at(0))), (20) as u32)) & 2047)));
                 if (i > 49) {
                     t = r;
                     w = (r#fn * fd_libm_rem_pio2::pio2_3);
                     r = (t - w);
                     w = ((r#fn * fd_libm_rem_pio2::pio2_3t) - ((((t - r)) - w)));
-                    y.put(0, (r - w));
+                    (y).put(0, (r - w));
                 }
             }
         }
-        y.put(1, (((r - y.at(0))) - w));
+        (y).put(1, (((r - (y).at(0))) - w));
         if (hx < 0) {
-            y.put(0, -(y.at(0)));
-            y.put(1, -(y.at(1)));
+            (y).put(0, -((y).at(0)));
+            (y).put(1, -((y).at(1)));
             return -n;
         } else {
             return n;
         }
     }
     if (ix >= fd_libm::EXP_BITS) {
-        { let __a19 = y.clone(); let __i19 = 0; let __a20 = y.clone(); let __i20 = 1; let __v21 = (x - x); __a20.put(__i20, __v21); let __v22 = __v21; __a19.put(__i19, __v22); };
+        { let __a18 = y; let __i18 = 0; let __a19 = y; let __i19 = 1; let __v20 = (x - x); __a19.put(__i19, __v20); let __v21 = __v20; __a18.put(__i18, __v21); };
         return 0;
     }
     z = fd_libm::__LO2(z, fd_libm::__LO1(x));
@@ -103,20 +103,20 @@ pub fn __ieee754_rem_pio2(mut x: f64, mut y: JArray<f64>) -> i32 {
     {
         i = 0;
         while (i < 2) {
-            tx.put(i, ((((z) as i32)) as f64));
-            z = (((z - tx.at(i))) * fd_libm::TWO24);
+            (tx).put(i, ((((z) as i32)) as f64));
+            z = (((z - (tx).at(i))) * fd_libm::TWO24);
             i = i + 1;
         }
     }
-    tx.put(2, z);
+    (tx).put(2, z);
     nx = 3;
-    while (tx.at((nx - 1)) == 0.0f64) {
+    while ((tx).at((nx - 1)) == 0.0f64) {
         nx = nx - 1;
     }
-    n = fd_libm_kernel_rem_pio2::__kernel_rem_pio2(tx.clone(), y.clone(), e0, nx, 2, fd_libm_rem_pio2::two_over_pi());
+    n = fd_libm_kernel_rem_pio2::__kernel_rem_pio2(tx, y, e0, nx, 2, &(fd_libm_rem_pio2::two_over_pi()));
     if (hx < 0) {
-        y.put(0, -(y.at(0)));
-        y.put(1, -(y.at(1)));
+        (y).put(0, -((y).at(0)));
+        (y).put(1, -((y).at(1)));
         return -n;
     }
     return n;
@@ -132,14 +132,14 @@ pub const pio2_2t: f64 = 2.0222662487959506E-21f64;
 /// Java: FdLibm.java:583
 pub const invpio2: f64 = 0.6366197723675814f64;
 // Java: FdLibm.java:563
-thread_local! { static __npio2_hw: std::cell::RefCell<JArray<i32>> = std::cell::RefCell::new(JArray::from_vec(vec![1073291771, 1074340347, 1074977148, 1075388923, 1075800698, 1076025724, 1076231611, 1076437499, 1076643386, 1076849274, 1076971356, 1077074300, 1077177244, 1077280187, 1077383131, 1077486075, 1077589019, 1077691962, 1077794906, 1077897850, 1077968460, 1078019932, 1078071404, 1078122876, 1078174348, 1078225820, 1078277292, 1078328763, 1078380235, 1078431707, 1078483179, 1078534651])); }
-pub fn npio2_hw() -> JArray<i32> { __npio2_hw.with(|c| c.borrow().clone()) }
-pub fn set_npio2_hw(v: JArray<i32>) { __npio2_hw.with(|c| *c.borrow_mut() = v) }
+pub static __npio2_hw: JStatic<JArray<i32>> = JStatic::lazy(|| JArray::from_vec(vec![1073291771, 1074340347, 1074977148, 1075388923, 1075800698, 1076025724, 1076231611, 1076437499, 1076643386, 1076849274, 1076971356, 1077074300, 1077177244, 1077280187, 1077383131, 1077486075, 1077589019, 1077691962, 1077794906, 1077897850, 1077968460, 1078019932, 1078071404, 1078122876, 1078174348, 1078225820, 1078277292, 1078328763, 1078380235, 1078431707, 1078483179, 1078534651]));
+#[inline] pub fn npio2_hw() -> JArray<i32> { __npio2_hw.get() }
+pub fn set_npio2_hw(v: JArray<i32>) { __npio2_hw.set(v) }
 /// Java: FdLibm.java:588
 pub const pio2_3: f64 = 2.0222662487111665E-21f64;
 /// Java: FdLibm.java:589
 pub const pio2_3t: f64 = 8.4784276603689E-32f64;
 // Java: FdLibm.java:549
-thread_local! { static __two_over_pi: std::cell::RefCell<JArray<i32>> = std::cell::RefCell::new(JArray::from_vec(vec![10680707, 7228996, 1387004, 2578385, 16069853, 12639074, 9804092, 4427841, 16666979, 11263675, 12935607, 2387514, 4345298, 14681673, 3074569, 13734428, 16653803, 1880361, 10960616, 8533493, 3062596, 8710556, 7349940, 6258241, 3772886, 3769171, 3798172, 8675211, 12450088, 3874808, 9961438, 366607, 15675153, 9132554, 7151469, 3571407, 2607881, 12013382, 4155038, 6285869, 7677882, 13102053, 15825725, 473591, 9065106, 15363067, 6271263, 9264392, 5636912, 4652155, 7056368, 13614112, 10155062, 1944035, 9527646, 15080200, 6658437, 6231200, 6832269, 16767104, 5075751, 3212806, 1398474, 7579849, 6349435, 12618859])); }
-pub fn two_over_pi() -> JArray<i32> { __two_over_pi.with(|c| c.borrow().clone()) }
-pub fn set_two_over_pi(v: JArray<i32>) { __two_over_pi.with(|c| *c.borrow_mut() = v) }
+pub static __two_over_pi: JStatic<JArray<i32>> = JStatic::lazy(|| JArray::from_vec(vec![10680707, 7228996, 1387004, 2578385, 16069853, 12639074, 9804092, 4427841, 16666979, 11263675, 12935607, 2387514, 4345298, 14681673, 3074569, 13734428, 16653803, 1880361, 10960616, 8533493, 3062596, 8710556, 7349940, 6258241, 3772886, 3769171, 3798172, 8675211, 12450088, 3874808, 9961438, 366607, 15675153, 9132554, 7151469, 3571407, 2607881, 12013382, 4155038, 6285869, 7677882, 13102053, 15825725, 473591, 9065106, 15363067, 6271263, 9264392, 5636912, 4652155, 7056368, 13614112, 10155062, 1944035, 9527646, 15080200, 6658437, 6231200, 6832269, 16767104, 5075751, 3212806, 1398474, 7579849, 6349435, 12618859]));
+#[inline] pub fn two_over_pi() -> JArray<i32> { __two_over_pi.get() }
+pub fn set_two_over_pi(v: JArray<i32>) { __two_over_pi.set(v) }

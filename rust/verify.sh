@@ -18,6 +18,8 @@ mkdir -p rust/build/java-classes
 javac -nowarn -encoding UTF-8 -cp lib/gson-2.10.1.jar -sourcepath rust/build/verify-src -d rust/build/java-classes \
 	rust/verify/biogenesis/*.java rust/verify/j2rtest/*.java 2>&1 | grep -v '^Note:\|warning: \[removal\]\|^\s\|^[0-9]* warnings$' || true
 (cd rust/core && cargo build --release -q --bins)
+# The same with RefCell borrow checks (rt/jref.rs), in its own target directory.
+(cd rust/core && cargo build --release -q --bins --features checked --target-dir target/checked)
 
 fail=0
 # Arguments for one side: @SIDE@ becomes java or rust, @OTHER@ the other one.
@@ -26,7 +28,7 @@ args_for() {
 	for a; do printf '%s\n' "$a" | sed "s/@SIDE@/$side/g; s/@OTHER@/$other/g"; done
 }
 check() {
-	name="$1"; java_main="$2"; rust_bin="rust/core/target/release/$3"; shift 3
+	name="$1"; java_main="$2"; rust_bin="rust/core/target/${target:-release}/$3"; shift 3
 	java --add-opens java.base/java.util=ALL-UNNAMED -cp rust/build/java-classes:lib/gson-2.10.1.jar "$java_main" $(args_for java rust "$@") > "$out/$name.java.txt"
 	"$rust_bin" $(args_for rust java "$@") > "$out/$name.rust.txt"
 	if cmp -s "$out/$name.java.txt" "$out/$name.rust.txt"; then
@@ -72,4 +74,7 @@ for seed in 1 2; do
 	fi
 done
 check "world-big" biogenesis.WorldCheck world_check new 3 2000 1500 1000 1000 every 50
+# The unchecked build relies on no borrow of an object outliving a field
+# access; the checked one panics if one does.
+target=checked/release check "world-1-checked" biogenesis.WorldCheck world_check new 1 1000 1000 200 600
 exit $fail

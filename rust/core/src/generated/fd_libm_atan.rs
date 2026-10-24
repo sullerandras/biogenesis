@@ -25,9 +25,9 @@ pub fn compute(mut x: f64) -> f64 {
             return (x + x);
         }
         if (hx > 0) {
-            return ((fd_libm_atan::atanhi()).at(3) + (fd_libm_atan::atanlo()).at(3));
+            return (fd_libm_atan::__atanhi.with(|__o| __o.at(3)) + fd_libm_atan::__atanlo.with(|__o| __o.at(3)));
         } else {
-            return (-((fd_libm_atan::atanhi()).at(3)) - (fd_libm_atan::atanlo()).at(3));
+            return (-(fd_libm_atan::__atanhi.with(|__o| __o.at(3))) - fd_libm_atan::__atanlo.with(|__o| __o.at(3)));
         }
     }
     if (ix < 1071382528) {
@@ -59,24 +59,24 @@ pub fn compute(mut x: f64) -> f64 {
     }
     z = (x * x);
     w = (z * z);
-    s1 = (z * (((fd_libm_atan::aT()).at(0) + (w * (((fd_libm_atan::aT()).at(2) + (w * (((fd_libm_atan::aT()).at(4) + (w * (((fd_libm_atan::aT()).at(6) + (w * (((fd_libm_atan::aT()).at(8) + (w * (fd_libm_atan::aT()).at(10)))))))))))))))));
-    s2 = (w * (((fd_libm_atan::aT()).at(1) + (w * (((fd_libm_atan::aT()).at(3) + (w * (((fd_libm_atan::aT()).at(5) + (w * (((fd_libm_atan::aT()).at(7) + (w * (fd_libm_atan::aT()).at(9))))))))))))));
+    s1 = (z * ((fd_libm_atan::__aT.with(|__o| __o.at(0)) + (w * ((fd_libm_atan::__aT.with(|__o| __o.at(2)) + (w * ((fd_libm_atan::__aT.with(|__o| __o.at(4)) + (w * ((fd_libm_atan::__aT.with(|__o| __o.at(6)) + (w * ((fd_libm_atan::__aT.with(|__o| __o.at(8)) + (w * fd_libm_atan::__aT.with(|__o| __o.at(10))))))))))))))))));
+    s2 = (w * ((fd_libm_atan::__aT.with(|__o| __o.at(1)) + (w * ((fd_libm_atan::__aT.with(|__o| __o.at(3)) + (w * ((fd_libm_atan::__aT.with(|__o| __o.at(5)) + (w * ((fd_libm_atan::__aT.with(|__o| __o.at(7)) + (w * fd_libm_atan::__aT.with(|__o| __o.at(9)))))))))))))));
     if (id < 0) {
         return (x - (x * ((s1 + s2))));
     } else {
-        z = ((fd_libm_atan::atanhi()).at(id) - (((((x * ((s1 + s2))) - (fd_libm_atan::atanlo()).at(id))) - x)));
+        z = (fd_libm_atan::__atanhi.with(|__o| __o.at(id)) - (((((x * ((s1 + s2))) - fd_libm_atan::__atanlo.with(|__o| __o.at(id)))) - x)));
         return (if ((hx < 0)) { -z } else { z });
     }
 }
 // Java: FdLibm.java:1235
-thread_local! { static __atanhi: std::cell::RefCell<JArray<f64>> = std::cell::RefCell::new(JArray::from_vec(vec![0.4636476090008061f64, 0.7853981633974483f64, 0.982793723247329f64, 1.5707963267948966f64])); }
-pub fn atanhi() -> JArray<f64> { __atanhi.with(|c| c.borrow().clone()) }
-pub fn set_atanhi(v: JArray<f64>) { __atanhi.with(|c| *c.borrow_mut() = v) }
+pub static __atanhi: JStatic<JArray<f64>> = JStatic::lazy(|| JArray::from_vec(vec![0.4636476090008061f64, 0.7853981633974483f64, 0.982793723247329f64, 1.5707963267948966f64]));
+#[inline] pub fn atanhi() -> JArray<f64> { __atanhi.get() }
+pub fn set_atanhi(v: JArray<f64>) { __atanhi.set(v) }
 // Java: FdLibm.java:1242
-thread_local! { static __atanlo: std::cell::RefCell<JArray<f64>> = std::cell::RefCell::new(JArray::from_vec(vec![2.2698777452961687E-17f64, 3.061616997868383E-17f64, 1.3903311031230998E-17f64, 6.123233995736766E-17f64])); }
-pub fn atanlo() -> JArray<f64> { __atanlo.with(|c| c.borrow().clone()) }
-pub fn set_atanlo(v: JArray<f64>) { __atanlo.with(|c| *c.borrow_mut() = v) }
+pub static __atanlo: JStatic<JArray<f64>> = JStatic::lazy(|| JArray::from_vec(vec![2.2698777452961687E-17f64, 3.061616997868383E-17f64, 1.3903311031230998E-17f64, 6.123233995736766E-17f64]));
+#[inline] pub fn atanlo() -> JArray<f64> { __atanlo.get() }
+pub fn set_atanlo(v: JArray<f64>) { __atanlo.set(v) }
 // Java: FdLibm.java:1249
-thread_local! { static __aT: std::cell::RefCell<JArray<f64>> = std::cell::RefCell::new(JArray::from_vec(vec![0.3333333333333293f64, -0.19999999999876483f64, 0.14285714272503466f64, -0.11111110405462356f64, 0.09090887133436507f64, -0.0769187620504483f64, 0.06661073137387531f64, -0.058335701337905735f64, 0.049768779946159324f64, -0.036531572744216916f64, 0.016285820115365782f64])); }
-pub fn aT() -> JArray<f64> { __aT.with(|c| c.borrow().clone()) }
-pub fn set_aT(v: JArray<f64>) { __aT.with(|c| *c.borrow_mut() = v) }
+pub static __aT: JStatic<JArray<f64>> = JStatic::lazy(|| JArray::from_vec(vec![0.3333333333333293f64, -0.19999999999876483f64, 0.14285714272503466f64, -0.11111110405462356f64, 0.09090887133436507f64, -0.0769187620504483f64, 0.06661073137387531f64, -0.058335701337905735f64, 0.049768779946159324f64, -0.036531572744216916f64, 0.016285820115365782f64]));
+#[inline] pub fn aT() -> JArray<f64> { __aT.get() }
+pub fn set_aT(v: JArray<f64>) { __aT.set(v) }

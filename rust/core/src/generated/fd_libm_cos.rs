@@ -11,7 +11,7 @@ use super::*;
 
 /// Java: FdLibm.java:273 double compute(double)
 pub fn compute(mut x: f64) -> f64 {
-    let mut y: JArray<f64> = JArray::new_array(2, 0f64);
+    let y = &JStackArray::<f64, 2>::new(0f64);
     let mut z: f64 = 0.0f64;
     let mut n: i32 = 0;
     let mut ix: i32 = 0;
@@ -22,17 +22,17 @@ pub fn compute(mut x: f64) -> f64 {
     } else if (ix >= fd_libm::EXP_BITS) {
         return (x - x);
     } else {
-        n = fd_libm_rem_pio2::__ieee754_rem_pio2(x, y.clone());
+        n = fd_libm_rem_pio2::__ieee754_rem_pio2(x, y);
         's1: {
             let __s1 = (n & 3);
             if __s1 == 0 {
-                return fd_libm_cos::__kernel_cos(y.at(0), y.at(1));
+                return fd_libm_cos::__kernel_cos((y).at(0), (y).at(1));
             } else if __s1 == 1 {
-                return -(fd_libm_sin::__kernel_sin(y.at(0), y.at(1), 1));
+                return -(fd_libm_sin::__kernel_sin((y).at(0), (y).at(1), 1));
             } else if __s1 == 2 {
-                return -(fd_libm_cos::__kernel_cos(y.at(0), y.at(1)));
+                return -(fd_libm_cos::__kernel_cos((y).at(0), (y).at(1)));
             } else {
-                return fd_libm_sin::__kernel_sin(y.at(0), y.at(1), 1);
+                return fd_libm_sin::__kernel_sin((y).at(0), (y).at(1), 1);
             }
         }
     }

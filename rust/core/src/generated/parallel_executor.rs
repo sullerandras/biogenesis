@@ -23,17 +23,17 @@ pub fn progressAllOrganisms(mut organisms: JCollection<JRef<Organism>>, mut orga
     }
 }
 // Java: ParallelExecutor.java:21
-thread_local! { static __organisms: std::cell::RefCell<JCollection<JRef<Organism>>> = const { std::cell::RefCell::new(JRef::null()) }; }
-pub fn organisms() -> JCollection<JRef<Organism>> { __organisms.with(|c| c.borrow().clone()) }
-pub fn set_organisms(v: JCollection<JRef<Organism>>) { __organisms.with(|c| *c.borrow_mut() = v) }
+pub static __organisms: JStatic<JCollection<JRef<Organism>>> = JStatic::new(JRef::null());
+#[inline] pub fn organisms() -> JCollection<JRef<Organism>> { __organisms.get() }
+pub fn set_organisms(v: JCollection<JRef<Organism>>) { __organisms.set(v) }
 // Java: ParallelExecutor.java:22
-thread_local! { static __organismBuckets: std::cell::RefCell<JRef<OrganismBuckets>> = const { std::cell::RefCell::new(JRef::null()) }; }
-pub fn organismBuckets() -> JRef<OrganismBuckets> { __organismBuckets.with(|c| c.borrow().clone()) }
-pub fn set_organismBuckets(v: JRef<OrganismBuckets>) { __organismBuckets.with(|c| *c.borrow_mut() = v) }
+pub static __organismBuckets: JStatic<JRef<OrganismBuckets>> = JStatic::new(JRef::null());
+#[inline] pub fn organismBuckets() -> JRef<OrganismBuckets> { __organismBuckets.get() }
+pub fn set_organismBuckets(v: JRef<OrganismBuckets>) { __organismBuckets.set(v) }
 // Java: ParallelExecutor.java:23
-thread_local! { static __visibleWorld: std::cell::Cell<Stub> = const { std::cell::Cell::new(Stub::NULL) }; }
-pub fn visibleWorld() -> Stub { __visibleWorld.with(|c| c.get()) }
-pub fn set_visibleWorld(v: Stub) { __visibleWorld.with(|c| c.set(v)) }
+pub static __visibleWorld: JStatic<Stub> = JStatic::new(Stub::NULL);
+#[inline] pub fn visibleWorld() -> Stub { __visibleWorld.get() }
+pub fn set_visibleWorld(v: Stub) { __visibleWorld.set(v) }
 
 /// Java: ParallelExecutor.java:57 void progressAllOrganismsInParallel(int, int)
 pub fn progressAllOrganismsInParallel(mut organismCount: i32, mut threadCount: i32) {

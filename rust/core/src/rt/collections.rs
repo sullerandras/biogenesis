@@ -182,7 +182,7 @@ fn obj_equals<T: JObject>(a: &T, b: &T) -> bool {
 impl<T: JObject + JDump + 'static> JRef<Vec<T>> {
     /// Use as a `Collection` (Java's implicit upcast).
     pub fn as_collection(self) -> JCollection<T> {
-        self.map_rc(|rc| rc as Rc<std::cell::RefCell<dyn JCollectionT<T>>>)
+        self.map_rc(|rc| rc as Rc<super::jref::JCell<dyn JCollectionT<T>>>)
     }
 
     /// `list.remove(Object)`
@@ -221,7 +221,7 @@ impl<T: JObject + JDump + 'static> JRef<JHashSet<T>> {
 
     /// Use as a `Collection`/`Set` (Java's implicit upcast).
     pub fn as_collection(self) -> JCollection<T> {
-        self.map_rc(|rc| rc as Rc<std::cell::RefCell<dyn JCollectionT<T>>>)
+        self.map_rc(|rc| rc as Rc<super::jref::JCell<dyn JCollectionT<T>>>)
     }
 }
 
@@ -246,11 +246,11 @@ impl<T: Clone + 'static> JRef<dyn JCollectionT<T>> {
     }
     /// The elements, for a for-each loop.
     pub fn snapshot_array(&self) -> JArray<T> {
-        JRef::new(self.get(|c| c.snapshot()))
+        JArray::from_vec(self.get(|c| c.snapshot()))
     }
     /// `toArray(a)`: as `List.toArray`.
     pub fn to_array(&self, a: &JArray<T>, null: T) -> JArray<T> {
-        let items: JList<T> = self.snapshot_array();
+        let items: JList<T> = JRef::new(self.get(|c| c.snapshot()));
         items.to_array(a, null)
     }
     /// `iterator()`

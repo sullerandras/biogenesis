@@ -308,6 +308,26 @@ impl<T: JLoad + Clone + 'static> JLoad for JRef<Vec<T>> {
     }
 }
 
+impl<T: JLoad + Clone + 'static> JLoad for JRef<[T]> {
+    fn load(l: &mut Loader) -> Self {
+        if l.eat("null") {
+            return JRef::null();
+        }
+        if l.eat("@") {
+            let id = l.usize_value();
+            return l.lookup(id);
+        }
+        // Elements can't refer back to their array, so it's registered after them.
+        let (id, cap, v) = l.sequence::<T>();
+        if cap.is_some() {
+            l.fail("a HashSet where an array or List is expected");
+        }
+        let a = JRef::<[T]>::from_vec(v);
+        l.register(id, a.clone());
+        a
+    }
+}
+
 impl<T: JLoad + JObject + JDump + 'static> JLoad for JCollection<T> {
     fn load(l: &mut Loader) -> Self {
         if l.eat("null") {

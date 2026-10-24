@@ -10,7 +10,7 @@ use super::*;
 // ---- statics
 
 /// Java: FdLibm.java:826 int __kernel_rem_pio2(double[], double[], int, int, int, int[])
-pub fn __kernel_rem_pio2(mut x: JArray<f64>, mut y: JArray<f64>, mut e0: i32, mut nx: i32, mut prec: i32, mut ipio2: JArray<i32>) -> i32 {
+pub fn __kernel_rem_pio2(x: &impl JArr<f64>, y: &impl JArr<f64>, mut e0: i32, mut nx: i32, mut prec: i32, ipio2: &impl JArr<i32>) -> i32 {
     let mut jz: i32 = 0;
     let mut jx: i32 = 0;
     let mut jv: i32 = 0;
@@ -24,13 +24,13 @@ pub fn __kernel_rem_pio2(mut x: JArray<f64>, mut y: JArray<f64>, mut e0: i32, mu
     let mut m: i32 = 0;
     let mut q0: i32 = 0;
     let mut ih: i32 = 0;
-    let mut iq: JArray<i32> = JArray::new_array(20, 0);
+    let iq = &JStackArray::<i32, 20>::new(0);
     let mut z: f64 = 0f64;
     let mut fw: f64 = 0f64;
-    let mut f: JArray<f64> = JArray::new_array(20, 0f64);
-    let mut fq: JArray<f64> = JArray::new_array(20, 0f64);
-    let mut q: JArray<f64> = JArray::new_array(20, 0f64);
-    jk = (fd_libm_kernel_rem_pio2::init_jk()).at(prec);
+    let f = &JStackArray::<f64, 20>::new(0f64);
+    let fq = &JStackArray::<f64, 20>::new(0f64);
+    let q = &JStackArray::<f64, 20>::new(0f64);
+    jk = fd_libm_kernel_rem_pio2::__init_jk.with(|__o| __o.at(prec));
     jp = jk;
     jx = (nx - 1);
     jv = i32::wrapping_div(((e0 - 3)), 24);
@@ -43,7 +43,7 @@ pub fn __kernel_rem_pio2(mut x: JArray<f64>, mut y: JArray<f64>, mut e0: i32, mu
     {
         i = 0;
         while (i <= m) {
-            f.put(i, (if ((j < 0)) { 0.0f64 } else { (ipio2.at(j) as f64) }));
+            (f).put(i, (if ((j < 0)) { 0.0f64 } else { ((ipio2).at(j) as f64) }));
             i = i + 1;
             j = j + 1;
         }
@@ -55,11 +55,11 @@ pub fn __kernel_rem_pio2(mut x: JArray<f64>, mut y: JArray<f64>, mut e0: i32, mu
                 j = 0;
                 fw = 0.0f64;
                 while (j <= jx) {
-                    fw = (fw + (x.at(j) * f.at(((jx + i) - j))));
+                    fw = (fw + ((x).at(j) * (f).at(((jx + i) - j))));
                     j = j + 1;
                 }
             }
-            q.put(i, fw);
+            (q).put(i, fw);
             i = i + 1;
         }
     }
@@ -68,11 +68,11 @@ pub fn __kernel_rem_pio2(mut x: JArray<f64>, mut y: JArray<f64>, mut e0: i32, mu
         {
             i = 0;
             j = jz;
-            z = q.at(jz);
+            z = (q).at(jz);
             while (j > 0) {
                 fw = (((((fd_libm_kernel_rem_pio2::twon24 * z)) as i32)) as f64);
-                iq.put(i, (((z - (fd_libm::TWO24 * fw))) as i32));
-                z = (q.at((j - 1)) + fw);
+                (iq).put(i, (((z - (fd_libm::TWO24 * fw))) as i32));
+                z = ((q).at((j - 1)) + fw);
                 i = i + 1;
                 j = j - 1;
             }
@@ -83,12 +83,12 @@ pub fn __kernel_rem_pio2(mut x: JArray<f64>, mut y: JArray<f64>, mut e0: i32, mu
         z = (z - (n as f64));
         ih = 0;
         if (q0 > 0) {
-            i = i32::wrapping_shr(iq.at((jz - 1)), (((24 - q0))) as u32);
+            i = i32::wrapping_shr((iq).at((jz - 1)), (((24 - q0))) as u32);
             n = (n + i);
-            { let __a8 = iq.clone(); let __i8 = (jz - 1); __a8.put(__i8, (__a8.at(__i8) - i32::wrapping_shl(i, (((24 - q0))) as u32))); };
-            ih = i32::wrapping_shr(iq.at((jz - 1)), (((23 - q0))) as u32);
+            { let __a4 = iq; let __i4 = (jz - 1); __a4.put(__i4, (__a4.at(__i4) - i32::wrapping_shl(i, (((24 - q0))) as u32))); };
+            ih = i32::wrapping_shr((iq).at((jz - 1)), (((23 - q0))) as u32);
         } else if (q0 == 0) {
-            ih = i32::wrapping_shr(iq.at((jz - 1)), (23) as u32);
+            ih = i32::wrapping_shr((iq).at((jz - 1)), (23) as u32);
         } else if (z >= 0.5f64) {
             ih = 2;
         }
@@ -98,14 +98,14 @@ pub fn __kernel_rem_pio2(mut x: JArray<f64>, mut y: JArray<f64>, mut e0: i32, mu
             {
                 i = 0;
                 while (i < jz) {
-                    j = iq.at(i);
+                    j = (iq).at(i);
                     if (carry == 0) {
                         if (j != 0) {
                             carry = 1;
-                            iq.put(i, (16777216 - j));
+                            (iq).put(i, (16777216 - j));
                         }
                     } else {
-                        iq.put(i, (16777215 - j));
+                        (iq).put(i, (16777215 - j));
                     }
                     i = i + 1;
                 }
@@ -114,10 +114,10 @@ pub fn __kernel_rem_pio2(mut x: JArray<f64>, mut y: JArray<f64>, mut e0: i32, mu
                 's7: {
                     let __s7 = q0;
                     if __s7 == 1 {
-                        { let __a11 = iq.clone(); let __i11 = (jz - 1); __a11.put(__i11, (__a11.at(__i11) & 8388607)); };
+                        { let __a7 = iq; let __i7 = (jz - 1); __a7.put(__i7, (__a7.at(__i7) & 8388607)); };
                         break 's7;
                     } else if __s7 == 2 {
-                        { let __a12 = iq.clone(); let __i12 = (jz - 1); __a12.put(__i12, (__a12.at(__i12) & 4194303)); };
+                        { let __a8 = iq; let __i8 = (jz - 1); __a8.put(__i8, (__a8.at(__i8) & 4194303)); };
                         break 's7;
                     }
                 }
@@ -134,30 +134,30 @@ pub fn __kernel_rem_pio2(mut x: JArray<f64>, mut y: JArray<f64>, mut e0: i32, mu
             {
                 i = (jz - 1);
                 while (i >= jk) {
-                    j = (j | iq.at(i));
+                    j = (j | (iq).at(i));
                     i = i - 1;
                 }
             }
             if (j == 0) {
                 {
                     k = 1;
-                    while (iq.at((jk - k)) == 0) {
+                    while ((iq).at((jk - k)) == 0) {
                         k = k + 1;
                     }
                 }
                 {
                     i = (jz + 1);
                     while (i <= (jz + k)) {
-                        f.put((jx + i), (ipio2.at((jv + i)) as f64));
+                        (f).put((jx + i), ((ipio2).at((jv + i)) as f64));
                         {
                             j = 0;
                             fw = 0.0f64;
                             while (j <= jx) {
-                                fw = (fw + (x.at(j) * f.at(((jx + i) - j))));
+                                fw = (fw + ((x).at(j) * (f).at(((jx + i) - j))));
                                 j = j + 1;
                             }
                         }
-                        q.put(i, fw);
+                        (q).put(i, fw);
                         i = i + 1;
                     }
                 }
@@ -173,7 +173,7 @@ pub fn __kernel_rem_pio2(mut x: JArray<f64>, mut y: JArray<f64>, mut e0: i32, mu
     if (z == 0.0f64) {
         jz = (jz - 1);
         q0 = (q0 - 24);
-        while (iq.at(jz) == 0) {
+        while ((iq).at(jz) == 0) {
             jz = jz - 1;
             q0 = (q0 - 24);
         }
@@ -181,19 +181,19 @@ pub fn __kernel_rem_pio2(mut x: JArray<f64>, mut y: JArray<f64>, mut e0: i32, mu
         z = jmath::scalb(z, -q0);
         if (z >= fd_libm::TWO24) {
             fw = (((((fd_libm_kernel_rem_pio2::twon24 * z)) as i32)) as f64);
-            iq.put(jz, (((z - (fd_libm::TWO24 * fw))) as i32));
+            (iq).put(jz, (((z - (fd_libm::TWO24 * fw))) as i32));
             jz = (jz + 1);
             q0 = (q0 + 24);
-            iq.put(jz, (fw as i32));
+            (iq).put(jz, (fw as i32));
         } else {
-            iq.put(jz, (z as i32));
+            (iq).put(jz, (z as i32));
         }
     }
     fw = jmath::scalb(1.0f64, q0);
     {
         i = jz;
         while (i >= 0) {
-            q.put(i, (fw * (iq.at(i) as f64)));
+            (q).put(i, (fw * ((iq).at(i) as f64)));
             fw = (fw * fd_libm_kernel_rem_pio2::twon24);
             i = i - 1;
         }
@@ -205,11 +205,11 @@ pub fn __kernel_rem_pio2(mut x: JArray<f64>, mut y: JArray<f64>, mut e0: i32, mu
                 fw = 0.0f64;
                 k = 0;
                 while ((k <= jp) && (k <= (jz - i))) {
-                    fw = (fw + ((fd_libm_kernel_rem_pio2::PIo2()).at(k) * q.at((i + k))));
+                    fw = (fw + (fd_libm_kernel_rem_pio2::__PIo2.with(|__o| __o.at(k)) * (q).at((i + k))));
                     k = k + 1;
                 }
             }
-            fq.put((jz - i), fw);
+            (fq).put((jz - i), fw);
             i = i - 1;
         }
     }
@@ -220,48 +220,48 @@ pub fn __kernel_rem_pio2(mut x: JArray<f64>, mut y: JArray<f64>, mut e0: i32, mu
             {
                 i = jz;
                 while (i >= 0) {
-                    fw = (fw + fq.at(i));
+                    fw = (fw + (fq).at(i));
                     i = i - 1;
                 }
             }
-            y.put(0, (if ((ih == 0)) { fw } else { -fw }));
+            (y).put(0, (if ((ih == 0)) { fw } else { -fw }));
             break 's16;
         } else if __s16 == 1 || __s16 == 2 {
             fw = 0.0f64;
             {
                 i = jz;
                 while (i >= 0) {
-                    fw = (fw + fq.at(i));
+                    fw = (fw + (fq).at(i));
                     i = i - 1;
                 }
             }
-            y.put(0, (if ((ih == 0)) { fw } else { -fw }));
-            fw = (fq.at(0) - fw);
+            (y).put(0, (if ((ih == 0)) { fw } else { -fw }));
+            fw = ((fq).at(0) - fw);
             {
                 i = 1;
                 while (i <= jz) {
-                    fw = (fw + fq.at(i));
+                    fw = (fw + (fq).at(i));
                     i = i + 1;
                 }
             }
-            y.put(1, (if ((ih == 0)) { fw } else { -fw }));
+            (y).put(1, (if ((ih == 0)) { fw } else { -fw }));
             break 's16;
         } else if __s16 == 3 {
             {
                 i = jz;
                 while (i > 0) {
-                    fw = (fq.at((i - 1)) + fq.at(i));
-                    { let __a23 = fq.clone(); let __i23 = i; __a23.put(__i23, (__a23.at(__i23) + (fq.at((i - 1)) - fw))); };
-                    fq.put((i - 1), fw);
+                    fw = ((fq).at((i - 1)) + (fq).at(i));
+                    { let __a19 = fq; let __i19 = i; __a19.put(__i19, (__a19.at(__i19) + ((fq).at((i - 1)) - fw))); };
+                    (fq).put((i - 1), fw);
                     i = i - 1;
                 }
             }
             {
                 i = jz;
                 while (i > 1) {
-                    fw = (fq.at((i - 1)) + fq.at(i));
-                    { let __a25 = fq.clone(); let __i25 = i; __a25.put(__i25, (__a25.at(__i25) + (fq.at((i - 1)) - fw))); };
-                    fq.put((i - 1), fw);
+                    fw = ((fq).at((i - 1)) + (fq).at(i));
+                    { let __a21 = fq; let __i21 = i; __a21.put(__i21, (__a21.at(__i21) + ((fq).at((i - 1)) - fw))); };
+                    (fq).put((i - 1), fw);
                     i = i - 1;
                 }
             }
@@ -269,30 +269,30 @@ pub fn __kernel_rem_pio2(mut x: JArray<f64>, mut y: JArray<f64>, mut e0: i32, mu
                 fw = 0.0f64;
                 i = jz;
                 while (i >= 2) {
-                    fw = (fw + fq.at(i));
+                    fw = (fw + (fq).at(i));
                     i = i - 1;
                 }
             }
             if (ih == 0) {
-                y.put(0, fq.at(0));
-                y.put(1, fq.at(1));
-                y.put(2, fw);
+                (y).put(0, (fq).at(0));
+                (y).put(1, (fq).at(1));
+                (y).put(2, fw);
             } else {
-                y.put(0, -(fq.at(0)));
-                y.put(1, -(fq.at(1)));
-                y.put(2, -fw);
+                (y).put(0, -((fq).at(0)));
+                (y).put(1, -((fq).at(1)));
+                (y).put(2, -fw);
             }
         }
     }
     return (n & 7);
 }
 // Java: FdLibm.java:810
-thread_local! { static __init_jk: std::cell::RefCell<JArray<i32>> = std::cell::RefCell::new(JArray::from_vec(vec![2, 3, 4, 6])); }
-pub fn init_jk() -> JArray<i32> { __init_jk.with(|c| c.borrow().clone()) }
-pub fn set_init_jk(v: JArray<i32>) { __init_jk.with(|c| *c.borrow_mut() = v) }
+pub static __init_jk: JStatic<JArray<i32>> = JStatic::lazy(|| JArray::from_vec(vec![2, 3, 4, 6]));
+#[inline] pub fn init_jk() -> JArray<i32> { __init_jk.get() }
+pub fn set_init_jk(v: JArray<i32>) { __init_jk.set(v) }
 /// Java: FdLibm.java:824
 pub const twon24: f64 = 5.960464477539063E-8f64;
 // Java: FdLibm.java:812
-thread_local! { static __PIo2: std::cell::RefCell<JArray<f64>> = std::cell::RefCell::new(JArray::from_vec(vec![1.570796251296997f64, 7.549789415861596E-8f64, 5.390302529957765E-15f64, 3.282003415807913E-22f64, 1.270655753080676E-29f64, 1.2293330898111133E-36f64, 2.7337005381646456E-44f64, 2.1674168387780482E-51f64])); }
-pub fn PIo2() -> JArray<f64> { __PIo2.with(|c| c.borrow().clone()) }
-pub fn set_PIo2(v: JArray<f64>) { __PIo2.with(|c| *c.borrow_mut() = v) }
+pub static __PIo2: JStatic<JArray<f64>> = JStatic::lazy(|| JArray::from_vec(vec![1.570796251296997f64, 7.549789415861596E-8f64, 5.390302529957765E-15f64, 3.282003415807913E-22f64, 1.270655753080676E-29f64, 1.2293330898111133E-36f64, 2.7337005381646456E-44f64, 2.1674168387780482E-51f64]));
+#[inline] pub fn PIo2() -> JArray<f64> { __PIo2.get() }
+pub fn set_PIo2(v: JArray<f64>) { __PIo2.set(v) }

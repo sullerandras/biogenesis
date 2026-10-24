@@ -12,6 +12,7 @@ pub struct Bag {
     pub items: JCollection<JRef<Item>>,
     pub weights: JList<f64>,
     pub limit: f64,
+    pub slots: JArray<i32>,
 }
 
 impl Bag {
@@ -19,6 +20,7 @@ impl Bag {
         this.setf(|o| &mut o.items, (JRef::<JHashSet<JRef<Item>>>::new_set()).as_collection());
         this.setf(|o| &mut o.weights, JList::from_vec(Vec::new()));
         this.setf(|o| &mut o.limit, 9f64);
+        this.setf(|o| &mut o.slots, JArray::new_array(3, 0));
     }
 
     pub fn new() -> JRef<Self> {
@@ -27,7 +29,7 @@ impl Bag {
         this.clone()
     }
 
-    /// Java: Bag.java:19 Item find(Matcher)
+    /// Java: Bag.java:20 Item find(Matcher)
     pub fn find(this: &JRef<Self>, mut m: JFn<dyn Fn(JRef<Item>) -> bool>) -> JRef<Item> {
         {
             let __a1 = (this.get(|o| o.items.clone())).snapshot_array();
@@ -43,12 +45,12 @@ impl Bag {
         return JRef::null();
     }
 
-    /// Java: Bag.java:26 double threshold()
+    /// Java: Bag.java:27 double threshold()
     pub fn threshold(this: &JRef<Self>) -> f64 {
         return this.get(|o| o.limit);
     }
 
-    /// Java: Bag.java:31 Item heavy()
+    /// Java: Bag.java:32 Item heavy()
     pub fn heavy(this: &JRef<Self>) -> JRef<Item> {
         return Bag::find(this, { let __this = this.clone(); JFn::new(std::rc::Rc::new(move |mut i: JRef<Item>| -> bool {
         let this = &__this;
@@ -80,6 +82,7 @@ impl JDumpTarget for Bag {
         d.object("Bag", id, |d| {
             d.field("items", &self.items);
             d.field("limit", &self.limit);
+            d.field("slots", &self.slots);
             d.field("weights", &self.weights);
         });
     }
@@ -95,6 +98,10 @@ impl JLoad for JRef<Bag> {
             "limit" => {
                 let v = JLoad::load(l);
                 this.set(|o| o.limit = v)
+            }
+            "slots" => {
+                let v = JLoad::load(l);
+                this.set(|o| o.slots = v)
             }
             "weights" => {
                 let v = JLoad::load(l);

@@ -15,6 +15,7 @@ public class Bag {
 	Collection<Item> items = Collections.synchronizedSet(new HashSet<>());
 	List<Double> weights = new ArrayList<>();
 	double limit = 9;
+	int[] slots = new int[3];
 
 	Item find(Matcher m) {
 		for (Item i : items) {

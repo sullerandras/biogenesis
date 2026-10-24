@@ -11,7 +11,7 @@ use super::*;
 
 /// Java: FdLibm.java:399 double compute(double)
 pub fn compute(mut x: f64) -> f64 {
-    let mut y: JArray<f64> = JArray::new_array(2, 0f64);
+    let y = &JStackArray::<f64, 2>::new(0f64);
     let mut z: f64 = 0.0f64;
     let mut n: i32 = 0;
     let mut ix: i32 = 0;
@@ -22,8 +22,8 @@ pub fn compute(mut x: f64) -> f64 {
     } else if (ix >= fd_libm::EXP_BITS) {
         return (x - x);
     } else {
-        n = fd_libm_rem_pio2::__ieee754_rem_pio2(x, y.clone());
-        return fd_libm_tan::__kernel_tan(y.at(0), y.at(1), (1 - (i32::wrapping_shl(((n & 1)), (1) as u32))));
+        n = fd_libm_rem_pio2::__ieee754_rem_pio2(x, y);
+        return fd_libm_tan::__kernel_tan((y).at(0), (y).at(1), (1 - (i32::wrapping_shl(((n & 1)), (1) as u32))));
     }
 }
 
@@ -71,11 +71,11 @@ pub fn __kernel_tan(mut x: f64, mut y: f64, mut iy: i32) -> f64 {
     }
     z = (x * x);
     w = (z * z);
-    r = ((fd_libm_tan::T()).at(1) + (w * (((fd_libm_tan::T()).at(3) + (w * (((fd_libm_tan::T()).at(5) + (w * (((fd_libm_tan::T()).at(7) + (w * (((fd_libm_tan::T()).at(9) + (w * (fd_libm_tan::T()).at(11)))))))))))))));
-    v = (z * (((fd_libm_tan::T()).at(2) + (w * (((fd_libm_tan::T()).at(4) + (w * (((fd_libm_tan::T()).at(6) + (w * (((fd_libm_tan::T()).at(8) + (w * (((fd_libm_tan::T()).at(10) + (w * (fd_libm_tan::T()).at(12)))))))))))))))));
+    r = (fd_libm_tan::__T.with(|__o| __o.at(1)) + (w * ((fd_libm_tan::__T.with(|__o| __o.at(3)) + (w * ((fd_libm_tan::__T.with(|__o| __o.at(5)) + (w * ((fd_libm_tan::__T.with(|__o| __o.at(7)) + (w * ((fd_libm_tan::__T.with(|__o| __o.at(9)) + (w * fd_libm_tan::__T.with(|__o| __o.at(11))))))))))))))));
+    v = (z * ((fd_libm_tan::__T.with(|__o| __o.at(2)) + (w * ((fd_libm_tan::__T.with(|__o| __o.at(4)) + (w * ((fd_libm_tan::__T.with(|__o| __o.at(6)) + (w * ((fd_libm_tan::__T.with(|__o| __o.at(8)) + (w * ((fd_libm_tan::__T.with(|__o| __o.at(10)) + (w * fd_libm_tan::__T.with(|__o| __o.at(12))))))))))))))))));
     s = (z * x);
     r = (y + (z * (((s * ((r + v))) + y))));
-    r = (r + ((fd_libm_tan::T()).at(0) * s));
+    r = (r + (fd_libm_tan::__T.with(|__o| __o.at(0)) * s));
     w = (x + r);
     if (ix >= 1072010280) {
         v = (iy as f64);
@@ -100,6 +100,6 @@ pub const pio4: f64 = 0.7853981633974483f64;
 /// Java: FdLibm.java:454
 pub const pio4lo: f64 = 3.061616997868383E-17f64;
 // Java: FdLibm.java:455
-thread_local! { static __T: std::cell::RefCell<JArray<f64>> = std::cell::RefCell::new(JArray::from_vec(vec![0.3333333333333341f64, 0.13333333333320124f64, 0.05396825397622605f64, 0.021869488294859542f64, 0.0088632398235993f64, 0.0035920791075913124f64, 0.0014562094543252903f64, 5.880412408202641E-4f64, 2.464631348184699E-4f64, 7.817944429395571E-5f64, 7.140724913826082E-5f64, -(1.8558637485527546E-5f64), 2.590730518636337E-5f64])); }
-pub fn T() -> JArray<f64> { __T.with(|c| c.borrow().clone()) }
-pub fn set_T(v: JArray<f64>) { __T.with(|c| *c.borrow_mut() = v) }
+pub static __T: JStatic<JArray<f64>> = JStatic::lazy(|| JArray::from_vec(vec![0.3333333333333341f64, 0.13333333333320124f64, 0.05396825397622605f64, 0.021869488294859542f64, 0.0088632398235993f64, 0.0035920791075913124f64, 0.0014562094543252903f64, 5.880412408202641E-4f64, 2.464631348184699E-4f64, 7.817944429395571E-5f64, 7.140724913826082E-5f64, -(1.8558637485527546E-5f64), 2.590730518636337E-5f64]));
+#[inline] pub fn T() -> JArray<f64> { __T.get() }
+pub fn set_T(v: JArray<f64>) { __T.set(v) }

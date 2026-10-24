@@ -39,14 +39,14 @@ pub fn compute(mut x: f64) -> f64 {
     }
     if (hx > 1071001154) {
         if (hx < 1072734898) {
-            hi = (x - (fd_libm_exp::ln2HI()).at(xsb));
-            lo = (fd_libm_exp::ln2LO()).at(xsb);
+            hi = (x - fd_libm_exp::__ln2HI.with(|__o| __o.at(xsb)));
+            lo = fd_libm_exp::__ln2LO.with(|__o| __o.at(xsb));
             k = ((1 - xsb) - xsb);
         } else {
-            k = ((((fd_libm_exp::invln2 * x) + (fd_libm_exp::half()).at(xsb))) as i32);
+            k = ((((fd_libm_exp::invln2 * x) + fd_libm_exp::__half.with(|__o| __o.at(xsb)))) as i32);
             t = (k as f64);
-            hi = (x - (t * (fd_libm_exp::ln2HI()).at(0)));
-            lo = (t * (fd_libm_exp::ln2LO()).at(0));
+            hi = (x - (t * fd_libm_exp::__ln2HI.with(|__o| __o.at(0))));
+            lo = (t * fd_libm_exp::__ln2LO.with(|__o| __o.at(0)));
         }
         x = (hi - lo);
     } else if (hx < 1043333120) {
@@ -80,19 +80,19 @@ pub const u_threshold: f64 = -745.1332191019411f64;
 /// Java: FdLibm.java:2435
 pub const twom1000: f64 = 9.332636185032189E-302f64;
 // Java: FdLibm.java:2438
-thread_local! { static __ln2HI: std::cell::RefCell<JArray<f64>> = std::cell::RefCell::new(JArray::from_vec(vec![0.6931471803691238f64, -0.6931471803691238f64])); }
-pub fn ln2HI() -> JArray<f64> { __ln2HI.with(|c| c.borrow().clone()) }
-pub fn set_ln2HI(v: JArray<f64>) { __ln2HI.with(|c| *c.borrow_mut() = v) }
+pub static __ln2HI: JStatic<JArray<f64>> = JStatic::lazy(|| JArray::from_vec(vec![0.6931471803691238f64, -0.6931471803691238f64]));
+#[inline] pub fn ln2HI() -> JArray<f64> { __ln2HI.get() }
+pub fn set_ln2HI(v: JArray<f64>) { __ln2HI.set(v) }
 // Java: FdLibm.java:2440
-thread_local! { static __ln2LO: std::cell::RefCell<JArray<f64>> = std::cell::RefCell::new(JArray::from_vec(vec![1.9082149292705877E-10f64, -(1.9082149292705877E-10f64)])); }
-pub fn ln2LO() -> JArray<f64> { __ln2LO.with(|c| c.borrow().clone()) }
-pub fn set_ln2LO(v: JArray<f64>) { __ln2LO.with(|c| *c.borrow_mut() = v) }
+pub static __ln2LO: JStatic<JArray<f64>> = JStatic::lazy(|| JArray::from_vec(vec![1.9082149292705877E-10f64, -(1.9082149292705877E-10f64)]));
+#[inline] pub fn ln2LO() -> JArray<f64> { __ln2LO.get() }
+pub fn set_ln2LO(v: JArray<f64>) { __ln2LO.set(v) }
 /// Java: FdLibm.java:2442
 pub const invln2: f64 = 1.4426950408889634f64;
 // Java: FdLibm.java:2433
-thread_local! { static __half: std::cell::RefCell<JArray<f64>> = std::cell::RefCell::new(JArray::from_vec(vec![0.5f64, -0.5f64])); }
-pub fn half() -> JArray<f64> { __half.with(|c| c.borrow().clone()) }
-pub fn set_half(v: JArray<f64>) { __half.with(|c| *c.borrow_mut() = v) }
+pub static __half: JStatic<JArray<f64>> = JStatic::lazy(|| JArray::from_vec(vec![0.5f64, -0.5f64]));
+#[inline] pub fn half() -> JArray<f64> { __half.get() }
+pub fn set_half(v: JArray<f64>) { __half.set(v) }
 /// Java: FdLibm.java:2444
 pub const P1: f64 = 0.16666666666666602f64;
 /// Java: FdLibm.java:2445

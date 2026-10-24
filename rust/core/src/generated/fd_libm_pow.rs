@@ -134,23 +134,23 @@ pub fn compute(mut x: f64, mut y: f64) -> f64 {
             ix = (ix - 1048576);
         }
         x_abs = fd_libm::__HI2(x_abs, ix);
-        let mut BP: JArray<f64> = JArray::from_vec(vec![1.0f64, 1.5f64]);
-        let mut DP_H: JArray<f64> = JArray::from_vec(vec![0.0f64, 0.5849624872207642f64]);
-        let mut DP_L: JArray<f64> = JArray::from_vec(vec![0.0f64, 1.350039202129749E-8f64]);
+        let BP = &JStackArray::from([1.0f64, 1.5f64]);
+        let DP_H = &JStackArray::from([0.0f64, 0.5849624872207642f64]);
+        let DP_L = &JStackArray::from([0.0f64, 1.350039202129749E-8f64]);
         let mut L1: f64 = 0.5999999999999946f64;
         let mut L2: f64 = 0.4285714285785502f64;
         let mut L3: f64 = 0.33333332981837743f64;
         let mut L4: f64 = 0.272728123808534f64;
         let mut L5: f64 = 0.23066074577556175f64;
         let mut L6: f64 = 0.20697501780033842f64;
-        u = (x_abs - BP.at(k));
-        v = (1.0f64 / ((x_abs + BP.at(k))));
+        u = (x_abs - (BP).at(k));
+        v = (1.0f64 / ((x_abs + (BP).at(k))));
         ss = (u * v);
         s_h = ss;
         s_h = fd_libm::__LO2(s_h, 0);
         t_h = 0.0f64;
         t_h = fd_libm::__HI2(t_h, (((((i32::wrapping_shr(ix, (1) as u32)) | 536870912)) + 524288) + (i32::wrapping_shl(k, (18) as u32))));
-        t_l = (x_abs - ((t_h - BP.at(k))));
+        t_l = (x_abs - ((t_h - (BP).at(k))));
         s_l = (v * ((((u - (s_h * t_h))) - (s_h * t_l))));
         s2 = (ss * ss);
         r = ((s2 * s2) * ((L1 + (s2 * ((L2 + (s2 * ((L3 + (s2 * ((L4 + (s2 * ((L5 + (s2 * L6))))))))))))))));
@@ -165,11 +165,11 @@ pub fn compute(mut x: f64, mut y: f64) -> f64 {
         p_h = fd_libm::__LO2(p_h, 0);
         p_l = (v - ((p_h - u)));
         z_h = (CP_H * p_h);
-        z_l = (((CP_L * p_h) + (p_l * CP)) + DP_L.at(k));
+        z_l = (((CP_L * p_h) + (p_l * CP)) + (DP_L).at(k));
         t = (n as f64);
-        t1 = (((((z_h + z_l)) + DP_H.at(k))) + t);
+        t1 = (((((z_h + z_l)) + (DP_H).at(k))) + t);
         t1 = fd_libm::__LO2(t1, 0);
-        t2 = (z_l - ((((((t1 - t)) - DP_H.at(k))) - z_h)));
+        t2 = (z_l - ((((((t1 - t)) - (DP_H).at(k))) - z_h)));
     }
     let mut y1: f64 = y;
     y1 = fd_libm::__LO2(y1, 0);

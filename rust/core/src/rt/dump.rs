@@ -103,6 +103,13 @@ impl Dumper {
 
 impl<T: JDump> JDumpTarget for Vec<T> {
     fn dump_target(&self, d: &mut Dumper, id: usize) {
+        self.as_slice().dump_target(d, id)
+    }
+}
+
+/// Arrays and lists dump the same way.
+impl<T: JDump> JDumpTarget for [T] {
+    fn dump_target(&self, d: &mut Dumper, id: usize) {
         d.sequence(id, self.len(), "", |d| {
             for x in self {
                 d.element(x);

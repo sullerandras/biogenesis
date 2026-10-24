@@ -726,9 +726,14 @@ public class J2R {
 				// equals(Object) is only ever called with the same class here.
 				JT pt = !ctor && !isStatic && sig(d).equals("equals(java.lang.Object)") ? new JT(K.CLASS, q, null) : jt(p.getType().resolve());
 				String pn = rustIdent(p.getNameAsString());
-				scope.declare(p.getNameAsString(), pn, pt);
 				if (params.length() > 0) params.append(", ");
-				params.append("mut ").append(pn).append(": ").append(rust(pt));
+				if (viewParam(p)) {
+					scope.declareView(p.getNameAsString(), pn, pt);
+					params.append(pn).append(": &impl JArr<").append(rust(pt.elem)).append(">");
+				} else {
+					scope.declare(p.getNameAsString(), pn, pt);
+					params.append("mut ").append(pn).append(": ").append(rust(pt));
+				}
 				if (args.length() > 0) args.append(", ");
 				args.append(pn);
 			}
@@ -807,19 +812,14 @@ public class J2R {
 				return doc + "pub const " + n + ": " + rust(t) + " = " + val.code + ";\n";
 			}
 			if (!f.isFinal() && owner.startsWith("biogenesis.")) savedStatics.put(owner + "." + v.getNameAsString(), moduleName(owner) + "::" + n + "|" + moduleName(owner) + "::set_" + v.getNameAsString());
-			String cell = t.copy() ? "Cell" : "RefCell";
 			String initCode = init == null ? defaultValue(t) : init(init, t, v).code;
 			boolean constInit = init == null || isConstExpr(init);
+			String cell = "__" + v.getNameAsString();
 			StringBuilder out = new StringBuilder(doc.replace("/// ", "// "));
-			out.append("thread_local! { static __").append(v.getNameAsString()).append(": std::cell::").append(cell).append("<").append(rust(t)).append("> = ")
-					.append(constInit ? "const { std::cell::" + cell + "::new(" + initCode + ") }" : "std::cell::" + cell + "::new(" + initCode + ")").append("; }\n");
-			if (t.copy()) {
-				out.append("pub fn ").append(n).append("() -> ").append(rust(t)).append(" { __").append(v.getNameAsString()).append(".with(|c| c.get()) }\n");
-				out.append("pub fn set_").append(v.getNameAsString()).append("(v: ").append(rust(t)).append(") { __").append(v.getNameAsString()).append(".with(|c| c.set(v)) }\n");
-			} else {
-				out.append("pub fn ").append(n).append("() -> ").append(rust(t)).append(" { __").append(v.getNameAsString()).append(".with(|c| c.borrow().clone()) }\n");
-				out.append("pub fn set_").append(v.getNameAsString()).append("(v: ").append(rust(t)).append(") { __").append(v.getNameAsString()).append(".with(|c| *c.borrow_mut() = v) }\n");
-			}
+			out.append("pub static ").append(cell).append(": JStatic<").append(rust(t)).append("> = ")
+					.append(constInit ? "JStatic::new(" + initCode + ")" : "JStatic::lazy(|| " + initCode + ")").append(";\n");
+			out.append("#[inline] pub fn ").append(n).append("() -> ").append(rust(t)).append(" { ").append(cell).append(".get() }\n");
+			out.append("pub fn set_").append(v.getNameAsString()).append("(v: ").append(rust(t)).append(") { ").append(cell).append(".set(v) }\n");
 			return out.toString();
 		} catch (RuntimeException e) {
 			problem(v, e);
@@ -867,6 +867,7 @@ public class J2R {
 
 	static final class Var {
 		final String rust; final JT t;
+		boolean view; // an array that doesn't escape: a `&impl JArr` / `&JStackArray`, used without clone
 		Var(String rust, JT t) { this.rust = rust; this.t = t; }
 	}
 
@@ -875,6 +876,7 @@ public class J2R {
 		final Map<String, Var> vars = new HashMap<>();
 		Scope(Scope p) { parent = p; }
 		void declare(String java, String rust, JT t) { vars.put(java, new Var(rust, t)); }
+		void declareView(String java, String rust, JT t) { Var v = new Var(rust, t); v.view = true; vars.put(java, v); }
 		Var find(String n) {
 			for (Scope s = this; s != null; s = s.parent) if (s.vars.containsKey(n)) return s.vars.get(n);
 			return null;
@@ -1203,6 +1205,12 @@ public class J2R {
 			for (VariableDeclarator v : e.asVariableDeclarationExpr().getVariables()) {
 				JT t = jt(v.getType().resolve());
 				String n = rustIdent(v.getNameAsString());
+				String stack = stackArray(v, t);
+				if (stack != null) {
+					scope.declareView(v.getNameAsString(), n, t);
+					out.append(ind).append("let ").append(n).append(" = &").append(stack).append(";\n");
+					continue;
+				}
 				String init = v.getInitializer().isPresent() ? init(v.getInitializer().get(), t, v).code : defaultValue(t);
 				scope.declare(v.getNameAsString(), n, t);
 				out.append(ind).append("let mut ").append(n).append(": ").append(rust(t)).append(" = ").append(init).append(";\n");
@@ -1232,6 +1240,8 @@ public class J2R {
 	static final class Ex {
 		final String code; final JT t; final boolean pure;
 		Long intLit; // value, when an int/long literal (possibly negated)
+		String staticCell; // the JStatic, when a read of a static field
+		boolean view;      // a non-escaping array variable (see Var.view)
 		Ex(String code, JT t, boolean pure) { this.code = code; this.t = t; this.pure = pure; }
 	}
 
@@ -1294,6 +1304,8 @@ public class J2R {
 			Ex arr = expr(a.getName());
 			Ex idx = coerce(expr(a.getIndex()), INT, a);
 			if (arr.t.k != K.ARRAY) throw new Unsupported("index into " + arr.t);
+			String[] fa = readOnly(a.getIndex()) ? fieldArray(arr) : null;
+			if (fa != null) return new Ex(fa[0] + ".at(" + idx.code + ")" + fa[1], arr.t.elem, false);
 			return new Ex(recv(a.getName(), arr) + ".at(" + idx.code + ")", arr.t.elem, false);
 		}
 		if (e.isMethodCallExpr()) return call(e.asMethodCallExpr());
@@ -1409,6 +1421,40 @@ public class J2R {
 	}
 
 	/** Receiver of a method call or field access: a borrowed reference. */
+	static final java.util.regex.Pattern FIELD_READ = java.util.regex.Pattern.compile("((?:r#)?[A-Za-z_]\\w*)\\.get\\(\\|o\\| o((?:\\.(?:r#)?\\w+)+)\\.clone\\(\\)\\)");
+
+	/**
+	 * For an array read from a field, `obj.get(|o| o.f.clone())` (or a static): the prefix
+	 * and suffix that put an operation on the array inside the field access,
+	 * `obj.get(|__o| __o.f` + `.at(i)` + `)`, so the reference isn't cloned
+	 * (and dropped) for one element. Callers use it only when the index (and
+	 * value) can't change the object, as the field is then read after them.
+	 */
+	String[] fieldArray(Ex arr) {
+		if (arr.staticCell != null) return new String[] { arr.staticCell + ".with(|__o| __o", ")" };
+		java.util.regex.Matcher m = FIELD_READ.matcher(arr.code);
+		if (!m.matches()) return null;
+		return new String[] { m.group(1) + ".get(|__o| __o" + m.group(2), ")" };
+	}
+
+	/** True when evaluating e has no side effects (no calls, assignments, ++/--, allocations). */
+	static boolean readOnly(Expression e) {
+		if (e.isEnclosedExpr()) return readOnly(e.asEnclosedExpr().getInner());
+		if (e.isNameExpr() || e.isLiteralExpr() || e.isThisExpr()) return true;
+		if (e.isFieldAccessExpr()) return readOnly(e.asFieldAccessExpr().getScope());
+		if (e.isArrayAccessExpr()) return readOnly(e.asArrayAccessExpr().getName()) && readOnly(e.asArrayAccessExpr().getIndex());
+		if (e.isBinaryExpr()) return readOnly(e.asBinaryExpr().getLeft()) && readOnly(e.asBinaryExpr().getRight());
+		if (e.isCastExpr()) return readOnly(e.asCastExpr().getExpression());
+		if (e.isConditionalExpr()) return readOnly(e.asConditionalExpr().getCondition()) && readOnly(e.asConditionalExpr().getThenExpr()) && readOnly(e.asConditionalExpr().getElseExpr());
+		if (e.isUnaryExpr()) {
+			UnaryExpr.Operator op = e.asUnaryExpr().getOperator();
+			return op != UnaryExpr.Operator.PREFIX_INCREMENT && op != UnaryExpr.Operator.POSTFIX_INCREMENT
+					&& op != UnaryExpr.Operator.PREFIX_DECREMENT && op != UnaryExpr.Operator.POSTFIX_DECREMENT
+					&& readOnly(e.asUnaryExpr().getExpression());
+		}
+		return false;
+	}
+
 	String recv(Expression javaExpr, Ex x) {
 		if (x.code.endsWith(".clone()") && isSimplePath(x.code.substring(0, x.code.length() - 8))) return x.code.substring(0, x.code.length() - 8);
 		return "(" + x.code + ")";
@@ -1420,7 +1466,11 @@ public class J2R {
 
 	Ex name(NameExpr n) {
 		Var v = scope.find(n.getNameAsString());
-		if (v != null) return new Ex(v.t.copy() ? v.rust : v.rust + ".clone()", v.t, true);
+		if (v != null) {
+			Ex x = new Ex(v.t.copy() || v.view ? v.rust : v.rust + ".clone()", v.t, true);
+			x.view = v.view;
+			return x;
+		}
 		ResolvedValueDeclaration r = n.resolve();
 		if (r.isField()) return field(r.asField(), null, n);
 		throw new Unsupported("name " + n);
@@ -1432,6 +1482,8 @@ public class J2R {
 				ResolvedType st = f.getScope().calculateResolvedType();
 				if (st.isArray()) {
 					Ex a = expr(f.getScope());
+					String[] fa = fieldArray(a);
+					if (fa != null) return new Ex(fa[0] + ".len()" + fa[1], INT, false);
 					return new Ex(recv(f.getScope(), a) + ".len()", INT, false);
 				}
 			} catch (RuntimeException ignored) {
@@ -1462,7 +1514,10 @@ public class J2R {
 			FieldDeclaration decl = (FieldDeclaration) v.getParentNode().get();
 			boolean isConst = decl.isFinal() && v.getInitializer().isPresent() && isConstExpr(v.getInitializer().get());
 			String path = moduleName(owner) + "::" + rustIdent(v.getNameAsString());
-			return new Ex(isConst ? path : path + "()", t, isConst);
+			if (isConst) return new Ex(path, t, true);
+			Ex x = new Ex(path + "()", t, false);
+			x.staticCell = moduleName(owner) + "::__" + v.getNameAsString();
+			return x;
 		}
 		String obj;
 		JT objT;
@@ -1832,6 +1887,17 @@ public class J2R {
 			requireNoSideEffects(a.getValue());
 			return new Ex("()", VOID, true);
 		}
+		if (!asExpr && op == AssignExpr.Operator.ASSIGN && a.getTarget().isArrayAccessExpr()
+				&& readOnly(a.getTarget().asArrayAccessExpr().getIndex()) && readOnly(a.getValue())) {
+			// x[i] = v with x a field: x.get(|__o| __o.x.put(i, v)), see fieldArray
+			ArrayAccessExpr aa = a.getTarget().asArrayAccessExpr();
+			Ex arr = expr(aa.getName());
+			String[] fa = arr.t.k == K.ARRAY ? fieldArray(arr) : null;
+			if (fa != null) {
+				Ex idx = coerce(expr(aa.getIndex()), INT, aa);
+				return new Ex(fa[0] + ".put(" + idx.code + ", " + exprTo(a.getValue(), arr.t.elem, a).code + ")" + fa[1], VOID, false);
+			}
+		}
 		LValue lv = lvalue(a.getTarget());
 		String value;
 		if (op == AssignExpr.Operator.ASSIGN) {
@@ -1948,6 +2014,140 @@ public class J2R {
 		return s.toString();
 	}
 
+	/** Arguments of a static method with non-escaping array parameters: those get a reference. */
+	String viewArgs(List<Expression> as, MethodDeclaration md, Node at) {
+		StringBuilder s = new StringBuilder();
+		if (as.size() != md.getParameters().size()) throw new Unsupported("varargs call");
+		for (int i = 0; i < as.size(); i++) {
+			if (i > 0) s.append(", ");
+			Parameter p = md.getParameter(i);
+			Ex x = exprTo(as.get(i), jt(p.getType().resolve()), at);
+			if (!viewParam(p) || x.view) s.append(x.code);
+			else s.append("&").append(recv(as.get(i), x));
+		}
+		return s.toString();
+	}
+
+	// ---------------------------------------------------------------- arrays that don't escape
+
+	/*
+	 * HotSpot allocates a `new double[2]` that never leaves the method on the
+	 * stack (escape analysis). FdLibm's sin/cos/pow do that on every call, so
+	 * J2R does the same for the simple cases: a local primitive array
+	 * created with a constant length, or a parameter of a static method,
+	 * whose every use is an element access, `.length`, or an argument to such
+	 * a parameter. Those parameters take `&impl JArr<T>`, the locals are
+	 * `JStackArray`s.
+	 */
+
+	/** Parameters that don't escape, by identity (computed for all static methods at once). */
+	java.util.Set<Parameter> viewParams;
+
+	boolean viewParam(Parameter p) {
+		if (viewParams == null) computeViewParams();
+		return viewParams.contains(p);
+	}
+
+	static boolean primitiveArray(ResolvedType t) {
+		return t.isArray() && t.asArrayType().getComponentType().isPrimitive();
+	}
+
+	void computeViewParams() {
+		viewParams = java.util.Collections.newSetFromMap(new java.util.IdentityHashMap<>());
+		List<Parameter> candidates = new ArrayList<>();
+		for (Map.Entry<String, ClassOrInterfaceDeclaration> e : allTypes.entrySet()) {
+			for (MethodDeclaration m : e.getValue().getMethods()) {
+				try {
+					if (!m.isStatic() || !m.getBody().isPresent() || skipped(e.getKey(), m) || natives.contains(e.getKey() + "." + sig(m))) continue;
+					for (Parameter p : m.getParameters()) if (primitiveArray(p.getType().resolve())) candidates.add(p);
+				} catch (RuntimeException ignored) {
+					// a type outside the parsed sources: not a candidate
+				}
+			}
+		}
+		viewParams.addAll(candidates);
+		// Drop parameters that escape until none does (optimistic: calls among candidates are fine).
+		for (boolean changed = true; changed; ) {
+			changed = false;
+			for (Parameter p : candidates) {
+				if (!viewParams.contains(p)) continue;
+				MethodDeclaration m = (MethodDeclaration) p.getParentNode().get();
+				if (!staysLocal(p.getNameAsString(), m)) {
+					viewParams.remove(p);
+					changed = true;
+				}
+			}
+		}
+	}
+
+	/** Every use of the array variable `name` in `c` is a[i], a.length, or a non-escaping parameter's argument. */
+	boolean staysLocal(String name, CallableDeclaration<?> c) {
+		int declared = 0;
+		for (Parameter p : c.findAll(Parameter.class)) if (p.getNameAsString().equals(name)) declared++;
+		for (VariableDeclarator v : c.findAll(VariableDeclarator.class)) if (v.getNameAsString().equals(name)) declared++;
+		if (declared != 1) return false; // shadowed or reused: don't bother
+		for (NameExpr n : c.findAll(NameExpr.class)) {
+			if (!n.getNameAsString().equals(name)) continue;
+			Node parent = n.getParentNode().orElse(null);
+			if (parent instanceof ArrayAccessExpr && ((ArrayAccessExpr) parent).getName() == n) continue;
+			if (parent instanceof FieldAccessExpr && ((FieldAccessExpr) parent).getNameAsString().equals("length")) continue;
+			if (parent instanceof MethodCallExpr && passedToViewParam((MethodCallExpr) parent, n)) continue;
+			return false;
+		}
+		return true;
+	}
+
+	boolean passedToViewParam(MethodCallExpr call, NameExpr arg) {
+		int k = -1;
+		for (int i = 0; i < call.getArguments().size(); i++) if (call.getArgument(i) == arg) k = i;
+		if (k < 0) return false; // the receiver
+		try {
+			ResolvedMethodDeclaration rm = call.resolve();
+			if (!rm.isStatic()) return false;
+			String owner = rm.declaringType().getQualifiedName();
+			if (!allTypes.containsKey(owner)) return false;
+			MethodDeclaration md = method(owner, rm.getSignature().replace(" ", ""));
+			return k < md.getParameters().size() && viewParams.contains(md.getParameter(k));
+		} catch (RuntimeException e) {
+			return false;
+		}
+	}
+
+	/** The JStackArray for a local that can be one (see above), else null. */
+	String stackArray(VariableDeclarator v, JT t) {
+		if (t.k != K.ARRAY || !v.getInitializer().isPresent()) return null;
+		try {
+			if (!primitiveArray(v.getType().resolve()) || v.getType().getArrayLevel() != 1) return null;
+		} catch (RuntimeException e) {
+			return null;
+		}
+		Expression init = v.getInitializer().get();
+		ArrayInitializerExpr values = null;
+		String length = null;
+		if (init.isArrayInitializerExpr()) values = init.asArrayInitializerExpr();
+		else if (init.isArrayCreationExpr()) {
+			ArrayCreationExpr a = init.asArrayCreationExpr();
+			if (a.getLevels().size() != 1) return null;
+			if (a.getInitializer().isPresent()) values = a.getInitializer().get();
+			else if (a.getLevels().get(0).getDimension().map(Expression::isIntegerLiteralExpr).orElse(false))
+				length = a.getLevels().get(0).getDimension().get().asIntegerLiteralExpr().getValue();
+			else return null;
+		} else return null;
+		CallableDeclaration<?> c = v.findAncestor(CallableDeclaration.class).orElse(null);
+		if (c == null) return null;
+		if (viewParams == null) computeViewParams();
+		if (!staysLocal(v.getNameAsString(), c)) return null;
+		if (length != null) return "JStackArray::<" + rust(t.elem) + ", " + length + ">::new(" + defaultValue(t.elem) + ")";
+		StringBuilder s = new StringBuilder("JStackArray::from([");
+		boolean first = true;
+		for (Expression e : values.getValues()) {
+			if (!first) s.append(", ");
+			first = false;
+			s.append(coerce(expr(e), t.elem, e).code);
+		}
+		return s.append("])").toString();
+	}
+
 	Ex call(MethodCallExpr m) {
 		ResolvedMethodDeclaration rm = m.resolve();
 		String owner = rm.declaringType().getQualifiedName();
@@ -1997,6 +2197,7 @@ public class J2R {
 			if (!callableNames.containsKey(owner + "." + sig)) nameCallables(allTypes.get(owner));
 			needStatic(md);
 			String fn = moduleName(owner) + "::" + callableNames.get(owner + "." + sig);
+			if (md.getParameters().stream().anyMatch(this::viewParam)) return new Ex(fn + "(" + viewArgs(as, md, m) + ")", ret, false);
 			return new Ex(fn + "(" + args(as, rm::getParam, rm.getNumberOfParams(), m, false) + ")", ret, false);
 		}
 		if (!classes.containsKey(owner)) throw new Unsupported("instance method of " + owner);

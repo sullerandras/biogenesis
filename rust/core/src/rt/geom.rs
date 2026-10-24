@@ -11,7 +11,7 @@
 
 #![allow(non_snake_case)]
 
-use std::cell::RefCell;
+use super::jref::JCell;
 use std::rc::Rc;
 
 use super::dump::{Dumper, JDumpTarget};
@@ -44,7 +44,7 @@ impl RectangleT for Rectangle {
 impl<T: RectangleT + 'static> JRef<T> {
     /// Use as a `Rectangle` (Java's implicit upcast).
     pub fn as_rectangle(self) -> JRef<dyn RectangleT> {
-        self.map_rc(|rc| rc as Rc<RefCell<dyn RectangleT>>)
+        self.map_rc(|rc| rc as Rc<JCell<dyn RectangleT>>)
     }
 }
 
@@ -240,7 +240,7 @@ impl Line2DT for Line2D {
 impl<T: Line2DT + 'static> JRef<T> {
     /// Use as a `Line2D` (Java's implicit upcast).
     pub fn as_line2d(self) -> JRef<dyn Line2DT> {
-        self.map_rc(|rc| rc as Rc<RefCell<dyn Line2DT>>)
+        self.map_rc(|rc| rc as Rc<JCell<dyn Line2DT>>)
     }
 }
 

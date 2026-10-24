@@ -9,6 +9,9 @@ use biogenesis_core::generated::{World, utils};
 use biogenesis_core::rt::{Random, Stub};
 use biogenesis_core::save;
 
+#[global_allocator]
+static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
+
 fn main() {
     let args: Vec<String> = std::env::args().skip(1).collect();
     let (world, mut rest) = match args[0].as_str() {

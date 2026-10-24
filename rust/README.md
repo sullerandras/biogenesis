@@ -31,7 +31,7 @@ frame identical to Java, and saves and loads games (see Saved games):
 - `core/src/generated/`: output. Committed so upstream changes show up as a
   reviewable Rust diff, but never edited by hand.
 - `core/src/rt/`: hand-written Java runtime: `JRef` (shared, nullable,
-  mutable objects), arrays/lists, `java.util.HashSet` (ported from the JDK's
+  mutable objects), arrays/lists, statics (`JStatic`), `java.util.HashSet` (ported from the JDK's
   `HashMap`, tree bins included), `Collection`/`Iterator`, lambdas (`JFn`),
   GUI stubs, `java.util.Random` (bit-exact, including
   `nextGaussian` with fdlibm's `log`), `Math` edge cases (`max`/`min` with
@@ -48,10 +48,24 @@ frame identical to Java, and saves and loads games (see Saved games):
 
 ## How Java semantics are kept
 
-- Every object is an `Rc<RefCell<_>>`. Fields are read with
+- Every object is an `Rc<JCell<_>>`. Fields are read with
   `obj.get(|o| o.f)` and written with `obj.setf(|o| &mut o.f, v)`. No borrow
   outlives a field access, so methods can call back into the same object
-  freely, as in Java.
+  freely, as in Java. Because of that, `JCell` is an `UnsafeCell` (a field
+  access is a plain load or store); the `checked` cargo feature counts
+  borrows like a `RefCell` and panics on an overlap, and `verify.sh` runs a
+  world with it.
+- An array is one allocation, `Rc<JCell<[T]>>`, like Java's (a `List` is a
+  `Vec`). `x1[i]` on a field reads the element inside the field access,
+  `this.get(|__o| __o.x1.at(i))`, without cloning the array's `Rc`, when
+  the index can't change the object (no calls, assignments, `++`).
+- Escape analysis, as HotSpot does it, for primitive arrays: a local
+  `new double[2]` (or `{1.0, 1.5}`) that is only indexed, measured or passed
+  to a parameter of the same kind is a `JStackArray` on the stack, and such
+  parameters of static methods take `&impl JArr<T>`. FdLibm's `sin`, `cos`,
+  `pow` allocated arrays on every call before (3/4 of all allocations).
+- The binaries use mimalloc (macOS's malloc is slow for Java's allocation
+  rate).
 - Rust evaluates a call's receiver and arguments left to right, which is
   Java's order for assignments and calls. That's why `setf` and `put` take the
   value as an argument.
@@ -76,8 +90,9 @@ frame identical to Java, and saves and loads games (see Saved games):
   mechanism can carry other class hierarchies later.
 - Strings are `JStr` (`Rc<str>`, nullable). `+` and `+=` become one
   `JStr::cat` of all parts; `char` is a UTF-16 unit (`u16`) as in Java.
-- Statics are thread-locals with getters/setters (`utils::random()`,
-  `utils::set_MAX_MUTATION_RATE(..)`). Compile-time constants become `const`.
+- Statics are globals (`JStatic`, initialized on first use, single-threaded)
+  with getters/setters (`utils::random()`, `utils::set_MAX_MUTATION_RATE(..)`).
+  Compile-time constants become `const`.
 - Overloads get the arity appended (`GeneticCode::new1(parent)`,
   `new37(...)`). `clone` becomes `jclone`.
 
@@ -133,8 +148,9 @@ Verified identical to Java by `verify.sh`:
 - The translator tests (`Samples`, `Item`, `Bag`).
 
 Speed, single-threaded, a 3000x3000 world growing from 3,000 to 13,000
-organisms in 2000 frames (same final state): Java 43 s, Rust 74 s. The
-translation is exact but not yet fast; see below.
+organisms in 2000 frames (same final state): Java 43 s, Rust 39 s (it was
+74 s with `RefCell`, thread-local statics, two allocations per array and
+FdLibm's arrays on the heap).
 
 ## Not done / next steps
 
@@ -143,18 +159,21 @@ lines (about 3 minutes). Speed baseline, to compare against after changes:
 
     java --add-opens java.base/java.util=ALL-UNNAMED -cp rust/build/java-classes:lib/gson-2.10.1.jar \
         biogenesis.WorldCheck new 3 3000 3000 3000 2000 every 0      # 43 s
-    rust/core/target/release/world_check new 3 3000 3000 3000 2000 every 0   # 74 s
+    rust/core/target/release/world_check new 3 3000 3000 3000 2000 every 0   # 39 s
     # both print: frame 2000 population 13213 organisms 13760 hash 82c26c3df8ccda5a
 
 When a world run differs, `full N` prints the whole state of frame N on
 both sides (as a save file); diff the two to find the first wrong field.
 
 
-1. Performance: `RefCell` checks and `Rc` clones on every access are the
-   price of correctness so far. Now that it is exact, swap `JRef` internals
-   (`UnsafeCell`, fewer clones of `this` fields), keep the collision checks'
-   hot paths allocation-free, and re-verify. The multi-threaded executor
-   is the other big win (Java's isn't deterministic either).
+1. Performance: single-threaded, Rust is now a bit faster than Java. The
+   time goes where it goes in Java (collision geometry, `calculateBounds`'
+   sin/cos). What's left of the translation's own overhead: about 12,000
+   allocations a frame (two `ExLine2DDouble`s per `contact` call, the
+   `checkHit` lambda, the per-frame `OrganismBuckets`), which escape
+   analysis of objects (not just arrays) would remove, and `Rc` count
+   updates when references are passed. The multi-threaded executor is the
+   big win left (Java's isn't deterministic either).
 2. A front end: the Rust world has no GUI. Drawing (`Organism.draw` etc.)
    is skipped now; a renderer would read the world's state.
 3. Compressed saves (gzip): the text format compresses well.

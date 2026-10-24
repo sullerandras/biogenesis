@@ -5,6 +5,13 @@ edition = "2024"
 publish = false
 
 [dependencies]
+# The binaries' allocator: Java allocates by bumping a pointer, and the
+# translation allocates as often as the Java code does (macOS's malloc is slow).
+mimalloc = { version = "0.1", default-features = false }
+
+[features]
+# RefCell borrow checks on every object access (see rt/jref.rs).
+checked = []
 
 # Java's int and long arithmetic wraps on overflow. With overflow checks off,
 # Rust's +, -, * and << on i32/i64 do the same, so the generated code can use

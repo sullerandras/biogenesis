@@ -38,7 +38,7 @@ impl OrganismBuckets {
                 {
                     let mut x: i32 = 0;
                     while (x <= this.get(|o| o.maxWidth)) {
-                        ((this.get(|o| o.buckets.clone())).at(y)).put(x, JList::from_vec(Vec::new()));
+                        (this.get(|__o| __o.buckets.at(y))).put(x, JList::from_vec(Vec::new()));
                         x = x + 1;
                     }
                 }
@@ -54,7 +54,7 @@ impl OrganismBuckets {
         let mut maxx: i32 = std::cmp::min(this.get(|o| o.maxWidth), ((({ let __r3 = &o; __r3.get(|o| o.__super.getMaxX()) } / (this.get(|o| o.bucketSize) as f64))) as i32));
         let mut maxy: i32 = std::cmp::min(this.get(|o| o.maxHeight), ((({ let __r4 = &o; __r4.get(|o| o.__super.getMaxY()) } / (this.get(|o| o.bucketSize) as f64))) as i32));
         if ((minx == maxx) && (miny == maxy)) {
-            (((this.get(|o| o.buckets.clone())).at(miny)).at(minx)).add(o.clone());
+            ((this.get(|__o| __o.buckets.at(miny))).at(minx)).add(o.clone());
             return;
         }
         {
@@ -63,7 +63,7 @@ impl OrganismBuckets {
                 {
                     let mut x: i32 = minx;
                     while (x <= maxx) {
-                        (((this.get(|o| o.buckets.clone())).at(y)).at(x)).add(o.clone());
+                        ((this.get(|__o| __o.buckets.at(y))).at(x)).add(o.clone());
                         x = x + 1;
                     }
                 }
@@ -84,7 +84,7 @@ impl OrganismBuckets {
                 {
                     let mut x: i32 = minx;
                     while (x <= maxx) {
-                        let mut bucket: JList<JRef<Organism>> = ((this.get(|o| o.buckets.clone())).at(y)).at(x);
+                        let mut bucket: JList<JRef<Organism>> = (this.get(|__o| __o.buckets.at(y))).at(x);
                         {
                             let mut i: i32 = 0;
                             let mut n: i32 = bucket.len();
@@ -107,7 +107,7 @@ impl OrganismBuckets {
 
     /// Java: OrganismBuckets.java:111 Collection<Organism> getBucket(int, int)
     pub fn getBucket(this: &JRef<Self>, mut x: i32, mut y: i32) -> JCollection<JRef<Organism>> {
-        return (((this.get(|o| o.buckets.clone())).at(y)).at(x)).as_collection();
+        return ((this.get(|__o| __o.buckets.at(y))).at(x)).as_collection();
     }
 
     /// Java: OrganismBuckets.java:118 int getMaxWidth()

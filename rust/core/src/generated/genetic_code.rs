@@ -482,67 +482,67 @@ impl GeneticCode {
                             }
                         } else {
                             (this.get(|o| o._genes.clone())).put(i, Gene::new());
-                            Gene::randomize(&((this.get(|o| o._genes.clone())).at(i)));
+                            Gene::randomize(&(this.get(|__o| __o._genes.at(i))));
                             if Random::nextBoolean(&(utils::random())) {
-                                Gene::setBranch(&((this.get(|o| o._genes.clone())).at(i)), (-1i32));
+                                Gene::setBranch(&(this.get(|__o| __o._genes.at(i))), (-1i32));
                             } else {
-                                Gene::setBranch(&((this.get(|o| o._genes.clone())).at(i)), Random::nextInt_bound(&(utils::random()), (i + 1)));
+                                Gene::setBranch(&(this.get(|__o| __o._genes.at(i))), Random::nextInt_bound(&(utils::random()), (i + 1)));
                             }
                             if Random::nextBoolean(&(utils::random())) {
                                 if Random::nextBoolean(&(utils::random())) {
                                     if Random::nextBoolean(&(utils::random())) {
-                                        Gene::setStack(&((this.get(|o| o._genes.clone())).at(i)), 1);
+                                        Gene::setStack(&(this.get(|__o| __o._genes.at(i))), 1);
                                     } else {
-                                        Gene::setStack(&((this.get(|o| o._genes.clone())).at(i)), 2);
+                                        Gene::setStack(&(this.get(|__o| __o._genes.at(i))), 2);
                                     }
                                 } else {
                                     if Random::nextBoolean(&(utils::random())) {
-                                        Gene::setStack(&((this.get(|o| o._genes.clone())).at(i)), (-1i32));
+                                        Gene::setStack(&(this.get(|__o| __o._genes.at(i))), (-1i32));
                                     } else {
-                                        Gene::setStack(&((this.get(|o| o._genes.clone())).at(i)), (-2i32));
+                                        Gene::setStack(&(this.get(|__o| __o._genes.at(i))), (-2i32));
                                     }
                                 }
                             } else {
-                                Gene::setStack(&((this.get(|o| o._genes.clone())).at(i)), 0);
+                                Gene::setStack(&(this.get(|__o| __o._genes.at(i))), 0);
                             }
                             if Random::nextBoolean(&(utils::random())) {
-                                Gene::setFold(&((this.get(|o| o._genes.clone())).at(i)), (Random::nextInt_bound(&(utils::random()), 6) + 1));
+                                Gene::setFold(&(this.get(|__o| __o._genes.at(i))), (Random::nextInt_bound(&(utils::random()), 6) + 1));
                             } else {
-                                Gene::setFold(&((this.get(|o| o._genes.clone())).at(i)), 0);
+                                Gene::setFold(&(this.get(|__o| __o._genes.at(i))), 0);
                             }
-                            Gene::setChiral(&((this.get(|o| o._genes.clone())).at(i)), (((Random::nextInt_bound(&(utils::random()), 4) * 2)) - 3));
+                            Gene::setChiral(&(this.get(|__o| __o._genes.at(i))), (((Random::nextInt_bound(&(utils::random()), 4) * 2)) - 3));
                             if Random::nextBoolean(&(utils::random())) {
                                 if Random::nextBoolean(&(utils::random())) {
                                     if Random::nextBoolean(&(utils::random())) {
                                         if Random::nextBoolean(&(utils::random())) {
-                                            Gene::setRadial(&((this.get(|o| o._genes.clone())).at(i)), 0);
+                                            Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 0);
                                         } else {
-                                            Gene::setRadial(&((this.get(|o| o._genes.clone())).at(i)), 90);
+                                            Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 90);
                                         }
                                     } else {
                                         if Random::nextBoolean(&(utils::random())) {
-                                            Gene::setRadial(&((this.get(|o| o._genes.clone())).at(i)), 120);
+                                            Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 120);
                                         } else {
-                                            Gene::setRadial(&((this.get(|o| o._genes.clone())).at(i)), 135);
+                                            Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 135);
                                         }
                                     }
                                 } else {
                                     if Random::nextBoolean(&(utils::random())) {
                                         if Random::nextBoolean(&(utils::random())) {
-                                            Gene::setRadial(&((this.get(|o| o._genes.clone())).at(i)), 180);
+                                            Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 180);
                                         } else {
-                                            Gene::setRadial(&((this.get(|o| o._genes.clone())).at(i)), 240);
+                                            Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 240);
                                         }
                                     } else {
                                         if Random::nextBoolean(&(utils::random())) {
-                                            Gene::setRadial(&((this.get(|o| o._genes.clone())).at(i)), 270);
+                                            Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 270);
                                         } else {
-                                            Gene::setRadial(&((this.get(|o| o._genes.clone())).at(i)), 360);
+                                            Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 360);
                                         }
                                     }
                                 }
                             } else {
-                                Gene::setRadial(&((this.get(|o| o._genes.clone())).at(i)), Random::nextInt_bound(&(utils::random()), 361));
+                                Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), Random::nextInt_bound(&(utils::random()), 361));
                             }
                             j = j - 1;
                             break 'c1;
@@ -697,67 +697,67 @@ impl GeneticCode {
                         (this.get(|o| o._genes.clone())).put(i, Gene::new());
                         if (clonedGene != 0) {
                             if ((Random::nextBoolean(&(utils::random()))) || (randomLength)) {
-                                Gene::randomizeLength(&((this.get(|o| o._genes.clone())).at(i)));
+                                Gene::randomizeLength(&(this.get(|__o| __o._genes.at(i))));
                             } else {
-                                Gene::setLength(&((this.get(|o| o._genes.clone())).at(i)), Gene::getLength(&(GeneticCode::getGene(&parentCode, j))));
+                                Gene::setLength(&(this.get(|__o| __o._genes.at(i))), Gene::getLength(&(GeneticCode::getGene(&parentCode, j))));
                             }
-                            Gene::randomizeTheta(&((this.get(|o| o._genes.clone())).at(i)));
+                            Gene::randomizeTheta(&(this.get(|__o| __o._genes.at(i))));
                             if Random::nextBoolean(&(utils::random())) {
                                 if Random::nextBoolean(&(utils::random())) {
                                     if Random::nextBoolean(&(utils::random())) {
                                         if Random::nextBoolean(&(utils::random())) {
-                                            Gene::setRadial(&((this.get(|o| o._genes.clone())).at(i)), 0);
+                                            Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 0);
                                         } else {
-                                            Gene::setRadial(&((this.get(|o| o._genes.clone())).at(i)), 90);
+                                            Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 90);
                                         }
                                     } else {
                                         if Random::nextBoolean(&(utils::random())) {
-                                            Gene::setRadial(&((this.get(|o| o._genes.clone())).at(i)), 120);
+                                            Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 120);
                                         } else {
-                                            Gene::setRadial(&((this.get(|o| o._genes.clone())).at(i)), 135);
+                                            Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 135);
                                         }
                                     }
                                 } else {
                                     if Random::nextBoolean(&(utils::random())) {
                                         if Random::nextBoolean(&(utils::random())) {
-                                            Gene::setRadial(&((this.get(|o| o._genes.clone())).at(i)), 180);
+                                            Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 180);
                                         } else {
-                                            Gene::setRadial(&((this.get(|o| o._genes.clone())).at(i)), 240);
+                                            Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 240);
                                         }
                                     } else {
                                         if Random::nextBoolean(&(utils::random())) {
-                                            Gene::setRadial(&((this.get(|o| o._genes.clone())).at(i)), 270);
+                                            Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 270);
                                         } else {
-                                            Gene::setRadial(&((this.get(|o| o._genes.clone())).at(i)), 360);
+                                            Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 360);
                                         }
                                     }
                                 }
                             } else {
-                                Gene::setRadial(&((this.get(|o| o._genes.clone())).at(i)), Random::nextInt_bound(&(utils::random()), 361));
+                                Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), Random::nextInt_bound(&(utils::random()), 361));
                             }
                             if (((Random::nextInt_bound(&(utils::random()), 4) < 1)) || (randomBranch)) {
                                 if Random::nextBoolean(&(utils::random())) {
-                                    Gene::setBranch(&((this.get(|o| o._genes.clone())).at(i)), (-1i32));
+                                    Gene::setBranch(&(this.get(|__o| __o._genes.at(i))), (-1i32));
                                 } else {
-                                    Gene::setBranch(&((this.get(|o| o._genes.clone())).at(i)), Random::nextInt_bound(&(utils::random()), (i + 1)));
+                                    Gene::setBranch(&(this.get(|__o| __o._genes.at(i))), Random::nextInt_bound(&(utils::random()), (i + 1)));
                                 }
                             } else {
-                                Gene::setBranch(&((this.get(|o| o._genes.clone())).at(i)), Gene::getBranch(&(GeneticCode::getGene(&parentCode, j))));
+                                Gene::setBranch(&(this.get(|__o| __o._genes.at(i))), Gene::getBranch(&(GeneticCode::getGene(&parentCode, j))));
                                 if (clonedGene == 1) {
-                                    if (Gene::getBranch(&((this.get(|o| o._genes.clone())).at(i))) == (-1i32)) {
+                                    if (Gene::getBranch(&(this.get(|__o| __o._genes.at(i)))) == (-1i32)) {
                                         if Random::nextBoolean(&(utils::random())) {
-                                            Gene::setBranch(&((this.get(|o| o._genes.clone())).at(i)), (i - 1));
+                                            Gene::setBranch(&(this.get(|__o| __o._genes.at(i))), (i - 1));
                                         } else {
                                             if Random::nextBoolean(&(utils::random())) {
-                                                Gene::setBranch(&((this.get(|o| o._genes.clone())).at(i)), i);
+                                                Gene::setBranch(&(this.get(|__o| __o._genes.at(i))), i);
                                             }
                                         }
                                     } else {
                                         if Random::nextBoolean(&(utils::random())) {
                                             if Random::nextBoolean(&(utils::random())) {
-                                                Gene::setBranch(&((this.get(|o| o._genes.clone())).at(i)), (-1i32));
+                                                Gene::setBranch(&(this.get(|__o| __o._genes.at(i))), (-1i32));
                                             } else {
-                                                Gene::setBranch(&((this.get(|o| o._genes.clone())).at(i)), i);
+                                                Gene::setBranch(&(this.get(|__o| __o._genes.at(i))), i);
                                             }
                                         }
                                     }
@@ -765,62 +765,62 @@ impl GeneticCode {
                             }
                         } else {
                             if randomLength {
-                                Gene::randomizeLength(&((this.get(|o| o._genes.clone())).at(i)));
+                                Gene::randomizeLength(&(this.get(|__o| __o._genes.at(i))));
                             } else {
-                                Gene::setLength(&((this.get(|o| o._genes.clone())).at(i)), Gene::getLength(&(GeneticCode::getGene(&parentCode, j))));
+                                Gene::setLength(&(this.get(|__o| __o._genes.at(i))), Gene::getLength(&(GeneticCode::getGene(&parentCode, j))));
                             }
                             if randomTheta {
-                                Gene::randomizeTheta(&((this.get(|o| o._genes.clone())).at(i)));
+                                Gene::randomizeTheta(&(this.get(|__o| __o._genes.at(i))));
                             } else {
-                                Gene::setTheta(&((this.get(|o| o._genes.clone())).at(i)), Gene::getTheta(&(GeneticCode::getGene(&parentCode, j))));
+                                Gene::setTheta(&(this.get(|__o| __o._genes.at(i))), Gene::getTheta(&(GeneticCode::getGene(&parentCode, j))));
                             }
                             if randomRadial {
                                 if Random::nextBoolean(&(utils::random())) {
                                     if Random::nextBoolean(&(utils::random())) {
                                         if Random::nextBoolean(&(utils::random())) {
                                             if Random::nextBoolean(&(utils::random())) {
-                                                Gene::setRadial(&((this.get(|o| o._genes.clone())).at(i)), 0);
+                                                Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 0);
                                             } else {
-                                                Gene::setRadial(&((this.get(|o| o._genes.clone())).at(i)), 90);
+                                                Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 90);
                                             }
                                         } else {
                                             if Random::nextBoolean(&(utils::random())) {
-                                                Gene::setRadial(&((this.get(|o| o._genes.clone())).at(i)), 120);
+                                                Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 120);
                                             } else {
-                                                Gene::setRadial(&((this.get(|o| o._genes.clone())).at(i)), 135);
+                                                Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 135);
                                             }
                                         }
                                     } else {
                                         if Random::nextBoolean(&(utils::random())) {
                                             if Random::nextBoolean(&(utils::random())) {
-                                                Gene::setRadial(&((this.get(|o| o._genes.clone())).at(i)), 180);
+                                                Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 180);
                                             } else {
-                                                Gene::setRadial(&((this.get(|o| o._genes.clone())).at(i)), 240);
+                                                Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 240);
                                             }
                                         } else {
                                             if Random::nextBoolean(&(utils::random())) {
-                                                Gene::setRadial(&((this.get(|o| o._genes.clone())).at(i)), 270);
+                                                Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 270);
                                             } else {
-                                                Gene::setRadial(&((this.get(|o| o._genes.clone())).at(i)), 360);
+                                                Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 360);
                                             }
                                         }
                                     }
                                 } else {
-                                    Gene::setRadial(&((this.get(|o| o._genes.clone())).at(i)), Random::nextInt_bound(&(utils::random()), 361));
+                                    Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), Random::nextInt_bound(&(utils::random()), 361));
                                 }
                             } else {
-                                Gene::setRadial(&((this.get(|o| o._genes.clone())).at(i)), Gene::getRadial(&(GeneticCode::getGene(&parentCode, j))));
+                                Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), Gene::getRadial(&(GeneticCode::getGene(&parentCode, j))));
                             }
                             if randomBranch {
                                 if Random::nextBoolean(&(utils::random())) {
-                                    Gene::setBranch(&((this.get(|o| o._genes.clone())).at(i)), (-1i32));
+                                    Gene::setBranch(&(this.get(|__o| __o._genes.at(i))), (-1i32));
                                 } else {
-                                    Gene::setBranch(&((this.get(|o| o._genes.clone())).at(i)), Random::nextInt_bound(&(utils::random()), (i + 1)));
+                                    Gene::setBranch(&(this.get(|__o| __o._genes.at(i))), Random::nextInt_bound(&(utils::random()), (i + 1)));
                                 }
                             } else {
-                                Gene::setBranch(&((this.get(|o| o._genes.clone())).at(i)), Gene::getBranch(&(GeneticCode::getGene(&parentCode, j))));
-                                if ((repairBranch) && ((Gene::getBranch(&((this.get(|o| o._genes.clone())).at(i))) > i))) {
-                                    Gene::setBranch(&((this.get(|o| o._genes.clone())).at(i)), i);
+                                Gene::setBranch(&(this.get(|__o| __o._genes.at(i))), Gene::getBranch(&(GeneticCode::getGene(&parentCode, j))));
+                                if ((repairBranch) && ((Gene::getBranch(&(this.get(|__o| __o._genes.at(i)))) > i))) {
+                                    Gene::setBranch(&(this.get(|__o| __o._genes.at(i))), i);
                                 }
                             }
                         }
@@ -828,239 +828,239 @@ impl GeneticCode {
                             if Random::nextBoolean(&(utils::random())) {
                                 if Random::nextBoolean(&(utils::random())) {
                                     if Random::nextBoolean(&(utils::random())) {
-                                        Gene::setStack(&((this.get(|o| o._genes.clone())).at(i)), 1);
+                                        Gene::setStack(&(this.get(|__o| __o._genes.at(i))), 1);
                                     } else {
-                                        Gene::setStack(&((this.get(|o| o._genes.clone())).at(i)), 2);
+                                        Gene::setStack(&(this.get(|__o| __o._genes.at(i))), 2);
                                     }
                                 } else {
                                     if Random::nextBoolean(&(utils::random())) {
-                                        Gene::setStack(&((this.get(|o| o._genes.clone())).at(i)), (-1i32));
+                                        Gene::setStack(&(this.get(|__o| __o._genes.at(i))), (-1i32));
                                     } else {
-                                        Gene::setStack(&((this.get(|o| o._genes.clone())).at(i)), (-2i32));
+                                        Gene::setStack(&(this.get(|__o| __o._genes.at(i))), (-2i32));
                                     }
                                 }
                             } else {
-                                Gene::setStack(&((this.get(|o| o._genes.clone())).at(i)), 0);
+                                Gene::setStack(&(this.get(|__o| __o._genes.at(i))), 0);
                             }
                         } else {
-                            Gene::setStack(&((this.get(|o| o._genes.clone())).at(i)), Gene::getStack(&(GeneticCode::getGene(&parentCode, j))));
+                            Gene::setStack(&(this.get(|__o| __o._genes.at(i))), Gene::getStack(&(GeneticCode::getGene(&parentCode, j))));
                         }
                         if randomChiral {
-                            Gene::setChiral(&((this.get(|o| o._genes.clone())).at(i)), (((Random::nextInt_bound(&(utils::random()), 4) * 2)) - 3));
+                            Gene::setChiral(&(this.get(|__o| __o._genes.at(i))), (((Random::nextInt_bound(&(utils::random()), 4) * 2)) - 3));
                         } else {
-                            Gene::setChiral(&((this.get(|o| o._genes.clone())).at(i)), Gene::getChiral(&(GeneticCode::getGene(&parentCode, j))));
+                            Gene::setChiral(&(this.get(|__o| __o._genes.at(i))), Gene::getChiral(&(GeneticCode::getGene(&parentCode, j))));
                         }
                         if randomFold {
                             if Random::nextBoolean(&(utils::random())) {
-                                Gene::setFold(&((this.get(|o| o._genes.clone())).at(i)), (Random::nextInt_bound(&(utils::random()), 6) + 1));
+                                Gene::setFold(&(this.get(|__o| __o._genes.at(i))), (Random::nextInt_bound(&(utils::random()), 6) + 1));
                             } else {
-                                Gene::setFold(&((this.get(|o| o._genes.clone())).at(i)), 0);
+                                Gene::setFold(&(this.get(|__o| __o._genes.at(i))), 0);
                             }
                         } else {
-                            Gene::setFold(&((this.get(|o| o._genes.clone())).at(i)), Gene::getFold(&(GeneticCode::getGene(&parentCode, j))));
+                            Gene::setFold(&(this.get(|__o| __o._genes.at(i))), Gene::getFold(&(GeneticCode::getGene(&parentCode, j))));
                         }
                         if randomredReaction {
-                            Gene::randomizeredReaction(&((this.get(|o| o._genes.clone())).at(i)));
+                            Gene::randomizeredReaction(&(this.get(|__o| __o._genes.at(i))));
                         } else {
-                            Gene::setredReaction(&((this.get(|o| o._genes.clone())).at(i)), Gene::getredReaction(&(GeneticCode::getGene(&parentCode, j))));
+                            Gene::setredReaction(&(this.get(|__o| __o._genes.at(i))), Gene::getredReaction(&(GeneticCode::getGene(&parentCode, j))));
                         }
                         if randomgreenReaction {
-                            Gene::randomizegreenReaction(&((this.get(|o| o._genes.clone())).at(i)));
+                            Gene::randomizegreenReaction(&(this.get(|__o| __o._genes.at(i))));
                         } else {
-                            Gene::setgreenReaction(&((this.get(|o| o._genes.clone())).at(i)), Gene::getgreenReaction(&(GeneticCode::getGene(&parentCode, j))));
+                            Gene::setgreenReaction(&(this.get(|__o| __o._genes.at(i))), Gene::getgreenReaction(&(GeneticCode::getGene(&parentCode, j))));
                         }
                         if randomblueReaction {
-                            Gene::randomizeblueReaction(&((this.get(|o| o._genes.clone())).at(i)));
+                            Gene::randomizeblueReaction(&(this.get(|__o| __o._genes.at(i))));
                         } else {
-                            Gene::setblueReaction(&((this.get(|o| o._genes.clone())).at(i)), Gene::getblueReaction(&(GeneticCode::getGene(&parentCode, j))));
+                            Gene::setblueReaction(&(this.get(|__o| __o._genes.at(i))), Gene::getblueReaction(&(GeneticCode::getGene(&parentCode, j))));
                         }
                         if randomplagueReaction {
-                            Gene::randomizeplagueReaction(&((this.get(|o| o._genes.clone())).at(i)));
+                            Gene::randomizeplagueReaction(&(this.get(|__o| __o._genes.at(i))));
                         } else {
-                            Gene::setplagueReaction(&((this.get(|o| o._genes.clone())).at(i)), Gene::getplagueReaction(&(GeneticCode::getGene(&parentCode, j))));
+                            Gene::setplagueReaction(&(this.get(|__o| __o._genes.at(i))), Gene::getplagueReaction(&(GeneticCode::getGene(&parentCode, j))));
                         }
                         if randomscourgeReaction {
-                            Gene::randomizescourgeReaction(&((this.get(|o| o._genes.clone())).at(i)));
+                            Gene::randomizescourgeReaction(&(this.get(|__o| __o._genes.at(i))));
                         } else {
-                            Gene::setscourgeReaction(&((this.get(|o| o._genes.clone())).at(i)), Gene::getscourgeReaction(&(GeneticCode::getGene(&parentCode, j))));
+                            Gene::setscourgeReaction(&(this.get(|__o| __o._genes.at(i))), Gene::getscourgeReaction(&(GeneticCode::getGene(&parentCode, j))));
                         }
                         if randomwhiteReaction {
-                            Gene::randomizewhiteReaction(&((this.get(|o| o._genes.clone())).at(i)));
+                            Gene::randomizewhiteReaction(&(this.get(|__o| __o._genes.at(i))));
                         } else {
-                            Gene::setwhiteReaction(&((this.get(|o| o._genes.clone())).at(i)), Gene::getwhiteReaction(&(GeneticCode::getGene(&parentCode, j))));
+                            Gene::setwhiteReaction(&(this.get(|__o| __o._genes.at(i))), Gene::getwhiteReaction(&(GeneticCode::getGene(&parentCode, j))));
                         }
                         if randomgrayReaction {
-                            Gene::randomizegrayReaction(&((this.get(|o| o._genes.clone())).at(i)));
+                            Gene::randomizegrayReaction(&(this.get(|__o| __o._genes.at(i))));
                         } else {
-                            Gene::setgrayReaction(&((this.get(|o| o._genes.clone())).at(i)), Gene::getgrayReaction(&(GeneticCode::getGene(&parentCode, j))));
+                            Gene::setgrayReaction(&(this.get(|__o| __o._genes.at(i))), Gene::getgrayReaction(&(GeneticCode::getGene(&parentCode, j))));
                         }
                         if randomsilverReaction {
-                            Gene::randomizesilverReaction(&((this.get(|o| o._genes.clone())).at(i)));
+                            Gene::randomizesilverReaction(&(this.get(|__o| __o._genes.at(i))));
                         } else {
-                            Gene::setsilverReaction(&((this.get(|o| o._genes.clone())).at(i)), Gene::getsilverReaction(&(GeneticCode::getGene(&parentCode, j))));
+                            Gene::setsilverReaction(&(this.get(|__o| __o._genes.at(i))), Gene::getsilverReaction(&(GeneticCode::getGene(&parentCode, j))));
                         }
                         if randomdefaultReaction {
-                            Gene::randomizedefaultReaction(&((this.get(|o| o._genes.clone())).at(i)));
+                            Gene::randomizedefaultReaction(&(this.get(|__o| __o._genes.at(i))));
                         } else {
-                            Gene::setdefaultReaction(&((this.get(|o| o._genes.clone())).at(i)), Gene::getdefaultReaction(&(GeneticCode::getGene(&parentCode, j))));
+                            Gene::setdefaultReaction(&(this.get(|__o| __o._genes.at(i))), Gene::getdefaultReaction(&(GeneticCode::getGene(&parentCode, j))));
                         }
                         if randomconsumerReaction {
-                            Gene::randomizeconsumerReaction(&((this.get(|o| o._genes.clone())).at(i)));
+                            Gene::randomizeconsumerReaction(&(this.get(|__o| __o._genes.at(i))));
                         } else {
-                            Gene::setconsumerReaction(&((this.get(|o| o._genes.clone())).at(i)), Gene::getconsumerReaction(&(GeneticCode::getGene(&parentCode, j))));
+                            Gene::setconsumerReaction(&(this.get(|__o| __o._genes.at(i))), Gene::getconsumerReaction(&(GeneticCode::getGene(&parentCode, j))));
                         }
                         if randomplantReaction {
-                            Gene::randomizeplantReaction(&((this.get(|o| o._genes.clone())).at(i)));
+                            Gene::randomizeplantReaction(&(this.get(|__o| __o._genes.at(i))));
                         } else {
-                            Gene::setplantReaction(&((this.get(|o| o._genes.clone())).at(i)), Gene::getplantReaction(&(GeneticCode::getGene(&parentCode, j))));
+                            Gene::setplantReaction(&(this.get(|__o| __o._genes.at(i))), Gene::getplantReaction(&(GeneticCode::getGene(&parentCode, j))));
                         }
                         if randommagentaReaction {
-                            Gene::randomizemagentaReaction(&((this.get(|o| o._genes.clone())).at(i)));
+                            Gene::randomizemagentaReaction(&(this.get(|__o| __o._genes.at(i))));
                         } else {
-                            Gene::setmagentaReaction(&((this.get(|o| o._genes.clone())).at(i)), Gene::getmagentaReaction(&(GeneticCode::getGene(&parentCode, j))));
+                            Gene::setmagentaReaction(&(this.get(|__o| __o._genes.at(i))), Gene::getmagentaReaction(&(GeneticCode::getGene(&parentCode, j))));
                         }
                         if randomroseReaction {
-                            Gene::randomizeroseReaction(&((this.get(|o| o._genes.clone())).at(i)));
+                            Gene::randomizeroseReaction(&(this.get(|__o| __o._genes.at(i))));
                         } else {
-                            Gene::setroseReaction(&((this.get(|o| o._genes.clone())).at(i)), Gene::getroseReaction(&(GeneticCode::getGene(&parentCode, j))));
+                            Gene::setroseReaction(&(this.get(|__o| __o._genes.at(i))), Gene::getroseReaction(&(GeneticCode::getGene(&parentCode, j))));
                         }
                         if randompinkReaction {
-                            Gene::randomizepinkReaction(&((this.get(|o| o._genes.clone())).at(i)));
+                            Gene::randomizepinkReaction(&(this.get(|__o| __o._genes.at(i))));
                         } else {
-                            Gene::setpinkReaction(&((this.get(|o| o._genes.clone())).at(i)), Gene::getpinkReaction(&(GeneticCode::getGene(&parentCode, j))));
+                            Gene::setpinkReaction(&(this.get(|__o| __o._genes.at(i))), Gene::getpinkReaction(&(GeneticCode::getGene(&parentCode, j))));
                         }
                         if randomcoralReaction {
-                            Gene::randomizecoralReaction(&((this.get(|o| o._genes.clone())).at(i)));
+                            Gene::randomizecoralReaction(&(this.get(|__o| __o._genes.at(i))));
                         } else {
-                            Gene::setcoralReaction(&((this.get(|o| o._genes.clone())).at(i)), Gene::getcoralReaction(&(GeneticCode::getGene(&parentCode, j))));
+                            Gene::setcoralReaction(&(this.get(|__o| __o._genes.at(i))), Gene::getcoralReaction(&(GeneticCode::getGene(&parentCode, j))));
                         }
                         if randomorangeReaction {
-                            Gene::randomizeorangeReaction(&((this.get(|o| o._genes.clone())).at(i)));
+                            Gene::randomizeorangeReaction(&(this.get(|__o| __o._genes.at(i))));
                         } else {
-                            Gene::setorangeReaction(&((this.get(|o| o._genes.clone())).at(i)), Gene::getorangeReaction(&(GeneticCode::getGene(&parentCode, j))));
+                            Gene::setorangeReaction(&(this.get(|__o| __o._genes.at(i))), Gene::getorangeReaction(&(GeneticCode::getGene(&parentCode, j))));
                         }
                         if randombarkReaction {
-                            Gene::randomizebarkReaction(&((this.get(|o| o._genes.clone())).at(i)));
+                            Gene::randomizebarkReaction(&(this.get(|__o| __o._genes.at(i))));
                         } else {
-                            Gene::setbarkReaction(&((this.get(|o| o._genes.clone())).at(i)), Gene::getbarkReaction(&(GeneticCode::getGene(&parentCode, j))));
+                            Gene::setbarkReaction(&(this.get(|__o| __o._genes.at(i))), Gene::getbarkReaction(&(GeneticCode::getGene(&parentCode, j))));
                         }
                         if randomivyReaction {
-                            Gene::randomizeivyReaction(&((this.get(|o| o._genes.clone())).at(i)));
+                            Gene::randomizeivyReaction(&(this.get(|__o| __o._genes.at(i))));
                         } else {
-                            Gene::setivyReaction(&((this.get(|o| o._genes.clone())).at(i)), Gene::getivyReaction(&(GeneticCode::getGene(&parentCode, j))));
+                            Gene::setivyReaction(&(this.get(|__o| __o._genes.at(i))), Gene::getivyReaction(&(GeneticCode::getGene(&parentCode, j))));
                         }
                         if randomvioletReaction {
-                            Gene::randomizevioletReaction(&((this.get(|o| o._genes.clone())).at(i)));
+                            Gene::randomizevioletReaction(&(this.get(|__o| __o._genes.at(i))));
                         } else {
-                            Gene::setvioletReaction(&((this.get(|o| o._genes.clone())).at(i)), Gene::getvioletReaction(&(GeneticCode::getGene(&parentCode, j))));
+                            Gene::setvioletReaction(&(this.get(|__o| __o._genes.at(i))), Gene::getvioletReaction(&(GeneticCode::getGene(&parentCode, j))));
                         }
                         if randomvirusReaction {
-                            Gene::randomizevirusReaction(&((this.get(|o| o._genes.clone())).at(i)));
+                            Gene::randomizevirusReaction(&(this.get(|__o| __o._genes.at(i))));
                         } else {
-                            Gene::setvirusReaction(&((this.get(|o| o._genes.clone())).at(i)), Gene::getvirusReaction(&(GeneticCode::getGene(&parentCode, j))));
+                            Gene::setvirusReaction(&(this.get(|__o| __o._genes.at(i))), Gene::getvirusReaction(&(GeneticCode::getGene(&parentCode, j))));
                         }
                         if randommaroonReaction {
-                            Gene::randomizemaroonReaction(&((this.get(|o| o._genes.clone())).at(i)));
+                            Gene::randomizemaroonReaction(&(this.get(|__o| __o._genes.at(i))));
                         } else {
-                            Gene::setmaroonReaction(&((this.get(|o| o._genes.clone())).at(i)), Gene::getmaroonReaction(&(GeneticCode::getGene(&parentCode, j))));
+                            Gene::setmaroonReaction(&(this.get(|__o| __o._genes.at(i))), Gene::getmaroonReaction(&(GeneticCode::getGene(&parentCode, j))));
                         }
                         if randomcrimsonReaction {
-                            Gene::randomizecrimsonReaction(&((this.get(|o| o._genes.clone())).at(i)));
+                            Gene::randomizecrimsonReaction(&(this.get(|__o| __o._genes.at(i))));
                         } else {
-                            Gene::setcrimsonReaction(&((this.get(|o| o._genes.clone())).at(i)), Gene::getcrimsonReaction(&(GeneticCode::getGene(&parentCode, j))));
+                            Gene::setcrimsonReaction(&(this.get(|__o| __o._genes.at(i))), Gene::getcrimsonReaction(&(GeneticCode::getGene(&parentCode, j))));
                         }
                         if randomoliveReaction {
-                            Gene::randomizeoliveReaction(&((this.get(|o| o._genes.clone())).at(i)));
+                            Gene::randomizeoliveReaction(&(this.get(|__o| __o._genes.at(i))));
                         } else {
-                            Gene::setoliveReaction(&((this.get(|o| o._genes.clone())).at(i)), Gene::getoliveReaction(&(GeneticCode::getGene(&parentCode, j))));
+                            Gene::setoliveReaction(&(this.get(|__o| __o._genes.at(i))), Gene::getoliveReaction(&(GeneticCode::getGene(&parentCode, j))));
                         }
                         if randommintReaction {
-                            Gene::randomizemintReaction(&((this.get(|o| o._genes.clone())).at(i)));
+                            Gene::randomizemintReaction(&(this.get(|__o| __o._genes.at(i))));
                         } else {
-                            Gene::setmintReaction(&((this.get(|o| o._genes.clone())).at(i)), Gene::getmintReaction(&(GeneticCode::getGene(&parentCode, j))));
+                            Gene::setmintReaction(&(this.get(|__o| __o._genes.at(i))), Gene::getmintReaction(&(GeneticCode::getGene(&parentCode, j))));
                         }
                         if randomlavenderReaction {
-                            Gene::randomizelavenderReaction(&((this.get(|o| o._genes.clone())).at(i)));
+                            Gene::randomizelavenderReaction(&(this.get(|__o| __o._genes.at(i))));
                         } else {
-                            Gene::setlavenderReaction(&((this.get(|o| o._genes.clone())).at(i)), Gene::getlavenderReaction(&(GeneticCode::getGene(&parentCode, j))));
+                            Gene::setlavenderReaction(&(this.get(|__o| __o._genes.at(i))), Gene::getlavenderReaction(&(GeneticCode::getGene(&parentCode, j))));
                         }
                         if randomcreamReaction {
-                            Gene::randomizecreamReaction(&((this.get(|o| o._genes.clone())).at(i)));
+                            Gene::randomizecreamReaction(&(this.get(|__o| __o._genes.at(i))));
                         } else {
-                            Gene::setcreamReaction(&((this.get(|o| o._genes.clone())).at(i)), Gene::getcreamReaction(&(GeneticCode::getGene(&parentCode, j))));
+                            Gene::setcreamReaction(&(this.get(|__o| __o._genes.at(i))), Gene::getcreamReaction(&(GeneticCode::getGene(&parentCode, j))));
                         }
                         if randomspikeReaction {
-                            Gene::randomizespikeReaction(&((this.get(|o| o._genes.clone())).at(i)));
+                            Gene::randomizespikeReaction(&(this.get(|__o| __o._genes.at(i))));
                         } else {
-                            Gene::setspikeReaction(&((this.get(|o| o._genes.clone())).at(i)), Gene::getspikeReaction(&(GeneticCode::getGene(&parentCode, j))));
+                            Gene::setspikeReaction(&(this.get(|__o| __o._genes.at(i))), Gene::getspikeReaction(&(GeneticCode::getGene(&parentCode, j))));
                         }
                         if randomfallowReaction {
-                            Gene::randomizefallowReaction(&((this.get(|o| o._genes.clone())).at(i)));
+                            Gene::randomizefallowReaction(&(this.get(|__o| __o._genes.at(i))));
                         } else {
-                            Gene::setfallowReaction(&((this.get(|o| o._genes.clone())).at(i)), Gene::getfallowReaction(&(GeneticCode::getGene(&parentCode, j))));
+                            Gene::setfallowReaction(&(this.get(|__o| __o._genes.at(i))), Gene::getfallowReaction(&(GeneticCode::getGene(&parentCode, j))));
                         }
                         if randomlightblueReaction {
-                            Gene::randomizelightblueReaction(&((this.get(|o| o._genes.clone())).at(i)));
+                            Gene::randomizelightblueReaction(&(this.get(|__o| __o._genes.at(i))));
                         } else {
-                            Gene::setlightblueReaction(&((this.get(|o| o._genes.clone())).at(i)), Gene::getlightblueReaction(&(GeneticCode::getGene(&parentCode, j))));
+                            Gene::setlightblueReaction(&(this.get(|__o| __o._genes.at(i))), Gene::getlightblueReaction(&(GeneticCode::getGene(&parentCode, j))));
                         }
                         if randomochreReaction {
-                            Gene::randomizeochreReaction(&((this.get(|o| o._genes.clone())).at(i)));
+                            Gene::randomizeochreReaction(&(this.get(|__o| __o._genes.at(i))));
                         } else {
-                            Gene::setochreReaction(&((this.get(|o| o._genes.clone())).at(i)), Gene::getochreReaction(&(GeneticCode::getGene(&parentCode, j))));
+                            Gene::setochreReaction(&(this.get(|__o| __o._genes.at(i))), Gene::getochreReaction(&(GeneticCode::getGene(&parentCode, j))));
                         }
                         if randomskyReaction {
-                            Gene::randomizeskyReaction(&((this.get(|o| o._genes.clone())).at(i)));
+                            Gene::randomizeskyReaction(&(this.get(|__o| __o._genes.at(i))));
                         } else {
-                            Gene::setskyReaction(&((this.get(|o| o._genes.clone())).at(i)), Gene::getskyReaction(&(GeneticCode::getGene(&parentCode, j))));
+                            Gene::setskyReaction(&(this.get(|__o| __o._genes.at(i))), Gene::getskyReaction(&(GeneticCode::getGene(&parentCode, j))));
                         }
                         if randomlilacReaction {
-                            Gene::randomizelilacReaction(&((this.get(|o| o._genes.clone())).at(i)));
+                            Gene::randomizelilacReaction(&(this.get(|__o| __o._genes.at(i))));
                         } else {
-                            Gene::setlilacReaction(&((this.get(|o| o._genes.clone())).at(i)), Gene::getlilacReaction(&(GeneticCode::getGene(&parentCode, j))));
+                            Gene::setlilacReaction(&(this.get(|__o| __o._genes.at(i))), Gene::getlilacReaction(&(GeneticCode::getGene(&parentCode, j))));
                         }
                         if randomfireReaction {
-                            Gene::randomizefireReaction(&((this.get(|o| o._genes.clone())).at(i)));
+                            Gene::randomizefireReaction(&(this.get(|__o| __o._genes.at(i))));
                         } else {
-                            Gene::setfireReaction(&((this.get(|o| o._genes.clone())).at(i)), Gene::getfireReaction(&(GeneticCode::getGene(&parentCode, j))));
+                            Gene::setfireReaction(&(this.get(|__o| __o._genes.at(i))), Gene::getfireReaction(&(GeneticCode::getGene(&parentCode, j))));
                         }
                         if randomlightbrownReaction {
-                            Gene::randomizelightbrownReaction(&((this.get(|o| o._genes.clone())).at(i)));
+                            Gene::randomizelightbrownReaction(&(this.get(|__o| __o._genes.at(i))));
                         } else {
-                            Gene::setlightbrownReaction(&((this.get(|o| o._genes.clone())).at(i)), Gene::getlightbrownReaction(&(GeneticCode::getGene(&parentCode, j))));
+                            Gene::setlightbrownReaction(&(this.get(|__o| __o._genes.at(i))), Gene::getlightbrownReaction(&(GeneticCode::getGene(&parentCode, j))));
                         }
                         if randomgreenbrownReaction {
-                            Gene::randomizegreenbrownReaction(&((this.get(|o| o._genes.clone())).at(i)));
+                            Gene::randomizegreenbrownReaction(&(this.get(|__o| __o._genes.at(i))));
                         } else {
-                            Gene::setgreenbrownReaction(&((this.get(|o| o._genes.clone())).at(i)), Gene::getgreenbrownReaction(&(GeneticCode::getGene(&parentCode, j))));
+                            Gene::setgreenbrownReaction(&(this.get(|__o| __o._genes.at(i))), Gene::getgreenbrownReaction(&(GeneticCode::getGene(&parentCode, j))));
                         }
                         if randombrownReaction {
-                            Gene::randomizebrownReaction(&((this.get(|o| o._genes.clone())).at(i)));
+                            Gene::randomizebrownReaction(&(this.get(|__o| __o._genes.at(i))));
                         } else {
-                            Gene::setbrownReaction(&((this.get(|o| o._genes.clone())).at(i)), Gene::getbrownReaction(&(GeneticCode::getGene(&parentCode, j))));
+                            Gene::setbrownReaction(&(this.get(|__o| __o._genes.at(i))), Gene::getbrownReaction(&(GeneticCode::getGene(&parentCode, j))));
                         }
                         if randomiceReaction {
-                            Gene::randomizeiceReaction(&((this.get(|o| o._genes.clone())).at(i)));
+                            Gene::randomizeiceReaction(&(this.get(|__o| __o._genes.at(i))));
                         } else {
-                            Gene::seticeReaction(&((this.get(|o| o._genes.clone())).at(i)), Gene::geticeReaction(&(GeneticCode::getGene(&parentCode, j))));
+                            Gene::seticeReaction(&(this.get(|__o| __o._genes.at(i))), Gene::geticeReaction(&(GeneticCode::getGene(&parentCode, j))));
                         }
                         if randombrokenReaction {
-                            Gene::randomizebrokenReaction(&((this.get(|o| o._genes.clone())).at(i)));
+                            Gene::randomizebrokenReaction(&(this.get(|__o| __o._genes.at(i))));
                         } else {
-                            Gene::setbrokenReaction(&((this.get(|o| o._genes.clone())).at(i)), Gene::getbrokenReaction(&(GeneticCode::getGene(&parentCode, j))));
+                            Gene::setbrokenReaction(&(this.get(|__o| __o._genes.at(i))), Gene::getbrokenReaction(&(GeneticCode::getGene(&parentCode, j))));
                         }
                         if randomsickReaction {
-                            Gene::randomizesickReaction(&((this.get(|o| o._genes.clone())).at(i)));
+                            Gene::randomizesickReaction(&(this.get(|__o| __o._genes.at(i))));
                         } else {
-                            Gene::setsickReaction(&((this.get(|o| o._genes.clone())).at(i)), Gene::getsickReaction(&(GeneticCode::getGene(&parentCode, j))));
+                            Gene::setsickReaction(&(this.get(|__o| __o._genes.at(i))), Gene::getsickReaction(&(GeneticCode::getGene(&parentCode, j))));
                         }
                         if randomfriendReaction {
-                            Gene::randomizefriendReaction(&((this.get(|o| o._genes.clone())).at(i)));
+                            Gene::randomizefriendReaction(&(this.get(|__o| __o._genes.at(i))));
                         } else {
-                            Gene::setfriendReaction(&((this.get(|o| o._genes.clone())).at(i)), Gene::getfriendReaction(&(GeneticCode::getGene(&parentCode, j))));
+                            Gene::setfriendReaction(&(this.get(|__o| __o._genes.at(i))), Gene::getfriendReaction(&(GeneticCode::getGene(&parentCode, j))));
                         }
                         if randomColor {
-                            Gene::randomizeColor(&((this.get(|o| o._genes.clone())).at(i)));
+                            Gene::randomizeColor(&(this.get(|__o| __o._genes.at(i))));
                             if ((!(Color::equals((Gene::getColor(&(GeneticCode::getGene(this, i)))), Gene::getColor(&(GeneticCode::getGene(&parentCode, j)))))) && ((clonedGene == 0))) {
                                 if (this.get(|o| o._updateClade) <= 0) {
                                     this.setf(|o| &mut o._updateClade, 1);
@@ -1069,7 +1069,7 @@ impl GeneticCode {
                                 }
                             }
                         } else {
-                            Gene::setColor(&((this.get(|o| o._genes.clone())).at(i)), Gene::getColor(&(GeneticCode::getGene(&parentCode, j))));
+                            Gene::setColor(&(this.get(|__o| __o._genes.at(i))), Gene::getColor(&(GeneticCode::getGene(&parentCode, j))));
                         }
                         if (clonedGene != 0) {
                             if (clonedGene == (-1i32)) {
@@ -1411,12 +1411,12 @@ impl GeneticCode {
 
     /// Java: GeneticCode.java:558 Gene getGene(int)
     pub fn getGene(this: &JRef<Self>, mut i: i32) -> JRef<Gene> {
-        return (this.get(|o| o._genes.clone())).at(i);
+        return this.get(|__o| __o._genes.at(i));
     }
 
     /// Java: GeneticCode.java:566 int getNGenes()
     pub fn getNGenes(this: &JRef<Self>) -> i32 {
-        return (this.get(|o| o._genes.clone())).len();
+        return this.get(|__o| __o._genes.len());
     }
 
     /// Java: GeneticCode.java:572 void randomMirror()
@@ -1603,67 +1603,67 @@ impl GeneticCode {
             let mut i: i32 = 0;
             while (i < nGenes) {
                 (this.get(|o| o._genes.clone())).put(i, Gene::new());
-                Gene::randomize(&((this.get(|o| o._genes.clone())).at(i)));
+                Gene::randomize(&(this.get(|__o| __o._genes.at(i))));
                 if Random::nextBoolean(&(utils::random())) {
-                    Gene::setBranch(&((this.get(|o| o._genes.clone())).at(i)), (-1i32));
+                    Gene::setBranch(&(this.get(|__o| __o._genes.at(i))), (-1i32));
                 } else {
-                    Gene::setBranch(&((this.get(|o| o._genes.clone())).at(i)), Random::nextInt_bound(&(utils::random()), (i + 1)));
+                    Gene::setBranch(&(this.get(|__o| __o._genes.at(i))), Random::nextInt_bound(&(utils::random()), (i + 1)));
                 }
                 if Random::nextBoolean(&(utils::random())) {
                     if Random::nextBoolean(&(utils::random())) {
                         if Random::nextBoolean(&(utils::random())) {
-                            Gene::setStack(&((this.get(|o| o._genes.clone())).at(i)), 1);
+                            Gene::setStack(&(this.get(|__o| __o._genes.at(i))), 1);
                         } else {
-                            Gene::setStack(&((this.get(|o| o._genes.clone())).at(i)), 2);
+                            Gene::setStack(&(this.get(|__o| __o._genes.at(i))), 2);
                         }
                     } else {
                         if Random::nextBoolean(&(utils::random())) {
-                            Gene::setStack(&((this.get(|o| o._genes.clone())).at(i)), (-1i32));
+                            Gene::setStack(&(this.get(|__o| __o._genes.at(i))), (-1i32));
                         } else {
-                            Gene::setStack(&((this.get(|o| o._genes.clone())).at(i)), (-2i32));
+                            Gene::setStack(&(this.get(|__o| __o._genes.at(i))), (-2i32));
                         }
                     }
                 } else {
-                    Gene::setStack(&((this.get(|o| o._genes.clone())).at(i)), 0);
+                    Gene::setStack(&(this.get(|__o| __o._genes.at(i))), 0);
                 }
                 if Random::nextBoolean(&(utils::random())) {
-                    Gene::setFold(&((this.get(|o| o._genes.clone())).at(i)), (Random::nextInt_bound(&(utils::random()), 6) + 1));
+                    Gene::setFold(&(this.get(|__o| __o._genes.at(i))), (Random::nextInt_bound(&(utils::random()), 6) + 1));
                 } else {
-                    Gene::setFold(&((this.get(|o| o._genes.clone())).at(i)), 0);
+                    Gene::setFold(&(this.get(|__o| __o._genes.at(i))), 0);
                 }
-                Gene::setChiral(&((this.get(|o| o._genes.clone())).at(i)), (((Random::nextInt_bound(&(utils::random()), 4) * 2)) - 3));
+                Gene::setChiral(&(this.get(|__o| __o._genes.at(i))), (((Random::nextInt_bound(&(utils::random()), 4) * 2)) - 3));
                 if Random::nextBoolean(&(utils::random())) {
                     if Random::nextBoolean(&(utils::random())) {
                         if Random::nextBoolean(&(utils::random())) {
                             if Random::nextBoolean(&(utils::random())) {
-                                Gene::setRadial(&((this.get(|o| o._genes.clone())).at(i)), 0);
+                                Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 0);
                             } else {
-                                Gene::setRadial(&((this.get(|o| o._genes.clone())).at(i)), 90);
+                                Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 90);
                             }
                         } else {
                             if Random::nextBoolean(&(utils::random())) {
-                                Gene::setRadial(&((this.get(|o| o._genes.clone())).at(i)), 120);
+                                Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 120);
                             } else {
-                                Gene::setRadial(&((this.get(|o| o._genes.clone())).at(i)), 135);
+                                Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 135);
                             }
                         }
                     } else {
                         if Random::nextBoolean(&(utils::random())) {
                             if Random::nextBoolean(&(utils::random())) {
-                                Gene::setRadial(&((this.get(|o| o._genes.clone())).at(i)), 180);
+                                Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 180);
                             } else {
-                                Gene::setRadial(&((this.get(|o| o._genes.clone())).at(i)), 240);
+                                Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 240);
                             }
                         } else {
                             if Random::nextBoolean(&(utils::random())) {
-                                Gene::setRadial(&((this.get(|o| o._genes.clone())).at(i)), 270);
+                                Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 270);
                             } else {
-                                Gene::setRadial(&((this.get(|o| o._genes.clone())).at(i)), 360);
+                                Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), 360);
                             }
                         }
                     }
                 } else {
-                    Gene::setRadial(&((this.get(|o| o._genes.clone())).at(i)), Random::nextInt_bound(&(utils::random()), 361));
+                    Gene::setRadial(&(this.get(|__o| __o._genes.at(i))), Random::nextInt_bound(&(utils::random()), 361));
                 }
                 i = i + 1;
             }
@@ -1799,11 +1799,11 @@ impl GeneticCode {
         let mut newCode: JRef<GeneticCode> = JRef::null();
         {
             newCode = JRef::new(this.get(|o| o.clone()));
-            newCode.setf(|o| &mut o._genes, { let __d1 = (this.get(|o| o._genes.clone())).len(); JArray::new_array(__d1, JRef::null()) });
+            newCode.setf(|o| &mut o._genes, { let __d1 = this.get(|__o| __o._genes.len()); JArray::new_array(__d1, JRef::null()) });
             {
                 let mut i: i32 = 0;
-                while (i < (this.get(|o| o._genes.clone())).len()) {
-                    (newCode.get(|o| o._genes.clone())).put(i, Gene::jclone(&((this.get(|o| o._genes.clone())).at(i))));
+                while (i < this.get(|__o| __o._genes.len())) {
+                    (newCode.get(|o| o._genes.clone())).put(i, Gene::jclone(&(this.get(|__o| __o._genes.at(i)))));
                     i = i + 1;
                 }
             }

@@ -19,7 +19,7 @@ use crate::rt::*;
 pub fn getDistinctCladeIDCount1(this: &JRef<World>, minPopulation: i32) -> i32 {
     let organisms = this.get(|o| o._organisms.clone()).snapshot_array();
     let mut counts: HashMap<String, i64> = HashMap::new();
-    for o in organisms.get(|v| v.clone()) {
+    for o in organisms.get(|v| v.to_vec()) {
         if Organism::isAlive(&o) {
             let id = GeneticCode::getcladeID(&Organism::getGeneticCode(&o));
             *counts.entry(id.as_str().to_string()).or_insert(0) += 1;

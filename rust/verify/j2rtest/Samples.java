@@ -14,6 +14,7 @@ public class Samples {
 		s += "|" + switchInLoop(seed);
 		s += "|" + arithmetic(seed);
 		s += "|" + collections(seed);
+		s += "|" + arrays(seed);
 		return s;
 	}
 
@@ -112,5 +113,37 @@ public class Samples {
 		long l = (long) a * a + (1L << 40);
 		double d = 1e308 * 10;
 		return a + " " + b + " " + l + " " + (int) d + " " + (long) -d + " " + (Integer.MIN_VALUE / -1);
+	}
+
+	static final int[] TABLE = {3, 1, 4, 1, 5, 9, 2, 6};
+	static int[] counts = new int[4];
+	static int[] kept;
+
+	/** Arrays that don't escape (on the stack, passed by reference), one that does, field and static arrays. */
+	static String arrays(int seed) {
+		double[] y = new double[2];
+		final double[] k = {0.5, 1.5};
+		int n = split(seed * 1.25, y, k);
+		int[] e = new int[2];
+		e[1] = seed;
+		kept = e;
+		Bag b = new Bag();
+		b.slots[seed % 3] = TABLE[seed % TABLE.length] + b.slots.length;
+		b.slots[(seed + 1) % 3] = b.slots[seed % 3] * 2;
+		counts[seed % 4]++;
+		counts[1] = TABLE[2] + counts[seed % 4];
+		return n + " " + (long) (y[0] * 1000) + " " + (long) (y[1] * 1000) + " " + y.length + " " + kept[1]
+				+ " " + b.slots[0] + "," + b.slots[1] + "," + b.slots[2] + " " + counts[1];
+	}
+
+	static int split(double x, double[] out, double[] k) {
+		out[0] = x * k[0];
+		out[1] = x * k[1];
+		return out.length + bump(out);
+	}
+
+	static int bump(double[] a) {
+		a[1] += 1;
+		return (int) a[1];
 	}
 }
