@@ -52,6 +52,8 @@ skip biogenesis.WorldStatistics.getMaxDeathsFromList()
 native biogenesis.World.getDistinctCladeIDCount(int)
 # Java's threads (WorkerThread, LinesLocker...), hand-written in core/src/native/.
 native biogenesis.parallel_executor.ParallelExecutor.progressAllOrganismsInParallel(int,int)
+# Hot spot: the same arithmetic on borrowed slices, vectorized.
+native biogenesis.Organism.calculateBounds()
 
 # Math.sin, Math.log etc. are translated from the JDK's StrictMath (fdlibm).
 source java.lang.StrictMath

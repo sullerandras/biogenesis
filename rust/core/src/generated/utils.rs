@@ -481,16 +481,6 @@ pub fn set_USER_NAME(v: JStr) { __USER_NAME.set(v) }
 pub static __side: JStatic<JArray<JArray<i32>>> = JStatic::lazy(|| JArray::from_vec(vec![JArray::from_vec(vec![1, 0]), JArray::from_vec(vec![1, 1]), JArray::from_vec(vec![0, 1]), JArray::from_vec(vec![(-1i32), 1]), JArray::from_vec(vec![(-1i32), 0]), JArray::from_vec(vec![(-1i32), (-1i32)]), JArray::from_vec(vec![0, (-1i32)]), JArray::from_vec(vec![1, (-1i32)])]));
 #[inline] pub fn side() -> JArray<JArray<i32>> { __side.get() }
 pub fn set_side(v: JArray<JArray<i32>>) { __side.set(v) }
-
-/// Java: Utils.java:1955 double min(double, double, double)
-pub fn min3_1(mut a: f64, mut b: f64, mut c: f64) -> f64 {
-    return jmath::min_f64(jmath::min_f64(a, b), c);
-}
-
-/// Java: Utils.java:1977 double max(double, double, double)
-pub fn max3_1(mut a: f64, mut b: f64, mut c: f64) -> f64 {
-    return jmath::max_f64(jmath::max_f64(a, b), c);
-}
 // Java: Utils.java:1037
 pub static __YELLOW_ENERGY_CONSUMPTION: JStatic<f64> = JStatic::new(utils::DEF_YELLOW_ENERGY_CONSUMPTION);
 #[inline] pub fn YELLOW_ENERGY_CONSUMPTION() -> f64 { __YELLOW_ENERGY_CONSUMPTION.get() }
@@ -763,6 +753,11 @@ pub fn set_WORLD_WIDTH(v: i32) { __WORLD_WIDTH.set(v) }
 pub static __WORLD_HEIGHT: JStatic<i32> = JStatic::new(utils::DEF_WORLD_HEIGHT);
 #[inline] pub fn WORLD_HEIGHT() -> i32 { __WORLD_HEIGHT.get() }
 pub fn set_WORLD_HEIGHT(v: i32) { __WORLD_HEIGHT.set(v) }
+
+/// Java: Utils.java:1955 double min(double, double, double)
+pub fn min3_1(mut a: f64, mut b: f64, mut c: f64) -> f64 {
+    return jmath::min_f64(jmath::min_f64(a, b), c);
+}
 // Java: Utils.java:1446
 pub static __DRAIN_SUBS_DIVISOR: JStatic<i32> = JStatic::new(utils::DEF_DRAIN_SUBS_DIVISOR);
 #[inline] pub fn DRAIN_SUBS_DIVISOR() -> i32 { __DRAIN_SUBS_DIVISOR.get() }

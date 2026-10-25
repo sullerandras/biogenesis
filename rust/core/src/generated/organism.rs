@@ -7006,27 +7006,7 @@ impl Organism {
 
     /// Java: Organism.java:7706 void calculateBounds()
     pub fn calculateBounds(this: &JRef<Self>) {
-        let mut left: f64 = 1.7976931348623157E308f64;
-        let mut right: f64 = 4.9E-324f64;
-        let mut top: f64 = 1.7976931348623157E308f64;
-        let mut bottom: f64 = 4.9E-324f64;
-        let mut sin: f64 = jmath::sin(this.get(|o| o._theta));
-        let mut cos: f64 = jmath::cos(this.get(|o| o._theta));
-        {
-            let mut i: i32 = 0;
-            while (i < this.get(|o| o._segments)) {
-                this.get(|__o| __o.x1.put(i, (((((this.get(|__o| __o._startPointX.at(i)) as f64) * cos) - ((this.get(|__o| __o._startPointY.at(i)) as f64) * sin))) as i32)));
-                this.get(|__o| __o.y1.put(i, (((((this.get(|__o| __o._startPointX.at(i)) as f64) * sin) + ((this.get(|__o| __o._startPointY.at(i)) as f64) * cos))) as i32)));
-                this.get(|__o| __o.x2.put(i, (((((this.get(|__o| __o._endPointX.at(i)) as f64) * cos) - ((this.get(|__o| __o._endPointY.at(i)) as f64) * sin))) as i32)));
-                this.get(|__o| __o.y2.put(i, (((((this.get(|__o| __o._endPointX.at(i)) as f64) * sin) + ((this.get(|__o| __o._endPointY.at(i)) as f64) * cos))) as i32)));
-                left = utils::min3_1(left, ((this.get(|__o| __o.x1.at(i)) as f64) + this.get(|o| o._dCenterX)), ((this.get(|__o| __o.x2.at(i)) as f64) + this.get(|o| o._dCenterX)));
-                right = utils::max3_1(right, ((this.get(|__o| __o.x1.at(i)) as f64) + this.get(|o| o._dCenterX)), ((this.get(|__o| __o.x2.at(i)) as f64) + this.get(|o| o._dCenterX)));
-                top = utils::min3_1(top, ((this.get(|__o| __o.y1.at(i)) as f64) + this.get(|o| o._dCenterY)), ((this.get(|__o| __o.y2.at(i)) as f64) + this.get(|o| o._dCenterY)));
-                bottom = utils::max3_1(bottom, ((this.get(|__o| __o.y1.at(i)) as f64) + this.get(|o| o._dCenterY)), ((this.get(|__o| __o.y2.at(i)) as f64) + this.get(|o| o._dCenterY)));
-                i = i + 1;
-            }
-        }
-        { let __r1 = this; let __p1_0 = (left as i32); let __p1_1 = (top as i32); let __p1_2 = (((((right - left) + 1f64)) as i32) + 1); let __p1_3 = (((((bottom - top) + 1f64)) as i32) + 1); __r1.set(|o| o.__super.setBounds(__p1_0, __p1_1, __p1_2, __p1_3)) };
+        crate::native::organism::calculateBounds(this)
     }
 
     /// Java: Organism.java:7730 void grow()
