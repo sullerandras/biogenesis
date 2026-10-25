@@ -1,0 +1,96 @@
+name: Release (Rust)
+
+# Draft release of the Rust translation's GUI (rust/gui) for Linux, macOS and
+# Windows, with the Java jars alongside so testers can compare the two.
+
+on:
+  push:
+    branches:
+      - rust-translation
+
+jobs:
+  build-rust:
+    strategy:
+      matrix:
+        include:
+          # 22.04 rather than ubuntu-latest: the binary then needs only glibc 2.35.
+          - { os: ubuntu-22.04,   name: linux-x86_64,   exe: biogenesis-rust }
+          - { os: macos-latest,   name: macos-arm64,    exe: biogenesis-rust }
+          - { os: windows-latest, name: windows-x86_64, exe: biogenesis-rust.exe }
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: rust/gui
+
+      # Math.sin etc. from the platform rather than StrictMath, which is slower
+      # (as the jars, built without STRICT_MATH).
+      - run: cargo build --release --manifest-path rust/gui/Cargo.toml --features platform-math
+
+      - name: Package
+        shell: bash
+        run: |
+          mkdir dist
+          cp rust/gui/target/release/${{ matrix.exe }} LICENSE dist/
+          tar czf biogenesis-rust-${{ matrix.name }}.tar.gz -C dist .
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rust-${{ matrix.name }}
+          path: biogenesis-rust-${{ matrix.name }}.tar.gz
+
+  release:
+    needs: build-rust
+    permissions:
+      contents: write # allows the action to create a release
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '8'
+
+      - name: Get current date and time
+        run: |
+          echo "date=$(date +'%Y-%m-%d--%H-%M')" >> "$GITHUB_ENV"
+
+      # The GPL's corresponding source, taken before Version.java is changed.
+      - name: Source tarball
+        run: |
+          git archive --format=tar.gz --prefix="biogenesis-rust-v${{ env.date }}/" \
+            -o "biogenesis-rust-v${{ env.date }}-src.tar.gz" HEAD
+
+      - name: Set version
+        run: |
+          echo "package biogenesis;" > src/biogenesis/Version.java
+          echo "public interface Version {" >> src/biogenesis/Version.java
+          echo "	public static final String VERSION = \"rust-v${{ env.date }}\";" >> src/biogenesis/Version.java
+          echo "}" >> src/biogenesis/Version.java
+
+      - run: make build build-analyzer
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: rust-*
+          merge-multiple: true
+
+      # A draft creates no tag until it is published.
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          prerelease: true
+          name: "rust-v${{ env.date }}"
+          tag_name: "rust-v${{ env.date }}"
+          target_commitish: ${{ github.sha }}
+          files: |
+            LICENSE
+            biogenesis.jar
+            biogenesis-analyzer.jar
+            biogenesis-rust-*.tar.gz
+            biogenesis-rust-v*-src.tar.gz
