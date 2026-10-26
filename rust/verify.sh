@@ -3,6 +3,8 @@
 # their outputs. Needs rust/transpile.sh to have run (it makes rust/build/src).
 set -e
 cd "$(dirname "$0")/.."
+# Java's classpath separator: ";" on Windows (Git Bash).
+case "$(uname)" in MINGW*|MSYS*|CYGWIN*) cps=";" ;; *) cps=":" ;; esac
 out=rust/build/verify
 mkdir -p "$out"
 
@@ -29,7 +31,7 @@ args_for() {
 }
 check() {
 	name="$1"; java_main="$2"; rust_bin="rust/core/target/${target:-release}/$3"; shift 3
-	java --add-opens java.base/java.util=ALL-UNNAMED -cp rust/build/java-classes:lib/gson-2.10.1.jar "$java_main" $(args_for java rust "$@") > "$out/$name.java.txt"
+	java --add-opens java.base/java.util=ALL-UNNAMED -cp "rust/build/java-classes${cps}lib/gson-2.10.1.jar" "$java_main" $(args_for java rust "$@") > "$out/$name.java.txt"
 	"$rust_bin" $(args_for rust java "$@") > "$out/$name.rust.txt"
 	if cmp -s "$out/$name.java.txt" "$out/$name.rust.txt"; then
 		echo "same  $name ($(wc -l < "$out/$name.java.txt" | tr -d ' ') lines)"
