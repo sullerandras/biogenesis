@@ -9,6 +9,8 @@ use std::path::PathBuf;
 use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
 
+use eframe::egui::ViewportId;
+
 use biogenesis_core::generated::{Organism, World, WorldStatistics, utils};
 use biogenesis_core::rt::{Color, Graphics, JRef, Random, Stub};
 use biogenesis_core::save;
@@ -129,7 +131,7 @@ pub fn start(ctx: eframe::egui::Context, first: Vec<Cmd>) -> SharedRef {
                 let mut s = s.lock().unwrap_or_else(|p| p.into_inner());
                 s.status.error = Some(what);
                 s.status.running = false;
-                ctx.request_repaint();
+                ctx.request_repaint_of(ViewportId::ROOT);
             }
         })
         .expect("spawn the simulation thread");
@@ -169,8 +171,8 @@ fn run(shared: &SharedRef, ctx: &eframe::egui::Context) {
     let mut drawn: Option<View> = None;
     let mut stats_time = -1;
     let mut fps = (Instant::now(), 0u32, 0.0);
-    let mut prev = Instant::now();
-    let mut ahead_nanos: i64 = 0;
+    // While the world is repainted: when the next frame is due.
+    let mut due: Option<Instant> = None;
     let log_fps = std::env::var_os("BIOGENESIS_LOG_FPS").is_some();
     // For the log: the time spent advancing the world, drawing, and on the statistics.
     let mut spent = [Duration::ZERO; 3];
@@ -291,27 +293,24 @@ fn run(shared: &SharedRef, ctx: &eframe::egui::Context) {
             }
         }
         if wake {
-            ctx.request_repaint();
+            // The main window's: `request_repaint` would wake the window
+            // being drawn just then, the statistics window too.
+            ctx.request_repaint_of(ViewportId::ROOT);
         }
 
-        // As Java's worker: while the world is repainted, a frame takes
-        // DELAY ms (time saved on fast frames pays for slow ones).
-        let now = Instant::now();
-        let frame_nanos = (now - prev).as_nanos() as i64;
-        // The next frame's time includes this sleep, as in Java.
-        prev = now;
+        // While the world is repainted, a frame takes at least DELAY ms.
+        // Unlike Java's worker, fast frames don't pay for slow ones: the
+        // frames come evenly, not in bursts after slow ones.
         if running && view.is_some() {
-            ahead_nanos += delay_ms as i64 * 1_000_000 - frame_nanos;
-            if ahead_nanos > 100_000_000 {
-                ahead_nanos = 0;
-            } else if ahead_nanos > 10_000_000 {
-                std::thread::sleep(Duration::from_nanos(ahead_nanos as u64));
-            } else if ahead_nanos < -10_000_000 {
-                ahead_nanos = 0;
-            }
-        }
-        if !running {
-            ahead_nanos = 0;
+            let now = Instant::now();
+            let delay = Duration::from_millis(delay_ms as u64);
+            // From the previous due time, so oversleeping doesn't add up;
+            // a late frame starts the count again.
+            let next = due.map_or(now + delay, |d| d + delay).max(now);
+            std::thread::sleep(next - now);
+            due = Some(next);
+        } else {
+            due = None;
         }
     }
 }
