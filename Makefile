@@ -1,3 +1,12 @@
+# Java classpath separator and Python launcher differ on Windows (Git Bash/MSYS)
+ifeq ($(OS),Windows_NT)
+S = ;
+PYTHON ?= python
+else
+S = :
+PYTHON ?= python3
+endif
+
 # UTF-8 copy of src/ that javac compiles from (see the src-utf8 target)
 UTF8_SRC = build-src
 
@@ -38,7 +47,7 @@ run-analyzer: build-analyzer
 	SKIP_OPENGL=true java -Dsun.java2d.opengl=True -Dsun.java2d.opengl.fbobject=false -jar biogenesis-analyzer.jar
 
 test: compile-tests
-	java -cp classes:lib/gson-2.10.1.jar:lib/xchart-3.8.5.jar:lib/hamcrest-core-1.3.jar:lib/junit-4.13.2.jar org.junit.runner.JUnitCore biogenesis.test.AllTests biogenesis.parallel_executor.test.AllTests
+	java -cp "classes$(S)lib/gson-2.10.1.jar$(S)lib/xchart-3.8.5.jar$(S)lib/hamcrest-core-1.3.jar$(S)lib/junit-4.13.2.jar" org.junit.runner.JUnitCore biogenesis.test.AllTests biogenesis.parallel_executor.test.AllTests
 
 build: compile
 	rm -rf build
@@ -84,10 +93,10 @@ src-utf8:
 			iconv -f WINDOWS-1252 -t UTF-8 "$$f" > "../$(UTF8_SRC)/$$f" || exit 1; \
 		fi; \
 	done
-	@PERF_PATCHES=$(PERF_PATCHES) python3 perf/perf_patch.py $(UTF8_SRC)
+	@PERF_PATCHES=$(PERF_PATCHES) $(PYTHON) perf/perf_patch.py $(UTF8_SRC)
 	@case ",$(PERF_PATCHES)," in *,mirror,*) \
 		$(MAKE) -s $(MIRROR_TOOL) && \
-		java -cp "perf/tools/classes:perf/tools/lib/*" MirrorTransform $(UTF8_SRC) perf/mirror \
+		java -cp "perf/tools/classes$(S)perf/tools/lib/*" MirrorTransform $(UTF8_SRC) perf/mirror \
 			lib/gson-2.10.1.jar lib/xchart-3.8.5.jar;; \
 	esac
 	@if [ -n "$(STRICT_MATH)" ]; then \
@@ -102,19 +111,19 @@ $(MIRROR_TOOL): perf/mirror/MirrorTransform.java perf/mirror/fetch-tools.sh
 
 compile: clean src-utf8
 	mkdir -p classes
-	javac -cp lib/gson-2.10.1.jar:lib/xchart-3.8.5.jar -sourcepath $(UTF8_SRC) $(UTF8_SRC)/biogenesis/*.java -source 8 -target 8 -d classes
+	javac -cp "lib/gson-2.10.1.jar$(S)lib/xchart-3.8.5.jar" -sourcepath $(UTF8_SRC) $(UTF8_SRC)/biogenesis/*.java -source 8 -target 8 -d classes
 	cp -r src/biogenesis/messages classes/biogenesis
 	cp -r src/biogenesis/images classes/biogenesis
 
 compile-analyzer: clean src-utf8
 	mkdir -p classes
-	javac -cp lib/gson-2.10.1.jar:lib/xchart-3.8.5.jar -sourcepath $(UTF8_SRC) $(UTF8_SRC)/biogenesis/clade_analyzer/*.java -source 8 -target 8 -d classes
+	javac -cp "lib/gson-2.10.1.jar$(S)lib/xchart-3.8.5.jar" -sourcepath $(UTF8_SRC) $(UTF8_SRC)/biogenesis/clade_analyzer/*.java -source 8 -target 8 -d classes
 	cp -r src/biogenesis/messages classes/biogenesis
 	cp -r src/biogenesis/images classes/biogenesis
 
 compile-tests: clean src-utf8
 	mkdir -p classes
-	javac -cp lib/gson-2.10.1.jar:lib/xchart-3.8.5.jar:lib/junit-4.13.2.jar -sourcepath $(UTF8_SRC) tests/biogenesis/test/*.java tests/biogenesis/parallel_executor/test/*.java -source 8 -target 8 -d classes
+	javac -cp "lib/gson-2.10.1.jar$(S)lib/xchart-3.8.5.jar$(S)lib/junit-4.13.2.jar" -sourcepath $(UTF8_SRC) tests/biogenesis/test/*.java tests/biogenesis/parallel_executor/test/*.java -source 8 -target 8 -d classes
 	cp -r src/biogenesis/messages classes/biogenesis
 	cp -r src/biogenesis/images classes/biogenesis
 
@@ -125,7 +134,7 @@ clean:
 	rm -rf biogenesis-src.jar
 
 benchmark: compile
-	javac -nowarn -cp classes:lib/gson-2.10.1.jar benchmark/biogenesis/Benchmark.java -source 8 -target 8 -d classes
-	java -Djava.awt.headless=true -cp lib/gson-2.10.1.jar:classes biogenesis.Benchmark $(WORLD) $(FRAMES) $(THREADS)
+	javac -nowarn -cp "classes$(S)lib/gson-2.10.1.jar" benchmark/biogenesis/Benchmark.java -source 8 -target 8 -d classes
+	java -Djava.awt.headless=true -cp "lib/gson-2.10.1.jar$(S)classes" biogenesis.Benchmark $(WORLD) $(FRAMES) $(THREADS)
 
 .PHONY: run run-rust run-rust-platform-math run-analyzer test build build-analyzer build-src-jar src-utf8 compile compile-analyzer compile-tests clean benchmark
